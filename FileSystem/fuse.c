@@ -14,5 +14,6 @@ int main(){
 	log_info(log, "FUSE levantado correctamente\n");
 
 	pthread_join(hiloLevantarConexion, NULL);
-    return 0;
+
+	return 0;
 }
