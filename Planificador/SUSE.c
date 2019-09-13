@@ -4,16 +4,17 @@
 
 int main(){
 
+	// Levanta archivo de configuracion
 	t_config* configuracion = leer_config();
 	t_log *log = crear_log();
-
 	char* ip = config_get_string_value(configuracion, "IP");
-	char* port = config_get_string_value(configuracion, "LISTEN_PORT");
+	int puerto = config_get_int_value(configuracion, "LISTEN_PORT");
 
-	int socket_servidor = iniciar_servidor(ip,port);
+	// Levanta conexion por socket
+	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciar_conexion(ip, puerto), NULL);
 	log_info(log, "SUSE levantado correctamente\n");
-	int socket_cliente = esperar_cliente(socket_servidor);
 
+	pthread_join(hiloLevantarConexion, NULL);
     return 0;
 }
 
