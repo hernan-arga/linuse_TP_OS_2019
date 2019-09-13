@@ -1,6 +1,6 @@
 #include "utils.h"
 
-int iniciar_conexion(char* ip, int puerto){
+int iniciar_conexion(int ip, int puerto){
 	int opt = 1;
 	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30, activity, i, sd, valread;
 	int max_sd;
@@ -32,7 +32,7 @@ int iniciar_conexion(char* ip, int puerto){
 
 	//type of socket created
 	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
+	address.sin_addr.s_addr = ip;
 	address.sin_port = htons(puerto);
 
 	//bind the socket to localhost port 8888
@@ -150,6 +150,16 @@ int iniciar_conexion(char* ip, int puerto){
 	}
 }
 
+void levantarConfigFile(config* pconfig){
+	t_config* configuracion = leer_config();
+
+	pconfig->ip = config_get_int_value(configuracion, "IP");
+	pconfig->puerto = config_get_int_value(configuracion, "LISTEN_PORT");
+	pconfig->metrics_timer = config_get_int_value(configuracion, "METRICS_TIMER");
+	pconfig->max_multiprog = config_get_int_value(configuracion, "MAX_MULTIPROG");
+	pconfig->alpha = config_get_int_value(configuracion, "ALPHA_SJF");
+	// faltan los arrays
+}
 
 t_config* leer_config() {
 	return config_create("suse_config");

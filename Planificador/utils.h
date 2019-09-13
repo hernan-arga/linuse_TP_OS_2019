@@ -21,11 +21,21 @@
 #include <dirent.h>
 #include <pthread.h>
 
-int iniciar_conexion(char*, int);
+int iniciar_conexion(int, int);
+void levantarConfigFile();
 t_config* leer_config(void);
 t_log * crear_log();
 
 t_log* logger;
 pthread_t hiloLevantarConexion;
+
+typedef struct {
+	int ip;
+	int puerto;
+	int metrics_timer;
+	int max_multiprog;
+	int alpha;
+	// faltan los arrays
+} config;
 
 #endif /* UTILS_H_ */
