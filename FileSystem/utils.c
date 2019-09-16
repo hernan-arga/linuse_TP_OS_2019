@@ -165,3 +165,45 @@ t_config* leer_config() {
 t_log * crear_log() {
 	return log_create("fuse.log", "fuse", 1, LOG_LEVEL_DEBUG);
 }
+
+t_bitarray * crearBitmap(){
+
+	// revisar cambio de PATH para archivo
+	int bitmap = open("/home/utnso/workspace/tp-2019-2c-Cbados/FileSystem/disk.bin", O_RDWR);
+
+	struct stat mystat;
+
+	if (fstat(bitmap, &mystat) < 0) {
+	    printf("Error al establecer fstat\n");
+	    close(bitmap);
+	}
+
+	void * bmap = mmap(NULL, mystat.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, bitmap, 0);
+
+    int tamanioBitmap = mystat.st_size / (BLOCK_SIZE / 8);
+    memset(bmap,0,tamanioBitmap);
+
+    printf("El tamaño del archivo es %li \n",mystat.st_size);
+
+	if (bmap == MAP_FAILED) {
+			printf("Error al mapear a memoria: %s\n", strerror(errno));
+
+	}
+
+	t_bitarray * bitarray =  bitarray_create_with_mode((char *)bmap, tamanioBitmap, LSB_FIRST);
+
+	int tope = (int)bitarray_get_max_bit(bitarray);
+
+	for(int i=0; i<tope; i++){
+		bitarray_set_bit(bitarray,i);
+	}
+
+
+
+	printf("El tamano del bitarray es de : %i\n\n\n",(int)bitarray_get_max_bit(bitarray));
+	munmap(bmap,mystat.st_size);
+	close(bitmap);
+	return bitarray;
+
+}
+

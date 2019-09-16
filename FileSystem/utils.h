@@ -2,8 +2,8 @@
 #define UTILS_H_
 #define EXIT_FAILURE 1
 
-#include<sys/socket.h>
-#include<stdio.h>
+#include <sys/socket.h>
+#include <stdio.h>
 #include <string.h>
 #include <netdb.h>
 #include <unistd.h>
@@ -21,6 +21,9 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <pthread.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+
 
 #define GFILEBYTABLE 1024
 #define GFILEBYBLOCK 1
@@ -65,6 +68,7 @@ int iniciar_conexion(int, int);
 void levantarConfigFile();
 t_config* leer_config(void);
 t_log * crear_log();
+t_bitarray * crearBitmap();
 
 t_log* logger;
 pthread_t hiloLevantarConexion;
