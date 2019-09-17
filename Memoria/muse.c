@@ -14,6 +14,10 @@ int main(){
 	log_info(log, "MUSE levantado correctamente\n");
 
 	pthread_join(hiloLevantarConexion, NULL);
+
+	/////////////////////////
+	memoriaPrincipal = malloc(pconfig->tamanio_memoria);
+
     return 0;
 }
 
