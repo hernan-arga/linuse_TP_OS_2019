@@ -17,6 +17,7 @@ typedef struct {
 	bool modificado;
 	bool uso;
 	bool presencia;
+	int numeroFrame;
 	char* data;
 } pagina;
 
