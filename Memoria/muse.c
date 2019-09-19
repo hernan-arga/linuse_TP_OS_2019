@@ -16,7 +16,25 @@ int main(){
 	pthread_join(hiloLevantarConexion, NULL);
 
 	/////////////////////////
-	memoriaPrincipal = malloc(pconfig->tamanio_memoria);
+	reservarMemoriaPrincipal(pconfig->tamanio_memoria);
+	crearTablaSegmentos();
+
 
     return 0;
 }
+
+
+//////////////Funciones inicio recursos////////////////////
+
+void reservarMemoriaPrincipal(int tamanio){
+	memoriaPrincipal = malloc(tamanio);
+}
+
+void crearTablaSegmentos(){
+	tablaSegmentos = list_create();
+}
+
+
+
+
+

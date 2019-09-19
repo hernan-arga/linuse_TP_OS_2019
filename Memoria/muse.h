@@ -4,6 +4,7 @@
 #include<commons/collections/list.h>
 
 char* memoriaPrincipal;
+t_list* tablaSegmentos;
 
 typedef struct {
 	bool uso;
@@ -20,5 +21,12 @@ typedef struct {
 	int numeroFrame;
 	char* data;
 } pagina;
+
+
+
+///////////////Funciones//////////////////
+void reservarMemoriaPrincipal(int tamanio);
+void crearTablaSegmentos();
+
 
 #endif /* MUSE_H_ */
