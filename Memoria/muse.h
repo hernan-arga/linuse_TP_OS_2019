@@ -27,6 +27,7 @@ typedef struct {
 ///////////////Funciones//////////////////
 void reservarMemoriaPrincipal(int tamanio);
 void crearTablaSegmentos();
+void *musemalloc(uint32_t tamanio);
 
 
 #endif /* MUSE_H_ */

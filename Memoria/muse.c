@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include "muse.h"
 #include "utils.h"
+#include <assert.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 int main(){
 
@@ -34,6 +38,24 @@ void crearTablaSegmentos(){
 	tablaSegmentos = list_create();
 }
 
+
+///////////////Funciones MUSE///////////////////////////
+
+//MALLOC NAC & POP
+//Funcion que llamaria libMuse por medio de muse_alloc(uint32_t tam)
+//le va a retornar un void* tal como hace malloc y dentro de muse_alloc
+// nos encargaremos de retornar la posicion de memoria como lo pide su firma
+
+void *musemalloc(uint32_t tamanio) {   //Adaptar esto a NUESTRO ESPACIO de mm (UPCM)
+  void *ptr = sbrk(0);
+  void *pedido = sbrk(tamanio);
+  if (pedido == (void*) -1) {
+    return NULL; // Fallo sbrk
+  } else {
+    assert(ptr == pedido); // Not thread safe.
+    return ptr;
+  }
+}
 
 
 
