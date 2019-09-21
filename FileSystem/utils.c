@@ -180,7 +180,7 @@ t_bitarray * crearBitmap(){
 
 	void * bmap = mmap(NULL, mystat.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, bitmap, 0);
 
-    int tamanioBitmap = mystat.st_size / (BLOCK_SIZE / 8);
+    int tamanioBitmap = mystat.st_size / BLOCK_SIZE / 8;
     memset(bmap,0,tamanioBitmap);
 
     printf("El tamaño del archivo es %li \n",mystat.st_size);
@@ -195,12 +195,16 @@ t_bitarray * crearBitmap(){
 	int tope = (int)bitarray_get_max_bit(bitarray);
 
 	for(int i=0; i<tope; i++){
-		bitarray_set_bit(bitarray,i);
+		bitarray_clean_bit(bitarray,i);
 	}
 
+	int tope2 = tamanioBitmap + GFILEBYTABLE + 1;
 
+		for(int i=0; i<tope2; i++){
+				bitarray_set_bit(bitarray,i);
+			}
 
-	printf("El tamano del bitarray es de : %i\n\n\n",(int)bitarray_get_max_bit(bitarray));
+	printf("El tamano del bitarray creado es de: %i\n\n\n",(int)bitarray_get_max_bit(bitarray));
 	munmap(bmap,mystat.st_size);
 	close(bitmap);
 	return bitarray;
