@@ -130,13 +130,32 @@ int iniciar_conexion(int ip, int puerto){
 					read(sd, operacion, sizeof(int));
 
 					switch (*operacion) {
-					case 1:
-						// Operacion
-
+					case 1: //init
+						atenderMuseInit(sd);
 						break;
-					case 2:
-						// Operacion
-
+					case 2: //close
+						atenderMuseClose(sd);
+						break;
+					case 3: //alloc
+						atenderMuseAlloc(sd);
+						break;
+					case 4: //free
+						atenderMuseFree(sd);
+						break;
+					case 5: //get
+						atenderMuseGet(sd);
+						break;
+					case 6: //copy
+						atenderMuseCopy(sd);
+						break;
+					case 7:	//map
+						atenderMuseMap(sd);
+						break;
+					case 8: //sync
+						atenderMuseSync(sd);
+						break;
+					case 9: //unmap
+						atenderMuseUnmap(sd);
 						break;
 					default:
 						;
