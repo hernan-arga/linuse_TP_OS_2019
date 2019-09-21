@@ -158,7 +158,7 @@ void levantarConfigFile(config* pconfig){
 }
 
 t_config* leer_config() {
-	return config_create("fuse_config");
+	return config_create("sacCli_config");
 }
 
 
