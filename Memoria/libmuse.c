@@ -1,14 +1,41 @@
 #include "libmuse.h"
+
+#include <netinet/in.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
 
+/*
+int main(){
+
+	printf( muse_init(1,"127.0.0.1",5003) );
+
+	return 0;
+}
+*/
 int muse_init(int id, char* ip, int puerto){ //Case 1
-    return 0;
+
+	clienteMUSE = socket(AF_INET, SOCK_STREAM, 0);
+	serverAddressMUSE.sin_family = AF_INET;
+	serverAddressMUSE.sin_port = htons(puerto);
+	serverAddress.sin_addr.s_addr = INADDR_ANY;
+
+	int resultado = connect(clienteMUSE, (struct sockaddr *) &serverAddressMUSE, sizeof(serverAddressMUSE));
+	/*
+	int *tamanioValue = malloc(sizeof(int));
+	recv(clienteMUSE, tamanioValue, sizeof(int), 0);
+
+	memcpy(&tamanioValue, tamanioValue, sizeof(int));
+	*/
+
+	return resultado;
 }
 
 void muse_close(){ /* Does nothing :) */ } //Case 2
 
 uint32_t muse_alloc(uint32_t tam){ //Case 3
+
+
     return (uint32_t) malloc(tam);
 
 

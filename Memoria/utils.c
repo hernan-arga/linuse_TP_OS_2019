@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "muse.h"
 
 int iniciar_conexion(int ip, int puerto){
 	int opt = 1;
@@ -131,31 +132,31 @@ int iniciar_conexion(int ip, int puerto){
 
 					switch (*operacion) {
 					case 1: //init
-						atenderMuseInit(sd);
+						//atenderMuseInit(sd);
 						break;
 					case 2: //close
-						atenderMuseClose(sd);
+						//atenderMuseClose(sd);
 						break;
 					case 3: //alloc
-						atenderMuseAlloc(sd);
+						//atenderMuseAlloc(sd);
 						break;
 					case 4: //free
-						atenderMuseFree(sd);
+						//atenderMuseFree(sd);
 						break;
 					case 5: //get
-						atenderMuseGet(sd);
+						//atenderMuseGet(sd);
 						break;
 					case 6: //copy
-						atenderMuseCopy(sd);
+						//atenderMuseCopy(sd);
 						break;
 					case 7:	//map
-						atenderMuseMap(sd);
+						//atenderMuseMap(sd);
 						break;
 					case 8: //sync
-						atenderMuseSync(sd);
+						//atenderMuseSync(sd);
 						break;
 					case 9: //unmap
-						atenderMuseUnmap(sd);
+						//atenderMuseUnmap(sd);
 						break;
 					default:
 						;

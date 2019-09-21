@@ -1,8 +1,17 @@
 #ifndef LIBMUSE_H_
 #define LIBMUSE_H_
 
-    #include <stdint.h>
-    #include <stddef.h>
+#include <stdint.h>
+#include <stddef.h>
+
+struct sockaddr_in serverAddress;
+struct sockaddr_in serverAddressMUSE;
+struct sockaddr_in direccionCliente;
+int32_t server;
+int32_t clienteMUSE;
+uint32_t tamanoDireccion;
+
+
 
     /**
      * Inicializa la biblioteca de MUSE.
