@@ -4,14 +4,6 @@
 #include <string.h>
 #include <sys/socket.h>
 
-/*
- int main(){
-
- printf( muse_init(1,"127.0.0.1",5003) );
-
- return 0;
- }
- */
 int muse_init(int id, char* ip, int puerto) { //Case 1
 
 	clienteMUSE = socket(AF_INET, SOCK_STREAM, 0);
