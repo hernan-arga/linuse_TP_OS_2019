@@ -38,7 +38,7 @@ uint32_t muse_alloc(uint32_t tam){ //Case 3
 
     return (uint32_t) malloc(tam);
 
-    //Serializo peticion (2) y uint32_t tam tamaño a reservar
+    //Serializo peticion (3) y uint32_t tam tamaño a reservar
 
     //2 size de tamanio, 1 size de peticion, 1 size de tam (parametro)
     char *buffer = malloc(3 * sizeof(int) + sizeof(uint32_t));
@@ -53,13 +53,31 @@ uint32_t muse_alloc(uint32_t tam){ //Case 3
     memcpy(buffer + 3 * sizeof(int), tam, sizeof(uint32_t));
 
     //Falta conexion y se hace envio a MUSE
-    //send(clienteMUSE, buffer, strlen(tabla) + 5 * sizeof(int), 0);
+    //send(clienteMUSE, buffer, , 0);
 
     //musemaloc(tam)
 }
 
 void muse_free(uint32_t dir) { //Case 4
     free((void*) dir);
+
+    //Serializo peticion (4) y uint32_t dir
+
+    //2 size de tamanio, 1 size de peticion, 1 size de dir (parametro)
+    char *buffer = malloc(3 * sizeof(int) + sizeof(uint32_t));
+
+    int peticion = 4;
+    int tamanioPeticion = sizeof(int);
+    memcpy(buffer, &tamanioPeticion, sizeof(int));
+    memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+    int tamanioDir = sizeof(dir);
+    memcpy(buffer + 2 * sizeof(int), &tamanioDir, sizeof(int));
+    memcpy(buffer + 3 * sizeof(int), dir, sizeof(uint32_t));
+
+    //Falta conexion y se hace envio a MUSE
+    //send(clienteMUSE, buffer, , 0);
+
 }
 
 int muse_get(void* dst, uint32_t src, size_t n){ //Case 5
