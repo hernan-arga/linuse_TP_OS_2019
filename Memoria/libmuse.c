@@ -140,5 +140,21 @@ int muse_sync(uint32_t addr, size_t len) { //Case 8
 }
 
 int muse_unmap(uint32_t dir) { //Case 9
+	//Serializo peticion (9) y uint32_t dir
+
+	char *buffer = malloc(3 * sizeof(int) + sizeof(uint32_t));
+
+	int peticion = 9;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+	int tamanioDir = sizeof(dir);
+	memcpy(buffer + 2 * sizeof(int), &tamanioDir, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), &dir, sizeof(uint32_t));
+
+	//Falta conexion y se hace envio a MUSE
+	//send(clienteMUSE, buffer, , 0);
+
 	return 0;
 }
