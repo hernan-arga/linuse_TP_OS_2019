@@ -50,7 +50,7 @@ uint32_t muse_alloc(uint32_t tam){ //Case 3
 
     int tamanioTam = sizeof(tam);
     memcpy(buffer + 2 * sizeof(int), &tamanioTam, sizeof(int));
-    memcpy(buffer + 3 * sizeof(int), tam, sizeof(uint32_t));
+    memcpy(buffer + 3 * sizeof(int), &tam, sizeof(uint32_t));
 
     //Falta conexion y se hace envio a MUSE
     //send(clienteMUSE, buffer, , 0);
@@ -73,7 +73,7 @@ void muse_free(uint32_t dir) { //Case 4
 
     int tamanioDir = sizeof(dir);
     memcpy(buffer + 2 * sizeof(int), &tamanioDir, sizeof(int));
-    memcpy(buffer + 3 * sizeof(int), dir, sizeof(uint32_t));
+    memcpy(buffer + 3 * sizeof(int), &dir, sizeof(uint32_t));
 
     //Falta conexion y se hace envio a MUSE
     //send(clienteMUSE, buffer, , 0);
