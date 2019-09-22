@@ -136,6 +136,26 @@ uint32_t muse_map(char *path, size_t length, int flags) { //Case 7
 }
 
 int muse_sync(uint32_t addr, size_t len) { //Case 8
+	//Serializo peticion (8)
+
+	char *buffer = malloc(4 * sizeof(int) + sizeof(uint32_t) + sizeof(size_t));
+
+	int peticion = 8;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+	int tamanioAddr = sizeof(addr);
+	memcpy(buffer + 2 * sizeof(int), &tamanioAddr, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), &addr, sizeof(uint32_t));
+
+	int tamanioLen = sizeof(len);
+	memcpy(buffer + 3 * sizeof(int) + sizeof(uint32_t), &tamanioLen, sizeof(int));
+	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t), &len, sizeof(size_t));
+
+	//Falta conexion y se hace envio a MUSE
+	//send(clienteMUSE, buffer, , 0);
+
 	return 0;
 }
 
