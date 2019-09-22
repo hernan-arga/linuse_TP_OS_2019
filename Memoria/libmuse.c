@@ -38,6 +38,22 @@ uint32_t muse_alloc(uint32_t tam){ //Case 3
 
     return (uint32_t) malloc(tam);
 
+    //Serializo peticion (2) y uint32_t tam tamaño a reservar
+
+    //2 size de tamanio, 1 size de peticion, 1 size de tam (parametro)
+    char *buffer = malloc(3 * sizeof(int) + sizeof(uint32_t));
+
+    int peticion = 3;
+    int tamanioPeticion = sizeof(int);
+    memcpy(buffer, &tamanioPeticion, sizeof(int));
+    memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+    int tamanioTam = sizeof(tam);
+    memcpy(buffer + 2 * sizeof(int), &tamanioTam, sizeof(int));
+    memcpy(buffer + 3 * sizeof(int), tam, sizeof(uint32_t));
+
+    //Falta conexion y se hace envio a MUSE
+    //send(clienteMUSE, buffer, strlen(tabla) + 5 * sizeof(int), 0);
 
     //musemaloc(tam)
 }
