@@ -19,75 +19,49 @@
 // gcc -DFUSE_USE_VERSION=27 -D_FILE_OFFSET_BITS=64 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF "sacCli.d" -MT "sacCli.d" -o "sacCli.o" "sacCli.c"
 
 static int hello_open(const char *path, struct fuse_file_info *fi) {
-	int res;
+	FILE* res;
 
-	res = open(path, fi->flags);
-	if (res == -1)
+	res = fopen(path, "w+");
+	if (res == NULL)
 		return -errno;
 
-	close(res);
+	fclose(res);
 	return 0;
 }
 
 static int hello_getattr(const char *path, struct stat *stbuf) {
-	int res = 0;
+	   int res;
 
-	memset(stbuf, 0, sizeof(struct stat));
+	    res = lstat(path, stbuf);
+	    if(res == -1)
+	        return -errno;
 
-	//Si path es igual a "/" nos estan pidiendo los atributos del punto de montaje
-
-	if (strcmp(path, "/") == 0) {
-		stbuf->st_mode = S_IFDIR | 0755;
-		stbuf->st_nlink = 2;
-	} else if (strcmp(path, DEFAULT_FILE_PATH) == 0) {
-		stbuf->st_mode = S_IFREG | 0444;
-		stbuf->st_nlink = 1;
-		stbuf->st_size = strlen(DEFAULT_FILE_CONTENT);
-	} else {
-		res = -ENOENT;
-	}
-	return res;
-}
-
-static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi) {
-	(void) offset;
-	(void) fi;
-
-	if (strcmp(path, "/") != 0)
-		return -ENOENT;
-
-	// "." y ".." son entradas validas, la primera es una referencia al directorio donde estamos parados
-	// y la segunda indica el directorio padre
-	filler(buf, ".", NULL, 0);
-	filler(buf, "..", NULL, 0);
-	filler(buf, DEFAULT_FILE_NAME, NULL, 0);
-
-	return 0;
+	    return 0;
 }
 
 static int hello_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
-	size_t len;
-	(void) fi;
-	if (strcmp(path, DEFAULT_FILE_PATH) != 0)
-		return -ENOENT;
+	 int fd;
+	    int res;
 
-	len = strlen(DEFAULT_FILE_CONTENT);
-	if (offset < len) {
-		if (offset + size > len)
-			size = len - offset;
-		memcpy(buf, DEFAULT_FILE_CONTENT + offset, size);
-	} else
-		size = 0;
+	    fd = open(path, fi->flags);
+	    if(fd == -1)
+	        return -errno;
 
-	return size;
+	    res = pread(fd, buf, size, offset);
+	    if(res == -1)
+	        res = -errno;
+
+	    close(fd);
+	    return res;
 }
 
-static int hello_write(const char *path, const char *buf, size_t size, off_t offset)
+
+static int hello_write(const char *path, const char *buf, size_t size, off_t offset,  struct fuse_file_info *fi)
 {
     int fd;
     int res;
 
-    fd = open(path, O_WRONLY);
+    fd = open(path, fi->flags);
     if(fd == -1)
         return -errno;
 
@@ -99,12 +73,35 @@ static int hello_write(const char *path, const char *buf, size_t size, off_t off
     return res;
 }
 
+static int hello_mknod(const char *path, mode_t mode, dev_t rdev)
+{
+    int res;
+
+    res = mknod(path, mode, rdev);
+    if(res == -1)
+        return -errno;
+
+    return 0;
+}
+
+static int hello_chown(const char *path, uid_t uid, gid_t gid)
+{
+    int res;
+
+    res = lchown(path, uid, gid);
+    if(res == -1)
+        return -errno;
+
+    return 0;
+}
+
 static struct fuse_operations hello_oper = {
 		.open = hello_open,
-		.readdir = hello_readdir,
 		.getattr = hello_getattr,
 		.read = hello_read,
-		.write = hello_write
+		.write = hello_write,
+		.mknod = hello_mknod,
+		.chown = hello_chown
 };
 
 
@@ -177,3 +174,4 @@ int main(int argc, char *argv[]){
 	return 0;
 	*/
 }
+
