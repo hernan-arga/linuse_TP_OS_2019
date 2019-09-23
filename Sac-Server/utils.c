@@ -158,18 +158,18 @@ void levantarConfigFile(config* pconfig){
 }
 
 t_config* leer_config() {
-	return config_create("sacCli_config");
+	return config_create("sacServer_config");
 }
 
 
 t_log * crear_log() {
-	return log_create("fuse.log", "fuse", 1, LOG_LEVEL_DEBUG);
+	return log_create("sacServer.log", "Sac-Server", 1, LOG_LEVEL_DEBUG);
 }
 
 t_bitarray * crearBitmap(){
 
 	// revisar cambio de PATH para archivo
-	int bitmap = open("/home/utnso/workspace/tp-2019-2c-Cbados/FileSystem/disk.bin", O_RDWR);
+	int bitmap = open("/home/utnso/workspace/tp-2019-2c-Cbados/disk.bin", O_RDWR);
 
 	struct stat mystat;
 
@@ -205,9 +205,16 @@ t_bitarray * crearBitmap(){
 			}
 
 	printf("El tamano del bitarray creado es de: %i\n\n\n",(int)bitarray_get_max_bit(bitarray));
+	printf("Bloques ocupados %i\n",tope2);
+	printf("Bloques libres %li\n",(mystat.st_size / BLOCK_SIZE) - tope2);
 	munmap(bmap,mystat.st_size);
 	close(bitmap);
 	return bitarray;
 
 }
 
+void borrarBitmap(t_bitarray* bitArray){
+
+	bitarray_destroy(bitArray);
+	printf("Se ha borrado el Bitmap\n");
+}
