@@ -11,13 +11,13 @@ struct HeapMetadata {
 	bool isFree;
 };
 
-//Se modificaria porque estoy separando la metadata. Despues lo vemos
-typedef struct {
-	bool uso;
-	uint32_t size;
-	t_list* paginas;
-	//char* data; Ver - segun el mail esta en segmento, yo creo que esta en cada pagina.
-} segmento;
+struct Segmento{
+	struct HeapMetadata metadata;
+	//t_list* paginas;
+	char* data;
+
+	//char* data; Ver si esta en segmento o en las paginas (...)
+};
 
 typedef struct {
 	int numeroPagina;
@@ -44,6 +44,7 @@ uint32_t atenderMuseMap(int sd);
 int atenderMuseSync(int sd);
 int atenderMuseUnmap(int sd);
 void *crearSegmentoInicial(uint32_t tamanio);
+void crearTablaPaginas(struct Segmento segmento);
 
 
 #endif /* MUSE_H_ */
