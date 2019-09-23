@@ -1,6 +1,14 @@
 #include "conexionServer.h"
+
 void tomarPeticionCreate(int);
-int create();
+int o_create(char*);
+
+void tomarPeticionOpen(int);
+int o_open(char*);
+
+void tomarPeticionRead(int);
+char* o_read(char*);
+
 
 int iniciar_conexion(int ip, int puerto){
 	int opt = 1;
@@ -140,7 +148,7 @@ int iniciar_conexion(int ip, int puerto){
 						break;
 					case 2:
 						// Operacion
-
+						tomarPeticionOpen(cliente);
 						break;
 					default:
 						;
@@ -252,7 +260,7 @@ void tomarPeticionCreate(int cliente){
 	char *path = malloc(*tamanioPath);
 	read(cliente, path, *tamanioPath);
 
-	int ok = create();
+	int ok = o_create(path);
 
 	//logueo respuesta create
 	if (ok == 0){
@@ -264,6 +272,57 @@ void tomarPeticionCreate(int cliente){
 
 }
 
-int create(){
+int o_create(char* path){
 	return 0;
+}
+
+
+////////////////////  OPEN EN OTRO ARCHIVO
+void tomarPeticionOpen(int cliente){
+
+	//Deserializo path
+	int *tamanioPath = malloc(sizeof(int));
+	read(cliente, tamanioPath, sizeof(int));
+	char *path = malloc(*tamanioPath);
+	read(cliente, path, *tamanioPath);
+
+	int ok = o_open(path);
+
+	//logueo respuesta create
+	if (ok == 0){
+		loguearInfo(" + Se hizo un open en SacServer\n");
+	}
+	if (ok == 1) {
+		loguearError(" - NO se pudo hacer el open en SacServer\n");
+	}
+
+}
+
+int o_open(char* path){
+	return 0;
+}
+
+///////////////////////////// READ OTRO ARCHIVO
+
+void tomarPeticionRead(int cliente){
+
+	//Deserializo path
+	int *tamanioPath = malloc(sizeof(int));
+	read(cliente, tamanioPath, sizeof(int));
+	char *path = malloc(*tamanioPath);
+	read(cliente, path, *tamanioPath);
+
+	char* texto = o_read(path);
+
+	//logueo respuesta open
+
+	char* textoLog = string_new();
+	string_append(&textoLog, " + Se realizo un read : ");
+	string_append(&textoLog, texto);
+	loguearInfo(textoLog);
+
+}
+
+char* o_read(char* path){
+	return "0";
 }

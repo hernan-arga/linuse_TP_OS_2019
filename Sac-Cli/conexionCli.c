@@ -1,8 +1,8 @@
 #include "conexionCli.h"
 
-
 struct sockaddr_in serverAddress;
 struct sockaddr_in serverAddresssacServer;
+
 
 void conectarseASacServer(){
 	sacServer = socket(AF_INET, SOCK_STREAM, 0);
@@ -34,11 +34,4 @@ t_config* leer_config() {
 
 t_log * crear_log() {
 	return log_create("fuse.log", "fuse", 1, LOG_LEVEL_DEBUG);
-}
-
-void deserializoRespuestaOk(ok){
-	int* tamanioRespuesta = malloc(sizeof(int));
-	read(sacServer, tamanioRespuesta, sizeof(int));
-	ok = malloc(*tamanioRespuesta);
-	read(sacServer, ok, *tamanioRespuesta);
 }

@@ -33,33 +33,55 @@ static int hello_create (const char *path, mode_t mode, struct fuse_file_info *f
 
 	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
 
-	// Deserializo respuesta
-	int* ok;
-	deserializoRespuestaOk(ok);
-
-	//Logueo respuesta
-	t_log *log = crear_log();
-	if (*ok == 0){
-		log_info(log, " + Se hizo un create en SacServer\n");
-	}
-	if (*ok == 1) {
-		log_error(log, " - NO se pudo hacer el create en SacServer\n");
-	}
-
-
 	return 0;
 }
 
 
 static int hello_open(const char *path, struct fuse_file_info *fi) {
-	FILE* res;
 
-	res = fopen(path, "w+");
-	if (res == NULL)
-		return -errno;
+	//Serializo peticion y path
+	char* buffer = malloc(3 * sizeof(int) + strlen(path));
 
-	fclose(res);
+	int peticion = 2;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+	int tamanioPath = strlen(path);
+	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
+
+	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
+
 	return 0;
+}
+
+static int hello_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
+	//Serializo peticion, path, size y offset
+	char* buffer = malloc(3 * sizeof(int) + strlen(path));
+
+	int peticion = 3;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+	int tamanioPath = strlen(path);
+	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
+
+
+
+	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
+
+	//Deserializo el texto del archivo que te manda SacCli y lo guardo en buf
+	int *tamanioTexto = malloc(sizeof(int));
+	read(sacServer, tamanioTexto, sizeof(int));
+	char *texto = malloc(*tamanioTexto);
+	read(sacServer, texto, *tamanioTexto);
+
+	memcpy(buf, texto, strlen(texto));
+
+	return strlen(texto);
 }
 
 static int hello_getattr(const char *path, struct stat *stbuf) {
@@ -70,22 +92,6 @@ static int hello_getattr(const char *path, struct stat *stbuf) {
 	        return -errno;
 
 	    return 0;
-}
-
-static int hello_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
-	 int fd;
-	    int res;
-
-	    fd = open(path, fi->flags);
-	    if(fd == -1)
-	        return -errno;
-
-	    res = pread(fd, buf, size, offset);
-	    if(res == -1)
-	        res = -errno;
-
-	    close(fd);
-	    return res;
 }
 
 
@@ -108,11 +114,11 @@ static int hello_write(const char *path, const char *buf, size_t size, off_t off
 
 
 static struct fuse_operations hello_oper = {
+		.create = hello_create,
 		.open = hello_open,
-		.getattr = hello_getattr,
 		.read = hello_read,
 		.write = hello_write,
-		.create = hello_create
+		.getattr = hello_getattr
 };
 
 
