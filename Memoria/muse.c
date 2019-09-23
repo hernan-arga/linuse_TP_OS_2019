@@ -32,12 +32,20 @@ int main(){
 
 void reservarMemoriaPrincipal(int tamanio){
 	memoriaPrincipal = malloc(tamanio);
+	crearSegmentoInicial(tamanio-5); //Le resto los 5 bytes que van a ser del header
 }
 
 void crearTablaSegmentos(){
 	tablaSegmentos = list_create();
 }
 
+void *crearSegmentoInicial(uint32_t tamanio){
+	struct HeapMetadata metadata;
+	metadata.isFree = true;
+	metadata.size = tamanio;
+
+	return &memoriaPrincipal + sizeof(metadata); //Chequear si no hay manera menos horrible de hacerlo
+}
 
 ///////////////Funciones MUSE///////////////////////////
 
@@ -46,16 +54,17 @@ void crearTablaSegmentos(){
 //le va a retornar un void* tal como hace malloc y dentro de muse_alloc
 // nos encargaremos de retornar la posicion de memoria como lo pide su firma
 
-void *musemalloc(uint32_t tamanio) {   //Adaptar esto a NUESTRO ESPACIO de mm (UPCM)
-  void *ptr = sbrk(0);
+//void *musemalloc(uint32_t tamanio) {   //Adaptar esto a NUESTRO ESPACIO de mm (UPCM)
+  /*void *ptr = sbrk(0);
   void *pedido = sbrk(tamanio);
   if (pedido == (void*) -1) {
     return NULL; // Fallo sbrk
   } else {
     assert(ptr == pedido); // Not thread safe.
     return ptr;
-  }
-}
+  }*/
+
+//}
 
 
 

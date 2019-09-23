@@ -3,9 +3,15 @@
 #include <stdint.h>
 #include<commons/collections/list.h>
 
-char* memoriaPrincipal;
+void* memoriaPrincipal;
 t_list* tablaSegmentos;
 
+struct HeapMetadata {
+	uint32_t size;
+	bool isFree;
+};
+
+//Se modificaria porque estoy separando la metadata. Despues lo vemos
 typedef struct {
 	bool uso;
 	uint32_t size;
@@ -37,6 +43,7 @@ int atenderMuseCopy(int sd);
 uint32_t atenderMuseMap(int sd);
 int atenderMuseSync(int sd);
 int atenderMuseUnmap(int sd);
+void *crearSegmentoInicial(uint32_t tamanio);
 
 
 #endif /* MUSE_H_ */
