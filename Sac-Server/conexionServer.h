@@ -67,7 +67,8 @@ typedef struct {
 int iniciar_conexion(int, int);
 void levantarConfigFile();
 t_config* leer_config(void);
-t_log * crear_log();
+void loguearInfo(char *);
+void loguearError();
 t_bitarray * crearBitmap();
 void borrarBitmap(t_bitarray*);
 

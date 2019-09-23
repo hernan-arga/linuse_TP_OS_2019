@@ -166,8 +166,24 @@ t_config* leer_config() {
 }
 
 
-t_log * crear_log() {
-	return log_create("sacServer.log", "Sac-Server", 1, LOG_LEVEL_DEBUG);
+void loguearInfo(char* texto) {
+	char* mensajeALogear = malloc( strlen(texto) + 1);
+	strcpy(mensajeALogear, texto);
+	t_log* g_logger;
+	g_logger = log_create("./sacServer.log", "SacServer", 1, LOG_LEVEL_INFO);
+	log_info(g_logger, mensajeALogear);
+	log_destroy(g_logger);
+	free(mensajeALogear);
+}
+
+void loguearError(char* texto) {
+	char* mensajeALogear = malloc( strlen(texto) + 1);
+	strcpy(mensajeALogear, texto);
+	t_log* g_logger;
+	g_logger = log_create("./sacServer.log", "SacServer", 1, LOG_LEVEL_ERROR);
+	log_error(g_logger, mensajeALogear);
+	log_destroy(g_logger);
+	free(mensajeALogear);
 }
 
 t_bitarray * crearBitmap(){
@@ -239,12 +255,11 @@ void tomarPeticionCreate(int cliente){
 	int ok = create();
 
 	//logueo respuesta create
-	t_log *log = crear_log();
 	if (ok == 0){
-		log_info(log, " + Se hizo un create en SacServer\n");
+		loguearInfo(" + Se hizo un create en SacServer\n");
 	}
 	if (ok == 1) {
-		log_error(log, " - NO se pudo hacer el create en SacServer\n");
+		loguearError(" - NO se pudo hacer el create en SacServer\n");
 	}
 
 }
