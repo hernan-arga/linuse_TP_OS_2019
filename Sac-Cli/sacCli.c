@@ -4,19 +4,32 @@
 #include "utils.h"
 #include <fuse.h>
 
-#define DEFAULT_FILE_CONTENT "Hello World!\n"
-
+// #define DEFAULT_FILE_CONTENT "Hello World!\n"
 /*
  * Este es el nombre del archivo que se va a encontrar dentro de nuestro FS
  */
-#define DEFAULT_FILE_NAME "hello"
-
+// #define DEFAULT_FILE_NAME "hello"
 /*
  * Este es el path de nuestro, relativo al punto de montaje, archivo dentro del FS
  */
-#define DEFAULT_FILE_PATH "/" DEFAULT_FILE_NAME
-
+// #define DEFAULT_FILE_PATH "/" DEFAULT_FILE_NAME
 // gcc -DFUSE_USE_VERSION=27 -D_FILE_OFFSET_BITS=64 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF "sacCli.d" -MT "sacCli.d" -o "sacCli.o" "sacCli.c"
+
+static int hello_create (const char *path, mode_t mode, struct fuse_file_info *fi){
+	char* buffer = malloc(3 * sizeof(int) + strlen(path));
+
+	int peticion = 1;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+	int tamanioPath = strlen(path);
+	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
+
+	//send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
+}
+
 
 static int hello_open(const char *path, struct fuse_file_info *fi) {
 	FILE* res;
@@ -73,35 +86,12 @@ static int hello_write(const char *path, const char *buf, size_t size, off_t off
     return res;
 }
 
-static int hello_mknod(const char *path, mode_t mode, dev_t rdev)
-{
-    int res;
-
-    res = mknod(path, mode, rdev);
-    if(res == -1)
-        return -errno;
-
-    return 0;
-}
-
-static int hello_chown(const char *path, uid_t uid, gid_t gid)
-{
-    int res;
-
-    res = lchown(path, uid, gid);
-    if(res == -1)
-        return -errno;
-
-    return 0;
-}
 
 static struct fuse_operations hello_oper = {
 		.open = hello_open,
 		.getattr = hello_getattr,
 		.read = hello_read,
 		.write = hello_write,
-		.mknod = hello_mknod,
-		.chown = hello_chown
 };
 
 
@@ -133,6 +123,8 @@ static struct fuse_opt fuse_options[] = {
 
 int main(int argc, char *argv[]){
 
+	iniciar_conexion();
+
 	struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
 
 		// Limpio la estructura que va a contener los parametros
@@ -151,6 +143,8 @@ int main(int argc, char *argv[]){
 		if( runtime_options.welcome_msg != NULL ){
 			printf("%s\n", runtime_options.welcome_msg);
 		}
+
+
 
 		// Esta es la funcion principal de FUSE, es la que se encarga
 		// de realizar el montaje, comuniscarse con el kernel, delegar todo

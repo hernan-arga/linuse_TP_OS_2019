@@ -30,14 +30,13 @@ typedef struct {
 	int puerto;
 } config;
 
-int iniciar_conexion(int, int);
+void iniciar_conexion();
 void levantarConfigFile();
 t_config* leer_config(void);
 t_log * crear_log();
 
 
 t_log* logger;
-pthread_t hiloLevantarConexion;
 
 
 

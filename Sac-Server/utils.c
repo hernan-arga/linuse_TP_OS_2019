@@ -32,7 +32,8 @@ int iniciar_conexion(int ip, int puerto){
 
 	//type of socket created
 	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = ip;
+	//address.sin_addr.s_addr = ip;
+	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(puerto);
 
 	//bind the socket to localhost port 8888
@@ -90,12 +91,13 @@ int iniciar_conexion(int ip, int puerto){
 
 			// send new connection greeting message
 			// ACA SE LE ENVIA EL PRIMER MENSAJE AL SOCKET (si no necesita nada importante, mensaje de bienvenida)
+			/*
 			if( send(new_socket, message, strlen(message), 0) != strlen(message) )
 			{
 				perror("error al enviar mensaje al cliente");
 			}
 			puts("Welcome message sent successfully");
-
+			*/
 			//add new socket to array of sockets
 			for (i = 0; i < max_clients; i++) {
 				//if position is empty
@@ -158,7 +160,7 @@ void levantarConfigFile(config* pconfig){
 }
 
 t_config* leer_config() {
-	return config_create("sacCli_config");
+	return config_create("sacServer_config");
 }
 
 
