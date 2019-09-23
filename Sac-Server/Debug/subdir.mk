@@ -4,16 +4,19 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../sac-server.c \
-../utils.c 
+../conexionServer.c \
+../create.c \
+../sac-server.c 
 
 OBJS += \
-./sac-server.o \
-./utils.o 
+./conexionServer.o \
+./create.o \
+./sac-server.o 
 
 C_DEPS += \
-./sac-server.d \
-./utils.d 
+./conexionServer.d \
+./create.d \
+./sac-server.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

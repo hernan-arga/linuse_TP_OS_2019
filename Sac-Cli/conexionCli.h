@@ -1,5 +1,5 @@
-#ifndef UTILS_H_
-#define UTILS_H_
+#ifndef CONEXIONCLI_H_
+#define CONEXIONCLI_H_
 #define EXIT_FAILURE 1
 
 #include <sys/socket.h>
@@ -24,13 +24,14 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 
+int32_t sacServer;
 
 typedef struct {
 	int ip;
 	int puerto;
 } config;
 
-void iniciar_conexion();
+void conectarseASacServer();
 void levantarConfigFile();
 t_config* leer_config(void);
 t_log * crear_log();
@@ -40,4 +41,4 @@ t_log* logger;
 
 
 
-#endif /* UTILS_H_ */
+#endif /* CONEXIONCLI_H_ */

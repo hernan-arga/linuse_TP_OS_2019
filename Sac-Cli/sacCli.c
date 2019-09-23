@@ -1,8 +1,8 @@
 #include "sacCli.h"
 
 #include <stdio.h>
-#include "utils.h"
 #include <fuse.h>
+#include "conexionCli.h"
 
 // #define DEFAULT_FILE_CONTENT "Hello World!\n"
 /*
@@ -15,7 +15,11 @@
 // #define DEFAULT_FILE_PATH "/" DEFAULT_FILE_NAME
 // gcc -DFUSE_USE_VERSION=27 -D_FILE_OFFSET_BITS=64 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF "sacCli.d" -MT "sacCli.d" -o "sacCli.o" "sacCli.c"
 
-static int hello_create (const char *path, mode_t mode, struct fuse_file_info *fi){
+
+
+static int hello_create (const char *path, mode_t mode, struct fuse_file_info *fi)
+{
+	//Serializo peticion y path
 	char* buffer = malloc(3 * sizeof(int) + strlen(path));
 
 	int peticion = 1;
@@ -27,7 +31,23 @@ static int hello_create (const char *path, mode_t mode, struct fuse_file_info *f
 	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
 	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
 
-	//send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
+	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
+
+	// Deserializo respuesta
+	int* ok;
+	deserializoRespuestaOk(ok);
+
+	//Logueo respuesta
+	t_log *log = crear_log();
+	if (*ok == 0){
+		log_info(log, " + Se hizo un create en SacServer\n");
+	}
+	if (*ok == 1) {
+		log_error(log, " - NO se pudo hacer el create en SacServer\n");
+	}
+
+
+	return 0;
 }
 
 
@@ -92,6 +112,7 @@ static struct fuse_operations hello_oper = {
 		.getattr = hello_getattr,
 		.read = hello_read,
 		.write = hello_write,
+		.create = hello_create
 };
 
 
@@ -119,53 +140,40 @@ static struct fuse_opt fuse_options[] = {
 
 #define CUSTOM_FUSE_OPT_KEY(t, p, v) { t, offsetof(struct t_runtime_options, p), v }
 
-
+//pthread_t threadConexion;
 
 int main(int argc, char *argv[]){
 
-	iniciar_conexion();
+	conectarseASacServer();
 
 	struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
 
-		// Limpio la estructura que va a contener los parametros
-		memset(&runtime_options, 0, sizeof(struct t_runtime_options));
+	// Limpio la estructura que va a contener los parametros
+	memset(&runtime_options, 0, sizeof(struct t_runtime_options));
 
-		// Esta funcion de FUSE lee los parametros recibidos y los intepreta
-		if (fuse_opt_parse(&args, &runtime_options, fuse_options, NULL) == -1){
-			/** error parsing options */
-			perror("Invalid arguments!");
-			return EXIT_FAILURE;
-		}
+	// Esta funcion de FUSE lee los parametros recibidos y los intepreta
+	if (fuse_opt_parse(&args, &runtime_options, fuse_options, NULL) == -1) {
+		/** error parsing options */
+		perror("Invalid arguments!");
+		return EXIT_FAILURE;
+	}
 
-		// Si se paso el parametro --welcome-msg
-		// el campo welcome_msg deberia tener el
-		// valor pasado
-		if( runtime_options.welcome_msg != NULL ){
-			printf("%s\n", runtime_options.welcome_msg);
-		}
+	// Si se paso el parametro --welcome-msg
+	// el campo welcome_msg deberia tener el
+	// valor pasado
+	if (runtime_options.welcome_msg != NULL) {
+		printf("%s\n", runtime_options.welcome_msg);
+	}
 
+	// Esta es la funcion principal de FUSE, es la que se encarga
+	// de realizar el montaje, comuniscarse con el kernel, delegar todo
+	// en varios threads
+	return fuse_main(args.argc, args.argv, &hello_oper, NULL);
 
-
-		// Esta es la funcion principal de FUSE, es la que se encarga
-		// de realizar el montaje, comuniscarse con el kernel, delegar todo
-		// en varios threads
-		return fuse_main(args.argc, args.argv, &hello_oper, NULL);
-
-
-
-	/*
 	// Levanta archivo de configuracion
-	t_log *log = crear_log();
 	config* pconfig = malloc(2 * sizeof(int));
 	levantarConfigFile(pconfig);
 
-	// Levanta conexion por socket
-	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
-	log_info(log, "FUSE levantado correctamente\n");
-
-	pthread_join(hiloLevantarConexion, NULL);
-
 	return 0;
-	*/
 }
 

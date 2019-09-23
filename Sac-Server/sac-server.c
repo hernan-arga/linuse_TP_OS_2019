@@ -12,8 +12,8 @@ int main(){
 	log_info(log, "SAC SERVER levantado correctamente\n");
 
 	// t_log * log = crear_log();
-	t_bitarray *bitArray = crearBitmap();
-	borrarBitmap(bitArray);
+	//t_bitarray *bitArray = crearBitmap();
+	//borrarBitmap(bitArray);
 
 	return 0;
 }

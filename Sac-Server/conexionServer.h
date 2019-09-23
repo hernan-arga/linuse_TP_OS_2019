@@ -1,5 +1,5 @@
-#ifndef UTILS_H_
-#define UTILS_H_
+#ifndef CONEXIONSERVER_H_
+#define CONEXIONSERVER_H_
 #define EXIT_FAILURE 1
 
 #include <sys/socket.h>
@@ -76,4 +76,4 @@ pthread_t hiloLevantarConexion;
 
 
 
-#endif /* UTILS_H_ */
+#endif /* CONEXIONSERVER_H_ */

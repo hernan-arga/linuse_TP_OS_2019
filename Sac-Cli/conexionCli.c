@@ -1,21 +1,22 @@
-#include "utils.h"
+#include "conexionCli.h"
 
 
 struct sockaddr_in serverAddress;
 struct sockaddr_in serverAddresssacServer;
-int32_t sacServer;
 
-void iniciar_conexion(){
+void conectarseASacServer(){
 	sacServer = socket(AF_INET, SOCK_STREAM, 0);
 	serverAddresssacServer.sin_family = AF_INET;
 	serverAddresssacServer.sin_port = htons(8003);
 	serverAddress.sin_addr.s_addr = INADDR_ANY;
 
-	//connect(sacServer, (struct sockaddr *) &serverAddresssacServer, sizeof(serverAddresssacServer));
+	int conectado = connect(sacServer, (struct sockaddr *) &serverAddresssacServer, sizeof(serverAddresssacServer));
 
-	if(connect(sacServer, (struct sockaddr *) &serverAddresssacServer, sizeof(serverAddresssacServer)) == -1){
+	if( conectado == -1){
 		exit(-1);
 	}
+
+	//close(sacServer);
 }
 
 void levantarConfigFile(config* pconfig){
@@ -35,3 +36,9 @@ t_log * crear_log() {
 	return log_create("fuse.log", "fuse", 1, LOG_LEVEL_DEBUG);
 }
 
+void deserializoRespuestaOk(ok){
+	int* tamanioRespuesta = malloc(sizeof(int));
+	read(sacServer, tamanioRespuesta, sizeof(int));
+	ok = malloc(*tamanioRespuesta);
+	read(sacServer, ok, *tamanioRespuesta);
+}

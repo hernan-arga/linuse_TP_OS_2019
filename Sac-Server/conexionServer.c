@@ -1,16 +1,18 @@
-#include "utils.h"
+#include "conexionServer.h"
+void tomarPeticionCreate(int);
+int create();
 
 int iniciar_conexion(int ip, int puerto){
 	int opt = 1;
-	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30, activity, i, sd, valread;
-	int max_sd;
+	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30, activity, i, cliente, valread;
+	int max_cliente;
 	struct sockaddr_in address;
 
 	//set of socket descriptors
 	fd_set readfds;
 
 	//a message
-	char *message = "Este es el mensaje de FUSE \r\n";
+	//char *message = "Este es el mensaje de FUSE \r\n";
 
 	//initialise all client_socket[] to 0 so not checked
 	for (i = 0; i < max_clients; i++) {
@@ -55,24 +57,24 @@ int iniciar_conexion(int ip, int puerto){
 
 		//add master socket to set
 		FD_SET(master_socket, &readfds);
-		max_sd = master_socket;
+		max_cliente = master_socket;
 
 		//add child sockets to set
 		for (i = 0; i < max_clients; i++) {
 			//socket descriptor
-			sd = client_socket[i];
+			cliente = client_socket[i];
 
 			//if valid socket descriptor then add to read list
-			if (sd > 0)
-				FD_SET(sd, &readfds);
+			if (cliente > 0)
+				FD_SET(cliente, &readfds);
 
 			//highest file descriptor number, need it for the select function
-			if (sd > max_sd)
-				max_sd = sd;
+			if (cliente > max_cliente)
+				max_cliente = cliente;
 		}
 
 		//wait for an activity on one of the sockets, timeout is NULL, so wait indefinitely
-		activity = select(max_sd + 1, &readfds, NULL, NULL, NULL);
+		activity = select(max_cliente + 1, &readfds, NULL, NULL, NULL);
 
 		if ((activity < 0) && (errno != EINTR)) {
 			printf("Error en conexion por select");
@@ -111,17 +113,17 @@ int iniciar_conexion(int ip, int puerto){
 
 		//else its some IO operation on some other socket
 		for (i = 0; i < max_clients; i++) {
-			sd = client_socket[i];
+			cliente = client_socket[i];
 
-			if (FD_ISSET(sd, &readfds)) {
+			if (FD_ISSET(cliente, &readfds)) {
 
 				// Verifica por tamaño de la operacion, que no se haya desconectado el socket
 				int *tamanioOperacion = malloc(sizeof(int));
-				if ((valread = read(sd, tamanioOperacion, sizeof(int))) == 0)
+				if ((valread = read(cliente, tamanioOperacion, sizeof(int))) == 0)
 				{
-					getpeername(sd, (struct sockaddr *) &address, (socklen_t *) &addrlen);
+					getpeername(cliente, (struct sockaddr *) &address, (socklen_t *) &addrlen);
 					printf("Host disconected, ip: %s, port: %d\n", inet_ntoa(address.sin_addr), ntohs(address.sin_port));
-					close(sd);
+					close(cliente);
 					client_socket[i] = 0;
 				}
 				else
@@ -129,12 +131,12 @@ int iniciar_conexion(int ip, int puerto){
 					// lee el siguiente dato que le pasa el cliente,
 					// con estos datos, hace la operacion correspondiente
 					int *operacion = malloc(4);
-					read(sd, operacion, sizeof(int));
+					read(cliente, operacion, sizeof(int));
 
 					switch (*operacion) {
 					case 1:
-						// Operacion
-
+						// Operacion CREATE
+						tomarPeticionCreate(cliente);
 						break;
 					case 2:
 						// Operacion
@@ -219,4 +221,34 @@ void borrarBitmap(t_bitarray* bitArray){
 
 	bitarray_destroy(bitArray);
 	printf("Se ha borrado el Bitmap\n");
+}
+
+
+
+
+//////////////// LO DE ACA EN OTRO ARCHIVO
+
+void tomarPeticionCreate(int cliente){
+
+	//Deserializo path
+	int *tamanioPath = malloc(sizeof(int));
+	read(cliente, tamanioPath, sizeof(int));
+	char *path = malloc(*tamanioPath);
+	read(cliente, path, *tamanioPath);
+
+	int ok = create();
+
+	//logueo respuesta create
+	t_log *log = crear_log();
+	if (ok == 0){
+		log_info(log, " + Se hizo un create en SacServer\n");
+	}
+	if (ok == 1) {
+		log_error(log, " - NO se pudo hacer el create en SacServer\n");
+	}
+
+}
+
+int create(){
+	return 0;
 }
