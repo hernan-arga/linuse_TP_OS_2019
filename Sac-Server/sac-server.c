@@ -1,5 +1,5 @@
+#include "sac-server.h"
 #include <stdio.h>
-#include "utils.h"
 
 int main(){
 	// Levanta archivo de configuracion
@@ -11,5 +11,9 @@ int main(){
 	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
 	log_info(log, "SAC SERVER levantado correctamente\n");
 
-	pthread_join(hiloLevantarConexion, NULL);
+	// t_log * log = crear_log();
+	t_bitarray *bitArray = crearBitmap();
+	borrarBitmap(bitArray);
+
+	return 0;
 }
