@@ -108,13 +108,18 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 
 	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
 
-	//Deserializo el texto del archivo (directorios??) que te manda SacCli y lo guardo en buf
+	//Deserializo los directorios concatenados que te manda SacCli
 	int *tamanioTexto = malloc(sizeof(int));
 	read(sacServer, tamanioTexto, sizeof(int));
 	char *texto = malloc(*tamanioTexto);
 	read(sacServer, texto, *tamanioTexto);
 
-	memcpy(buf, texto, strlen(texto));
+	//Hago un filler de cada uno de esos nombres, serparandolos por ;
+	char** arrayNombres = string_split(texto, ";");
+	int i = 0;
+	while(arrayNombres[i] != NULL){
+		filler(buf, arrayNombres[i], NULL, 0);
+	}
 
 	return 0;
 }
