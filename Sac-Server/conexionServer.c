@@ -145,6 +145,10 @@ int iniciar_conexion(int ip, int puerto){
 						// Operacion READ
 						tomarPeticionRead(cliente);
 						break;
+					case 4:
+						// Operacion READDIR
+						tomarPeticionReadDir(cliente);
+						break;
 					default:
 						;
 					}
@@ -167,7 +171,6 @@ void levantarConfigFile(config* pconfig){
 t_config* leer_config() {
 	return config_create("sacServer_config");
 }
-
 
 void loguearInfo(char* texto) {
 	char* mensajeALogear = malloc( strlen(texto) + 1);
@@ -319,5 +322,17 @@ void tomarPeticionRead(int cliente){
 	memcpy(buffer + sizeof(int), texto, strlen(texto));
 
 	send(cliente, buffer, sizeof(int) + strlen(texto), 0);
+
+}
+
+void tomarPeticionReadDir(int cliente){
+
+	//Deserializo path
+	int *tamanioPath = malloc(sizeof(int));
+	read(cliente, tamanioPath, sizeof(int));
+	char *path = malloc(*tamanioPath);
+	read(cliente, path, *tamanioPath);
+
+	o_readDir(path, cliente);
 
 }
