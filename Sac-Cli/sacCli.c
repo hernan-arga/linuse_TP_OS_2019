@@ -2,9 +2,10 @@
 
 #include <stdio.h>
 #include <fuse.h>
+#include <string.h>
 #include "conexionCli.h"
 
-// #define DEFAULT_FILE_CONTENT "Hello World!\n"
+ #define DEFAULT_FILE_CONTENT "Hello World!\n"
 /*
  * Este es el nombre del archivo que se va a encontrar dentro de nuestro FS
  */
@@ -12,7 +13,8 @@
 /*
  * Este es el path de nuestro, relativo al punto de montaje, archivo dentro del FS
  */
-// #define DEFAULT_FILE_PATH "/" DEFAULT_FILE_NAME
+ #define DEFAULT_FILE_PATH "/"
+//DEFAULT_FILE_NAME
 // gcc -DFUSE_USE_VERSION=27 -D_FILE_OFFSET_BITS=64 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF "sacCli.d" -MT "sacCli.d" -o "sacCli.o" "sacCli.c"
 
 
@@ -125,13 +127,23 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 }
 
 static int hello_getattr(const char *path, struct stat *stbuf) {
-	int res;
+	int res = 0;
 
-	res = lstat(path, stbuf);
-	if(res == -1)
-	    return -errno;
+	memset(stbuf, 0, sizeof(struct stat));
 
-	return 0;
+	//Si path es igual a "/" nos estan pidiendo los atributos del punto de montaje
+
+	if (strcmp(path, "/") == 0) {
+		stbuf->st_mode = S_IFDIR | 0755;
+		stbuf->st_nlink = 2;
+	} else if (strcmp(path, DEFAULT_FILE_PATH) == 0) {
+		stbuf->st_mode = S_IFREG | 0444;
+		stbuf->st_nlink = 1;
+		stbuf->st_size = strlen(DEFAULT_FILE_CONTENT);
+	} else {
+		res = -ENOENT;
+	}
+	return res;
 }
 
 
@@ -157,7 +169,8 @@ static struct fuse_operations hello_oper = {
 		.create = hello_create,
 		.open = hello_open,
 		.read = hello_read,
-		.readdir = hello_readdir
+		.readdir = hello_readdir,
+		.getattr = hello_getattr
 };
 
 
