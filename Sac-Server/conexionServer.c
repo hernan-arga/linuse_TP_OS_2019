@@ -255,10 +255,10 @@ void tomarPeticionCreate(int cliente){
 	int ok = o_create(path);
 
 	//logueo respuesta create
-	if (ok == 0){
+	if (ok == 1){
 		loguearInfo(" + Se hizo un create en SacServer\n");
 	}
-	if (ok == 1) {
+	if (ok == 0) {
 		loguearError(" - NO se pudo hacer el create en SacServer\n");
 	}
 }
@@ -275,13 +275,12 @@ void tomarPeticionOpen(int cliente){
 	int ok = o_open(path);
 
 	//logueo respuesta create
-	if (ok == 0){
+	if (ok == 1){
 		loguearInfo(" + Se hizo un open en SacServer\n");
 	}
-	if (ok == 1) {
+	if (ok == 0) {
 		loguearError(" - NO se pudo hacer el open en SacServer\n");
 	}
-
 }
 
 
