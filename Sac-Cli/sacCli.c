@@ -141,7 +141,6 @@ enum {
 };
 
 
-
 static struct fuse_opt fuse_options[] = {
 
 		// Estos son parametros por defecto que ya tiene FUSE
