@@ -29,8 +29,13 @@ t_log * crear_log();
 t_log* logger;
 pthread_t hiloLevantarConexion;
 
+char recibir_mensaje(int);
+void* recibir_buffer(int*, int);
+int esperar_cliente(int);
+int iniciar_servidor(char*, int);
+
 typedef struct {
-	int ip;
+	char * ip;
 	int puerto;
 	int metrics_timer;
 	int max_multiprog;

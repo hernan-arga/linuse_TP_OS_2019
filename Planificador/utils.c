@@ -1,5 +1,5 @@
 #include "utils.h"
-
+/*
 int iniciar_conexion(int ip, int puerto){
 	int opt = 1;
 	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30, activity, i, sd, valread;
@@ -133,11 +133,11 @@ int iniciar_conexion(int ip, int puerto){
 					switch (*operacion) {
 					case 1:
 						// Operacion
-
+						printf("operacion 1");
 						break;
 					case 2:
 						// Operacion
-
+						printf("operacion 2");
 						break;
 					default:
 						;
@@ -148,6 +148,75 @@ int iniciar_conexion(int ip, int puerto){
 			}
 		}
 	}
+}
+*/
+
+int iniciar_servidor(char * IP, int PUERTO)
+{
+	int socket_servidor;
+
+    struct addrinfo hints, *servinfo, *p;
+
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
+
+    getaddrinfo(IP, PUERTO, &hints, &servinfo);
+
+    for (p=servinfo; p != NULL; p = p->ai_next)
+    {
+        if ((socket_servidor = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
+            continue;
+
+        if (bind(socket_servidor, p->ai_addr, p->ai_addrlen) == -1) {
+            close(socket_servidor);
+            continue;
+        }
+        break;
+    }
+
+	listen(socket_servidor, SOMAXCONN);
+
+    freeaddrinfo(servinfo);
+
+    log_trace(logger, "Listo para escuchar a mi cliente");
+
+    return socket_servidor;
+}
+
+int esperar_cliente(int socket_servidor)
+{
+	struct sockaddr_in dir_cliente;
+	int tam_direccion = sizeof(struct sockaddr_in);
+
+	int socket_cliente = accept(socket_servidor, (void*) &dir_cliente, &tam_direccion);
+
+	log_info(logger, "Se conecto un cliente!");
+
+	return socket_cliente;
+}
+
+void* recibir_buffer(int* size, int socket_cliente)
+{
+	void * buffer;
+
+	recv(socket_cliente, size, sizeof(int), MSG_WAITALL);
+	buffer = malloc(*size);
+	recv(socket_cliente, buffer, *size, MSG_WAITALL);
+
+	return buffer;
+}
+
+char recibir_mensaje(int socket_cliente)
+{
+	int size;
+
+	char* buffer = recibir_buffer(&size, socket_cliente);
+	log_info(logger, "Me llego el mensaje %s", buffer);
+	char result=*buffer;
+	free(buffer);
+	return result;
 }
 
 void levantarConfigFile(config* pconfig){
