@@ -20,7 +20,7 @@ int main(){
 	pthread_join(hiloLevantarConexion, NULL);
 
 	/////////////////////////
-	int tam_mem = pconfig->tamanio_memoria;
+	tam_mem = pconfig->tamanio_memoria;
 
 	reservarMemoriaPrincipal(pconfig->tamanio_memoria);
 	crearTablaSegmentos();
@@ -88,8 +88,6 @@ void *musemalloc(uint32_t tamanio){
 //Funcion recorre buscando heapmetadata libre mayor o igual a cierto size
 
 void *buscarEspacioLibre(uint32_t tamanio){
-	int tam_mem = 0; //Lo hago para que no rompa, definir valor mas arriba
-
 	void *pos;
 	pos = &memoriaPrincipal;
 	void *end;

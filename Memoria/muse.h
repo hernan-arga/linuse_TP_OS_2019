@@ -5,6 +5,7 @@
 
 void* memoriaPrincipal;
 t_list* tablaSegmentos;
+int tam_mem;
 
 struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
 	uint32_t size;
