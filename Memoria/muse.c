@@ -20,6 +20,8 @@ int main(){
 	pthread_join(hiloLevantarConexion, NULL);
 
 	/////////////////////////
+	int tam_mem = pconfig->tamanio_memoria;
+
 	reservarMemoriaPrincipal(pconfig->tamanio_memoria);
 	crearTablaSegmentos();
 
@@ -79,6 +81,36 @@ void *crearSegmentoInicial(uint32_t tamanio){
 
 //}
 
+void *musemalloc(uint32_t tamanio){
+	return NULL;
+}
 
+//Funcion recorre buscando heapmetadata libre mayor o igual a cierto size
+
+void *buscarEspacioLibre(uint32_t tamanio){
+	int tam_mem = 0; //Lo hago para que no rompa, definir valor mas arriba
+
+	void *pos;
+	pos = &memoriaPrincipal;
+	void *end;
+	end = &memoriaPrincipal + tam_mem;
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+	uint32_t tamanioData;
+
+	while(pos != end){
+		read(&memoriaPrincipal,metadata,sizeof(struct HeapMetadata));
+
+		if((*metadata).isFree == true && (*metadata).size <= tamanio){
+			//el espacio me sirve y lo asigno
+			//cambio valor isFree y retorno posicion
+		}
+		else{
+			tamanioData = (*metadata).size;
+			pos = &memoriaPrincipal + sizeof(metadata) + tamanioData; //Me muevo al proximo header
+		}
+	}
+
+	return NULL;
+}
 
 
