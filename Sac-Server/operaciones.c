@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 int o_create(char* path){
+
 	FILE *fp1;
 	fp1= fopen (path, "r");
 
@@ -11,6 +12,7 @@ int o_create(char* path){
 }
 
 int o_open(char* path){
+
 	int respuesta;
 	if( access( path, F_OK ) != -1 ) {
 	    // file exists
@@ -36,6 +38,34 @@ void o_read(char* path, int size, int offset, char* texto){
 	}
 
 	fclose(f);
+}
+
+void o_readDir(char* path, int cliente){
+
+   struct dirent *dp;
+   DIR *dir = opendir(path);
+
+   if (!dir){
+	  return;
+   }
+
+   // concateno todos los directorios
+   char* directoriosPegoteados = string_new();
+   while ((dp = readdir(dir)) != NULL) {
+	   string_append(&directoriosPegoteados, dp->d_name);
+	   string_append(directoriosPegoteados, ";");
+   }
+
+   // serializo directoriosPegoteados y se los envio a saccli
+   char* buffer = malloc(sizeof(int) + strlen(directoriosPegoteados));
+
+   int tamanioDirectoriosPegoteados = strlen(directoriosPegoteados);
+   memcpy(buffer, &tamanioDirectoriosPegoteados, sizeof(int));
+   memcpy(buffer + sizeof(int), directoriosPegoteados, strlen(directoriosPegoteados));
+
+   send(cliente, buffer, sizeof(int) + strlen(directoriosPegoteados), 0);
+
+   closedir(dir);
 }
 
 
