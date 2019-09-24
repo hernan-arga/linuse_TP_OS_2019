@@ -3,15 +3,21 @@
 #include <stdint.h>
 #include<commons/collections/list.h>
 
-char* memoriaPrincipal;
+void* memoriaPrincipal;
 t_list* tablaSegmentos;
+int tam_mem;
 
-typedef struct {
-	bool uso;
+struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
 	uint32_t size;
-	t_list* paginas;
-	//char* data; Ver - segun el mail esta en segmento, yo creo que esta en cada pagina.
-} segmento;
+	bool isFree;
+};
+
+struct Segmento{
+	//t_list* paginas;
+	char* data;
+
+	//char* data; Ver si esta en segmento o en las paginas (...)
+};
 
 typedef struct {
 	int numeroPagina;
@@ -21,7 +27,6 @@ typedef struct {
 	int numeroFrame;
 	char* data;
 } pagina;
-
 
 
 ///////////////Funciones//////////////////
@@ -37,6 +42,8 @@ int atenderMuseCopy(int sd);
 uint32_t atenderMuseMap(int sd);
 int atenderMuseSync(int sd);
 int atenderMuseUnmap(int sd);
+void *crearSegmentoInicial(uint32_t tamanio);
+void crearTablaPaginas(struct Segmento segmento);
 
 
 #endif /* MUSE_H_ */
