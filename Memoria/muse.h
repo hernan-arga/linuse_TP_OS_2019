@@ -6,13 +6,12 @@
 void* memoriaPrincipal;
 t_list* tablaSegmentos;
 
-struct HeapMetadata {
+struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
 	uint32_t size;
 	bool isFree;
 };
 
 struct Segmento{
-	struct HeapMetadata metadata;
 	//t_list* paginas;
 	char* data;
 
@@ -27,7 +26,6 @@ typedef struct {
 	int numeroFrame;
 	char* data;
 } pagina;
-
 
 
 ///////////////Funciones//////////////////

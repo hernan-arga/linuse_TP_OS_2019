@@ -45,14 +45,13 @@ void *crearSegmentoInicial(uint32_t tamanio){
 	metadata.size = tamanio;
 
 	struct Segmento* segmentoInicial;
-	(*segmentoInicial).metadata = metadata;
 	//crearTablaPaginas(segmentoInicial); -En un futuro creo se haria asi
 	//por ahora dejo un char* en el segmento para ocuparme de otras cosas
 
 	(*segmentoInicial).data = malloc(tamanio);
 	(*segmentoInicial).data = NULL;
 
-	memoriaPrincipal = segmentoInicial;
+	*(&memoriaPrincipal + sizeof(metadata)) = segmentoInicial;
 
 	return &memoriaPrincipal + sizeof(metadata); //Chequear si no hay manera menos horrible de hacerlo
 }
