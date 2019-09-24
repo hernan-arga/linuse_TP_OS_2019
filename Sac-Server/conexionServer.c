@@ -1,14 +1,5 @@
 #include "conexionServer.h"
-
-void tomarPeticionCreate(int);
-int o_create(char*);
-
-void tomarPeticionOpen(int);
-int o_open(char*);
-
-void tomarPeticionRead(int);
-char* o_read(char*);
-
+#include "operaciones.h"
 
 int iniciar_conexion(int ip, int puerto){
 	int opt = 1;
@@ -147,8 +138,12 @@ int iniciar_conexion(int ip, int puerto){
 						tomarPeticionCreate(cliente);
 						break;
 					case 2:
-						// Operacion
+						// Operacion OPEN
 						tomarPeticionOpen(cliente);
+						break;
+					case 3:
+						// Operacion READ
+						tomarPeticionRead(cliente);
 						break;
 					default:
 						;
@@ -249,9 +244,6 @@ void borrarBitmap(t_bitarray* bitArray){
 
 
 
-
-//////////////// LO DE ACA EN OTRO ARCHIVO
-
 void tomarPeticionCreate(int cliente){
 
 	//Deserializo path
@@ -269,15 +261,9 @@ void tomarPeticionCreate(int cliente){
 	if (ok == 1) {
 		loguearError(" - NO se pudo hacer el create en SacServer\n");
 	}
-
-}
-
-int o_create(char* path){
-	return 0;
 }
 
 
-////////////////////  OPEN EN OTRO ARCHIVO
 void tomarPeticionOpen(int cliente){
 
 	//Deserializo path
@@ -298,31 +284,40 @@ void tomarPeticionOpen(int cliente){
 
 }
 
-int o_open(char* path){
-	return 0;
-}
-
-///////////////////////////// READ OTRO ARCHIVO
 
 void tomarPeticionRead(int cliente){
 
-	//Deserializo path
+	//Deserializo path, size y offset
 	int *tamanioPath = malloc(sizeof(int));
 	read(cliente, tamanioPath, sizeof(int));
 	char *path = malloc(*tamanioPath);
 	read(cliente, path, *tamanioPath);
 
-	char* texto = o_read(path);
+	int* tamanioSize = malloc(sizeof(int));
+	read(cliente, tamanioSize, sizeof(int));
+	int* size = malloc(*tamanioSize);
+	read(cliente, size, *tamanioSize);
 
-	//logueo respuesta open
+	int* tamanioOffset = malloc(sizeof(int));
+	read(cliente, tamanioOffset, sizeof(int));
+	int* offset = malloc(*tamanioOffset);
+	read(cliente, offset, *tamanioOffset);
 
+	char* texto = o_read(path, *size, *offset);
+
+	//logueo respuesta read
 	char* textoLog = string_new();
 	string_append(&textoLog, " + Se realizo un read : ");
 	string_append(&textoLog, texto);
 	loguearInfo(textoLog);
 
-}
+	//le envio el read a sacCli
+	char* buffer = malloc(sizeof(int) + strlen(texto));
 
-char* o_read(char* path){
-	return "0";
+	int tamanioLeido = strlen(texto);
+	memcpy(buffer, &tamanioLeido, sizeof(int));
+	memcpy(buffer + sizeof(int), texto, strlen(texto));
+
+	send(cliente, buffer, sizeof(int) + strlen(texto), 0);
+
 }

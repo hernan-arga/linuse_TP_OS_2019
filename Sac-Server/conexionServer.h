@@ -2,6 +2,7 @@
 #define CONEXIONSERVER_H_
 #define EXIT_FAILURE 1
 
+#include "operaciones.h"
 #include <sys/socket.h>
 #include <stdio.h>
 #include <string.h>
@@ -71,6 +72,10 @@ void loguearInfo(char *);
 void loguearError();
 t_bitarray * crearBitmap();
 void borrarBitmap(t_bitarray*);
+void tomarPeticionCreate(int);
+void tomarPeticionOpen(int);
+void tomarPeticionRead(int);
+
 
 t_log* logger;
 pthread_t hiloLevantarConexion;

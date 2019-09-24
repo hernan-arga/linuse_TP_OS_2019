@@ -58,7 +58,7 @@ static int hello_open(const char *path, struct fuse_file_info *fi) {
 
 static int hello_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
 	//Serializo peticion, path, size y offset
-	char* buffer = malloc(3 * sizeof(int) + strlen(path));
+	char* buffer = malloc(7 * sizeof(int) + strlen(path));
 
 	int peticion = 3;
 	int tamanioPeticion = sizeof(int);
@@ -69,7 +69,15 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
 	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
 
+	int sizeInt = (int) size;
+	int tamanioSize = sizeof(int);
+	memcpy(buffer + 3 * sizeof(int) + strlen(path), &tamanioSize, sizeof(int));
+	memcpy(buffer + 4 * sizeof(int) + strlen(path), &sizeInt, sizeof(int));
 
+	int offsetInt = (int) offset;
+	int tamanioOffset = sizeof(int);
+	memcpy(buffer + 5 * sizeof(int) + strlen(path), &tamanioOffset, sizeof(int));
+	memcpy(buffer + 6 * sizeof(int) + strlen(path), &offsetInt, sizeof(int));
 
 	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
 
