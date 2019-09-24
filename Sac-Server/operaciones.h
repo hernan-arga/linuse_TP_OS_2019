@@ -3,6 +3,6 @@
 
 int o_create(char*);
 int o_open(char*);
-char* o_read(char*, int, int);
+void o_read(char*, int, int, char*);
 
 #endif /* OPERACIONES_H_ */

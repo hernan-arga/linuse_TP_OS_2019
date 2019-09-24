@@ -302,7 +302,8 @@ void tomarPeticionRead(int cliente){
 	int* offset = malloc(*tamanioOffset);
 	read(cliente, offset, *tamanioOffset);
 
-	char* texto = o_read(path, *size, *offset);
+	char* texto = malloc((int)size);
+	o_read(path, *size, *offset, texto);
 
 	//logueo respuesta read
 	char* textoLog = string_new();

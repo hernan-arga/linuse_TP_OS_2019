@@ -22,6 +22,20 @@ int o_open(char* path){
 	return respuesta;
 }
 
-char* o_read(char* path, int size, int offset){
-	return "0";
+void o_read(char* path, int size, int offset, char* texto){
+
+	FILE *f;
+
+	//open the file for write operation
+	if( (f=fopen(path,"w")) == NULL){
+		//if the file does not exist print the string
+		printf("No se pudo abrir el archivo");
+	}
+	if( fread(texto, size, offset, path) == 0){
+		printf("No leyo una verga");
+	}
+
+	fclose(f);
 }
+
+
