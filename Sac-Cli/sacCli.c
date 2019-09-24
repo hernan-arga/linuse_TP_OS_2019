@@ -92,14 +92,41 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 	return strlen(texto);
 }
 
+static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){
+
+	//Serializo peticion y path
+	char* buffer = malloc(3 * sizeof(int) + strlen(path));
+
+	int peticion = 4;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+	int tamanioPath = strlen(path);
+	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
+
+	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
+
+	//Deserializo el texto del archivo (directorios??) que te manda SacCli y lo guardo en buf
+	int *tamanioTexto = malloc(sizeof(int));
+	read(sacServer, tamanioTexto, sizeof(int));
+	char *texto = malloc(*tamanioTexto);
+	read(sacServer, texto, *tamanioTexto);
+
+	memcpy(buf, texto, strlen(texto));
+
+	return 0;
+}
+
 static int hello_getattr(const char *path, struct stat *stbuf) {
-	   int res;
+	int res;
 
-	    res = lstat(path, stbuf);
-	    if(res == -1)
-	        return -errno;
+	res = lstat(path, stbuf);
+	if(res == -1)
+	    return -errno;
 
-	    return 0;
+	return 0;
 }
 
 
@@ -125,8 +152,7 @@ static struct fuse_operations hello_oper = {
 		.create = hello_create,
 		.open = hello_open,
 		.read = hello_read,
-		.write = hello_write,
-		.getattr = hello_getattr
+		.readdir = hello_readdir
 };
 
 

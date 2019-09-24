@@ -75,6 +75,7 @@ void borrarBitmap(t_bitarray*);
 void tomarPeticionCreate(int);
 void tomarPeticionOpen(int);
 void tomarPeticionRead(int);
+void tomarPeticionReadDir(int);
 
 
 t_log* logger;
