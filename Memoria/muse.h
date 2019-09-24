@@ -19,14 +19,14 @@ struct Segmento{
 	//char* data; Ver si esta en segmento o en las paginas (...)
 };
 
-typedef struct {
+struct Pagina{
 	int numeroPagina;
 	bool modificado;
 	bool uso;
 	bool presencia;
 	int numeroFrame;
 	char* data;
-} pagina;
+};
 
 
 ///////////////Funciones//////////////////
@@ -44,6 +44,6 @@ int atenderMuseSync(int sd);
 int atenderMuseUnmap(int sd);
 void *crearSegmentoInicial(uint32_t tamanio);
 void crearTablaPaginas(struct Segmento segmento);
-
+void *buscarEspacioLibre(uint32_t tamanio);
 
 #endif /* MUSE_H_ */
