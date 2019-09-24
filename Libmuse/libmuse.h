@@ -1,8 +1,9 @@
 #ifndef LIBMUSE_H_
 #define LIBMUSE_H_
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
+#include <netinet/in.h>
 
 struct sockaddr_in serverAddress;
 struct sockaddr_in serverAddressMUSE;
