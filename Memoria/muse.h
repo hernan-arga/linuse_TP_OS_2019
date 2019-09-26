@@ -45,5 +45,6 @@ int atenderMuseUnmap(int sd);
 void *crearSegmentoInicial(uint32_t tamanio);
 void crearTablaPaginas(struct Segmento segmento);
 void *buscarEspacioLibre(uint32_t tamanio);
+void unificarHeaders(struct HeapMetadata *header1, struct HeapMetadata *header2);
 
 #endif /* MUSE_H_ */

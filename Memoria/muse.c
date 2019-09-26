@@ -111,4 +111,21 @@ void *buscarEspacioLibre(uint32_t tamanio){
 	return NULL;
 }
 
+//Funcion para unificar dos headers - se la llama despues de un free (?)
+//Como podria haber mas de dos headers contiguos libres, se la llamaria dentro de un while
+//Buscando headers hasta que ya no queden libres contiguos
+
+void unificarHeaders(struct HeapMetadata *header1, struct HeapMetadata *header2){ //
+	uint32_t size1 = header1->size;
+	uint32_t size2 = header2->size;
+
+	header1->size = size1 + size2;
+
+	free(header2); //Creo que no es necesario hacer free de loque corresponde a la data
+	//ya que se pisaria despues y listo - ver
+}
+
+
+
+
 
