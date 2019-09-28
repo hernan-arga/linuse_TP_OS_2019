@@ -34,7 +34,8 @@ int iniciar_conexion(int ip, int puerto){
 
 	//type of socket created
 	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = ip;
+	//address.sin_addr.s_addr = ip;
+	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(puerto);
 
 	//bind the socket to localhost port 8888
