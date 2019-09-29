@@ -6,6 +6,7 @@
 void* memoriaPrincipal;
 t_list* tablaSegmentos;
 int tam_mem;
+int tam_pagina;
 
 struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
 	uint32_t size;
@@ -13,19 +14,16 @@ struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
 };
 
 struct Segmento{
-	//t_list* paginas;
-	char* data;
-
-	//char* data; Ver si esta en segmento o en las paginas (...)
+	int id;
+	t_list* paginas;
 };
 
 struct Pagina{
-	int numeroPagina;
-	bool modificado;
-	bool uso;
-	bool presencia;
-	int numeroFrame;
-	char* data;
+	//bool modificado;
+	//bool uso;
+	//bool presencia;
+	//int numeroFrame;
+	int data;
 };
 
 
@@ -45,6 +43,8 @@ int atenderMuseUnmap(int sd);
 void *crearSegmentoInicial(uint32_t tamanio);
 void crearTablaPaginas(struct Segmento segmento);
 void *buscarEspacioLibre(uint32_t tamanio);
-void unificarHeaders(struct HeapMetadata *header1, struct HeapMetadata *header2);
+void unificarHeaders(int id);
+void *buscarPosicionSegmento(int idSegmento);
+int calcularTamanioSegmento(int id);
 
 #endif /* MUSE_H_ */
