@@ -162,10 +162,30 @@ void *buscarPosicionSegmento(int idSegmento){
 	//recorre los segmentos anteriores calculando su size con calcularSizeSegmento(unSegmento)
 	//size de su t_list de paginas por su cantidad de paginas y la posicion del segmento
 	//es el inicio de la memoria + los tamaños de sus segmentos anteriores
+	void *pos;
+	pos = &memoriaPrincipal;
+	int cantSegmentos = list_size(tablaSegmentos);
+
+	for(int i = 0; i < cantSegmentos; i++){ //COMENTADA PORQUE TENGO QUE LIGAR LA TLIST CON SEGMENTO
+//		if (tablaSegmentos[i].pid = id){
+//			return pos;
+//		} else{
+//			pos = pos + sizeof(int) /*segmento.id*/ + (list_size(tablaSegmentos[i].paginas) * tam_pagina) /*espacio ocupado por paginas segmentos*/;
+//		}
+	}
 
 	return NULL;
 }
 
 int calcularTamanioSegmento(int idSegmento){
-	return 0;
+	int cantidadSegmentos = list_size(tablaSegmentos);
+
+	for(int i = 0; i < cantidadSegmentos; i++){
+//		if(tablaSegmentos[i].pid = id){
+//			return sizeof(int) + (list_size(tablaSegmentos[i].paginas) * tam_pagina);
+//		}
+//		else{
+//			return -1; //Error
+//		}
+	}
 }
