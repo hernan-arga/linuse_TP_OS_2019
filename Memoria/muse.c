@@ -170,7 +170,7 @@ void *buscarPosicionSegmento(int idSegmento){
 //		if (tablaSegmentos[i].pid = id){
 //			return pos;
 //		} else{
-//			pos = pos + sizeof(int) /*segmento.id*/ + (list_size(tablaSegmentos[i].paginas) * tam_pagina) /*espacio ocupado por paginas segmentos*/;
+//			pos = pos + sizeof(int) /*segmento.id*/ + espacioPaginas(idSegmento);
 //		}
 	}
 
@@ -181,11 +181,26 @@ int calcularTamanioSegmento(int idSegmento){
 	int cantidadSegmentos = list_size(tablaSegmentos);
 
 	for(int i = 0; i < cantidadSegmentos; i++){
-//		if(tablaSegmentos[i].pid = id){
-//			return sizeof(int) + (list_size(tablaSegmentos[i].paginas) * tam_pagina);
+//		if(tablaSegmentos[i].pid = idSegmento){
+//			return sizeof(int) + espacioPaginas(idSegmento); //Falta chequeo que el espacio de paginas no sea -1
 //		}
 //		else{
 //			return -1; //Error
 //		}
 	}
 }
+
+int espacioPaginas(int idSegmento){
+	int cantidadSegmentos = list_size(tablaSegmentos);
+
+	for(int i = 0; i < cantidadSegmentos; i++){
+//		if(tablaSegmentos[i].pid = idSegmento){
+//			return (list_size(tablaSegmentos[i].paginas) * tam_pagina);
+//		} else{
+//			return -1; //Error
+//		}
+	}
+
+}
+
+

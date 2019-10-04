@@ -46,5 +46,6 @@ void *buscarEspacioLibre(uint32_t tamanio);
 void unificarHeaders(int id);
 void *buscarPosicionSegmento(int idSegmento);
 int calcularTamanioSegmento(int id);
+int espacioPaginas(int idSegmento);
 
 #endif /* MUSE_H_ */
