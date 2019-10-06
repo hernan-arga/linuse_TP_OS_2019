@@ -25,8 +25,12 @@ int o_create(char* pathC){
 
 int o_open(char* path){
 
+	char* pathAppend = string_new();
+	string_append(&pathAppend, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
+	string_append(&pathAppend, path);
+
 	int respuesta;
-	if( access( path, F_OK ) != -1 ) {
+	if( access( pathAppend, F_OK ) != -1 ) {
 	    // file exists
 		respuesta = 1;
 	} else {
@@ -41,11 +45,12 @@ void o_read(char* path, int size, int offset, char* texto){
 	FILE *f;
 
 	//open the file for write operation
-	if( (f=fopen(path,"w")) == NULL){
+	if( (f=fopen(path,"rb")) == NULL){
 		//if the file does not exist print the string
 		printf("No se pudo abrir el archivo");
 	}
-	if( fread(texto, size, offset, path) == 0){
+	fseek(f, offset, SEEK_SET);
+	if( fread(texto, size, 1, f) == 0){
 		printf("No leyo una verga");
 	}
 
@@ -93,7 +98,7 @@ void o_getAttr(char* nombre, int cliente){
 		struct stat file_info;
 
 		//Serializo ok = 1, file_info (mode y nlink)
-		void* buffer = malloc( 5 * sizeof(int) + sizeof(file_info.st_mode));
+		void* buffer = malloc( 7 * sizeof(int) + sizeof(file_info.st_mode));
 
 		int ok = 1;
 		int tamanioOk = sizeof(int);
@@ -110,7 +115,11 @@ void o_getAttr(char* nombre, int cliente){
 		memcpy(buffer + 3 * sizeof(int) + sizeof(file_info.st_mode), &tamanioStnlink, sizeof(int));
 		memcpy(buffer + 4 * sizeof(int) + sizeof(file_info.st_mode), &file_info.st_nlink, sizeof(int));
 
-		send(cliente, buffer, 5 * sizeof(int) + sizeof(file_info.st_mode), 0);
+		int tamanioEscrito = sizeof(int);
+		memcpy(buffer + 5 * sizeof(int) + sizeof(file_info.st_size), &tamanioEscrito, sizeof(int));
+		memcpy(buffer + 6 * sizeof(int) + sizeof(file_info.st_size), &file_info.st_size, sizeof(int));
+
+		send(cliente, buffer, 7 * sizeof(int) + sizeof(file_info.st_mode), 0);
 
 	} else {
 	    // file doesn't exist

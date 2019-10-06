@@ -65,7 +65,17 @@ static int hello_open(const char *path, struct fuse_file_info *fi) {
 
 	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
 
-	return 0;
+	// Deserializo respuesta
+	int* tamanioRespuesta = malloc(sizeof(int));
+	read(sacServer, tamanioRespuesta, sizeof(int));
+	int* ok = malloc(*tamanioRespuesta);
+	read(sacServer, ok, *tamanioRespuesta);
+	if (*ok == 1) {
+		return 0;
+	}
+	else{
+		return errno;
+	}
 }
 
 static int hello_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
@@ -91,7 +101,7 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 	memcpy(buffer + 5 * sizeof(int) + strlen(path), &tamanioOffset, sizeof(int));
 	memcpy(buffer + 6 * sizeof(int) + strlen(path), &offsetInt, sizeof(int));
 
-	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
+	send(sacServer, buffer, 7 * sizeof(int) + strlen(path), 0);
 
 	//Deserializo el texto del archivo que te manda SacCli y lo guardo en buf
 	int *tamanioTexto = malloc(sizeof(int));
@@ -99,9 +109,9 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 	char *texto = malloc(*tamanioTexto);
 	read(sacServer, texto, *tamanioTexto);
 
-	memcpy(buf, texto, strlen(texto));
+	memcpy(buf + offset, texto, *tamanioTexto);
 
-	return strlen(texto);
+	return *tamanioTexto;
 }
 
 static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){
@@ -171,8 +181,14 @@ static int hello_getattr(const char *path, struct stat *stbuf) {
 		int* nlink = malloc(*tamanioNlink);
 		read(sacServer, nlink, *tamanioNlink);
 
+		int* tamanioEscrito = malloc(sizeof(int));
+		read(sacServer, tamanioEscrito, sizeof(int));
+		int* bytesEscritos = malloc(*tamanioEscrito);
+		read(sacServer, bytesEscritos, *tamanioEscrito);
+
 		memcpy(&stbuf->st_mode, mode, *tamanioMode);
 		memcpy(&stbuf->st_nlink, nlink, *tamanioNlink);
+		memcpy(&stbuf->st_size, bytesEscritos, *tamanioEscrito);
 
 		return 0;
 	}

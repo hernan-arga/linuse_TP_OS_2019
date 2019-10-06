@@ -1,2 +1,28 @@
 [INFO] 22:18:25:911 SacServer/(20236:20236):  + Se hizo un create en SacServer
 
+[INFO] 01:36:59:73 SacServer/(26325:26325):  + Se hizo un create en SacServer
+
+[INFO] 01:38:07:748 SacServer/(26325:26325):  + Se hizo un open en SacServer
+
+[INFO] 01:42:53:983 SacServer/(26629:26629):  + Se hizo un open en SacServer
+
+[ERROR] 01:56:21:954 SacServer/(27546:27546):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 02:04:44:589 SacServer/(28463:28463):  - NO se pudo hacer el open en SacServer
+
+[INFO] 02:09:16:828 SacServer/(28463:28463):  + Se realizo un read : pע״ן
+[ERROR] 02:10:11:17 SacServer/(28463:28463):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 02:11:45:504 SacServer/(28463:28463):  - NO se pudo hacer el open en SacServer
+
+[INFO] 02:20:28:779 SacServer/(29228:29228):  + Levantado Sac-Server correctamente
+[ERROR] 02:21:15:578 SacServer/(29283:29283):  - NO se pudo hacer el open en SacServer
+
+[INFO] 02:22:53:989 SacServer/(29283:29283):  + Se realizo un read : רע`נ
+[ERROR] 02:22:53:990 SacServer/(29283:29283):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 02:23:24:608 SacServer/(29283:29283):  - NO se pudo hacer el open en SacServer
+
+[INFO] 02:24:01:633 SacServer/(29283:29283):  + Se realizo un read : א
+[ERROR] 02:25:50:986 SacServer/(29283:29283):  - NO se pudo hacer el open en SacServer
+

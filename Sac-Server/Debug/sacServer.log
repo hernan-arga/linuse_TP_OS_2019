@@ -21,3 +21,131 @@
 
 [INFO] 01:19:29:774 SacServer/(25658:25658):  + Se hizo un create en SacServer
 
+[INFO] 01:29:59:368 SacServer/(26046:26046):  + Se hizo un create en SacServer
+
+[ERROR] 01:30:01:919 SacServer/(26046:26046):  - NO se pudo hacer el open en SacServer
+
+[INFO] 01:32:45:905 SacServer/(26202:26202):  + Se hizo un open en SacServer
+
+[INFO] 01:41:02:812 SacServer/(26545:26545):  + Se hizo un create en SacServer
+
+[INFO] 01:41:07:556 SacServer/(26545:26545):  + Se hizo un open en SacServer
+
+[INFO] 01:45:12:535 SacServer/(26789:26789):  + Se hizo un open en SacServer
+
+[INFO] 01:45:12:565 SacServer/(26789:26789):  + Se realizo un read : 
+[INFO] 01:45:12:571 SacServer/(26789:26789):  + Se hizo un open en SacServer
+
+[INFO] 01:45:16:878 SacServer/(26789:26789):  + Se hizo un open en SacServer
+
+[INFO] 01:45:18:621 SacServer/(26789:26789):  + Se hizo un open en SacServer
+
+[INFO] 01:45:18:622 SacServer/(26789:26789):  + Se hizo un open en SacServer
+
+[INFO] 01:45:52:536 SacServer/(26789:26789):  + Se hizo un open en SacServer
+
+[INFO] 01:45:52:536 SacServer/(26789:26789):  + Se realizo un read : 
+[INFO] 01:45:52:537 SacServer/(26789:26789):  + Se hizo un open en SacServer
+
+[INFO] 01:46:33:4 SacServer/(26789:26789):  + Se hizo un open en SacServer
+
+[INFO] 01:46:33:5 SacServer/(26789:26789):  + Se realizo un read : 
+[INFO] 01:46:33:6 SacServer/(26789:26789):  + Se hizo un open en SacServer
+
+[INFO] 01:48:04:234 SacServer/(27008:27008):  + Se hizo un open en SacServer
+
+[INFO] 01:48:04:266 SacServer/(27008:27008):  + Se realizo un read : 
+[INFO] 01:48:04:272 SacServer/(27008:27008):  + Se hizo un open en SacServer
+
+[INFO] 01:49:33:902 SacServer/(27108:27108):  + Se hizo un open en SacServer
+
+[INFO] 01:49:33:936 SacServer/(27108:27108):  + Se realizo un read : 
+[INFO] 01:49:33:942 SacServer/(27108:27108):  + Se hizo un open en SacServer
+
+[INFO] 01:49:57:873 SacServer/(27108:27108):  + Se hizo un open en SacServer
+
+[INFO] 01:49:57:874 SacServer/(27108:27108):  + Se realizo un read : 
+[INFO] 01:49:57:874 SacServer/(27108:27108):  + Se hizo un open en SacServer
+
+[INFO] 01:52:26:651 SacServer/(27355:27355):  + Se hizo un open en SacServer
+
+[INFO] 01:52:26:682 SacServer/(27355:27355):  + Se realizo un read : 
+[INFO] 01:52:26:688 SacServer/(27355:27355):  + Se hizo un open en SacServer
+
+[INFO] 01:54:06:650 SacServer/(27454:27454):  + Se hizo un open en SacServer
+
+[INFO] 01:54:06:685 SacServer/(27454:27454):  + Se realizo un read : ˆñ/È0¨‰Ü¾
+[INFO] 01:54:06:692 SacServer/(27454:27454):  + Se hizo un open en SacServer
+
+[INFO] 01:54:34:741 SacServer/(27454:27454):  + Se hizo un open en SacServer
+
+[INFO] 01:54:34:742 SacServer/(27454:27454):  + Se realizo un read : °U0ðg0
+[INFO] 01:54:34:742 SacServer/(27454:27454):  + Se hizo un open en SacServer
+
+[INFO] 01:58:58:173 SacServer/(27773:27773):  + Se hizo un open en SacServer
+
+[INFO] 01:58:58:208 SacServer/(27773:27773):  + Se realizo un read : í/Pÿ/
+[INFO] 01:58:58:212 SacServer/(27773:27773):  + Se hizo un open en SacServer
+
+[INFO] 02:00:05:894 SacServer/(27878:27878):  + Se hizo un open en SacServer
+
+[INFO] 02:00:05:930 SacServer/(27878:27878):  + Se realizo un read : Øì/ÿ/¨Ù•¾Pê/ˆê/Àê/øë/0ì/hì/ ì/
+[INFO] 02:00:05:937 SacServer/(27878:27878):  + Se hizo un open en SacServer
+
+[INFO] 02:03:57:101 SacServer/(28381:28381):  + Se hizo un open en SacServer
+
+[INFO] 02:03:57:143 SacServer/(28381:28381):  + Se realizo un read : xê/è0
+[INFO] 02:03:57:152 SacServer/(28381:28381):  + Se hizo un open en SacServer
+
+[INFO] 02:12:12:479 SacServer/(28790:28790):  + Se hizo un open en SacServer
+
+[INFO] 02:12:12:532 SacServer/(28790:28790):  + Se realizo un read : Ðì/@0
+[INFO] 02:12:12:561 SacServer/(28790:28790):  + Se hizo un open en SacServer
+
+[INFO] 02:14:09:447 SacServer/(28923:28923):  + Se hizo un open en SacServer
+
+[INFO] 02:14:09:487 SacServer/(28923:28923):  + Se realizo un read : (ï/¨0
+[INFO] 02:14:09:496 SacServer/(28923:28923):  + Se hizo un open en SacServer
+
+[INFO] 02:18:05:948 SacServer/(29090:29090):  + Se hizo un open en SacServer
+
+[INFO] 02:18:05:999 SacServer/(29090:29090):  + Se realizo un read : Ðì/@0
+[INFO] 02:18:06:14 SacServer/(29090:29090):  + Se hizo un open en SacServer
+
+[INFO] 02:27:40:764 SacServer/(29728:29728):  + Se hizo un open en SacServer
+
+[INFO] 02:27:40:805 SacServer/(29728:29728):  + Se realizo un read : Xè/È
+0
+[INFO] 02:27:40:813 SacServer/(29728:29728):  + Se hizo un open en SacServer
+
+[INFO] 02:32:21:665 SacServer/(29964:29964):  + Se hizo un open en SacServer
+
+[INFO] 02:32:21:711 SacServer/(29964:29964):  + Se realizo un read : xê/è0Hç/ðç/(è/`è/˜é/Ðé/ê/@ê/
+[INFO] 02:32:21:716 SacServer/(29964:29964):  + Se hizo un open en SacServer
+
+[INFO] 02:33:46:437 SacServer/(30077:30077):  + Se hizo un open en SacServer
+
+[INFO] 02:33:46:483 SacServer/(30077:30077):  + Se realizo un read : xê/è0Hç/ðç/(è/`è/˜é/Ðé/ê/@ê/
+[INFO] 02:33:46:490 SacServer/(30077:30077):  + Se hizo un open en SacServer
+
+[INFO] 02:36:27:808 SacServer/(30228:30228):  + Se hizo un open en SacServer
+
+[INFO] 02:36:27:848 SacServer/(30228:30228):  + Se realizo un read : 0ï/ 0
+[INFO] 02:37:18:90 SacServer/(30313:30313):  + Se hizo un open en SacServer
+
+[INFO] 02:37:19:131 SacServer/(30313:30313):  + Se realizo un read : xê/è0Hç/ðç/(è/`è/˜é/Ðé/ê/@ê/
+[INFO] 02:37:19:142 SacServer/(30313:30313):  + Se hizo un open en SacServer
+
+[INFO] 02:39:57:788 SacServer/(30425:30425):  + Se hizo un open en SacServer
+
+[INFO] 02:39:57:826 SacServer/(30425:30425):  + Se realizo un read : 0ï/ 0
+[INFO] 02:39:57:828 SacServer/(30425:30425):  + Se hizo un open en SacServer
+
+[INFO] 02:46:30:397 SacServer/(30912:30912):  + Se hizo un open en SacServer
+
+[INFO] 02:46:30:432 SacServer/(30912:30912):  + Se hizo un open en SacServer
+
+[INFO] 02:47:40:357 SacServer/(31089:31089):  + Se hizo un open en SacServer
+
+[INFO] 02:47:40:394 SacServer/(31089:31089):  + Se hizo un open en SacServer
+
