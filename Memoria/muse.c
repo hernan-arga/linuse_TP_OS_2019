@@ -24,7 +24,8 @@ int main(){
 	tam_pagina = pconfig->tamanio_pag; //Ver de poner como define
 
 	reservarMemoriaPrincipal(pconfig->tamanio_memoria);
-	crearTablaSegmentos();
+	//crearTablaSegmentos();
+	tablasSegmentos = dictionary_create();
 
 
     return 0;
@@ -35,25 +36,21 @@ int main(){
 
 void reservarMemoriaPrincipal(int tamanio){
 	memoriaPrincipal = malloc(tamanio);
-	crearSegmentoInicial(tamanio-5); //Le resto los 5 bytes que van a ser del header
+	crearHeaderInicial(tamanio-5); //Le resto los 5 bytes que van a ser del header
 }
 
 void crearTablaSegmentos(){
-	tablaSegmentos = list_create();
+	//tablaSegmentos = list_create();
 }
-/////////REVISAR/////////////
-void *crearSegmentoInicial(uint32_t tamanio){
-	struct HeapMetadata metadata;
-	metadata.isFree = true;
-	metadata.size = tamanio;
 
-	struct Segmento* segmentoInicial;
-	//crearTablaPaginas(segmentoInicial); -En un futuro creo se haria asi
-	//por ahora dejo un char* en el segmento para ocuparme de otras cosas
+void *crearHeaderInicial(uint32_t tamanio){
+	struct HeapMetadata *metadata = malloc(sizeof(tam_mem));
+	metadata->isFree = true;
+	metadata->size = tamanio;
 
-	*(&memoriaPrincipal + sizeof(metadata)) = segmentoInicial;
+	memoriaPrincipal = metadata;
 
-	return &memoriaPrincipal + sizeof(metadata); //Chequear si no hay manera menos horrible de hacerlo
+	return NULL;
 }
 
 /*void crearTablaPaginas(struct Segmento segmento){
@@ -164,7 +161,8 @@ void *buscarPosicionSegmento(int idSegmento){
 	//es el inicio de la memoria + los tamaños de sus segmentos anteriores
 	void *pos;
 	pos = &memoriaPrincipal;
-	int cantSegmentos = list_size(tablaSegmentos);
+	//int cantSegmentos = list_size(tablaSegmentos);
+	int cantSegmentos;
 
 	for(int i = 0; i < cantSegmentos; i++){ //COMENTADA PORQUE TENGO QUE LIGAR LA TLIST CON SEGMENTO
 //		if (tablaSegmentos[i].pid = id){
@@ -178,9 +176,9 @@ void *buscarPosicionSegmento(int idSegmento){
 }
 
 int calcularTamanioSegmento(int idSegmento){
-	int cantidadSegmentos = list_size(tablaSegmentos);
+	int cantSegmentos;
 
-	for(int i = 0; i < cantidadSegmentos; i++){
+	for(int i = 0; i < cantSegmentos; i++){
 //		if(tablaSegmentos[i].pid = idSegmento){
 //			return sizeof(int) + espacioPaginas(idSegmento); //Falta chequeo que el espacio de paginas no sea -1
 //		}
@@ -191,9 +189,9 @@ int calcularTamanioSegmento(int idSegmento){
 }
 
 int espacioPaginas(int idSegmento){
-	int cantidadSegmentos = list_size(tablaSegmentos);
+	int cantSegmentos;
 
-	for(int i = 0; i < cantidadSegmentos; i++){
+	for(int i = 0; i < cantSegmentos; i++){
 //		if(tablaSegmentos[i].pid = idSegmento){
 //			return (list_size(tablaSegmentos[i].paginas) * tam_pagina);
 //		} else{

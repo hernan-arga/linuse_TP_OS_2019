@@ -1,10 +1,10 @@
 #ifndef MUSE_H_
 #define MUSE_H_
 #include <stdint.h>
-#include<commons/collections/list.h>
+#include <commons/collections/list.h>
 
 void* memoriaPrincipal;
-t_list* tablaSegmentos;
+t_dictionary* tablasSegmentos; //Diccionario que contiene las tablas de segmentos por proceso, la key es el pid de cada proceso
 int tam_mem;
 int tam_pagina;
 
@@ -40,7 +40,7 @@ int atenderMuseCopy(int sd);
 uint32_t atenderMuseMap(int sd);
 int atenderMuseSync(int sd);
 int atenderMuseUnmap(int sd);
-void *crearSegmentoInicial(uint32_t tamanio);
+void *crearHeaderInicial(uint32_t tamanio);
 void crearTablaPaginas(struct Segmento segmento);
 void *buscarEspacioLibre(uint32_t tamanio);
 void unificarHeaders(int id);
