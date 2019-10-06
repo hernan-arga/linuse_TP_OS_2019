@@ -25,6 +25,7 @@ int iniciar_conexion(int, int);
 void levantarConfigFile();
 t_config* leer_config(void);
 t_log * crear_log();
+void atenderMuseAlloc(int socket);
 
 t_log* logger;
 pthread_t hiloLevantarConexion;

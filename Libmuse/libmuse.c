@@ -6,12 +6,12 @@
 
 int muse_init(int id, char* ip, int puerto) { //Case 1
 
-	clienteMUSE = socket(AF_INET, SOCK_STREAM, 0);
+	serverMUSE = socket(AF_INET, SOCK_STREAM, 0);
 	serverAddressMUSE.sin_family = AF_INET;
 	serverAddressMUSE.sin_port = htons(puerto);
 	serverAddress.sin_addr.s_addr = INADDR_ANY;
 
-	int resultado = connect(clienteMUSE, (struct sockaddr *) &serverAddressMUSE,
+	int resultado = connect(serverMUSE, (struct sockaddr *) &serverAddressMUSE,
 			sizeof(serverAddressMUSE));
 	/*
 	 int *tamanioValue = malloc(sizeof(int));
@@ -28,8 +28,6 @@ void muse_close() { /* Does nothing :) */
 
 uint32_t muse_alloc(uint32_t tam) { //Case 3
 
-	return (uint32_t) malloc(tam);
-
 	//Serializo peticion (3) y uint32_t tam tamaño a reservar
 
 	//2 size de tamanio, 1 size de peticion, 1 size de tam (parametro)
@@ -45,7 +43,14 @@ uint32_t muse_alloc(uint32_t tam) { //Case 3
 	memcpy(buffer + 3 * sizeof(int), &tam, sizeof(uint32_t));
 
 	//Falta conexion y se hace envio a MUSE
-	send(clienteMUSE, buffer, 3 * sizeof(int) + sizeof(uint32_t), 0);
+	send(serverMUSE, buffer, 3 * sizeof(int) + sizeof(uint32_t), 0);
+
+	int *tamanio = malloc(sizeof(int));
+	read(serverMUSE, tamanio, sizeof(int));
+	uint32_t *direccionMemoriaReservada = malloc(*tamanio);
+	read(serverMUSE, direccionMemoriaReservada, *tamanio);
+
+	return direccionMemoriaReservada;
 
 }
 
@@ -67,7 +72,7 @@ void muse_free(uint32_t dir) { //Case 4
 	memcpy(buffer + 3 * sizeof(int), &dir, sizeof(uint32_t));
 
 	//Falta conexion y se hace envio a MUSE
-	send(clienteMUSE, buffer, 3 * sizeof(int) + sizeof(uint32_t), 0);
+	send(serverMUSE, buffer, 3 * sizeof(int) + sizeof(uint32_t), 0);
 
 }
 
@@ -97,7 +102,7 @@ int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
 	memcpy(buffer + 5 * sizeof(int) + sizeof(dst), &n, sizeof(size_t));
 
 	//Falta conexion y se hace envio a MUSE
-	send(clienteMUSE, buffer, 5 * sizeof(int) + sizeof(dst) + sizeof(uint32_t) + sizeof(size_t), 0);
+	send(serverMUSE, buffer, 5 * sizeof(int) + sizeof(dst) + sizeof(uint32_t) + sizeof(size_t), 0);
 
 	return 0;
 }
@@ -125,7 +130,7 @@ int muse_cpy(uint32_t dst, void* src, int n) { //Case 6
 	memcpy(buffer + 5 * sizeof(int) + sizeof(uint32_t) + sizeof(src), &n, sizeof(int));
 
 	//Falta conexion y se hace envio a MUSE
-	send(clienteMUSE, buffer, 6 * sizeof(int) + sizeof(uint32_t) + sizeof(src) , 0);
+	send(serverMUSE, buffer, 6 * sizeof(int) + sizeof(uint32_t) + sizeof(src) , 0);
 
 	return 0;
 
@@ -154,7 +159,7 @@ uint32_t muse_map(char *path, size_t length, int flags) { //Case 7
 	memcpy(buffer + 5 * sizeof(int) + strlen(path) + sizeof(size_t), &flags, sizeof(int));
 
 	//Falta conexion y se hace envio a MUSE
-	send(clienteMUSE, buffer,6 * sizeof(int) + strlen(path) + sizeof(size_t) , 0);
+	send(serverMUSE, buffer,6 * sizeof(int) + strlen(path) + sizeof(size_t) , 0);
 
 	return 0;
 }
@@ -178,7 +183,7 @@ int muse_sync(uint32_t addr, size_t len) { //Case 8
 	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t), &len, sizeof(size_t));
 
 	//Falta conexion y se hace envio a MUSE
-	send(clienteMUSE, buffer,4 * sizeof(int) + sizeof(uint32_t) + sizeof(size_t) , 0);
+	send(serverMUSE, buffer,4 * sizeof(int) + sizeof(uint32_t) + sizeof(size_t) , 0);
 
 	return 0;
 }
@@ -198,7 +203,7 @@ int muse_unmap(uint32_t dir) { //Case 9
 	memcpy(buffer + 3 * sizeof(int), &dir, sizeof(uint32_t));
 
 	//Falta conexion y se hace envio a MUSE
-	send(clienteMUSE, buffer,3 * sizeof(int) + sizeof(uint32_t) , 0);
+	send(serverMUSE, buffer,3 * sizeof(int) + sizeof(uint32_t) , 0);
 
 	return 0;
 }

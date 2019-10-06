@@ -7,9 +7,9 @@
 
 struct sockaddr_in serverAddress;
 struct sockaddr_in serverAddressMUSE;
-struct sockaddr_in direccionCliente;
+struct sockaddr_in direccionServer;
 int32_t server;
-int32_t clienteMUSE;
+int32_t serverMUSE;
 uint32_t tamanoDireccion;
 
 

@@ -33,7 +33,7 @@ void crearTablaSegmentos();
 void *musemalloc(uint32_t tamanio);
 int atenderMuseInit(int sd);
 int atenderMuseClose(int sd); //Verificar retorno
-uint32_t atenderMuseAlloc(int sd);
+//uint32_t atenderMuseAlloc(int sd);
 int atenderMuseFree(int sd);
 int atenderMuseGet(int sd);
 int atenderMuseCopy(int sd);
