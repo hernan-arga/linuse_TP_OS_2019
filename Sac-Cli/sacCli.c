@@ -96,10 +96,44 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 
 static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){
 	if(strcmp(path, "/")== 0){
+		//Serializo peticion y path
+		char* buffer = malloc(3 * sizeof(int) + strlen(path));
+
+		int peticion = 4;
+		int tamanioPeticion = sizeof(int);
+		memcpy(buffer, &tamanioPeticion, sizeof(int));
+		memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+		int tamanioPath = strlen(path);
+		memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
+		memcpy(buffer + 3 * sizeof(int), path, strlen(path));
+
+		send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
+
+		//Deserializo los directorios concatenados que te manda SacCli
+		int *tamanioTexto = malloc(sizeof(int));
+		read(sacServer, tamanioTexto, sizeof(int));
+		char *texto = malloc(*tamanioTexto);
+		read(sacServer, texto, *tamanioTexto);
+		char *textoCortado = string_substring_until(texto, *tamanioTexto);
+
+		//Hago un filler de cada uno de esos nombres, serparandolos por ;
+		char** arrayNombres = string_split(textoCortado, ";");
+		int i = 0;
+		while(arrayNombres[i] != NULL){
+			filler(buf, arrayNombres[i], NULL, 0);
+			i++;
+		}
+	}
+	return 0;
+}
+
+static int hello_getattr(const char *path, struct stat *stbuf) {
+
 	//Serializo peticion y path
 	char* buffer = malloc(3 * sizeof(int) + strlen(path));
 
-	int peticion = 4;
+	int peticion = 5;
 	int tamanioPeticion = sizeof(int);
 	memcpy(buffer, &tamanioPeticion, sizeof(int));
 	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
@@ -110,25 +144,34 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 
 	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
 
-	//Deserializo los directorios concatenados que te manda SacCli
-	int *tamanioTexto = malloc(sizeof(int));
-	read(sacServer, tamanioTexto, sizeof(int));
-	char *texto = malloc(*tamanioTexto);
-	read(sacServer, texto, *tamanioTexto);
-	char *textoCortado = string_substring_until(texto, *tamanioTexto);
+	// Deserializo respuesta
+	int* tamanioRespuesta = malloc(sizeof(int));
+	read(sacServer, tamanioRespuesta, sizeof(int));
+	int* ok = malloc(*tamanioRespuesta);
+	read(sacServer, ok, *tamanioRespuesta);
+	if (*ok == 1) {
+		//Deserializo mode y nlink
+		int* tamanioMode = malloc(sizeof(int));
+		read(sacServer, tamanioMode, sizeof(int));
+		void* mode = malloc(*tamanioMode);
+		read(sacServer, mode, *tamanioMode);
 
-	//Hago un filler de cada uno de esos nombres, serparandolos por ;
-	char** arrayNombres = string_split(textoCortado, ";");
-	int i = 0;
-	while(arrayNombres[i] != NULL){
-		filler(buf, arrayNombres[i], NULL, 0);
-		i++;
+		int* tamanioNlink = malloc(sizeof(int));
+		read(sacServer, tamanioNlink, sizeof(int));
+		int* nlink = malloc(*tamanioNlink);
+		read(sacServer, nlink, *tamanioNlink);
+
+		memcpy(&stbuf->st_mode, mode, *tamanioMode);
+		memcpy(&stbuf->st_nlink, nlink, *tamanioNlink);
+
+		return 0;
 	}
-}
-	return 0;
-}
+	if (*ok == 0) {
+		return -ENOENT;
+	}
 
-static int hello_getattr(const char *path, struct stat *stbuf) {
+
+	/*
 	int res = 0;
 
 	memset(stbuf, 0, sizeof(struct stat));
@@ -142,6 +185,7 @@ static int hello_getattr(const char *path, struct stat *stbuf) {
 	}
 
 	 return -ENOENT;
+	 */
 
 }
 

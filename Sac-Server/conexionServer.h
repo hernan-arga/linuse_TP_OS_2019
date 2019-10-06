@@ -76,6 +76,7 @@ void tomarPeticionCreate(int);
 void tomarPeticionOpen(int);
 void tomarPeticionRead(int);
 void tomarPeticionReadDir(int);
+void tomarPeticionGetAttr(int);
 
 
 t_log* logger;

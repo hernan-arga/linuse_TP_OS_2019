@@ -149,6 +149,10 @@ int iniciar_conexion(int ip, int puerto){
 						// Operacion READDIR
 						tomarPeticionReadDir(cliente);
 						break;
+					case 5:
+						// Operacion GETATTR
+						tomarPeticionGetAttr(cliente);
+						break;
 					default:
 						;
 					}
@@ -254,8 +258,9 @@ void tomarPeticionCreate(int cliente){
 	read(cliente, tamanioPath, sizeof(int));
 	char *path = malloc(*tamanioPath);
 	read(cliente, path, *tamanioPath);
+	char *pathCortado = string_substring_until(path, *tamanioPath);
 
-	int ok = o_create(path);
+	int ok = o_create(pathCortado);
 
 	//logueo respuesta create
 	if (ok == 1){
@@ -335,5 +340,19 @@ void tomarPeticionReadDir(int cliente){
 	char *pathCortado = string_substring_until(path, *tamanioPath);
 
 	o_readDir(pathCortado, cliente);
+
+}
+
+
+void tomarPeticionGetAttr(int cliente){
+
+	//Deserializo path
+	int *tamanioPath = malloc(sizeof(int));
+	read(cliente, tamanioPath, sizeof(int));
+	char *path = malloc(*tamanioPath);
+	read(cliente, path, *tamanioPath);
+	char *pathCortado = string_substring_until(path, *tamanioPath);
+
+	o_getAttr(pathCortado, cliente);
 
 }

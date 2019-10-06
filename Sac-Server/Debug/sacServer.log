@@ -9,3 +9,9 @@
 
 [ERROR] 21:39:19:625 SacServer/(18055:18055):  - NO se pudo hacer el open en SacServer
 
+[INFO] 22:24:22:674 SacServer/(20593:20593):  + Se hizo un create en SacServer
+
+[INFO] 22:26:36:202 SacServer/(20723:20723):  + Se hizo un create en SacServer
+
+[ERROR] 00:56:07:324 SacServer/(24193:24193):  - NO se pudo hacer el open en SacServer
+
