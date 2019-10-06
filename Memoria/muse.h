@@ -1,7 +1,10 @@
 #ifndef MUSE_H_
 #define MUSE_H_
-#include <stdint.h>
+
+#include <commons/collections/dictionary.h>
 #include <commons/collections/list.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 void* memoriaPrincipal;
 t_dictionary* tablasSegmentos; //Diccionario que contiene las tablas de segmentos por proceso, la key es el pid de cada proceso
