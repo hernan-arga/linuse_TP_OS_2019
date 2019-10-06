@@ -5,8 +5,9 @@
 int o_create(char* path){
 
 	FILE *fp1;
-	fp1= fopen (path, "r");
+	fp1 = fopen ("/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS/holis", "w");
 
+	fclose(fp1);
 	int respuesta = 1;
 	return respuesta;
 }
@@ -42,8 +43,8 @@ void o_read(char* path, int size, int offset, char* texto){
 
 void o_readDir(char* path, int cliente){
 
-   struct dirent *dp;
-   DIR *dir = opendir(path);
+	struct dirent *dp;
+   DIR *dir = opendir("/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
 
    if (!dir){
 	  return;
@@ -52,8 +53,8 @@ void o_readDir(char* path, int cliente){
    // concateno todos los directorios
    char* directoriosPegoteados = string_new();
    while ((dp = readdir(dir)) != NULL) {
-	   string_append(&directoriosPegoteados, dp->d_name);
-	   string_append(directoriosPegoteados, ";");
+	   string_append(&directoriosPegoteados, &dp->d_name);
+	   string_append(&directoriosPegoteados, ";");
    }
 
    // serializo directoriosPegoteados y se los envio a saccli
@@ -66,6 +67,7 @@ void o_readDir(char* path, int cliente){
    send(cliente, buffer, sizeof(int) + strlen(directoriosPegoteados), 0);
 
    closedir(dir);
+
 }
 
 

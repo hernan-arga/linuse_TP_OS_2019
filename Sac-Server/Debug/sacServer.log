@@ -1,3 +1,11 @@
 [INFO] 17:08:31:512 SacServer/(11274:11274):  + AAA
 [INFO] 01:40:15:236 SacServer/(20402:20402):  + Se hizo un create en SacServer
 
+[INFO] 20:59:33:814 SacServer/(16023:16023):  + Se hizo un create en SacServer
+
+[INFO] 21:08:48:327 SacServer/(16299:16299):  + Se hizo un create en SacServer
+
+[INFO] 21:09:41:537 SacServer/(16331:16331):  + Se hizo un create en SacServer
+
+[ERROR] 21:39:19:625 SacServer/(18055:18055):  - NO se pudo hacer el open en SacServer
+

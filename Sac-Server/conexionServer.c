@@ -332,7 +332,8 @@ void tomarPeticionReadDir(int cliente){
 	read(cliente, tamanioPath, sizeof(int));
 	char *path = malloc(*tamanioPath);
 	read(cliente, path, *tamanioPath);
+	char *pathCortado = string_substring_until(path, *tamanioPath);
 
-	o_readDir(path, cliente);
+	o_readDir(pathCortado, cliente);
 
 }

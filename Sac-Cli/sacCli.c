@@ -95,7 +95,7 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 }
 
 static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){
-
+	if(strcmp(path, "/")== 0){
 	//Serializo peticion y path
 	char* buffer = malloc(3 * sizeof(int) + strlen(path));
 
@@ -115,14 +115,16 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 	read(sacServer, tamanioTexto, sizeof(int));
 	char *texto = malloc(*tamanioTexto);
 	read(sacServer, texto, *tamanioTexto);
+	char *textoCortado = string_substring_until(texto, *tamanioTexto);
 
 	//Hago un filler de cada uno de esos nombres, serparandolos por ;
-	char** arrayNombres = string_split(texto, ";");
+	char** arrayNombres = string_split(textoCortado, ";");
 	int i = 0;
 	while(arrayNombres[i] != NULL){
 		filler(buf, arrayNombres[i], NULL, 0);
+		i++;
 	}
-
+}
 	return 0;
 }
 
@@ -136,14 +138,11 @@ static int hello_getattr(const char *path, struct stat *stbuf) {
 	if (strcmp(path, "/") == 0) {
 		stbuf->st_mode = S_IFDIR | 0755;
 		stbuf->st_nlink = 2;
-	} else if (strcmp(path, DEFAULT_FILE_PATH) == 0) {
-		stbuf->st_mode = S_IFREG | 0444;
-		stbuf->st_nlink = 1;
-		stbuf->st_size = strlen(DEFAULT_FILE_CONTENT);
-	} else {
-		res = -ENOENT;
+		return 0;
 	}
-	return res;
+
+	 return -ENOENT;
+
 }
 
 
