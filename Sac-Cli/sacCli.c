@@ -35,7 +35,17 @@ static int hello_create (const char *path, mode_t mode, struct fuse_file_info *f
 
 	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
 
-	return 0;
+	// Deserializo respuesta
+	int* tamanioRespuesta = malloc(sizeof(int));
+	read(sacServer, tamanioRespuesta, sizeof(int));
+	int* ok = malloc(*tamanioRespuesta);
+	read(sacServer, ok, *tamanioRespuesta);
+	if (*ok == 1) {
+		return 0;
+	}
+	else{
+		return errno;
+	}
 }
 
 

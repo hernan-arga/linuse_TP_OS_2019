@@ -2,14 +2,25 @@
 #include "unistd.h"
 #include <stdio.h>
 
-int o_create(char* path){
+int o_create(char* pathC){
+	int ok;
 
-	FILE *fp1;
-	fp1 = fopen (path, "w");
+	if( access( pathC, F_OK ) != -1 ) {
+	    // file exists
+		ok = 0;
+	} else {
+	    // file doesn't exist
+		ok = 1;
+		FILE *fp1;
 
-	fclose(fp1);
-	int respuesta = 1;
-	return respuesta;
+		char* path = string_new();
+		string_append(&path, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
+		string_append(&path, pathC);
+
+		fp1 = fopen (path, "w");
+		fclose(fp1);
+	}
+	return ok;
 }
 
 int o_open(char* path){

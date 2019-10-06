@@ -262,6 +262,8 @@ void tomarPeticionCreate(int cliente){
 
 	int ok = o_create(pathCortado);
 
+	char* buffer = malloc(2 * sizeof(int));
+
 	//logueo respuesta create
 	if (ok == 1){
 		loguearInfo(" + Se hizo un create en SacServer\n");
@@ -269,6 +271,12 @@ void tomarPeticionCreate(int cliente){
 	if (ok == 0) {
 		loguearError(" - NO se pudo hacer el create en SacServer\n");
 	}
+
+	int tamanioOk = sizeof(int);
+	memcpy(buffer, &tamanioOk, sizeof(int));
+	memcpy(buffer + sizeof(int), &ok, sizeof(int));
+
+	send(cliente, buffer, 2* sizeof(int), 0);
 }
 
 
