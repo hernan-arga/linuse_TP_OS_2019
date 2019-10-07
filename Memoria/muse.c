@@ -110,8 +110,8 @@ void unificarHeaders(int idSegmento){
 	pos = buscarPosicionSegmento(idSegmento);
 	void *end;
 	end = pos + tamanioSegmento;
-	struct HeapMetadata *header;
-	struct HeapMetadata *siguienteHeader;
+	struct HeapMetadata *header = malloc(sizeof(struct HeapMetadata));
+	struct HeapMetadata *siguienteHeader = malloc(sizeof(struct HeapMetadata));
 
 	memcpy(pos,header,sizeof(struct HeapMetadata));
 
