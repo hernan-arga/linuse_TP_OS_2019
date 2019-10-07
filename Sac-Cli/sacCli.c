@@ -5,6 +5,7 @@
 #include <string.h>
 #include "conexionCli.h"
 
+
  #define DEFAULT_FILE_CONTENT "Hello World!\n"
 /*
  * Este es el nombre del archivo que se va a encontrar dentro de nuestro FS
@@ -332,7 +333,11 @@ static int hello_write(const char *path, const char *buf, size_t size, off_t off
 	send(sacServer, buffer, 8 * sizeof(int) + strlen(path) + strlen(buf), 0);
 
 	return 0;
+}
 
+static int hello_getxattr(const char *path, const char *name, char *value, size_t size){
+
+	return 0;
 }
 
 
@@ -345,7 +350,8 @@ static struct fuse_operations hello_oper = {
 		.mkdir = hello_mkdir,
 		.unlink = hello_unlink,
 		.rmdir = hello_rmdir,
-		.write = hello_write
+		.write = hello_write,
+		//.getxattr = hello_getxattr
 };
 
 
