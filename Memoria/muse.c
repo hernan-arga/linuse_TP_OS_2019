@@ -37,7 +37,7 @@ int main(){
 
 void reservarMemoriaPrincipal(int tamanio){
 	memoriaPrincipal = malloc(tamanio);
-	crearHeaderInicial(tamanio-5); //Le resto los 5 bytes que van a ser del header
+	crearHeaderInicial(tamanio-sizeof(struct HeapMetadata));
 }
 
 void *crearHeaderInicial(uint32_t tamanio){
@@ -53,7 +53,7 @@ void *crearHeaderInicial(uint32_t tamanio){
 ///////////////Funciones MUSE///////////////
 
 //MUSE INIT
-//La llamamos en muse init, le crea la tabla de segmentos correspondiente
+//La llamamos en muse init, le crea al proceso (id) la tabla de segmentos correspondiente
 
 void museinit(int id, char* ip/*, int puerto*/){ //Creo que no necesito el puerto - lo comento para consultar
 	//Funcionara como id del proceso y sera la key en el diccioario
@@ -83,13 +83,24 @@ void *buscarEspacioLibre(uint32_t tamanio){
 
 	while(pos != end){
 		memcpy(&memoriaPrincipal,metadata,sizeof(struct HeapMetadata));
+		tamanioData = (*metadata).size;
 
 		if((*metadata).isFree == true && (*metadata).size <= tamanio){
 			//el espacio me sirve y lo asigno
 			//cambio valor isFree y retorno posicion
+			(*metadata).isFree = false;
+			(*metadata).size = tamanio;
+
+			if((tamanioData - tamanio) >= sizeof(struct HeapMetadata)){
+				struct HeapMetadata *nuevoHeader = malloc(sizeof(struct HeapMetadata));
+				nuevoHeader->isFree = true;
+				nuevoHeader->size= tamanioData - tamanio - sizeof(struct HeapMetadata);
+
+				pos = pos + sizeof(struct HeapMetadata) + tamanio;
+				*(&pos) = nuevoHeader; //ver
+			}
 		}
 		else{
-			tamanioData = (*metadata).size;
 			pos = &memoriaPrincipal + sizeof(struct HeapMetadata) + tamanioData; //Me muevo al proximo header
 		}
 	}
