@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 int main(){
 
@@ -39,10 +40,6 @@ void reservarMemoriaPrincipal(int tamanio){
 	crearHeaderInicial(tamanio-5); //Le resto los 5 bytes que van a ser del header
 }
 
-void crearTablaSegmentos(){
-	//tablaSegmentos = list_create();
-}
-
 void *crearHeaderInicial(uint32_t tamanio){
 	struct HeapMetadata *metadata = malloc(sizeof(tam_mem));
 	metadata->isFree = true;
@@ -53,34 +50,28 @@ void *crearHeaderInicial(uint32_t tamanio){
 	return NULL;
 }
 
-/*void crearTablaPaginas(struct Segmento segmento){
-	segmento.paginas = list_create();
-}*/
+///////////////Funciones MUSE///////////////
 
-///////////////Funciones MUSE///////////////////////////
+//MUSE INIT
+//La llamamos en muse init, le crea la tabla de segmentos correspondiente
 
-//MALLOC NAC & POP
-//Funcion que llamaria libMuse por medio de muse_alloc(uint32_t tam)
-//le va a retornar un void* tal como hace malloc y dentro de muse_alloc
-// nos encargaremos de retornar la posicion de memoria como lo pide su firma
+void museinit(int id, char* ip/*, int puerto*/){ //Creo que no necesito el puerto - lo comento para consultar
+	//Funcionara como id del proceso y sera la key en el diccioario
+	char* idProceso = string_new();// = string_itoa(id) ++ ip;
+	string_append(&idProceso,string_itoa(id));
+	string_append(&idProceso,ip);
 
-//void *musemalloc(uint32_t tamanio) {   //Adaptar esto a NUESTRO ESPACIO de mm (UPCM)
-  /*void *ptr = sbrk(0);
-  void *pedido = sbrk(tamanio);
-  if (pedido == (void*) -1) {
-    return NULL; // Fallo sbrk
-  } else {
-    assert(ptr == pedido); // Not thread safe.
-    return ptr;
-  }*/
+	dictionary_put(tablasSegmentos, idProceso, NULL);
+}
 
-//}
+
+//MUSE ALLOC
 
 void *musemalloc(uint32_t tamanio){
 	return NULL;
 }
 
-//Funcion recorre buscando heapmetadata libre mayor o igual a cierto size
+//Funcion recorre buscando heapmetadata libre - mayor o igual - a cierto size
 
 void *buscarEspacioLibre(uint32_t tamanio){
 	void *pos;
@@ -99,26 +90,17 @@ void *buscarEspacioLibre(uint32_t tamanio){
 		}
 		else{
 			tamanioData = (*metadata).size;
-			pos = &memoriaPrincipal + sizeof(metadata) + tamanioData; //Me muevo al proximo header
+			pos = &memoriaPrincipal + sizeof(struct HeapMetadata) + tamanioData; //Me muevo al proximo header
 		}
 	}
 
 	return NULL;
 }
 
-//Funcion para unificar dos headers - se la llama despues de un free. Unifica desde el header 1
-//recorriendo todos los headers DEL SEGMENTO. Le envio como parametro el id del segmento que
-//tiene que recorrer
-
-/*void unificarHeaders(struct HeapMetadata *header1, struct HeapMetadata *header2){ //
-	uint32_t size1 = header1->size;
-	uint32_t size2 = header2->size;
-
-	header1->size = size1 + size2;
-
-	free(header2); //Creo que no es necesario hacer free de loque corresponde a la data
-	//ya que se pisaria despues y listo - ver
-}*/
+/**Funcion para unificar dos headers - se la llama despues de un free. Unifica desde el header 1
+ * recorriendo todos los headers DEL SEGMENTO. Le envio como parametro el id del segmento que
+ * tiene que recorrer
+*/
 
 void unificarHeaders(int idSegmento){
 	int tamanioSegmento = calcularTamanioSegmento(idSegmento); //va a devolver el tamanio del segmento
@@ -152,13 +134,13 @@ void unificarHeaders(int idSegmento){
 			memcpy(pos,header,sizeof(struct HeapMetadata)); //Leo el siguiente header
 		}
 	}
-
 }
 
+/**Recorre los segmentos anteriores calculando su size con calcularSizeSegmento(unSegmento)
+ * size de su t_list de paginas por su cantidad de paginas y la posicion del segmento
+ * es el inicio de la memoria + los tamaños de sus segmentos anteriores
+*/
 void *buscarPosicionSegmento(int idSegmento){
-	//recorre los segmentos anteriores calculando su size con calcularSizeSegmento(unSegmento)
-	//size de su t_list de paginas por su cantidad de paginas y la posicion del segmento
-	//es el inicio de la memoria + los tamaños de sus segmentos anteriores
 	void *pos;
 	pos = &memoriaPrincipal;
 	//int cantSegmentos = list_size(tablaSegmentos);
@@ -198,7 +180,6 @@ int espacioPaginas(int idSegmento){
 //			return -1; //Error
 //		}
 	}
-
 }
 
 
