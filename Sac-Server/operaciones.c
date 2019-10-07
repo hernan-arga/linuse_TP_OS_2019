@@ -5,17 +5,17 @@
 int o_create(char* pathC){
 	int ok;
 
-	if( access( pathC, F_OK ) != -1 ) {
+	char* path = string_new();
+	string_append(&path, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
+	string_append(&path, pathC);
+
+	if( access( path, F_OK ) != -1 ) {
 	    // file exists
 		ok = 0;
 	} else {
 	    // file doesn't exist
 		ok = 1;
 		FILE *fp1;
-
-		char* path = string_new();
-		string_append(&path, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
-		string_append(&path, pathC);
 
 		fp1 = fopen (path, "w");
 		fclose(fp1);
@@ -134,7 +134,6 @@ void o_getAttr(char* nombre, int cliente){
 
 		send(cliente, buffer, 2 * sizeof(int), 0);
 	}
-
 }
 
 int o_mkdir(char* path){
@@ -162,6 +161,38 @@ int o_mkdir(char* path){
 		   printf("Unable to create directory\n");
 		   ok = 0;
 		}
+	}
+
+	return ok;
+}
+
+int o_unlink(char* pathC){
+	int ok;
+
+	char* path = string_new();
+	string_append(&path, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
+	string_append(&path, pathC);
+
+	if( access( path, F_OK ) != -1 ) {
+	    // file exists
+		// entonces lo elimino
+
+		FILE *fp1;
+
+		int status = remove(path);
+
+		if (status == 0){
+		    printf("%s file deleted successfully.\n", path);
+			ok = 1;
+		}
+		else{
+		    printf("Unable to delete the file\n");
+		    perror("Following error occurred");
+		    ok = 0;
+		 }
+	} else {
+	    // file doesn't exist
+		ok = 0;
 	}
 
 	return ok;

@@ -157,6 +157,10 @@ int iniciar_conexion(int ip, int puerto){
 						// Operacion MKNOD
 						tomarPeticionMkdir(cliente);
 						break;
+					case 7:
+						// Operacion UNLINK
+						tomarPeticionUnlink(cliente);
+						break;
 					default:
 						;
 					}
@@ -407,3 +411,30 @@ void tomarPeticionMkdir(int cliente){
 	send(cliente, buffer, 2* sizeof(int), 0);
 }
 
+
+void tomarPeticionUnlink(int cliente){
+
+	//Deserializo path
+	int *tamanioPath = malloc(sizeof(int));
+	read(cliente, tamanioPath, sizeof(int));
+	char *path = malloc(*tamanioPath);
+	read(cliente, path, *tamanioPath);
+	char *pathCortado = string_substring_until(path, *tamanioPath);
+
+	int ok = o_unlink(pathCortado);
+
+	char* buffer = malloc(2 * sizeof(int));
+	//logueo respuesta unlink
+	if (ok == 1){
+		loguearInfo(" + Se hizo un unlink en SacServer\n");
+	}
+	if (ok == 0) {
+		loguearError(" - NO se pudo hacer el unlink en SacServer\n");
+	}
+
+	int tamanioOk = sizeof(int);
+	memcpy(buffer, &tamanioOk, sizeof(int));
+	memcpy(buffer + sizeof(int), &ok, sizeof(int));
+
+	send(cliente, buffer, 2* sizeof(int), 0);
+}

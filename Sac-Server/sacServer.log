@@ -26,3 +26,13 @@
 [INFO] 02:24:01:633 SacServer/(29283:29283):  + Se realizo un read : à
 [ERROR] 02:25:50:986 SacServer/(29283:29283):  - NO se pudo hacer el open en SacServer
 
+[ERROR] 00:50:58:501 SacServer/(13420:13420):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 00:51:10:242 SacServer/(13420:13420):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 00:52:47:26 SacServer/(13420:13420):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 00:52:47:27 SacServer/(13420:13420):  - NO se pudo hacer el open en SacServer
+
+[INFO] 00:54:12:138 SacServer/(13420:13420):  + Se hizo un unlink en SacServer
+

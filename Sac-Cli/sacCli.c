@@ -144,21 +144,30 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 			filler(buf, arrayNombres[i], NULL, 0);
 			i++;
 		}
-		filler(buf, "hola/asd.txt", NULL, 0);
+		//filler(buf, "/hola/asd.txt", NULL, 0);
+		//filler(buf, "hola/asd.txt", NULL, 0);
 	}
 	return 0;
 }
 
 static int hello_getattr(const char *path, struct stat *stbuf) {
+/*
 	if (strcmp(path, "/hola") == 0) {
 			stbuf->st_mode = S_IFDIR | 0755;
 			stbuf->st_nlink = 2;
-	if (strcmp(path, "hola/asd.txt") == 0) {
+	}
+	if (strcmp(path, "/hola/asd.txt") == 0) {
 			stbuf->st_mode = S_IFREG | 0444;
 			stbuf->st_nlink = 1;
 			stbuf->st_size = strlen(DEFAULT_FILE_CONTENT);
 	}
 
+	if (strcmp(path, "ooo") == 0) {
+				stbuf->st_mode = S_IFREG | 0444;
+				stbuf->st_nlink = 1;
+				stbuf->st_size = strlen(DEFAULT_FILE_CONTENT);
+	}
+*/
 	//Serializo peticion y path
 	char* buffer = malloc(3 * sizeof(int) + strlen(path));
 
@@ -235,6 +244,35 @@ static int hello_mkdir(const char *path, mode_t mode)
 	}
 }
 
+static int hello_unlink(const char *path)
+{
+	//Serializo peticion y path
+	char* buffer = malloc(3 * sizeof(int) + strlen(path));
+
+	int peticion = 7;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+	int tamanioPath = strlen(path);
+	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
+
+	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
+
+	// Deserializo respuesta
+	int* tamanioRespuesta = malloc(sizeof(int));
+	read(sacServer, tamanioRespuesta, sizeof(int));
+	int* ok = malloc(*tamanioRespuesta);
+	read(sacServer, ok, *tamanioRespuesta);
+	if (*ok == 1) {
+		return 0;
+	} else {
+		return errno;
+	}
+}
+
+
 static int hello_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
     int fd;
@@ -259,7 +297,8 @@ static struct fuse_operations hello_oper = {
 		.read = hello_read,
 		.readdir = hello_readdir,
 		.getattr = hello_getattr,
-		.mkdir = hello_mkdir
+		.mkdir = hello_mkdir,
+		.unlink = hello_unlink
 };
 
 
