@@ -209,3 +209,19 @@
 
 [INFO] 01:30:30:900 SacServer/(14585:14585):  + Se hizo un mkdir en SacServer
 
+[INFO] 08:06:40:824 SacServer/(14937:14937):  + Se hizo un create en SacServer
+
+[INFO] 09:13:39:157 SacServer/(16281:16281):  + Se hizo un open en SacServer
+
+[ERROR] 09:13:39:170 SacServer/(16281:16281):  - NO se pudo hacer el open en SacServer
+
+[INFO] 09:13:40:761 SacServer/(16281:16281):  + Se hizo un open en SacServer
+
+[ERROR] 09:13:47:597 SacServer/(16281:16281):  - NO se pudo hacer el open en SacServer
+
+[INFO] 09:13:47:598 SacServer/(16281:16281):  + Se hizo un open en SacServer
+
+[INFO] 09:13:53:749 SacServer/(16281:16281):  + Se hizo un open en SacServer
+
+[ERROR] 09:13:53:750 SacServer/(16281:16281):  - NO se pudo hacer el open en SacServer
+

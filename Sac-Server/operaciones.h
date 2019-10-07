@@ -11,5 +11,6 @@ void o_getAttr(char*, int);
 int o_mkdir(char*);
 int o_unlink(char*);
 int o_rmdir(char*);
+void o_write(char*, int, int, char*);
 
 #endif /* OPERACIONES_H_ */

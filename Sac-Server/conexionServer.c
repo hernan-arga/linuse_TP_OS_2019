@@ -165,6 +165,10 @@ int iniciar_conexion(int ip, int puerto){
 						// Operacion RMDIR
 						tomarPeticionRmdir(cliente);
 						break;
+					case 9:
+						// Operacion WRITE
+						tomarPeticionWrite(cliente);
+						break;
 					default:
 						;
 					}
@@ -468,4 +472,41 @@ void tomarPeticionRmdir(int cliente){
 	memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
+}
+
+void tomarPeticionWrite(int cliente){
+
+	//Deserializo path, size, offset y buf
+	int *tamanioPath = malloc(sizeof(int));
+	read(cliente, tamanioPath, sizeof(int));
+	char *path = malloc(*tamanioPath);
+	read(cliente, path, *tamanioPath);
+
+	char *pathCortado = string_substring_until(path, *tamanioPath);
+	char* pathAppend = string_new();
+	string_append(&pathAppend, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
+	string_append(&pathAppend, pathCortado);
+
+	int* tamanioSize = malloc(sizeof(int));
+	read(cliente, tamanioSize, sizeof(int));
+	int* size = malloc(*tamanioSize);
+	read(cliente, size, *tamanioSize);
+
+	int* tamanioOffset = malloc(sizeof(int));
+	read(cliente, tamanioOffset, sizeof(int));
+	int* offset = malloc(*tamanioOffset);
+	read(cliente, offset, *tamanioOffset);
+
+	int *tamanioBuf = malloc(sizeof(int));
+	read(cliente, tamanioBuf, sizeof(int));
+	char *buf = malloc(*tamanioBuf);
+	read(cliente, buf, *tamanioBuf);
+
+	o_write(pathAppend, *size, *offset, buf);
+
+	//logueo respuesta read
+	//char* textoLog = string_new();
+	//string_append(&textoLog, " + Se realizo un read : ");
+	//string_append(&textoLog, &texto);
+	//loguearInfo(textoLog);
 }

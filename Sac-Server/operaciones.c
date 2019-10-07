@@ -253,3 +253,20 @@ int o_rmdir(char* pathC){
 
 	return r;
 }
+
+
+void o_write(char* path, int size, int offset, char* buffer){
+
+	FILE *f;
+	f = fopen(path,"wb");
+
+	if(f){
+		fseek(f, offset, SEEK_SET);
+		fwrite(buffer, 1, size, f);
+	}
+	else{
+		printf("write : no se pudo abrir el archivo");
+	}
+
+	fclose(f);
+}

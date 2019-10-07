@@ -81,7 +81,7 @@ void tomarPeticionGetAttr(int);
 void tomarPeticionMkdir(int);
 void tomarPeticionUnlink(int);
 void tomarPeticionRmdir(int);
-
+void tomarPeticionWrite(int);
 
 t_log* logger;
 pthread_t hiloLevantarConexion;
