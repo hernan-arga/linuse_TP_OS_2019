@@ -149,3 +149,39 @@
 
 [INFO] 02:47:40:394 SacServer/(31089:31089):  + Se hizo un open en SacServer
 
+[ERROR] 21:46:48:663 SacServer/(4501:4501):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 21:46:48:685 SacServer/(4501:4501):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 21:46:53:177 SacServer/(4501:4501):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 21:46:56:378 SacServer/(4501:4501):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 21:46:56:379 SacServer/(4501:4501):  - NO se pudo hacer el open en SacServer
+
+[INFO] 22:05:18:584 SacServer/(4802:4802):  + Se hizo un create en SacServer
+
+[ERROR] 22:05:21:277 SacServer/(4802:4802):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 22:05:21:279 SacServer/(4802:4802):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 22:05:22:267 SacServer/(4802:4802):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 22:05:25:410 SacServer/(4802:4802):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 22:05:25:410 SacServer/(4802:4802):  - NO se pudo hacer el open en SacServer
+
+[INFO] 22:55:45:447 SacServer/(6906:6906):  + Se hizo un create en SacServer
+
+[INFO] 22:55:53:960 SacServer/(6906:6906):  + Se hizo un mkdir en SacServer
+
+[INFO] 22:56:23:526 SacServer/(6906:6906):  + Se hizo un create en SacServer
+
+[INFO] 22:56:38:521 SacServer/(6906:6906):  + Se hizo un mkdir en SacServer
+
+[INFO] 22:56:45:492 SacServer/(6906:6906):  + Se hizo un create en SacServer
+
+[INFO] 22:57:16:431 SacServer/(6906:6906):  + Se hizo un create en SacServer
+
+[INFO] 22:57:23:923 SacServer/(6906:6906):  + Se hizo un mkdir en SacServer
+

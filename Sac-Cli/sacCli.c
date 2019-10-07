@@ -192,29 +192,39 @@ static int hello_getattr(const char *path, struct stat *stbuf) {
 
 		return 0;
 	}
-	if (*ok == 0) {
-		return -ENOENT;
-	}
-
-
-	/*
-	int res = 0;
-
-	memset(stbuf, 0, sizeof(struct stat));
-
-	//Si path es igual a "/" nos estan pidiendo los atributos del punto de montaje
-
-	if (strcmp(path, "/") == 0) {
-		stbuf->st_mode = S_IFDIR | 0755;
-		stbuf->st_nlink = 2;
-		return 0;
-	}
-
-	 return -ENOENT;
-	 */
+	// else
+	return -ENOENT;
 
 }
 
+static int hello_mkdir(const char *path, mode_t mode)
+{
+	//Serializo peticion y path
+	char* buffer = malloc(3 * sizeof(int) + strlen(path));
+
+	int peticion = 6;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+	int tamanioPath = strlen(path);
+	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
+
+	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
+
+	// Deserializo respuesta
+	int* tamanioRespuesta = malloc(sizeof(int));
+	read(sacServer, tamanioRespuesta, sizeof(int));
+	int* ok = malloc(*tamanioRespuesta);
+	read(sacServer, ok, *tamanioRespuesta);
+	if (*ok == 1) {
+		return 0;
+	}
+	else{
+		return errno;
+	}
+}
 
 static int hello_write(const char *path, const char *buf, size_t size, off_t offset,  struct fuse_file_info *fi)
 {
@@ -239,7 +249,8 @@ static struct fuse_operations hello_oper = {
 		.open = hello_open,
 		.read = hello_read,
 		.readdir = hello_readdir,
-		.getattr = hello_getattr
+		.getattr = hello_getattr,
+		.mkdir = hello_mkdir
 };
 
 

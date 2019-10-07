@@ -72,12 +72,13 @@ void loguearInfo(char *);
 void loguearError();
 t_bitarray * crearBitmap();
 void borrarBitmap(t_bitarray*);
+
 void tomarPeticionCreate(int);
 void tomarPeticionOpen(int);
 void tomarPeticionRead(int);
 void tomarPeticionReadDir(int);
 void tomarPeticionGetAttr(int);
-
+void tomarPeticionMkdir(int);
 
 t_log* logger;
 pthread_t hiloLevantarConexion;

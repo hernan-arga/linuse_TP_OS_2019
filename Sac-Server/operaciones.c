@@ -59,7 +59,7 @@ void o_read(char* path, int size, int offset, char* texto){
 
 void o_readDir(char* path, int cliente){
 
-	struct dirent *dp;
+   struct dirent *dp;
    DIR *dir = opendir("/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
 
    if (!dir){
@@ -68,6 +68,7 @@ void o_readDir(char* path, int cliente){
 
    // concateno todos los directorios
    char* directoriosPegoteados = string_new();
+
    while ((dp = readdir(dir)) != NULL) {
 	   string_append(&directoriosPegoteados, &dp->d_name);
 	   string_append(&directoriosPegoteados, ";");
@@ -85,7 +86,6 @@ void o_readDir(char* path, int cliente){
    closedir(dir);
 
 }
-
 
 void o_getAttr(char* nombre, int cliente){
 
@@ -137,3 +137,32 @@ void o_getAttr(char* nombre, int cliente){
 
 }
 
+int o_mkdir(char* path){
+	int ok;
+	struct stat sb;
+
+	char* folder = string_new();
+	string_append(&folder, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
+	string_append(&folder, path);
+
+	if (stat(folder, &sb) == 0 && S_ISDIR(sb.st_mode)) {
+	     // folder exists
+		ok = 0;
+	} else {
+		// folder doesn't exist
+		int check;
+		check = mkdir(folder, 0700);
+
+		// check if directory is created or not
+		if (!check){
+		    printf("Directory created\n");
+			ok = 1;
+		}
+		else {
+		   printf("Unable to create directory\n");
+		   ok = 0;
+		}
+	}
+
+	return ok;
+}
