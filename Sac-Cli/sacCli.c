@@ -272,6 +272,34 @@ static int hello_unlink(const char *path)
 	}
 }
 
+static int hello_rmdir(const char *path)
+{
+	//Serializo peticion y path
+	char* buffer = malloc(3 * sizeof(int) + strlen(path));
+
+	int peticion = 8;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+	int tamanioPath = strlen(path);
+	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
+
+	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
+
+	// Deserializo respuesta
+	int* tamanioRespuesta = malloc(sizeof(int));
+	read(sacServer, tamanioRespuesta, sizeof(int));
+	int* ok = malloc(*tamanioRespuesta);
+	read(sacServer, ok, *tamanioRespuesta);
+	if (*ok == 1) {
+		return 0;
+	} else {
+		return errno;
+	}
+}
+
 
 static int hello_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
@@ -298,7 +326,8 @@ static struct fuse_operations hello_oper = {
 		.readdir = hello_readdir,
 		.getattr = hello_getattr,
 		.mkdir = hello_mkdir,
-		.unlink = hello_unlink
+		.unlink = hello_unlink,
+		.rmdir = hello_rmdir
 };
 
 

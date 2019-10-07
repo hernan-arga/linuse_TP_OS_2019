@@ -161,6 +161,10 @@ int iniciar_conexion(int ip, int puerto){
 						// Operacion UNLINK
 						tomarPeticionUnlink(cliente);
 						break;
+					case 8:
+						// Operacion RMDIR
+						tomarPeticionRmdir(cliente);
+						break;
 					default:
 						;
 					}
@@ -435,6 +439,33 @@ void tomarPeticionUnlink(int cliente){
 	int tamanioOk = sizeof(int);
 	memcpy(buffer, &tamanioOk, sizeof(int));
 	memcpy(buffer + sizeof(int), &ok, sizeof(int));
+
+	send(cliente, buffer, 2* sizeof(int), 0);
+}
+
+void tomarPeticionRmdir(int cliente){
+
+	//Deserializo path
+	int *tamanioPath = malloc(sizeof(int));
+	read(cliente, tamanioPath, sizeof(int));
+	char *path = malloc(*tamanioPath);
+	read(cliente, path, *tamanioPath);
+	char *pathCortado = string_substring_until(path, *tamanioPath);
+
+	int respuesta = o_rmdir(pathCortado);
+
+	char* buffer = malloc(2 * sizeof(int));
+	//logueo respuesta unlink
+	if (respuesta == 0){
+		loguearInfo(" + Se hizo un rmdir en SacServer\n");
+	}
+	else {
+		loguearError(" - NO se pudo hacer el rmdir en SacServer\n");
+	}
+
+	int tamanioOk = sizeof(int);
+	memcpy(buffer, &tamanioOk, sizeof(int));
+	memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
 }

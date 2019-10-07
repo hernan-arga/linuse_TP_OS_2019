@@ -201,3 +201,11 @@
 
 [INFO] 00:49:52:450 SacServer/(13343:13343):  + Se hizo un unlink en SacServer
 
+[INFO] 01:29:53:356 SacServer/(14585:14585):  + Se hizo un unlink en SacServer
+
+[INFO] 01:29:59:516 SacServer/(14585:14585):  + Se hizo un create en SacServer
+
+[INFO] 01:30:04:575 SacServer/(14585:14585):  + Se hizo un rmdir en SacServer
+
+[INFO] 01:30:30:900 SacServer/(14585:14585):  + Se hizo un mkdir en SacServer
+

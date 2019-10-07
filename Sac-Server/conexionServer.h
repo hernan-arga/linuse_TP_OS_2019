@@ -80,6 +80,7 @@ void tomarPeticionReadDir(int);
 void tomarPeticionGetAttr(int);
 void tomarPeticionMkdir(int);
 void tomarPeticionUnlink(int);
+void tomarPeticionRmdir(int);
 
 
 t_log* logger;
