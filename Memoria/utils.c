@@ -1,5 +1,11 @@
 #include "utils.h"
-#include "muse.h"
+
+#include <asm-generic/errno-base.h>
+#include <asm-generic/socket.h>
+#include <stdint.h>
+#include <sys/select.h>
+#include <inttypes.h>
+
 
 int iniciar_conexion(int ip, int puerto) {
 	int opt = 1;
@@ -99,12 +105,12 @@ int iniciar_conexion(int ip, int puerto) {
 			// send new connection greeting message
 			// ACA SE LE ENVIA EL PRIMER MENSAJE AL SOCKET (si no necesita nada importante, mensaje de bienvenida)
 			/*
-			if (send(new_socket, message, strlen(message), 0)
-					!= strlen(message)) {
-				perror("error al enviar mensaje al cliente");
-			}
-			puts("Welcome message sent successfully");
-			*/
+			 if (send(new_socket, message, strlen(message), 0)
+			 != strlen(message)) {
+			 perror("error al enviar mensaje al cliente");
+			 }
+			 puts("Welcome message sent successfully");
+			 */
 			//add new socket to array of sockets
 			for (i = 0; i < max_clients; i++) {
 				//if position is empty
@@ -149,7 +155,7 @@ int iniciar_conexion(int ip, int puerto) {
 						atenderMuseAlloc(sd);
 						break;
 					case 4: //free
-						//atenderMuseFree(sd);
+						atenderMuseFree(sd);
 						break;
 					case 5: //get
 						//atenderMuseGet(sd);
@@ -224,10 +230,33 @@ void atenderMuseAlloc(int cliente) {
 
 	char* buffer = malloc(sizeof(int) + sizeof(uint32_t));
 	int tamanioDireccion = sizeof(int);
-	uint32_t direccion = 10; //pongo esto para mandar algo
+	uint32_t direccion = 4294967295; //pongo esto para mandar algo
 	memcpy(buffer, &tamanioDireccion, sizeof(int));
 	memcpy(buffer + sizeof(int), &direccion, sizeof(uint32_t));
 
 	send(cliente, buffer, sizeof(int) + sizeof(uint32_t), 0);
+
+}
+
+void atenderMuseFree(int cliente) {
+	//deserializo lo que me manda el cliente
+
+	int *tamanioDireccion = malloc(sizeof(int));
+	read(cliente, tamanioDireccion, sizeof(int));
+	uint32_t *direccionDeMemoria = malloc(*tamanioDireccion);
+	read(cliente, direccionDeMemoria, *tamanioDireccion);
+
+	printf("%" PRIu32 "\n",direccionDeMemoria);
+
+	//int resultado = museFree(direccionDeMemoria);
+	int resultado = 1; //pa probar
+
+	if(resultado == 1){
+		loguearInfo("Memoria liberada exitosamente");
+	}
+	else{
+		loguearInfo("Error liberando memoria");
+	}
+
 
 }

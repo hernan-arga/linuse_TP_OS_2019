@@ -50,12 +50,12 @@ uint32_t muse_alloc(uint32_t tam) { //Case 3
 	uint32_t *direccionMemoriaReservada = malloc(*tamanio);
 	read(serverMUSE, direccionMemoriaReservada, *tamanio);
 
-	return direccionMemoriaReservada;
+	return *direccionMemoriaReservada;
 
 }
 
 void muse_free(uint32_t dir) { //Case 4
-	free((void*) dir);
+	//free((void*) dir);
 
 	//Serializo peticion (4) y uint32_t dir
 
