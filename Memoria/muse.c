@@ -28,6 +28,8 @@ int main(){
 	reservarMemoriaPrincipal(pconfig->tamanio_memoria);
 	//crearTablaSegmentos();
 	//inicializarBitmapFrames(bitmapFrames[cantidadFrames]);
+
+	tablasSegmentos = malloc(1000); //Ver tamaño reservado
 	tablasSegmentos = dictionary_create();
 
     return 0;
@@ -49,6 +51,13 @@ void *crearHeaderInicial(uint32_t tamanio){
 	memoriaPrincipal = metadata;
 
 	return NULL;
+}
+
+void crearTablaSegmentosProceso(char *idProceso){ //Id proceso = id + ip
+	//Contemplar caso de que ya tenga una tabla de procesos?
+	t_list *listaDeSegmentos = list_create();
+
+	dictionary_put(tablasSegmentos,idProceso,listaDeSegmentos);
 }
 
 ///////////////Bitmap de Frames///////////////
@@ -93,7 +102,7 @@ void museinit(int id, char* ip/*, int puerto*/){ //Creo que no necesito el puert
 	string_append(&idProceso,string_itoa(id));
 	string_append(&idProceso,ip);
 
-	dictionary_put(tablasSegmentos, idProceso, NULL);
+	crearTablaSegmentosProceso(idProceso);
 }
 
 

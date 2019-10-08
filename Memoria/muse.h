@@ -20,14 +20,16 @@ struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
 
 struct Segmento{
 	int id;
-	t_list* paginas;
+	uint32_t baseLogica;
+	uint32_t tamanio;
+	t_list* tablaPaginas;
 };
 
 struct Pagina{
-	//bool modificado;
-	//bool uso;
-	//bool presencia;
-	//int numeroFrame;
+	bool modificado;
+	bool uso;
+	bool presencia;
+	int numeroFrame;
 	int data;
 };
 
@@ -55,5 +57,6 @@ int espacioPaginas(int idSegmento);
 void inicializarBitmapFrames();
 int ocuparFrame(int indiceFrame);
 void liberarFrame(int indiceFrame);
+void crearTablaSegmentosProceso(char *idProceso);
 
 #endif /* MUSE_H_ */
