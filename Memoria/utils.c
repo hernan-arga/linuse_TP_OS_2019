@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "muse.h"
 
 int iniciar_conexion(int ip, int puerto) {
 	int opt = 1;
@@ -97,12 +98,13 @@ int iniciar_conexion(int ip, int puerto) {
 
 			// send new connection greeting message
 			// ACA SE LE ENVIA EL PRIMER MENSAJE AL SOCKET (si no necesita nada importante, mensaje de bienvenida)
+			/*
 			if (send(new_socket, message, strlen(message), 0)
 					!= strlen(message)) {
 				perror("error al enviar mensaje al cliente");
 			}
 			puts("Welcome message sent successfully");
-
+			*/
 			//add new socket to array of sockets
 			for (i = 0; i < max_clients; i++) {
 				//if position is empty
@@ -213,7 +215,9 @@ void atenderMuseAlloc(int cliente) {
 	uint32_t *bytesAReservar = malloc(*tamanio);
 	read(cliente, bytesAReservar, *tamanio);
 
-	loguearInfo(" + Se hizo un muse alloc\n");
+	//loguearInfo(" + Se hizo un muse alloc\n");
+
+	//musemalloc(10);
 
 	//aca tendriamos que hacer el malloc en muse y devolver la direccion de memoria
 	//serializo esa direccion y se la mando al cliente
