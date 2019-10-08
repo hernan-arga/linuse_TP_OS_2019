@@ -23,11 +23,12 @@ int main(){
 	/////////////////////////
 	tam_mem = pconfig->tamanio_memoria; //Ver de poner como define
 	tam_pagina = pconfig->tamanio_pag; //Ver de poner como define
+	cantidadFrames = tam_mem / tam_pagina;
 
 	reservarMemoriaPrincipal(pconfig->tamanio_memoria);
 	//crearTablaSegmentos();
+	//inicializarBitmapFrames(bitmapFrames[cantidadFrames]);
 	tablasSegmentos = dictionary_create();
-
 
     return 0;
 }
@@ -48,6 +49,37 @@ void *crearHeaderInicial(uint32_t tamanio){
 	memoriaPrincipal = metadata;
 
 	return NULL;
+}
+
+///////////////Bitmap de Frames///////////////
+
+void inicializarBitmapFrames(int tam_mem, int tam_frame){ //tam_frame = tam_pag
+
+	for (int i = 0; i < cantidadFrames; i++){
+		bitmapFrames[i] = 0;
+	}
+
+}
+
+bool estaLibre(int indiceFrame){
+	if(bitmapFrames[indiceFrame] == 0){
+		return true;
+	} else{
+		return false;
+	}
+}
+
+int ocuparFrame(int indiceFrame){
+	if(bitmapFrames[indiceFrame] == 0){
+		bitmapFrames[indiceFrame] = 1;
+		return 0; //Salio bien
+	} else{
+		return -1; //Error - no se pudo ocupar, ya estaba en 1 - doble chequeo?
+	}
+}
+
+void liberarFrame(int indiceFrame){
+	bitmapFrames [indiceFrame] = 0;
 }
 
 ///////////////Funciones MUSE///////////////

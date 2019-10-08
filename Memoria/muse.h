@@ -10,6 +10,8 @@ void* memoriaPrincipal;
 t_dictionary* tablasSegmentos; //Diccionario que contiene las tablas de segmentos por proceso, la key es el pid de cada proceso
 int tam_mem;
 int tam_pagina;
+int cantidadFrames;
+int bitmapFrames [/*cantidadFrames*/]; //ver si me conviene uint *bitmapFrames - con malloc(tam_mem/tam_pag)
 
 struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
 	uint32_t size;
@@ -50,5 +52,8 @@ void unificarHeaders(int id);
 void *buscarPosicionSegmento(int idSegmento);
 int calcularTamanioSegmento(int id);
 int espacioPaginas(int idSegmento);
+void inicializarBitmapFrames();
+int ocuparFrame(int indiceFrame);
+void liberarFrame(int indiceFrame);
 
 #endif /* MUSE_H_ */
