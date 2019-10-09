@@ -29,7 +29,7 @@ int main(){
 	//crearTablaSegmentos();
 	//inicializarBitmapFrames(bitmapFrames[cantidadFrames]);
 
-	tablasSegmentos = malloc(1000); //Ver tamaño reservado
+	tablasSegmentos = malloc(4); //Tamaño reservado - puntero
 	tablasSegmentos = dictionary_create();
 
     return 0;
@@ -58,6 +58,7 @@ void crearTablaSegmentosProceso(char *idProceso){ //Id proceso = id + ip
 	t_list *listaDeSegmentos = list_create();
 
 	dictionary_put(tablasSegmentos,idProceso,listaDeSegmentos);
+	//Creo la estructura, pero no tiene segmentos aun
 }
 
 ///////////////Bitmap de Frames///////////////
@@ -108,8 +109,78 @@ void museinit(int id, char* ip/*, int puerto*/){ //Creo que no necesito el puert
 
 //MUSE ALLOC
 
-void *musemalloc(uint32_t tamanio){
+/* Eso se hará mediante el uso de un segmento de Heap en el cual pueda entrar nuestro dato
+ * (en caso de no existir ninguno, se deberá crearlo). De esa manera, analizaremos segmento
+ * a segmento de Heap, verificando si el último Header de metadata se encuentra con el valor
+ * free para incorporar el malloc. En caso de no encontrarlo, buscaremos si hay algún segmento
+ * de Heap que se pueda extender. Por último, en caso de no poder extender un segmento, deberá
+ * crear otro nuevo.*/
+
+void *musemalloc(uint32_t tamanio, int idSocketCliente){
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, idSocketCliente);
+	int cantidadARecorrer = list_size(segmentosProceso);
+
+	if(list_is_empty(segmentosProceso)){
+
+		crearSegmento(idSocketCliente);
+		return NULL; //Momentaneo para que no rompa
+
+	} else{
+
+		for(int i = 0; i < cantidadARecorrer; i++){
+			struct Segmento *unSegmento = list_get(segmentosProceso,i);
+
+			if(poseeTamanioLibre(unSegmento,tamanio)){
+				asignarEspacioLibre(unSegmento, tamanio); //Se hace el return de la posicion asignada
+			}
+
+			return NULL; //Momentaneo para que no rompa
+		}
+
+		//Si sale del for sin retorno, tengo que buscar algun segmento de heap
+		//que se pueda extender -siguiente for-
+
+		for(int j = 0; j < cantidadARecorrer; j++){
+
+			struct Segmento *unSegmento = list_get(segmentosProceso,j);
+
+			if(esExtendible(segmentosProceso,j)){ //Chequeo si este segmento puede extenderse
+				//busco un frame libre en mi bitmap de frames
+				//asigno la data y retorno la posicion donde COMIENZA LA DATA
+
+				return NULL; //Momentaneo para que no rompa
+			}
+		}
+
+		//Si sale de este for sin retorno, es que no encontro espacio libre ni
+		//espacio que se pueda extender, por lo que debera crear un segmento nuevo
+
+		//creo segmento nuevo y retorno la posicion asignada
+
+		return NULL; //Momentaneo para que no rompa
+	}
+
 	return NULL;
+}
+
+void crearSegmento(int idSocketCliente){
+
+}
+
+/* Recorre el espacio del segmento buscando espacio libre (desde la base logica hasta
+ * base logica + tamanio). Debe encontrar un header que isFree = true y
+ * size >= tamanio + 5 (5 para el proximo header) */
+
+int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio){
+	return 0;
+}
+
+void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio){
+
+}
+
+int esExtendible(t_list *segmentosProceso,int unIndice){
+	return 0;
 }
 
 //Funcion recorre buscando heapmetadata libre - mayor o igual - a cierto size

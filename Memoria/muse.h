@@ -37,7 +37,7 @@ struct Pagina{
 ///////////////Funciones//////////////////
 void reservarMemoriaPrincipal(int tamanio);
 void crearTablaSegmentos();
-void *musemalloc(uint32_t tamanio);
+void *musemalloc(uint32_t tamanio, int idCliente);
 int atenderMuseInit(int sd);
 int atenderMuseClose(int sd); //Verificar retorno
 //uint32_t atenderMuseAlloc(int sd);
@@ -58,5 +58,11 @@ void inicializarBitmapFrames();
 int ocuparFrame(int indiceFrame);
 void liberarFrame(int indiceFrame);
 void crearTablaSegmentosProceso(char *idProceso);
+
+//Funciones subyacentes malloc
+void crearSegmento(int idSocketCliente);
+int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
+void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
+int esExtendible(t_list *segmentosProceso,int unIndice);
 
 #endif /* MUSE_H_ */
