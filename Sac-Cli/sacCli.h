@@ -3,6 +3,7 @@
 
 #include "conexionCli.h"
 #include <string.h>
+#include <sys/types.h>
 
 
 #endif /* SACCLI_H_ */

@@ -8,8 +8,7 @@
 
 int iniciar_conexion(int ip, int puerto) {
 	int opt = 1;
-	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30,
-			activity, i, sd, valread;
+	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30, activity, i, sd, valread;
 	int max_sd;
 	struct sockaddr_in address;
 
@@ -26,7 +25,7 @@ int iniciar_conexion(int ip, int puerto) {
 
 	//create a master socket
 	if ((master_socket = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-		perror("socket failed");
+		 perror("socket failed");
 		exit(EXIT_FAILURE);
 	}
 

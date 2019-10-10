@@ -5,6 +5,7 @@
 #include <string.h>
 #include "conexionCli.h"
 
+
  #define DEFAULT_FILE_CONTENT "Hello World!\n"
 /*
  * Este es el nombre del archivo que se va a encontrar dentro de nuestro FS
@@ -115,7 +116,7 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 }
 
 static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){
-	if(strcmp(path, "/")== 0){
+	//if(strcmp(path, "/")== 0){
 		//Serializo peticion y path
 		char* buffer = malloc(3 * sizeof(int) + strlen(path));
 
@@ -146,7 +147,7 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 		}
 		//filler(buf, "/hola/asd.txt", NULL, 0);
 		//filler(buf, "hola/asd.txt", NULL, 0);
-	}
+//	}
 	return 0;
 }
 
@@ -303,19 +304,47 @@ static int hello_rmdir(const char *path)
 
 static int hello_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
-    int fd;
-    int res;
+	//Serializo peticion, path, size, offset y buf
+	char* buffer = malloc(8 * sizeof(int) + strlen(path) + strlen(buf));
 
-    fd = open(path, fi->flags);
-    if(fd == -1)
-        return -errno;
+	int peticion = 9;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
 
-    res = pwrite(fd, buf, size, offset);
-    if(res == -1)
-        res = -errno;
+	int tamanioPath = strlen(path);
+	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
 
-    close(fd);
-    return res;
+	int sizeInt = (int) size;
+	int tamanioSize = sizeof(int);
+	memcpy(buffer + 3 * sizeof(int) + strlen(path), &tamanioSize, sizeof(int));
+	memcpy(buffer + 4 * sizeof(int) + strlen(path), &sizeInt, sizeof(int));
+
+	int offsetInt = (int) offset;
+	int tamanioOffset = sizeof(int);
+	memcpy(buffer + 5 * sizeof(int) + strlen(path), &tamanioOffset, sizeof(int));
+	memcpy(buffer + 6 * sizeof(int) + strlen(path), &offsetInt, sizeof(int));
+
+	int tamanioBuf = strlen(buf);
+	memcpy(buffer + 7 * sizeof(int) + strlen(path), &tamanioBuf, sizeof(int));
+	memcpy(buffer + 8 * sizeof(int) + strlen(path), buf, strlen(buf));
+
+	send(sacServer, buffer, 8 * sizeof(int) + strlen(path) + strlen(buf), 0);
+
+	return 0;
+}
+
+
+static int hello_getxattr(const char *path, const char *name, char *value, size_t size){
+
+	return 0;
+}
+
+
+static int hello_truncate(const char * path, off_t offset){
+
+	return 0;
 }
 
 
@@ -327,7 +356,17 @@ static struct fuse_operations hello_oper = {
 		.getattr = hello_getattr,
 		.mkdir = hello_mkdir,
 		.unlink = hello_unlink,
-		.rmdir = hello_rmdir
+		.rmdir = hello_rmdir,
+		.write = hello_write,
+		.getxattr = hello_getxattr,
+		// chmod, chown, truncate y utime para escribir archivos
+		.truncate = hello_truncate
+
+		/*
+		.flush = remote_flush,
+		.release = remote_release,
+		 pueden llegar a faltar
+		*/
 };
 
 

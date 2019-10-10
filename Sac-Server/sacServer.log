@@ -36,3 +36,21 @@
 
 [INFO] 00:54:12:138 SacServer/(13420:13420):  + Se hizo un unlink en SacServer
 
+[INFO] 15:47:48:317 SacServer/(6534:6534):  + Se hizo un open en SacServer
+
+[INFO] 16:16:46:615 SacServer/(8398:8398):  + Se hizo un open en SacServer
+
+[INFO] 16:17:10:765 SacServer/(8398:8398):  + Se hizo un mkdir en SacServer
+
+[INFO] 16:17:18:908 SacServer/(8398:8398):  + Se hizo un mkdir en SacServer
+
+[INFO] 16:17:24:324 SacServer/(8398:8398):  + Se hizo un mkdir en SacServer
+
+[INFO] 16:19:49:327 SacServer/(8607:8607):  + Se hizo un open en SacServer
+
+[INFO] 16:19:57:811 SacServer/(8607:8607):  + Se hizo un open en SacServer
+
+[INFO] 16:20:07:112 SacServer/(8607:8607):  + Se hizo un open en SacServer
+
+[ERROR] 16:24:21:755 SacServer/(8607:8607):  - NO se pudo hacer el rmdir en SacServer
+

@@ -60,7 +60,12 @@ void o_read(char* path, int size, int offset, char* texto){
 void o_readDir(char* path, int cliente){
 
    struct dirent *dp;
-   DIR *dir = opendir("/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
+
+   char* pathNuevo = string_new();
+   string_append(&pathNuevo, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
+   string_append(&pathNuevo, path);
+
+   DIR *dir = opendir(pathNuevo);
 
    if (!dir){
 	  return;
@@ -199,9 +204,17 @@ int o_unlink(char* pathC){
 }
 
 int o_rmdir(char* pathC){
+
 	char* path = string_new();
 	string_append(&path, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
 	string_append(&path, pathC);
+
+	int retorno = o_rmdir_2(path);
+
+	return retorno;
+}
+
+int o_rmdir_2(char* path){
 
 	DIR *d = opendir(path);
 	size_t path_len = strlen(path);
@@ -217,7 +230,7 @@ int o_rmdir(char* pathC){
 			char *buf;
 			size_t len;
 
-			/* Skip the names "." and ".." as we don't want to recurse on them. */
+			// Skip the names "." and ".." as we don't want to recurse on them.
 			if (!strcmp(p->d_name, ".") || !strcmp(p->d_name, "..")) {
 				continue;
 			}
@@ -232,24 +245,37 @@ int o_rmdir(char* pathC){
 
 				if (!stat(buf, &statbuf)) {
 					if (S_ISDIR(statbuf.st_mode)) {
-						r2 = o_rmdir(buf);
+						r2 = o_rmdir_2(buf);
 					} else {
 						r2 = unlink(buf);
 					}
 				}
-
 				free(buf);
 			}
-
 			r = r2;
 		}
-
 		closedir(d);
 	}
-
 	if (!r) {
 		r = rmdir(path);
 	}
 
 	return r;
+}
+
+
+void o_write(char* path, int size, int offset, char* buffer){
+
+	FILE *f;
+	f = fopen(path,"wb");
+
+	if(f){
+		fseek(f, offset, SEEK_SET);
+		fwrite(buffer, 1, size, f);
+	}
+	else{
+		printf("write : no se pudo abrir el archivo");
+	}
+
+	fclose(f);
 }
