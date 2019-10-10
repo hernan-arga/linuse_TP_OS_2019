@@ -98,13 +98,22 @@ int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
 	memcpy(buffer + 4 * sizeof(int) + sizeof(dst), &src, sizeof(uint32_t));
 
 	int tamanioN = sizeof(size_t);
-	memcpy(buffer + 4 * sizeof(int) + sizeof(dst) , &tamanioN, sizeof(int));
+	memcpy(buffer + 4 * sizeof(int) + sizeof(dst), &tamanioN, sizeof(int));
 	memcpy(buffer + 5 * sizeof(int) + sizeof(dst), &n, sizeof(size_t));
 
 	//Falta conexion y se hace envio a MUSE
-	send(serverMUSE, buffer, 5 * sizeof(int) + sizeof(dst) + sizeof(uint32_t) + sizeof(size_t), 0);
+	send(serverMUSE, buffer,
+			5 * sizeof(int) + sizeof(dst) + sizeof(uint32_t) + sizeof(size_t),
+			0);
 
-	return 0;
+	//ahora leo la respuesta de muse si salio bien o error y la retorno
+
+	int *tamanioResp = malloc(sizeof(int));
+	read(serverMUSE, tamanioResp, sizeof(int));
+	int *resultado = malloc(*tamanioResp);
+	read(serverMUSE, resultado, *tamanioResp);
+
+	return resultado;
 }
 
 int muse_cpy(uint32_t dst, void* src, int n) { //Case 6
@@ -122,17 +131,28 @@ int muse_cpy(uint32_t dst, void* src, int n) { //Case 6
 	memcpy(buffer + 3 * sizeof(int), &dst, sizeof(uint32_t));
 
 	int tamanioSrc = sizeof(src);
-	memcpy(buffer + 3 * sizeof(int) + sizeof(uint32_t), &tamanioSrc, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int) + sizeof(uint32_t), &tamanioSrc,
+			sizeof(int));
 	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t), &src, sizeof(src));
 
 	int tamanioN = sizeof(n);
-	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t) + sizeof(src), &tamanioN, sizeof(int));
-	memcpy(buffer + 5 * sizeof(int) + sizeof(uint32_t) + sizeof(src), &n, sizeof(int));
+	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t) + sizeof(src), &tamanioN,
+			sizeof(int));
+	memcpy(buffer + 5 * sizeof(int) + sizeof(uint32_t) + sizeof(src), &n,
+			sizeof(int));
 
 	//Falta conexion y se hace envio a MUSE
-	send(serverMUSE, buffer, 6 * sizeof(int) + sizeof(uint32_t) + sizeof(src) , 0);
+	send(serverMUSE, buffer, 6 * sizeof(int) + sizeof(uint32_t) + sizeof(src),
+			0);
 
-	return 0;
+	//ahora leo la respuesta de muse si salio bien o error y la retorno
+
+	int *tamanioResp = malloc(sizeof(int));
+	read(serverMUSE, tamanioResp, sizeof(int));
+	int *resultado = malloc(*tamanioResp);
+	read(serverMUSE, resultado, *tamanioResp);
+
+	return resultado;
 
 }
 
@@ -151,17 +171,28 @@ uint32_t muse_map(char *path, size_t length, int flags) { //Case 7
 	memcpy(buffer + 3 * sizeof(int), &path, strlen(path));
 
 	int tamanioLength = sizeof(size_t);
-	memcpy(buffer + 3 * sizeof(int) + strlen(path), &tamanioLength,sizeof(int));
+	memcpy(buffer + 3 * sizeof(int) + strlen(path), &tamanioLength,
+			sizeof(int));
 	memcpy(buffer + 4 * sizeof(int) + strlen(path), &length, sizeof(size_t));
 
 	int tamanioFlags = sizeof(int);
-	memcpy(buffer + 4 * sizeof(int) + strlen(path) + sizeof(size_t) , &tamanioFlags, sizeof(int));
-	memcpy(buffer + 5 * sizeof(int) + strlen(path) + sizeof(size_t), &flags, sizeof(int));
+	memcpy(buffer + 4 * sizeof(int) + strlen(path) + sizeof(size_t),
+			&tamanioFlags, sizeof(int));
+	memcpy(buffer + 5 * sizeof(int) + strlen(path) + sizeof(size_t), &flags,
+			sizeof(int));
 
 	//Falta conexion y se hace envio a MUSE
-	send(serverMUSE, buffer,6 * sizeof(int) + strlen(path) + sizeof(size_t) , 0);
+	send(serverMUSE, buffer, 6 * sizeof(int) + strlen(path) + sizeof(size_t),
+			0);
 
-	return 0;
+	//leo la posicion de memoria mapeada de me manda muse
+
+	int *tamanio = malloc(sizeof(int));
+	read(serverMUSE, tamanio, sizeof(int));
+	uint32_t *posicionMemoriaMapeada = malloc(*tamanio);
+	read(serverMUSE, posicionMemoriaMapeada, *tamanio);
+
+	return *posicionMemoriaMapeada;
 }
 
 int muse_sync(uint32_t addr, size_t len) { //Case 8
@@ -179,11 +210,13 @@ int muse_sync(uint32_t addr, size_t len) { //Case 8
 	memcpy(buffer + 3 * sizeof(int), &addr, sizeof(uint32_t));
 
 	int tamanioLen = sizeof(len);
-	memcpy(buffer + 3 * sizeof(int) + sizeof(uint32_t), &tamanioLen,sizeof(int));
+	memcpy(buffer + 3 * sizeof(int) + sizeof(uint32_t), &tamanioLen,
+			sizeof(int));
 	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t), &len, sizeof(size_t));
 
 	//Falta conexion y se hace envio a MUSE
-	send(serverMUSE, buffer,4 * sizeof(int) + sizeof(uint32_t) + sizeof(size_t) , 0);
+	send(serverMUSE, buffer,
+			4 * sizeof(int) + sizeof(uint32_t) + sizeof(size_t), 0);
 
 	return 0;
 }
@@ -203,7 +236,7 @@ int muse_unmap(uint32_t dir) { //Case 9
 	memcpy(buffer + 3 * sizeof(int), &dir, sizeof(uint32_t));
 
 	//Falta conexion y se hace envio a MUSE
-	send(serverMUSE, buffer,3 * sizeof(int) + sizeof(uint32_t) , 0);
+	send(serverMUSE, buffer, 3 * sizeof(int) + sizeof(uint32_t), 0);
 
 	return 0;
 }

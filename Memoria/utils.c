@@ -6,7 +6,6 @@
 #include <sys/select.h>
 #include <inttypes.h>
 
-
 int iniciar_conexion(int ip, int puerto) {
 	int opt = 1;
 	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30,
@@ -158,13 +157,13 @@ int iniciar_conexion(int ip, int puerto) {
 						atenderMuseFree(sd);
 						break;
 					case 5: //get
-						//atenderMuseGet(sd);
+						atenderMuseGet(sd);
 						break;
 					case 6: //copy
-						//atenderMuseCopy(sd);
+						atenderMuseCopy(sd);
 						break;
 					case 7:	//map
-						//atenderMuseMap(sd);
+						atenderMuseMap(sd);
 						break;
 					case 8: //sync
 						//atenderMuseSync(sd);
@@ -246,17 +245,122 @@ void atenderMuseFree(int cliente) {
 	uint32_t *direccionDeMemoria = malloc(*tamanioDireccion);
 	read(cliente, direccionDeMemoria, *tamanioDireccion);
 
-	printf("%" PRIu32 "\n",direccionDeMemoria);
+	printf("%" PRIu32 "\n", direccionDeMemoria);
 
 	//int resultado = museFree(direccionDeMemoria);
 	int resultado = 1; //pa probar
 
-	if(resultado == 1){
+	if (resultado == 1) {
 		loguearInfo("Memoria liberada exitosamente");
-	}
-	else{
+	} else {
 		loguearInfo("Error liberando memoria");
 	}
 
+}
+
+void atenderMuseGet(int cliente) {
+	//deserializo lo que me manda el cliente
+
+	int *tamanioDst = malloc(sizeof(int));
+	read(cliente, tamanioDst, sizeof(int));
+	void *dst = malloc(*tamanioDst);
+	read(cliente, dst, *tamanioDst);
+
+	int *tamanioSrc = malloc(sizeof(int));
+	read(cliente, tamanioSrc, sizeof(int));
+	uint32_t *src = malloc(*tamanioSrc);
+	read(cliente, src, *tamanioSrc);
+
+	int *tamanioN = malloc(sizeof(int));
+	read(cliente, tamanioN, sizeof(int));
+	size_t *N = malloc(*tamanioN);
+	read(cliente, N, *tamanioN);
+
+	//hacer en muse un get y mandar -1 error o 0 ok
+
+	int *resultado = 0;
+
+	if (*resultado == 0) {
+			loguearInfo("Get realizado correctamente");
+		} else {
+			loguearInfo("Error realizando get");
+		}
+
+	char* buffer = malloc(2 * sizeof(int));
+
+	int tamanioResult = sizeof(int);
+	memcpy(buffer, &tamanioResult, sizeof(int));
+	memcpy(buffer + sizeof(int), &resultado, sizeof(int));
+
+	send(cliente, buffer, 2 * sizeof(int), 0);
 
 }
+
+void atenderMuseCopy(int cliente) {
+	//deserializo lo que me manda el cliente
+
+	int *tamanioDst = malloc(sizeof(int));
+	read(cliente, tamanioDst, sizeof(int));
+	uint32_t *dst = malloc(*tamanioDst);
+	read(cliente, dst, *tamanioDst);
+
+	int *tamanioSrc = malloc(sizeof(int));
+	read(cliente, tamanioSrc, sizeof(int));
+	void *src = malloc(*tamanioSrc);
+	read(cliente, src, *tamanioSrc);
+
+	int *tamanioN = malloc(sizeof(int));
+	read(cliente, tamanioN, sizeof(int));
+	int *N = malloc(*tamanioN);
+	read(cliente, N, *tamanioN);
+
+	//hacer en muse un copy y mandar -1 error o 0 ok
+
+	int *resultado = 0;
+
+	if (*resultado == 0) {
+			loguearInfo("Cpy realizado exitosamente");
+		} else {
+			loguearInfo("Error realizando cpy");
+		}
+
+	char* buffer = malloc(2 * sizeof(int));
+
+	int tamanioResult = sizeof(int);
+	memcpy(buffer, &tamanioResult, sizeof(int));
+	memcpy(buffer + sizeof(int), &resultado, sizeof(int));
+
+	send(cliente, buffer, 2 * sizeof(int), 0);
+
+}
+
+void atenderMuseMap(int cliente) {
+	//deserializo lo que me manda el cliente
+
+	int *tamanioPath = malloc(sizeof(int));
+	read(cliente, tamanioPath, sizeof(int));
+	char *dst = malloc(*tamanioPath);
+	read(cliente, dst, *tamanioPath);
+
+	int *tamanioLength = malloc(sizeof(int));
+	read(cliente, tamanioLength, sizeof(int));
+	size_t *length = malloc(*tamanioLength);
+	read(cliente, length, *tamanioLength);
+
+	int *tamanioFlags = malloc(sizeof(int));
+	read(cliente, tamanioFlags, sizeof(int));
+	int *flags = malloc(*tamanioFlags);
+	read(cliente, flags, *tamanioFlags);
+
+	//hacer en muse un map y mandar la posicion de memoria mapeada a libmuse
+
+	char* buffer = malloc(sizeof(int) + sizeof(uint32_t));
+	int tamanioPosicionMemoria = sizeof(int);
+	uint32_t posicionMemoria = 4294967295; //pongo esto para mandar algo
+	memcpy(buffer, &tamanioPosicionMemoria, sizeof(int));
+	memcpy(buffer + sizeof(int), &posicionMemoria, sizeof(uint32_t));
+
+	send(cliente, buffer, sizeof(int) + sizeof(uint32_t), 0);
+
+}
+

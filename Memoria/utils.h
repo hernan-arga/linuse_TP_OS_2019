@@ -27,6 +27,9 @@ t_config* leer_config(void);
 t_log * crear_log();
 void atenderMuseAlloc(int socket);
 void atenderMuseFree(int socket);
+void atenderMuseGet(int socket);
+void atenderMuseCopy(int socket);
+void atenderMuseMap(int socket);
 
 t_log* logger;
 pthread_t hiloLevantarConexion;
