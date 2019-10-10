@@ -359,12 +359,13 @@ static struct fuse_operations hello_oper = {
 		.rmdir = hello_rmdir,
 		.write = hello_write,
 		.getxattr = hello_getxattr,
-		// chmod, chown, truncate y utime
+		// chmod, chown, truncate y utime para escribir archivos
 		.truncate = hello_truncate
 
 		/*
 		.flush = remote_flush,
 		.release = remote_release,
+		 pueden llegar a faltar
 		*/
 };
 
