@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <math.h>
 
 int main(){
 
@@ -125,13 +126,14 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente){
 
 	if(list_is_empty(segmentosProceso)){
 
-		crearSegmento(idSocketCliente);
+		crearSegmento(tamanio, idSocketCliente); //Se crea un segmento con el minimo de frames necesarios para alocar *tamanio*
 		return NULL; //Momentaneo para que no rompa
 
 	} else{
 
 		for(int i = 0; i < cantidadARecorrer; i++){
-			struct Segmento *unSegmento = list_get(segmentosProceso,i);
+			struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+			unSegmento = list_get(segmentosProceso,i);
 
 			if(poseeTamanioLibre(unSegmento,tamanio)){
 				asignarEspacioLibre(unSegmento, tamanio); //Se hace el return de la posicion asignada
@@ -144,8 +146,8 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente){
 		//que se pueda extender -siguiente for-
 
 		for(int j = 0; j < cantidadARecorrer; j++){
-
-			struct Segmento *unSegmento = list_get(segmentosProceso,j);
+			struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+			unSegmento = list_get(segmentosProceso,j);
 
 			if(esExtendible(segmentosProceso,j)){ //Chequeo si este segmento puede extenderse
 				//busco un frame libre en mi bitmap de frames
@@ -166,7 +168,40 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente){
 	return NULL;
 }
 
-void crearSegmento(int idSocketCliente){
+void crearSegmento(uint32_t tamanio, int idSocketCliente){
+	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	struct Segmento *nuevoSegmento = malloc(sizeof(struct Segmento));
+
+	//Identificar segmento
+	if(list_is_empty(listaSegmentosProceso)){
+		nuevoSegmento->id = 1;
+	} else{
+		nuevoSegmento->id = list_size(listaSegmentosProceso) + 1;
+	}
+
+	//Nuevo segmento - base logica ??
+
+	//Asignar frames necesarios para *tamanio*
+	int paginasNecesarias;
+	double paginas;
+	paginas = tamanio/tam_pagina;
+
+	//Hardcodeo para revisar despues por que carajo me rompe de la otra manera
+	paginasNecesarias = (int)(ceil(2.5));
+	/*paginasNecesarias = (int)(ceil(paginas)); *Funcion techo para definir el minimo de
+												*paginas/frames que necesito, expresado
+												*paginas/frames en un numero entero*/
+
+	nuevoSegmento->tablaPaginas = list_create();
+
+	while(paginasNecesarias > 0){
+		asignarNuevaPagina(listaSegmentosProceso,nuevoSegmento->id); //Le busco un frame etc ...
+		paginasNecesarias --;
+	}
+
+}
+
+void asignarNuevaPagina(t_list *listaSegmentos, int idSegmento){
 
 }
 

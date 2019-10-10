@@ -67,9 +67,10 @@ int museinit(int id, char* ip/*, int puerto*/);
 
 //Funciones subyacentes malloc
 void *musemalloc(uint32_t tamanio, int idSocketCliente);
-void crearSegmento(int idSocketCliente);
+void crearSegmento(uint32_t tamanio, int idSocketCliente);
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 int esExtendible(t_list *segmentosProceso,int unIndice);
+void asignarNuevaPagina(t_list *listaSegmentos, int idSegmento);
 
 #endif /* MUSE_H_ */
