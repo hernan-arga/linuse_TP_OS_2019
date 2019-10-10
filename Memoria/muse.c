@@ -73,20 +73,24 @@ void inicializarBitmapFrames(int bitmapFrames[cantidadFrames]){
 }
 
 bool estaLibre(int indiceFrame){
+
 	if(bitmapFrames[indiceFrame] == 0){
 		return true;
 	} else{
 		return false;
 	}
+
 }
 
 int ocuparFrame(int indiceFrame){
+
 	if(bitmapFrames[indiceFrame] == 0){
 		bitmapFrames[indiceFrame] = 1;
 		return 0; //Salio bien
 	} else{
 		return -1; //Error - no se pudo ocupar, ya estaba en 1 - doble chequeo?
 	}
+
 }
 
 void liberarFrame(int indiceFrame){
@@ -113,21 +117,19 @@ int museinit(int id, char* ip/*, int puerto*/){
 
 //MUSE ALLOC
 
-/* Eso se hará mediante el uso de un segmento de Heap en el cual pueda entrar nuestro dato
- * (en caso de no existir ninguno, se deberá crearlo). De esa manera, analizaremos segmento
- * a segmento de Heap, verificando si el último Header de metadata se encuentra con el valor
- * free para incorporar el malloc. En caso de no encontrarlo, buscaremos si hay algún segmento
- * de Heap que se pueda extender. Por último, en caso de no poder extender un segmento, deberá
- * crear otro nuevo.*/
-
 void *musemalloc(uint32_t tamanio, int idSocketCliente){
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 	int cantidadARecorrer = list_size(segmentosProceso);
 
 	if(list_is_empty(segmentosProceso)){
 
-		crearSegmento(tamanio, idSocketCliente); //Se crea un segmento con el minimo de frames necesarios para alocar *tamanio*
-		return NULL; //Momentaneo para que no rompa
+		struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+		unSegmento = crearSegmento(tamanio, idSocketCliente); //Se crea un segmento con el minimo de frames necesarios para alocar *tamanio*
+
+		struct Pagina *primeraPagina = malloc(sizeof(struct Pagina));
+		primeraPagina = list_get(unSegmento->tablaPaginas, 0);
+
+		posicionMemoriaFrame(primeraPagina->numeroFrame);
 
 	} else{
 
@@ -168,7 +170,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente){
 	return NULL;
 }
 
-void crearSegmento(uint32_t tamanio, int idSocketCliente){
+struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente){
 	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 	struct Segmento *nuevoSegmento = malloc(sizeof(struct Segmento));
 
@@ -197,12 +199,21 @@ void crearSegmento(uint32_t tamanio, int idSocketCliente){
 	while(paginasNecesarias > 0){
 		asignarNuevaPagina(listaSegmentosProceso,nuevoSegmento->id); //Le busco un frame etc ...
 		paginasNecesarias --;
+
 	}
 
+	list_add(listaSegmentosProceso, nuevoSegmento);
+	return nuevoSegmento;
 }
 
 void asignarNuevaPagina(t_list *listaSegmentos, int idSegmento){
 
+}
+
+void *posicionMemoriaFrame(int unFrame){
+	int offset = tam_pagina * unFrame; //Los frames estan en orden y se recorren de may a men
+
+	return ((&memoriaPrincipal) + offset);
 }
 
 /* Recorre el espacio del segmento buscando espacio libre (desde la base logica hasta
