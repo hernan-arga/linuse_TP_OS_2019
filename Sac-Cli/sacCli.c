@@ -116,7 +116,7 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 }
 
 static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){
-	if(strcmp(path, "/")== 0){
+	//if(strcmp(path, "/")== 0){
 		//Serializo peticion y path
 		char* buffer = malloc(3 * sizeof(int) + strlen(path));
 
@@ -147,7 +147,7 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 		}
 		//filler(buf, "/hola/asd.txt", NULL, 0);
 		//filler(buf, "hola/asd.txt", NULL, 0);
-	}
+//	}
 	return 0;
 }
 
