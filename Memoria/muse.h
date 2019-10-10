@@ -11,7 +11,7 @@ t_dictionary* tablasSegmentos; //Diccionario que contiene las tablas de segmento
 int tam_mem;
 int tam_pagina;
 int cantidadFrames;
-int bitmapFrames [/*cantidadFrames*/]; //ver si me conviene uint *bitmapFrames - con malloc(tam_mem/tam_pag)
+int bitmapFrames [/*cantidadFrames*/];
 
 struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
 	uint32_t size;
@@ -36,8 +36,8 @@ struct Pagina{
 
 ///////////////Funciones//////////////////
 void reservarMemoriaPrincipal(int tamanio);
-void crearTablaSegmentos();
-void *musemalloc(uint32_t tamanio, int idCliente);
+
+/* UTILS
 int atenderMuseInit(int sd);
 int atenderMuseClose(int sd); //Verificar retorno
 //uint32_t atenderMuseAlloc(int sd);
@@ -47,19 +47,26 @@ int atenderMuseCopy(int sd);
 uint32_t atenderMuseMap(int sd);
 int atenderMuseSync(int sd);
 int atenderMuseUnmap(int sd);
+*/
+
 void *crearHeaderInicial(uint32_t tamanio);
-void crearTablaPaginas(struct Segmento segmento);
 void *buscarEspacioLibre(uint32_t tamanio);
 void unificarHeaders(int id);
 void *buscarPosicionSegmento(int idSegmento);
 int calcularTamanioSegmento(int id);
 int espacioPaginas(int idSegmento);
+void crearTablaSegmentosProceso(char *idProceso);
+
+//Funciones bitmap de frames
 void inicializarBitmapFrames();
 int ocuparFrame(int indiceFrame);
 void liberarFrame(int indiceFrame);
-void crearTablaSegmentosProceso(char *idProceso);
+
+//Funciones init
+int museinit(int id, char* ip/*, int puerto*/);
 
 //Funciones subyacentes malloc
+void *musemalloc(uint32_t tamanio, int idSocketCliente);
 void crearSegmento(int idSocketCliente);
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);

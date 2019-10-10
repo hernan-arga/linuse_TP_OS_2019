@@ -27,9 +27,9 @@ int main(){
 
 	reservarMemoriaPrincipal(pconfig->tamanio_memoria);
 	//crearTablaSegmentos();
-	//inicializarBitmapFrames(bitmapFrames[cantidadFrames]);
 
-	tablasSegmentos = malloc(4); //Tamaño reservado - puntero
+	inicializarBitmapFrames(bitmapFrames[cantidadFrames]);
+
 	tablasSegmentos = dictionary_create();
 
     return 0;
@@ -63,7 +63,7 @@ void crearTablaSegmentosProceso(char *idProceso){ //Id proceso = id + ip
 
 ///////////////Bitmap de Frames///////////////
 
-void inicializarBitmapFrames(int tam_mem, int tam_frame){ //tam_frame = tam_pag
+void inicializarBitmapFrames(int bitmapFrames[cantidadFrames]){
 
 	for (int i = 0; i < cantidadFrames; i++){
 		bitmapFrames[i] = 0;
@@ -97,13 +97,16 @@ void liberarFrame(int indiceFrame){
 //MUSE INIT
 //La llamamos en muse init, le crea al proceso (id) la tabla de segmentos correspondiente
 
-void museinit(int id, char* ip/*, int puerto*/){ //Creo que no necesito el puerto - lo comento para consultar
+int museinit(int id, char* ip/*, int puerto*/){
+	//Creo que no necesito el puerto - lo comento para consultar
 	//Funcionara como id del proceso y sera la key en el diccioario
 	char* idProceso = string_new();// = string_itoa(id) ++ ip;
 	string_append(&idProceso,string_itoa(id));
 	string_append(&idProceso,ip);
 
 	crearTablaSegmentosProceso(idProceso);
+
+	return 0; //Retorna -1 ante un error
 }
 
 
@@ -117,7 +120,7 @@ void museinit(int id, char* ip/*, int puerto*/){ //Creo que no necesito el puert
  * crear otro nuevo.*/
 
 void *musemalloc(uint32_t tamanio, int idSocketCliente){
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos, idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 	int cantidadARecorrer = list_size(segmentosProceso);
 
 	if(list_is_empty(segmentosProceso)){
@@ -291,6 +294,8 @@ int calcularTamanioSegmento(int idSegmento){
 //			return -1; //Error
 //		}
 	}
+
+	return 0; //Momentaneo para que no joda
 }
 
 int espacioPaginas(int idSegmento){
@@ -303,6 +308,6 @@ int espacioPaginas(int idSegmento){
 //			return -1; //Error
 //		}
 	}
+
+	return 0; //Momentaneo para que no joda
 }
-
-
