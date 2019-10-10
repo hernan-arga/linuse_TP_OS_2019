@@ -218,7 +218,12 @@ int muse_sync(uint32_t addr, size_t len) { //Case 8
 	send(serverMUSE, buffer,
 			4 * sizeof(int) + sizeof(uint32_t) + sizeof(size_t), 0);
 
-	return 0;
+	int *tamanioResp = malloc(sizeof(int));
+	read(serverMUSE, tamanioResp, sizeof(int));
+	int *resultado = malloc(*tamanioResp);
+	read(serverMUSE, resultado, *tamanioResp);
+
+	return resultado;
 }
 
 int muse_unmap(uint32_t dir) { //Case 9

@@ -8,7 +8,8 @@
 
 int iniciar_conexion(int ip, int puerto) {
 	int opt = 1;
-	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30, activity, i, sd, valread;
+	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30,
+			activity, i, sd, valread;
 	int max_sd;
 	struct sockaddr_in address;
 
@@ -25,7 +26,7 @@ int iniciar_conexion(int ip, int puerto) {
 
 	//create a master socket
 	if ((master_socket = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-		 perror("socket failed");
+		perror("socket failed");
 		exit(EXIT_FAILURE);
 	}
 
@@ -165,7 +166,7 @@ int iniciar_conexion(int ip, int puerto) {
 						atenderMuseMap(sd);
 						break;
 					case 8: //sync
-						//atenderMuseSync(sd);
+						atenderMuseSync(sd);
 						break;
 					case 9: //unmap
 						//atenderMuseUnmap(sd);
@@ -280,10 +281,10 @@ void atenderMuseGet(int cliente) {
 	int *resultado = 0;
 
 	if (*resultado == 0) {
-			loguearInfo("Get realizado correctamente");
-		} else {
-			loguearInfo("Error realizando get");
-		}
+		loguearInfo("Get realizado correctamente");
+	} else {
+		loguearInfo("Error realizando get");
+	}
 
 	char* buffer = malloc(2 * sizeof(int));
 
@@ -318,10 +319,10 @@ void atenderMuseCopy(int cliente) {
 	int *resultado = 0;
 
 	if (*resultado == 0) {
-			loguearInfo("Cpy realizado exitosamente");
-		} else {
-			loguearInfo("Error realizando cpy");
-		}
+		loguearInfo("Cpy realizado exitosamente");
+	} else {
+		loguearInfo("Error realizando cpy");
+	}
 
 	char* buffer = malloc(2 * sizeof(int));
 
@@ -360,6 +361,39 @@ void atenderMuseMap(int cliente) {
 	memcpy(buffer + sizeof(int), &posicionMemoria, sizeof(uint32_t));
 
 	send(cliente, buffer, sizeof(int) + sizeof(uint32_t), 0);
+
+}
+
+void atenderMuseSync(int cliente) {
+	//deserializo lo que manda el cliente
+
+	int *tamanioAddr = malloc(sizeof(int));
+	read(cliente, tamanioAddr, sizeof(int));
+	uint32_t *addr = malloc(*tamanioAddr);
+	read(cliente, addr, *tamanioAddr);
+
+	int *tamanioLen = malloc(sizeof(int));
+	read(cliente, tamanioLen, sizeof(int));
+	size_t *len = malloc(*tamanioLen);
+	read(cliente, len, *tamanioLen);
+
+	//hacer en muse un sync y mandar -1 error o 0 ok
+
+	int *resultado = 0;
+
+	if (*resultado == 0) {
+		loguearInfo("sync realizado correctamente");
+	} else {
+		loguearInfo("Error realizando sync");
+	}
+
+	char* buffer = malloc(2 * sizeof(int));
+
+	int tamanioResult = sizeof(int);
+	memcpy(buffer, &tamanioResult, sizeof(int));
+	memcpy(buffer + sizeof(int), &resultado, sizeof(int));
+
+	send(cliente, buffer, 2 * sizeof(int), 0);
 
 }
 
