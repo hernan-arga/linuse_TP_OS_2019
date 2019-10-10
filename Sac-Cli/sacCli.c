@@ -335,7 +335,14 @@ static int hello_write(const char *path, const char *buf, size_t size, off_t off
 	return 0;
 }
 
+
 static int hello_getxattr(const char *path, const char *name, char *value, size_t size){
+
+	return 0;
+}
+
+
+static int hello_truncate(const char * path, off_t offset){
 
 	return 0;
 }
@@ -351,7 +358,14 @@ static struct fuse_operations hello_oper = {
 		.unlink = hello_unlink,
 		.rmdir = hello_rmdir,
 		.write = hello_write,
-		//.getxattr = hello_getxattr
+		.getxattr = hello_getxattr,
+		// chmod, chown, truncate y utime
+		.truncate = hello_truncate
+
+		/*
+		.flush = remote_flush,
+		.release = remote_release,
+		*/
 };
 
 
