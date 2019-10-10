@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <math.h>
 
 int main(){
 
@@ -23,11 +24,14 @@ int main(){
 	/////////////////////////
 	tam_mem = pconfig->tamanio_memoria; //Ver de poner como define
 	tam_pagina = pconfig->tamanio_pag; //Ver de poner como define
+	cantidadFrames = tam_mem / tam_pagina;
 
 	reservarMemoriaPrincipal(pconfig->tamanio_memoria);
 	//crearTablaSegmentos();
-	tablasSegmentos = dictionary_create();
 
+	inicializarBitmapFrames(bitmapFrames[cantidadFrames]);
+
+	tablasSegmentos = dictionary_create();
 
     return 0;
 }
@@ -37,7 +41,7 @@ int main(){
 
 void reservarMemoriaPrincipal(int tamanio){
 	memoriaPrincipal = malloc(tamanio);
-	crearHeaderInicial(tamanio-5); //Le resto los 5 bytes que van a ser del header
+	crearHeaderInicial(tamanio-sizeof(struct HeapMetadata));
 }
 
 void *crearHeaderInicial(uint32_t tamanio){
@@ -50,25 +54,171 @@ void *crearHeaderInicial(uint32_t tamanio){
 	return NULL;
 }
 
+void crearTablaSegmentosProceso(char *idProceso){ //Id proceso = id + ip
+	//Contemplar caso de que ya tenga una tabla de procesos?
+	t_list *listaDeSegmentos = list_create();
+
+	dictionary_put(tablasSegmentos,idProceso,listaDeSegmentos);
+	//Creo la estructura, pero no tiene segmentos aun
+}
+
+///////////////Bitmap de Frames///////////////
+
+void inicializarBitmapFrames(int bitmapFrames[cantidadFrames]){
+
+	for (int i = 0; i < cantidadFrames; i++){
+		bitmapFrames[i] = 0;
+	}
+
+}
+
+bool estaLibre(int indiceFrame){
+	if(bitmapFrames[indiceFrame] == 0){
+		return true;
+	} else{
+		return false;
+	}
+}
+
+int ocuparFrame(int indiceFrame){
+	if(bitmapFrames[indiceFrame] == 0){
+		bitmapFrames[indiceFrame] = 1;
+		return 0; //Salio bien
+	} else{
+		return -1; //Error - no se pudo ocupar, ya estaba en 1 - doble chequeo?
+	}
+}
+
+void liberarFrame(int indiceFrame){
+	bitmapFrames [indiceFrame] = 0;
+}
+
 ///////////////Funciones MUSE///////////////
 
 //MUSE INIT
-//La llamamos en muse init, le crea la tabla de segmentos correspondiente
+//La llamamos en muse init, le crea al proceso (id) la tabla de segmentos correspondiente
 
-void museinit(int id, char* ip/*, int puerto*/){ //Creo que no necesito el puerto - lo comento para consultar
+int museinit(int id, char* ip/*, int puerto*/){
+	//Creo que no necesito el puerto - lo comento para consultar
 	//Funcionara como id del proceso y sera la key en el diccioario
 	char* idProceso = string_new();// = string_itoa(id) ++ ip;
 	string_append(&idProceso,string_itoa(id));
 	string_append(&idProceso,ip);
 
-	dictionary_put(tablasSegmentos, idProceso, NULL);
+	crearTablaSegmentosProceso(idProceso);
+
+	return 0; //Retorna -1 ante un error
 }
 
 
 //MUSE ALLOC
 
-void *musemalloc(uint32_t tamanio){
+/* Eso se hará mediante el uso de un segmento de Heap en el cual pueda entrar nuestro dato
+ * (en caso de no existir ninguno, se deberá crearlo). De esa manera, analizaremos segmento
+ * a segmento de Heap, verificando si el último Header de metadata se encuentra con el valor
+ * free para incorporar el malloc. En caso de no encontrarlo, buscaremos si hay algún segmento
+ * de Heap que se pueda extender. Por último, en caso de no poder extender un segmento, deberá
+ * crear otro nuevo.*/
+
+void *musemalloc(uint32_t tamanio, int idSocketCliente){
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	int cantidadARecorrer = list_size(segmentosProceso);
+
+	if(list_is_empty(segmentosProceso)){
+
+		crearSegmento(tamanio, idSocketCliente); //Se crea un segmento con el minimo de frames necesarios para alocar *tamanio*
+		return NULL; //Momentaneo para que no rompa
+
+	} else{
+
+		for(int i = 0; i < cantidadARecorrer; i++){
+			struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+			unSegmento = list_get(segmentosProceso,i);
+
+			if(poseeTamanioLibre(unSegmento,tamanio)){
+				asignarEspacioLibre(unSegmento, tamanio); //Se hace el return de la posicion asignada
+			}
+
+			return NULL; //Momentaneo para que no rompa
+		}
+
+		//Si sale del for sin retorno, tengo que buscar algun segmento de heap
+		//que se pueda extender -siguiente for-
+
+		for(int j = 0; j < cantidadARecorrer; j++){
+			struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+			unSegmento = list_get(segmentosProceso,j);
+
+			if(esExtendible(segmentosProceso,j)){ //Chequeo si este segmento puede extenderse
+				//busco un frame libre en mi bitmap de frames
+				//asigno la data y retorno la posicion donde COMIENZA LA DATA
+
+				return NULL; //Momentaneo para que no rompa
+			}
+		}
+
+		//Si sale de este for sin retorno, es que no encontro espacio libre ni
+		//espacio que se pueda extender, por lo que debera crear un segmento nuevo
+
+		//creo segmento nuevo y retorno la posicion asignada
+
+		return NULL; //Momentaneo para que no rompa
+	}
+
 	return NULL;
+}
+
+void crearSegmento(uint32_t tamanio, int idSocketCliente){
+	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	struct Segmento *nuevoSegmento = malloc(sizeof(struct Segmento));
+
+	//Identificar segmento
+	if(list_is_empty(listaSegmentosProceso)){
+		nuevoSegmento->id = 1;
+	} else{
+		nuevoSegmento->id = list_size(listaSegmentosProceso) + 1;
+	}
+
+	//Nuevo segmento - base logica ??
+
+	//Asignar frames necesarios para *tamanio*
+	int paginasNecesarias;
+	double paginas;
+	paginas = tamanio/tam_pagina;
+
+	//Hardcodeo para revisar despues por que carajo me rompe de la otra manera
+	paginasNecesarias = (int)(ceil(2.5));
+	/*paginasNecesarias = (int)(ceil(paginas)); *Funcion techo para definir el minimo de
+												*paginas/frames que necesito, expresado
+												*paginas/frames en un numero entero*/
+
+	nuevoSegmento->tablaPaginas = list_create();
+
+	while(paginasNecesarias > 0){
+		asignarNuevaPagina(listaSegmentosProceso,nuevoSegmento->id); //Le busco un frame etc ...
+		paginasNecesarias --;
+	}
+
+}
+
+void asignarNuevaPagina(t_list *listaSegmentos, int idSegmento){
+
+}
+
+/* Recorre el espacio del segmento buscando espacio libre (desde la base logica hasta
+ * base logica + tamanio). Debe encontrar un header que isFree = true y
+ * size >= tamanio + 5 (5 para el proximo header) */
+
+int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio){
+	return 0;
+}
+
+void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio){
+
+}
+
+int esExtendible(t_list *segmentosProceso,int unIndice){
+	return 0;
 }
 
 //Funcion recorre buscando heapmetadata libre - mayor o igual - a cierto size
@@ -83,13 +233,24 @@ void *buscarEspacioLibre(uint32_t tamanio){
 
 	while(pos != end){
 		memcpy(&memoriaPrincipal,metadata,sizeof(struct HeapMetadata));
+		tamanioData = (*metadata).size;
 
 		if((*metadata).isFree == true && (*metadata).size <= tamanio){
 			//el espacio me sirve y lo asigno
 			//cambio valor isFree y retorno posicion
+			(*metadata).isFree = false;
+			(*metadata).size = tamanio;
+
+			if((tamanioData - tamanio) >= sizeof(struct HeapMetadata)){
+				struct HeapMetadata *nuevoHeader = malloc(sizeof(struct HeapMetadata));
+				nuevoHeader->isFree = true;
+				nuevoHeader->size= tamanioData - tamanio - sizeof(struct HeapMetadata);
+
+				pos = pos + sizeof(struct HeapMetadata) + tamanio;
+				*(&pos) = nuevoHeader; //ver
+			}
 		}
 		else{
-			tamanioData = (*metadata).size;
 			pos = &memoriaPrincipal + sizeof(struct HeapMetadata) + tamanioData; //Me muevo al proximo header
 		}
 	}
@@ -168,6 +329,8 @@ int calcularTamanioSegmento(int idSegmento){
 //			return -1; //Error
 //		}
 	}
+
+	return 0; //Momentaneo para que no joda
 }
 
 int espacioPaginas(int idSegmento){
@@ -180,6 +343,6 @@ int espacioPaginas(int idSegmento){
 //			return -1; //Error
 //		}
 	}
+
+	return 0; //Momentaneo para que no joda
 }
-
-

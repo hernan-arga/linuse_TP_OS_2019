@@ -301,3 +301,19 @@
 
 [ERROR] 09:59:08:713 SacServer/(5178:5178):  - NO se pudo hacer el open en SacServer
 
+[INFO] 10:05:08:610 SacServer/(5363:5363):  + Se hizo un open en SacServer
+
+[INFO] 10:05:09:847 SacServer/(5363:5363):  + Se hizo un open en SacServer
+
+[ERROR] 10:05:10:25 SacServer/(5363:5363):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 10:05:10:35 SacServer/(5363:5363):  - NO se pudo hacer el open en SacServer
+
+[INFO] 10:05:47:168 SacServer/(5446:5446):  + Se hizo un open en SacServer
+
+[INFO] 10:06:02:715 SacServer/(5446:5446):  + Se hizo un open en SacServer
+
+[ERROR] 10:06:02:889 SacServer/(5446:5446):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 10:06:02:901 SacServer/(5446:5446):  - NO se pudo hacer el open en SacServer
+
