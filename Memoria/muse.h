@@ -59,6 +59,7 @@ void crearTablaSegmentosProceso(char *idProceso);
 void inicializarBitmapFrames();
 int ocuparFrame(int indiceFrame);
 void liberarFrame(int indiceFrame);
+int buscarFrameLibre();
 
 //Funciones init
 int museinit(int id, char* ip/*, int puerto*/);
@@ -69,7 +70,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 int esExtendible(t_list *segmentosProceso,int unIndice);
-void asignarNuevaPagina(t_list *listaSegmentos, int idSegmento);
+void asignarNuevaPagina(struct Segmento *unSegmento);
 void *posicionMemoriaFrame(int unFrame);
 
 #endif /* MUSE_H_ */
