@@ -1,5 +1,6 @@
 #include "conexionServer.h"
 #include "operaciones.h"
+#include "estructuras.h"
 
 int iniciar_conexion(int ip, int puerto){
 	int opt = 1;
@@ -212,52 +213,6 @@ void loguearError(char* texto) {
 	free(mensajeALogear);
 }
 
-t_bitarray * crearBitmap(){
-
-	// revisar cambio de PATH para archivo
-	int bitmap = open("/home/utnso/workspace/tp-2019-2c-Cbados/disk.bin", O_RDWR);
-
-	struct stat mystat;
-
-	if (fstat(bitmap, &mystat) < 0) {
-	    printf("Error al establecer fstat\n");
-	    close(bitmap);
-	}
-
-	void * bmap = mmap(NULL, mystat.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, bitmap, 0);
-
-    int tamanioBitmap = mystat.st_size / BLOCK_SIZE / 8;
-    memset(bmap,0,tamanioBitmap);
-
-    printf("El tamaño del archivo es %li \n",mystat.st_size);
-
-	if (bmap == MAP_FAILED) {
-			printf("Error al mapear a memoria: %s\n", strerror(errno));
-
-	}
-
-	t_bitarray * bitarray =  bitarray_create_with_mode((char *)bmap, tamanioBitmap, LSB_FIRST);
-
-	int tope = (int)bitarray_get_max_bit(bitarray);
-
-	for(int i=0; i<tope; i++){
-		bitarray_clean_bit(bitarray,i);
-	}
-
-	int tope2 = tamanioBitmap + GFILEBYTABLE + 1;
-
-		for(int i=0; i<tope2; i++){
-				bitarray_set_bit(bitarray,i);
-			}
-
-	printf("El tamano del bitarray creado es de: %i\n\n\n",(int)bitarray_get_max_bit(bitarray));
-	printf("Bloques ocupados %i\n",tope2);
-	printf("Bloques libres %li\n",(mystat.st_size / BLOCK_SIZE) - tope2);
-	munmap(bmap,mystat.st_size);
-	close(bitmap);
-	return bitarray;
-
-}
 
 void borrarBitmap(t_bitarray* bitArray){
 

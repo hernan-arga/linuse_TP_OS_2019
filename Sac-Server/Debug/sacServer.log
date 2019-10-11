@@ -755,3 +755,87 @@
 
 [ERROR] 17:43:00:421 SacServer/(12947:12947):  - NO se pudo hacer el open en SacServer
 
+[INFO] 18:10:48:874 SacServer/(13621:13621):  + Se hizo un mkdir en SacServer
+
+[INFO] 18:10:51:225 SacServer/(13621:13621):  + Se hizo un open en SacServer
+
+[INFO] 18:10:51:226 SacServer/(13621:13621):  + Se hizo un open en SacServer
+
+[INFO] 18:16:52:912 SacServer/(13621:13621):  + Se hizo un open en SacServer
+
+[INFO] 18:16:52:913 SacServer/(13621:13621):  + Se hizo un open en SacServer
+
+[INFO] 18:17:26:394 SacServer/(13852:13852):  + Se hizo un open en SacServer
+
+[INFO] 18:17:26:395 SacServer/(13852:13852):  + Se hizo un open en SacServer
+
+[INFO] 18:17:30:777 SacServer/(13852:13852):  + Se hizo un rmdir en SacServer
+
+[INFO] 18:17:30:787 SacServer/(13852:13852):  + Se hizo un unlink en SacServer
+
+[INFO] 18:17:30:799 SacServer/(13852:13852):  + Se hizo un unlink en SacServer
+
+[INFO] 18:17:55:541 SacServer/(13852:13852):  + Se hizo un mkdir en SacServer
+
+[INFO] 18:17:59:461 SacServer/(13852:13852):  + Se hizo un mkdir en SacServer
+
+[INFO] 18:18:04:546 SacServer/(13852:13852):  + Se hizo un create en SacServer
+
+[INFO] 18:18:08:448 SacServer/(13852:13852):  + Se hizo un unlink en SacServer
+
+[INFO] 18:18:14:438 SacServer/(13852:13852):  + Se hizo un create en SacServer
+
+[INFO] 18:18:28:103 SacServer/(13852:13852):  + Se hizo un create en SacServer
+
+[INFO] 18:18:38:481 SacServer/(13852:13852):  + Se hizo un mkdir en SacServer
+
+[INFO] 18:18:57:496 SacServer/(13852:13852):  + Se hizo un rmdir en SacServer
+
+[INFO] 18:19:14:416 SacServer/(13852:13852):  + Se hizo un mkdir en SacServer
+
+[INFO] 18:19:23:0 SacServer/(13852:13852):  + Se hizo un create en SacServer
+
+[INFO] 18:19:29:510 SacServer/(13852:13852):  + Se hizo un create en SacServer
+
+[INFO] 18:19:44:1 SacServer/(13852:13852):  + Se hizo un create en SacServer
+
+[INFO] 18:20:12:169 SacServer/(13852:13852):  + Se hizo un unlink en SacServer
+
+[INFO] 18:20:12:175 SacServer/(13852:13852):  + Se hizo un unlink en SacServer
+
+[INFO] 18:20:17:888 SacServer/(13852:13852):  + Se hizo un create en SacServer
+
+[INFO] 18:20:23:582 SacServer/(13852:13852):  + Se hizo un create en SacServer
+
+[INFO] 18:20:36:598 SacServer/(13852:13852):  + Se hizo un create en SacServer
+
+[INFO] 18:21:16:466 SacServer/(13852:13852):  + Se hizo un open en SacServer
+
+[ERROR] 18:21:16:466 SacServer/(13852:13852):  - NO se pudo hacer el open en SacServer
+
+[INFO] 18:21:18:206 SacServer/(13852:13852):  + Se hizo un open en SacServer
+
+[INFO] 18:21:25:144 SacServer/(13852:13852):  + Se hizo un open en SacServer
+
+[INFO] 18:21:25:144 SacServer/(13852:13852):  + Se hizo un open en SacServer
+
+[INFO] 18:21:25:145 SacServer/(13852:13852):  + Se hizo un open en SacServer
+
+[ERROR] 18:21:25:183 SacServer/(13852:13852):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 18:21:27:858 SacServer/(13852:13852):  - NO se pudo hacer el open en SacServer
+
+[ERROR] 18:21:27:859 SacServer/(13852:13852):  - NO se pudo hacer el open en SacServer
+
+[INFO] 18:21:34:764 SacServer/(13852:13852):  + Se hizo un open en SacServer
+
+[ERROR] 18:21:34:766 SacServer/(13852:13852):  - NO se pudo hacer el open en SacServer
+
+[INFO] 18:21:43:717 SacServer/(13852:13852):  + Se hizo un open en SacServer
+
+[ERROR] 18:21:43:718 SacServer/(13852:13852):  - NO se pudo hacer el open en SacServer
+
+[INFO] 18:21:56:561 SacServer/(13852:13852):  + Se hizo un open en SacServer
+
+[ERROR] 18:21:56:565 SacServer/(13852:13852):  - NO se pudo hacer el open en SacServer
+

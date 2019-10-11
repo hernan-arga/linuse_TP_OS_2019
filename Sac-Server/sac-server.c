@@ -1,5 +1,6 @@
 #include "sac-server.h"
 #include <stdio.h>
+#include "estructuras.h"
 
 int main(){
 	// Levanta archivo de configuracion
@@ -12,9 +13,8 @@ int main(){
 	// Logueo
 	loguearInfo(" + Levantado Sac-Server correctamente");
 
-	// t_log * log = crear_log();
-	//t_bitarray *bitArray = crearBitmap();
-	//borrarBitmap(bitArray);
+	iniciarMmap();
+	bitArray = bitarray_create(mmapDeBitmap, tamanioEnBytesDelBitarray());
 
 	pthread_join(hiloLevantarConexion, NULL);
 	return 0;

@@ -54,3 +54,5 @@
 
 [ERROR] 16:24:21:755 SacServer/(8607:8607):  - NO se pudo hacer el rmdir en SacServer
 
+[INFO] 00:27:21:93 SacServer/(18739:18739):  + Se hizo un create en SacServer
+

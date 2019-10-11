@@ -1,5 +1,6 @@
 #ifndef OPERACIONES_H_
 #define OPERACIONES_H_
+#define _GNU_SOURCE
 #include <dirent.h>
 #include <sys/stat.h>
 

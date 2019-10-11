@@ -5,16 +5,19 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../conexionServer.c \
+../estructuras.c \
 ../operaciones.c \
 ../sac-server.c 
 
 OBJS += \
 ./conexionServer.o \
+./estructuras.o \
 ./operaciones.o \
 ./sac-server.o 
 
 C_DEPS += \
 ./conexionServer.d \
+./estructuras.d \
 ./operaciones.d \
 ./sac-server.d 
 

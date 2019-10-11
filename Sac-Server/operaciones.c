@@ -1,9 +1,34 @@
 #include "operaciones.h"
+#include "estructuras.h"
 #include "unistd.h"
 #include <stdio.h>
+#include <libgen.h>
 
-int o_create(char* pathC){
-	int ok;
+
+int o_create(char* path){
+
+	//creo un nodo
+	gfile* p_gfile = malloc(1 + strlen(basename(path)) + strlen(basename(dirname(path))) + 4 + 2 * sizeof(unsigned long long) + 4);
+
+	p_gfile->estado = OCUPADO;
+
+	p_gfile->nombre_archivo = malloc(strlen(basename(path)));
+	memcpy(p_gfile->nombre_archivo, basename(path), strlen(basename(path)));
+
+	p_gfile->bloque_padre = malloc(strlen(basename(dirname(path))));
+	memcpy(p_gfile->bloque_padre, basename(dirname(path)), strlen(basename(dirname(path))));
+
+	p_gfile->tamanio_archivo = 0;
+	p_gfile->fecha_creacion = getMicrotime();
+	p_gfile->fecha_modificacion = getMicrotime();
+	p_gfile->bloques_indirectos[0] = asignarBloqueLibre();
+
+	return 0;
+
+	/*
+	 * FUNCIONAMIENTO ANTERIOR
+	 *
+	 * int ok;
 
 	char* path = string_new();
 	string_append(&path, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
@@ -21,6 +46,7 @@ int o_create(char* pathC){
 		fclose(fp1);
 	}
 	return ok;
+	*/
 }
 
 int o_open(char* path){

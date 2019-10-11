@@ -152,23 +152,7 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 }
 
 static int hello_getattr(const char *path, struct stat *stbuf) {
-/*
-	if (strcmp(path, "/hola") == 0) {
-			stbuf->st_mode = S_IFDIR | 0755;
-			stbuf->st_nlink = 2;
-	}
-	if (strcmp(path, "/hola/asd.txt") == 0) {
-			stbuf->st_mode = S_IFREG | 0444;
-			stbuf->st_nlink = 1;
-			stbuf->st_size = strlen(DEFAULT_FILE_CONTENT);
-	}
 
-	if (strcmp(path, "ooo") == 0) {
-				stbuf->st_mode = S_IFREG | 0444;
-				stbuf->st_nlink = 1;
-				stbuf->st_size = strlen(DEFAULT_FILE_CONTENT);
-	}
-*/
 	//Serializo peticion y path
 	char* buffer = malloc(3 * sizeof(int) + strlen(path));
 
