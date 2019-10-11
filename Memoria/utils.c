@@ -151,24 +151,31 @@ int iniciar_conexion(int ip, int puerto) {
 						//atenderMuseClose(sd);
 						break;
 					case 3: //alloc
+						printf("llego alloc");
 						atenderMuseAlloc(sd);
 						break;
 					case 4: //free
+						printf("llego free");
 						atenderMuseFree(sd);
 						break;
 					case 5: //get
+						printf("llego get");
 						atenderMuseGet(sd);
 						break;
 					case 6: //copy
+						printf("llego copy");
 						atenderMuseCopy(sd);
 						break;
 					case 7:	//map
+						printf("llego map");
 						atenderMuseMap(sd);
 						break;
 					case 8: //sync
+						printf("llego sync");
 						atenderMuseSync(sd);
 						break;
 					case 9: //unmap
+						printf("llego unmap");
 						atenderMuseUnmap(sd);
 						break;
 					default:
@@ -228,6 +235,7 @@ void atenderMuseAlloc(int cliente) {
 	//serializo esa direccion y se la mando al cliente
 
 	char* buffer = malloc(sizeof(int) + sizeof(uint32_t));
+
 	int tamanioDireccion = sizeof(int);
 	uint32_t direccion = 4294967295; //pongo esto para mandar algo
 	memcpy(buffer, &tamanioDireccion, sizeof(int));
@@ -245,7 +253,7 @@ void atenderMuseFree(int cliente) {
 	uint32_t *direccionDeMemoria = malloc(*tamanioDireccion);
 	read(cliente, direccionDeMemoria, *tamanioDireccion);
 
-	printf("%" PRIu32 "\n", direccionDeMemoria);
+	printf("%" PRIu32 "\n", *direccionDeMemoria);
 
 	//int resultado = museFree(direccionDeMemoria);
 	int resultado = 1; //pa probar
@@ -275,12 +283,16 @@ void atenderMuseGet(int cliente) {
 	read(cliente, tamanioN, sizeof(int));
 	size_t *N = malloc(*tamanioN);
 	read(cliente, N, *tamanioN);
+	/*
 
+	 printf("%p \n", dst);
+	 printf("%" PRIu32 "\n", *src);
+	 printf("%zu\n", *N);
+	 */
 	//hacer en muse un get y mandar -1 error o 0 ok
+	int resultado = 0;
 
-	int *resultado = 0;
-
-	if (*resultado == 0) {
+	if (resultado == 0) {
 		loguearInfo("Get realizado correctamente");
 	} else {
 		loguearInfo("Error realizando get");
@@ -316,9 +328,9 @@ void atenderMuseCopy(int cliente) {
 
 	//hacer en muse un copy y mandar -1 error o 0 ok
 
-	int *resultado = 0;
+	int resultado = 0;
 
-	if (*resultado == 0) {
+	if (resultado == 0) {
 		loguearInfo("Cpy realizado exitosamente");
 	} else {
 		loguearInfo("Error realizando cpy");
@@ -379,9 +391,9 @@ void atenderMuseSync(int cliente) {
 
 	//hacer en muse un sync y mandar -1 error o 0 ok
 
-	int *resultado = 0;
+	int resultado = 0;
 
-	if (*resultado == 0) {
+	if (resultado == 0) {
 		loguearInfo("sync realizado correctamente");
 	} else {
 		loguearInfo("Error realizando sync");
@@ -405,23 +417,25 @@ void atenderMuseUnmap(int cliente) {
 	uint32_t *dir = malloc(*tamanioDir);
 	read(cliente, dir, *tamanioDir);
 
+	printf("%" PRIu32 "\n", *dir);
+
 	//hacer en muse un unmap y mandar -1 error o 0 ok
 
-	int *resultado = 0;
+	int resultado = 0;
 
-		if (*resultado == 0) {
-			loguearInfo("unmap realizado correctamente");
-		} else {
-			loguearInfo("Error realizando unamap");
-		}
+	if (resultado == 0) {
+		loguearInfo("unmap realizado correctamente");
+	} else {
+		loguearInfo("Error realizando unamap");
+	}
 
-		char* buffer = malloc(2 * sizeof(int));
+	char* buffer = malloc(2 * sizeof(int));
 
-		int tamanioResult = sizeof(int);
-		memcpy(buffer, &tamanioResult, sizeof(int));
-		memcpy(buffer + sizeof(int), &resultado, sizeof(int));
+	int tamanioResult = sizeof(int);
+	memcpy(buffer, &tamanioResult, sizeof(int));
+	memcpy(buffer + sizeof(int), &resultado, sizeof(int));
 
-		send(cliente, buffer, 2 * sizeof(int), 0);
+	send(cliente, buffer, 2 * sizeof(int), 0);
 
 }
 
