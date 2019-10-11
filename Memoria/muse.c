@@ -195,8 +195,6 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente){
 	//Nuevo segmento - base logica ??
 
 	//Asignar frames necesarios para *tamanio*
-
-	//pasar a int
 	int paginasNecesarias;
 	double paginas;
 	paginas = tamanio/tam_pagina;
@@ -246,6 +244,8 @@ void *posicionMemoriaFrame(int unFrame){
  * size >= tamanio + 5 (5 para el proximo header) */
 
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio){
+	/*DESARROLLAR - consulta mail*/
+
 	return 0;
 }
 
