@@ -169,7 +169,7 @@ int iniciar_conexion(int ip, int puerto) {
 						atenderMuseSync(sd);
 						break;
 					case 9: //unmap
-						//atenderMuseUnmap(sd);
+						atenderMuseUnmap(sd);
 						break;
 					default:
 						;
@@ -394,6 +394,34 @@ void atenderMuseSync(int cliente) {
 	memcpy(buffer + sizeof(int), &resultado, sizeof(int));
 
 	send(cliente, buffer, 2 * sizeof(int), 0);
+
+}
+
+void atenderMuseUnmap(int cliente) {
+	//deserializo lo que manda el cliente
+
+	int *tamanioDir = malloc(sizeof(int));
+	read(cliente, tamanioDir, sizeof(int));
+	uint32_t *dir = malloc(*tamanioDir);
+	read(cliente, dir, *tamanioDir);
+
+	//hacer en muse un unmap y mandar -1 error o 0 ok
+
+	int *resultado = 0;
+
+		if (*resultado == 0) {
+			loguearInfo("unmap realizado correctamente");
+		} else {
+			loguearInfo("Error realizando unamap");
+		}
+
+		char* buffer = malloc(2 * sizeof(int));
+
+		int tamanioResult = sizeof(int);
+		memcpy(buffer, &tamanioResult, sizeof(int));
+		memcpy(buffer + sizeof(int), &resultado, sizeof(int));
+
+		send(cliente, buffer, 2 * sizeof(int), 0);
 
 }
 

@@ -30,6 +30,8 @@ void atenderMuseFree(int socket);
 void atenderMuseGet(int socket);
 void atenderMuseCopy(int socket);
 void atenderMuseMap(int socket);
+void atenderMuseSync(int socket);
+void atenderMuseUnmap(int socket);
 
 t_log* logger;
 pthread_t hiloLevantarConexion;
