@@ -95,9 +95,22 @@ int ocuparFrame(int indiceFrame, uint32_t tamanio){
 			if(metadata->isFree == true){ //Si esta libre y tiene el tamaño, ocupo el header
 				if(metadata->size >= tamanio){
 					metadata->isFree = false;
+					int espacioFrameDisponible = metadata->size - tamanio;
 					metadata->size = metadata->size-tamanio;
-					//Ver si hay espacio libre para otro header, de ser asi crearlo..
-					//Si se acabo el espacio marcar en el bitmap de frames como ocupado
+
+					if(espacioFrameDisponible >= sizeof(struct HeapMetadata)){
+						//Veo si me entra un header, me muevo a la pos del prox header y lo creo
+						int size = metadata->size;
+						pos = pos + sizeof(struct HeapMetadata) + size;
+
+						struct HeapMetadata *nuevoHeader = malloc(sizeof(struct HeapMetadata));
+						nuevoHeader->isFree = true;
+						nuevoHeader->size = espacioFrameDisponible - sizeof(struct HeapMetadata);
+
+						pos = nuevoHeader;
+
+						//Chequear si el espacio ACTUAL restante es 0, marco el frame como ocupado
+					}
 
 					return 0; //Exito - se pudo asignar la data
 				}
