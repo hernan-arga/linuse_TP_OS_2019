@@ -97,6 +97,17 @@ void liberarFrame(int indiceFrame){
 	bitmapFrames [indiceFrame] = 0;
 }
 
+int buscarFrameLibre(){
+
+	for(int i = 0; i < cantidadFrames; i++){
+		if(bitmapFrames[i] == 0){
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 ///////////////Funciones MUSE///////////////
 
 //MUSE INIT
@@ -188,25 +199,37 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente){
 	double paginas;
 	paginas = tamanio/tam_pagina;
 
-	//Hardcodeo para revisar despues por que carajo me rompe de la otra manera
-	paginasNecesarias = (int)(ceil(2.5));
-	/*paginasNecesarias = (int)(ceil(paginas)); *Funcion techo para definir el minimo de
-												*paginas/frames que necesito, expresado
-												*paginas/frames en un numero entero*/
+	paginasNecesarias = (int)(ceil(paginas)); /*Funcion techo para definir el minimo de
+												paginas/frames que necesito, expresado
+												paginas/frames en un numero entero*/
 
 	nuevoSegmento->tablaPaginas = list_create();
 
 	while(paginasNecesarias > 0){
-		asignarNuevaPagina(listaSegmentosProceso,nuevoSegmento->id); //Le busco un frame etc ...
+		asignarNuevaPagina(nuevoSegmento); //Le busco un frame etc ...
 		paginasNecesarias --;
-
 	}
 
 	list_add(listaSegmentosProceso, nuevoSegmento);
 	return nuevoSegmento;
 }
 
-void asignarNuevaPagina(t_list *listaSegmentos, int idSegmento){
+void asignarNuevaPagina(struct Segmento *unSegmento){
+	struct Pagina *nuevaPagina = malloc(sizeof(struct Pagina));
+
+	//CHEQUEAR VALORES
+	nuevaPagina->modificado = false;
+	nuevaPagina->presencia = true;
+	nuevaPagina->uso = false;
+
+	int nuevoFrame = buscarFrameLibre();
+
+	if(nuevoFrame == -1){
+		//Memoria virtual?
+	} else{
+		nuevaPagina->numeroFrame = nuevoFrame;
+		ocuparFrame(nuevoFrame);
+	}
 
 }
 
@@ -221,6 +244,8 @@ void *posicionMemoriaFrame(int unFrame){
  * size >= tamanio + 5 (5 para el proximo header) */
 
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio){
+	/*DESARROLLAR - consulta mail*/
+
 	return 0;
 }
 
