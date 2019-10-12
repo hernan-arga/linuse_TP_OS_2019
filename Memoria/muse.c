@@ -10,7 +10,7 @@
 
 int main(){
 
-	// Levanta archivo de configuracion
+	// Levanta archivo de configuracion - Se hace una unica vez
 	t_log *log = crear_log();
 	config* pconfig = malloc(5 * sizeof(int));
 	levantarConfigFile(pconfig);
@@ -26,11 +26,11 @@ int main(){
 	tam_pagina = pconfig->tamanio_pag; //Ver de poner como define
 	cantidadFrames = tam_mem / tam_pagina;
 
+	//Se hace una unica vez
 	reservarMemoriaPrincipal(pconfig->tamanio_memoria);
-	//crearTablaSegmentos();
-
+	//Se hace una unica vez
 	inicializarBitmapFrames(bitmapFrames[cantidadFrames]);
-
+	//Se hace una unica vez
 	tablasSegmentos = dictionary_create();
 
     return 0;
@@ -55,11 +55,9 @@ void *crearHeaderInicial(uint32_t tamanio){
 }
 
 void crearTablaSegmentosProceso(char *idProceso){ //Id proceso = id + ip
-	//Contemplar caso de que ya tenga una tabla de procesos?
 	t_list *listaDeSegmentos = list_create();
 
-	dictionary_put(tablasSegmentos,idProceso,listaDeSegmentos);
-	//Creo la estructura, pero no tiene segmentos aun
+	dictionary_put(tablasSegmentos,idProceso,listaDeSegmentos); //Creo la estructura, pero no tiene segmentos aun
 }
 
 ///////////////Bitmap de Frames///////////////
@@ -82,13 +80,40 @@ bool estaLibre(int indiceFrame){
 
 }
 
-int ocuparFrame(int indiceFrame){
+int ocuparFrame(int indiceFrame, uint32_t tamanio){
 
-	if(bitmapFrames[indiceFrame] == 0){
-		bitmapFrames[indiceFrame] = 1;
-		return 0; //Salio bien
+	if(bitmapFrames[indiceFrame] == 0){ //Esta libre o tiene algo de espacio libre
+
+		void *pos = &memoriaPrincipal + (indiceFrame * tam_pagina); //Me posiciono en el frame
+		struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+		memcpy(metadata,pos,sizeof(struct HeapMetadata)); //Leo el primer header
+		void *end = pos + tam_pagina; /*Calculo el final del frame para recorrer
+										SOLO los headers del frame*/
+
+		while(pos < end){
+
+			if(metadata->isFree == true){ //Si esta libre y tiene el tamaño, ocupo el header
+				if(metadata->size >= tamanio){
+					metadata->isFree = false;
+					metadata->size = metadata->size-tamanio;
+					//Ver si hay espacio libre para otro header, de ser asi crearlo..
+					//Si se acabo el espacio marcar en el bitmap de frames como ocupado
+
+					return 0; //Exito - se pudo asignar la data
+				}
+			} else{ //Como no esta libre, me muevo al proximo header
+				int size = metadata->size;
+				pos = pos + sizeof(struct HeapMetadata) + size; //Me muevo al siguiente header
+				memcpy(metadata,pos,sizeof(struct HeapMetadata)); //Leo el siguiente header
+			}
+		}
+
+		return -1; //Error - no encontro el espacio necesario
+
 	} else{
-		return -1; //Error - no se pudo ocupar, ya estaba en 1 - doble chequeo?
+
+		return -1; //Error
+
 	}
 
 }
@@ -97,6 +122,9 @@ void liberarFrame(int indiceFrame){
 	bitmapFrames [indiceFrame] = 0;
 }
 
+/* Recorre los frames en orden buscando uno libre y retorna el indice
+ * del primero libre, de no haber libres retorna -1 (memoria virtual)
+ * */
 int buscarFrameLibre(){
 
 	for(int i = 0; i < cantidadFrames; i++){
@@ -116,7 +144,7 @@ int buscarFrameLibre(){
 int museinit(int id, char* ip/*, int puerto*/){
 	//Creo que no necesito el puerto - lo comento para consultar
 	//Funcionara como id del proceso y sera la key en el diccioario
-	char* idProceso = string_new();// = string_itoa(id) ++ ip;
+	char* idProceso = string_new();
 	string_append(&idProceso,string_itoa(id));
 	string_append(&idProceso,ip);
 
@@ -135,12 +163,14 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente){
 	if(list_is_empty(segmentosProceso)){
 
 		struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
-		unSegmento = crearSegmento(tamanio, idSocketCliente); //Se crea un segmento con el minimo de frames necesarios para alocar *tamanio*
+		unSegmento = crearSegmento(tamanio, idSocketCliente);  /*Se crea un segmento con el minimo
+																*de frames necesarios para alocar
+																*tamanio**/
 
 		struct Pagina *primeraPagina = malloc(sizeof(struct Pagina));
 		primeraPagina = list_get(unSegmento->tablaPaginas, 0);
 
-		posicionMemoriaFrame(primeraPagina->numeroFrame);
+		retornarPosicionMemoriaFrame(primeraPagina->numeroFrame);
 
 	} else{
 
@@ -187,7 +217,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente){
 
 	//Identificar segmento
 	if(list_is_empty(listaSegmentosProceso)){
-		nuevoSegmento->id = 1;
+		nuevoSegmento->id = 0;
 	} else{
 		nuevoSegmento->id = list_size(listaSegmentosProceso) + 1;
 	}
@@ -198,45 +228,56 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente){
 	int paginasNecesarias;
 	double paginas;
 	paginas = tamanio/tam_pagina;
-
 	paginasNecesarias = (int)(ceil(paginas)); /*Funcion techo para definir el minimo de
 												paginas/frames que necesito, expresado
 												paginas/frames en un numero entero*/
-
 	nuevoSegmento->tablaPaginas = list_create();
 
 	while(paginasNecesarias > 0){
-		asignarNuevaPagina(nuevoSegmento); //Le busco un frame etc ...
+
+		if(tamanio > tam_pagina){
+			asignarNuevaPagina(nuevoSegmento,tam_pagina);
+			tamanio = tamanio - tam_pagina; //headers?
+		} else{
+			asignarNuevaPagina(nuevoSegmento,tamanio);
+		}
+
 		paginasNecesarias --;
+
+		//Gestion del tamaño ocupado en cada frame, ultimo heapmetadata a crear --ocuparFrame
 	}
 
 	list_add(listaSegmentosProceso, nuevoSegmento);
 	return nuevoSegmento;
 }
 
-void asignarNuevaPagina(struct Segmento *unSegmento){
+void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio){
 	struct Pagina *nuevaPagina = malloc(sizeof(struct Pagina));
 
 	//CHEQUEAR VALORES
 	nuevaPagina->modificado = false;
-	nuevaPagina->presencia = true;
+	nuevaPagina->presencia = 1;
 	nuevaPagina->uso = false;
 
-	int nuevoFrame = buscarFrameLibre();
+	int nuevoFrame = buscarFrameLibre(); //tamanio
 
 	if(nuevoFrame == -1){
 		//Memoria virtual?
 	} else{
 		nuevaPagina->numeroFrame = nuevoFrame;
-		ocuparFrame(nuevoFrame);
+		ocuparFrame(nuevoFrame,tamanio-5);
 	}
 
 }
 
-void *posicionMemoriaFrame(int unFrame){
+void *retornarPosicionMemoriaFrame(int unFrame){
 	int offset = tam_pagina * unFrame; //Los frames estan en orden y se recorren de may a men
 
-	return ((&memoriaPrincipal) + offset);
+	return ((&memoriaPrincipal) + offset + sizeof(struct HeapMetadata)); /* *Le sumo los primeros
+																			*bytes que se encuentran
+																			*ocupados por una metadata
+																			*indicando que está ocupado
+																			*y cuánto*/
 }
 
 /* Recorre el espacio del segmento buscando espacio libre (desde la base logica hasta

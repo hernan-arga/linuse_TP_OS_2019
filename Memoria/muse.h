@@ -28,7 +28,7 @@ struct Segmento{
 struct Pagina{
 	bool modificado;
 	bool uso;
-	bool presencia;
+	int presencia;
 	int numeroFrame;
 };
 
@@ -57,7 +57,7 @@ void crearTablaSegmentosProceso(char *idProceso);
 
 //Funciones bitmap de frames
 void inicializarBitmapFrames();
-int ocuparFrame(int indiceFrame);
+int ocuparFrame(int indiceFrame, uint32_t tamanio);
 void liberarFrame(int indiceFrame);
 int buscarFrameLibre();
 
@@ -70,7 +70,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 int esExtendible(t_list *segmentosProceso,int unIndice);
-void asignarNuevaPagina(struct Segmento *unSegmento);
-void *posicionMemoriaFrame(int unFrame);
+void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio);
+void *retornarPosicionMemoriaFrame(int unFrame);
 
 #endif /* MUSE_H_ */
