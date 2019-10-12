@@ -5,23 +5,31 @@
 #include <libgen.h>
 
 
+
 int o_create(char* path){
 
 	//creo un nodo
-	gfile* p_gfile = malloc(1 + strlen(basename(path)) + strlen(basename(dirname(path))) + 4 + 2 * sizeof(unsigned long long) + 4);
+	gfile* p_gfile = malloc(1 + 4 + 2 * sizeof(unsigned long long) + 4);
 
 	p_gfile->estado = OCUPADO;
 
+	char* pathCopia;
+	memcpy(pathCopia, path, strlen(path));
 	p_gfile->nombre_archivo = malloc(strlen(basename(path)));
-	memcpy(p_gfile->nombre_archivo, basename(path), strlen(basename(path)));
+	memcpy(p_gfile->nombre_archivo, path, strlen(path));
 
-	p_gfile->bloque_padre = malloc(strlen(basename(dirname(path))));
-	memcpy(p_gfile->bloque_padre, basename(dirname(path)), strlen(basename(dirname(path))));
+	p_gfile->bloque_padre = buscarPadre(pathCopia);
 
-	p_gfile->tamanio_archivo = 0;
+	p_gfile->tamanio_archivo = 4096;
 	p_gfile->fecha_creacion = getMicrotime();
 	p_gfile->fecha_modificacion = getMicrotime();
-	p_gfile->bloques_indirectos[0] = asignarBloqueLibre();
+
+	ptrGBloque bloqueLibre = asignarBloqueLibre();
+	p_gfile->bloques_indirectos = list_create();
+	list_add(p_gfile->bloques_indirectos, bloqueLibre);
+
+	//Agrego este nodo a la tabla de nodos
+	list_add(tablaNodos, p_gfile);
 
 	return 0;
 
@@ -48,6 +56,24 @@ int o_create(char* path){
 	return ok;
 	*/
 }
+
+
+ptrGBloque buscarPadre(char* path){
+	int tieneNombre(gfile* unNodo){
+		return strcmp( unNodo->nombre_archivo, basename(dirname(path))) == 0;
+	}
+
+	gfile* nodoPadre = listfind(tablaNodos, tieneNombre);
+
+	if(nodoPadre){
+		return list_get(nodoPadre->bloques_indirectos, 0);
+	}
+	else{
+		return 0;
+	}
+
+}
+
 
 int o_open(char* path){
 

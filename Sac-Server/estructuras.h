@@ -14,6 +14,7 @@
 #include <commons/string.h>
 #include <commons/log.h>
 #include <commons/bitarray.h>
+#include <commons/collections/list.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <arpa/inet.h>
@@ -26,7 +27,6 @@
 #include <pthread.h>
 #include <sys/mman.h>
 #include <fcntl.h>
-
 
 t_bitarray * crearBitmap();
 unsigned long long getMicrotime();
@@ -44,6 +44,8 @@ int tamanioEnBytesDelBitarray();
 #define BLOCK_SIZE 4096
 
 typedef uint32_t ptrGBloque;
+t_list* tablaNodos;
+
 
 typedef enum __attribute__((packed)){
 	BORRADO = '\0',
@@ -66,7 +68,7 @@ typedef struct {
 	int tamanio_archivo; // maximo tamanio de archivo 4GB
 	unsigned long long fecha_creacion;
 	unsigned long long fecha_modificacion;
-	ptrGBloque* bloques_indirectos;
+	t_list* bloques_indirectos;
 } gfile;
 
 

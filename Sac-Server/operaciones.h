@@ -14,5 +14,6 @@ int o_unlink(char*);
 int o_rmdir(char*);
 int o_rmdir_2(char*);
 void o_write(char*, int, int, char*);
+ptrGBloque buscarPadre(char*);
 
 #endif /* OPERACIONES_H_ */
