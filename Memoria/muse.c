@@ -109,7 +109,13 @@ int ocuparFrame(int indiceFrame, uint32_t tamanio){
 
 						pos = nuevoHeader;
 
-						//Chequear si el espacio ACTUAL restante es 0, marco el frame como ocupado
+						if(estaOcupadoCompleto(indiceFrame) == true){ /**Chequeo si el espacio ACTUAL
+						 	 	 	 	 	 	 	 	 	 	 restante es 0, de ser asi lo
+						 	 	 	 	 	 	 	 	 	 	 marco como ocupado*/
+							bitmapFrames[indiceFrame] = 1;
+						}
+
+
 					}
 
 					return 0; //Exito - se pudo asignar la data
@@ -131,6 +137,26 @@ int ocuparFrame(int indiceFrame, uint32_t tamanio){
 
 }
 
+bool estaOcupadoCompleto(int indiceFrame){
+	void *pos = retornarPosicionMemoriaFrame(indiceFrame);
+	void *end = &pos + tam_pagina; //Comienzo del proximo frame
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+
+	while(pos < end){
+		memcpy(metadata,pos,sizeof(struct HeapMetadata));
+
+		if(metadata->isFree == true && metadata->size > 0){ //Si encuentra un espacio libre mayor a 0
+			return false;
+		}
+
+		int size = metadata->size;
+		pos = pos + sizeof(struct HeapMetadata) + size;
+	} //Si sale de este while sin retorno, significa que no encontro espacio libre
+
+	return true;
+
+}
+
 void liberarFrame(int indiceFrame){
 	bitmapFrames [indiceFrame] = 0;
 }
@@ -147,6 +173,16 @@ int buscarFrameLibre(){
 	}
 
 	return -1;
+}
+
+void *retornarPosicionMemoriaFrame(int unFrame){
+	int offset = tam_pagina * unFrame; //Los frames estan en orden y se recorren de may a men
+
+	return ((&memoriaPrincipal) + offset + sizeof(struct HeapMetadata)); /* *Le sumo los primeros
+																			*bytes que se encuentran
+																			*ocupados por una metadata
+																			*indicando que está ocupado
+																			*y cuánto*/
 }
 
 ///////////////Funciones MUSE///////////////
@@ -281,16 +317,6 @@ void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio){
 		ocuparFrame(nuevoFrame,tamanio-5);
 	}
 
-}
-
-void *retornarPosicionMemoriaFrame(int unFrame){
-	int offset = tam_pagina * unFrame; //Los frames estan en orden y se recorren de may a men
-
-	return ((&memoriaPrincipal) + offset + sizeof(struct HeapMetadata)); /* *Le sumo los primeros
-																			*bytes que se encuentran
-																			*ocupados por una metadata
-																			*indicando que está ocupado
-																			*y cuánto*/
 }
 
 /* Recorre el espacio del segmento buscando espacio libre (desde la base logica hasta

@@ -60,6 +60,8 @@ void inicializarBitmapFrames();
 int ocuparFrame(int indiceFrame, uint32_t tamanio);
 void liberarFrame(int indiceFrame);
 int buscarFrameLibre();
+void *retornarPosicionMemoriaFrame(int unFrame);
+bool estaOcupadoCompleto(int indiceFrame);
 
 //Funciones init
 int museinit(int id, char* ip/*, int puerto*/);
@@ -71,6 +73,5 @@ int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 int esExtendible(t_list *segmentosProceso,int unIndice);
 void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio);
-void *retornarPosicionMemoriaFrame(int unFrame);
 
 #endif /* MUSE_H_ */
