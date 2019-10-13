@@ -151,7 +151,7 @@ int muse_cpy(uint32_t dst, void* src, int n) { //Case 6
 	int *resultado = malloc(*tamanioResp);
 	read(serverMUSE, resultado, *tamanioResp);
 
-	return resultado;
+	return *resultado;
 
 }
 
@@ -163,11 +163,12 @@ uint32_t muse_map(char *path, size_t length, int flags) { //Case 7
 	int peticion = 7;
 	int tamanioPeticion = sizeof(int);
 	memcpy(buffer, &tamanioPeticion, sizeof(int));
-	memcpy(buffer + sizeof(int), peticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
 
 	int tamanioPath = strlen(path);
 	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
 	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
+
 
 	int tamanioLength = sizeof(size_t);
 	memcpy(buffer + 3 * sizeof(int) + strlen(path), &tamanioLength,
@@ -222,7 +223,7 @@ int muse_sync(uint32_t addr, size_t len) { //Case 8
 	int *resultado = malloc(*tamanioResp);
 	read(serverMUSE, resultado, *tamanioResp);
 
-	return resultado;
+	return *resultado;
 }
 
 int muse_unmap(uint32_t dir) { //Case 9

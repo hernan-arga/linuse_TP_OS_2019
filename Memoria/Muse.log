@@ -24,3 +24,13 @@
 [INFO] 21:52:33:551 Muse/(7266:7266): Memoria liberada exitosamente
 [INFO] 22:06:14:2 Muse/(7958:7958): unmap realizado correctamente
 [INFO] 22:07:30:51 Muse/(8118:8118): unmap realizado correctamente
+[INFO] 00:12:02:220 Muse/(4175:4175): unmap realizado correctamente
+[INFO] 00:12:51:681 Muse/(4265:4265): sync realizado correctamente
+[INFO] 00:13:53:483 Muse/(4336:4336): sync realizado correctamente
+[INFO] 00:14:42:954 Muse/(4483:4483): sync realizado correctamente
+[INFO] 00:15:18:791 Muse/(4543:4543): sync realizado correctamente
+[INFO] 00:21:55:996 Muse/(5020:5020): Get realizado correctamente
+[INFO] 00:23:18:200 Muse/(5113:5113): Get realizado correctamente
+[INFO] 00:24:42:752 Muse/(5249:5249): Get realizado correctamente
+[INFO] 00:26:01:32 Muse/(5410:5410): Memoria liberada exitosamente
+[INFO] 00:35:52:982 Muse/(5897:5897): Get realizado correctamente
