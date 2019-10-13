@@ -370,17 +370,14 @@ void *buscarEspacioLibre(uint32_t tamanio){
 
 /**Funcion para unificar dos headers - se la llama despues de un free. Unifica desde el header 1
  * recorriendo todos los headers DEL SEGMENTO. Le envio como parametro el id del segmento que
- * tiene que recorrer
-*/
+ * tiene que recorrer*/
 
-void unificarHeaders(int idSegmento){
-	int tamanioSegmento = calcularTamanioSegmento(idSegmento); //va a devolver el tamanio del segmento
+void unificarHeaders(char *idProceso, int idSegmento){
+	int tamanioSegmento = calcularTamanioSegmento(idProceso, idSegmento); //va a devolver el tamanio del segmento
 	//que es el tamanio que voy a tener que recorrer sin salirme. Dentro del while
 
-	void *pos;
-	pos = buscarPosicionSegmento(idSegmento);
-	void *end;
-	end = pos + tamanioSegmento;
+	void *pos = buscarPosicionSegmento(idProceso, idSegmento);
+	void *end = pos + tamanioSegmento;
 	struct HeapMetadata *header = malloc(sizeof(struct HeapMetadata));
 	struct HeapMetadata *siguienteHeader = malloc(sizeof(struct HeapMetadata));
 
@@ -411,48 +408,37 @@ void unificarHeaders(int idSegmento){
  * size de su t_list de paginas por su cantidad de paginas y la posicion del segmento
  * es el inicio de la memoria + los tamaños de sus segmentos anteriores
 */
-void *buscarPosicionSegmento(int idSegmento){
-	void *pos;
-	pos = &memoriaPrincipal;
-	//int cantSegmentos = list_size(tablaSegmentos);
-	int cantSegmentos;
+void *buscarPosicionSegmento(char *idProceso, int idSegmento){
+	t_list *tablaSegmentosProceso = dictionary_get(tablasSegmentos, idProceso);
+	int offset = 0;
+	int indice = 0;
 
-	for(int i = 0; i < cantSegmentos; i++){ //COMENTADA PORQUE TENGO QUE LIGAR LA TLIST CON SEGMENTO
-//		if (tablaSegmentos[i].pid = id){
-//			return pos;
-//		} else{
-//			pos = pos + sizeof(int) /*segmento.id*/ + espacioPaginas(idSegmento);
-//		}
+	struct Segmento *unSegmento = list_get(tablaSegmentosProceso,indice);
+
+	while(unSegmento->id != idSegmento){
+		offset = offset + calcularTamanioSegmento(idProceso, unSegmento->id); //Sumo el tamaño del segmento
+		indice ++;
+		unSegmento = list_get(tablaSegmentosProceso,indice); //Leo el proximo segmento
 	}
 
-	return NULL;
+	return &memoriaPrincipal + offset; //Esta MAL - modificar - respuesta mail
 }
 
-int calcularTamanioSegmento(int idSegmento){
-	int cantSegmentos;
+/*Funcion que me retorna el tamanio ocupado por un segmento de un proceso determinado*/
+int calcularTamanioSegmento(char *idProceso, int idSegmento){
+	uint32_t espacioTablaPaginas;
+	espacioTablaPaginas = espacioPaginas(idProceso, idSegmento);
 
-	for(int i = 0; i < cantSegmentos; i++){
-//		if(tablaSegmentos[i].pid = idSegmento){
-//			return sizeof(int) + espacioPaginas(idSegmento); //Falta chequeo que el espacio de paginas no sea -1
-//		}
-//		else{
-//			return -1; //Error
-//		}
-	}
-
-	return 0; //Momentaneo para que no joda
+	return sizeof(int) + //idSegmento
+			2*sizeof(uint32_t) + //base logica y tamanio
+			espacioTablaPaginas;
 }
 
-int espacioPaginas(int idSegmento){
-	int cantSegmentos;
+/*Funcion que me retorna el espacio ocupado por las paginas de un segmento de un
+ *proceso determinado*/
+uint32_t espacioPaginas(char *idProceso, int idSegmento){
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, idProceso);
+	struct Segmento *unSegmento = list_get(segmentosProceso, idSegmento); //list find segmento
 
-	for(int i = 0; i < cantSegmentos; i++){
-//		if(tablaSegmentos[i].pid = idSegmento){
-//			return (list_size(tablaSegmentos[i].paginas) * tam_pagina);
-//		} else{
-//			return -1; //Error
-//		}
-	}
-
-	return 0; //Momentaneo para que no joda
+	return (list_size(unSegmento->tablaPaginas) * tam_pagina);
 }

@@ -49,10 +49,10 @@ int atenderMuseUnmap(int sd);
 */
 void *crearHeaderInicial(uint32_t tamanio);
 void *buscarEspacioLibre(uint32_t tamanio);
-void unificarHeaders(int id);
-void *buscarPosicionSegmento(int idSegmento);
-int calcularTamanioSegmento(int id);
-int espacioPaginas(int idSegmento);
+void unificarHeaders(char *idProceso, int idSegmento);
+void *buscarPosicionSegmento(char *idProceso, int idSegmento);
+int calcularTamanioSegmento(char *idProceso, int idSegmento);
+uint32_t espacioPaginas(char *idProceso, int idSegmento);
 void crearTablaSegmentosProceso(char *idProceso);
 
 //Funciones bitmap de frames
