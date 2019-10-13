@@ -97,8 +97,8 @@ int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
 	memcpy(buffer + 4 * sizeof(int) + sizeof(dst), &src, sizeof(uint32_t));
 
 	int tamanioN = sizeof(size_t);
-	memcpy(buffer + 4 * sizeof(int) + sizeof(dst), &tamanioN, sizeof(int));
-	memcpy(buffer + 5 * sizeof(int) + sizeof(dst), &n, sizeof(size_t));
+	memcpy(buffer + 4 * sizeof(int) + sizeof(dst) + sizeof(uint32_t), &tamanioN, sizeof(int));
+	memcpy(buffer + 5 * sizeof(int) + sizeof(dst) + sizeof(uint32_t), &n, sizeof(size_t));
 
 	//Falta conexion y se hace envio a MUSE
 	send(serverMUSE, buffer,

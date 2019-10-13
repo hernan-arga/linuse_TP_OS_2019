@@ -284,7 +284,9 @@ void atenderMuseGet(int cliente) {
 	size_t *N = malloc(*tamanioN);
 	read(cliente, N, *tamanioN);
 
-	printf("%p \n", dst);
+	int y = *((int *) dst);
+
+	printf("%d \n", y); //ok
 	printf("%" PRIu32 "\n", *src);
 	printf("%zu\n", *N);
 
