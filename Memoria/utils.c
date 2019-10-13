@@ -327,6 +327,12 @@ void atenderMuseCopy(int cliente) {
 	int *N = malloc(*tamanioN);
 	read(cliente, N, *tamanioN);
 
+	int z = *((int *) src);
+
+	printf("%" PRIu32 "\n", *dst);
+	printf("%d \n", z); //ok
+	printf("%d \n", *N);
+
 	//hacer en muse un copy y mandar -1 error o 0 ok
 
 	int resultado = 0;
@@ -354,8 +360,7 @@ void atenderMuseMap(int cliente) {
 	read(cliente, tamanioPath, sizeof(int));
 	char *dst = malloc(*tamanioPath);
 	read(cliente, dst, *tamanioPath);
-	char *dstCortado = string_substring_until(dst,
-				*tamanioPath);
+	char *dstCortado = string_substring_until(dst, *tamanioPath);
 
 	int *tamanioLength = malloc(sizeof(int));
 	read(cliente, tamanioLength, sizeof(int));
@@ -367,7 +372,7 @@ void atenderMuseMap(int cliente) {
 	int *flags = malloc(*tamanioFlags);
 	read(cliente, flags, *tamanioFlags);
 
-	printf("%s",dstCortado); //ok
+	printf("%s", dstCortado); //ok
 	printf("%zu\n", *length); //ok
 	printf("%d\n", *flags); //ok
 
