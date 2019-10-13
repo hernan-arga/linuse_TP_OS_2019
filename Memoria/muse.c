@@ -87,8 +87,7 @@ int ocuparFrame(int indiceFrame, uint32_t tamanio){
 		void *pos = &memoriaPrincipal + (indiceFrame * tam_pagina); //Me posiciono en el frame
 		struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 		memcpy(metadata,pos,sizeof(struct HeapMetadata)); //Leo el primer header
-		void *end = pos + tam_pagina; /*Calculo el final del frame para recorrer
-										SOLO los headers del frame*/
+		void *end = pos + tam_pagina; /*Calculo el final del frame para recorrer SOLO los headers del frame*/
 
 		while(pos < end){
 
@@ -109,9 +108,8 @@ int ocuparFrame(int indiceFrame, uint32_t tamanio){
 
 						pos = nuevoHeader;
 
-						if(estaOcupadoCompleto(indiceFrame) == true){ /**Chequeo si el espacio ACTUAL
-						 	 	 	 	 	 	 	 	 	 	 restante es 0, de ser asi lo
-						 	 	 	 	 	 	 	 	 	 	 marco como ocupado*/
+						if(estaOcupadoCompleto(indiceFrame) == true){ /*Chequeo si el espacio ACTUAL
+						restante es 0, de ser asi lo marco como ocupado*/
 							bitmapFrames[indiceFrame] = 1;
 						}
 
@@ -178,11 +176,8 @@ int buscarFrameLibre(){
 void *retornarPosicionMemoriaFrame(int unFrame){
 	int offset = tam_pagina * unFrame; //Los frames estan en orden y se recorren de may a men
 
-	return ((&memoriaPrincipal) + offset + sizeof(struct HeapMetadata)); /* *Le sumo los primeros
-																			*bytes que se encuentran
-																			*ocupados por una metadata
-																			*indicando que está ocupado
-																			*y cuánto*/
+	return ((&memoriaPrincipal) + offset + sizeof(struct HeapMetadata)); /*Le sumo los primeros
+	bytes que se encuentran ocupados por una metadata indicando que está ocupado y cuánto*/
 }
 
 ///////////////Funciones MUSE///////////////
@@ -213,8 +208,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente){
 
 		struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 		unSegmento = crearSegmento(tamanio, idSocketCliente);  /*Se crea un segmento con el minimo
-																*de frames necesarios para alocar
-																*tamanio**/
+		de frames necesarios para alocar tamanio*/
 
 		struct Pagina *primeraPagina = malloc(sizeof(struct Pagina));
 		primeraPagina = list_get(unSegmento->tablaPaginas, 0);
