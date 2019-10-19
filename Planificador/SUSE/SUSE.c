@@ -42,6 +42,11 @@ typedef struct {
 	float rafaga;
 } hilo;
 
+typedef struct {
+	int pid;
+	hilo *exec;
+} programa;
+
 void iniciarSUSE();
 int32_t iniciarConexion();
 void planificarReady();
@@ -51,15 +56,23 @@ void actualizarEstimacion(hilo*);
 void pasarAExec(hilo*);
 void crearHilo(int);
 int siguienteAEjecutar(int);
+hilo* siguienteDeReadyAExec(int);
+void planificarExecParaUnPrograma(char *, programa *);
+void planificarExec();
 
 
 pthread_t hiloLevantarConexion;
 pthread_t hiloPlanificadorReady;
+pthread_t hiloPlanficadorExec;
 archivoConfiguracion configuracion;
 t_config *config;
 t_dictionary *diccionarioDeListasDeReady;
+t_dictionary *diccionarioDeExec;
+t_dictionary *diccionarioDeProgramas;
 sem_t MAXIMOPROCESAMIENTO;
 sem_t sem_diccionario_ready;
+sem_t sem_programas;
+sem_t hayNuevos;
 
 t_queue *new;
 t_queue *exitCola;
@@ -73,8 +86,10 @@ int main(int argc, char *argv[]){
 
 	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciarConexion, NULL);
 	pthread_create(&hiloPlanificadorReady, NULL, (void*) planificarReady, NULL);
+	pthread_create(&hiloPlanficadorExec, NULL, (void*) planificarExec, NULL);
 	pthread_join(hiloLevantarConexion, NULL);
 	pthread_join(hiloPlanificadorReady, NULL);
+	pthread_join(hiloPlanficadorExec, NULL);
 	return 0;
 }
 
@@ -103,18 +118,71 @@ void iniciarSUSE(){
 	new = queue_create();
 	exitCola = queue_create();
 	diccionarioDeListasDeReady = dictionary_create();
+	diccionarioDeExec = dictionary_create();
+	diccionarioDeProgramas = dictionary_create();
 	sem_init(&MAXIMOPROCESAMIENTO, 0, configuracion.GRADO_DE_MULTIPROGRAMACION);
 	sem_init(&sem_diccionario_ready,0,1);
+	sem_init(&sem_programas,0,1);
+	sem_init(&hayNuevos, 0, 0);
 }
 
 void planificarReady(){
 	while(1){
-		if(!queue_is_empty(new)){
+		//if(!queue_is_empty(new)){
+			sem_wait(&hayNuevos);
 			hilo *unHilo = queue_pop(new);
 			sem_wait(&MAXIMOPROCESAMIENTO);
 			pasarAReady(unHilo);
-		}
+		//}
 	}
+}
+
+void planificarExec(){
+	while(1){
+		//Problema en los semaforos?
+		sem_wait(&sem_programas);
+		dictionary_iterator(diccionarioDeProgramas, (void*)planificarExecParaUnPrograma);
+		sem_post(&sem_programas);
+	}
+}
+
+void planificarExecParaUnPrograma(char *pid, programa *unPrograma){
+	if(unPrograma->exec==NULL){
+		//Me fijo en la lista de ready del diccionario el que sigue para ejecutar
+		hilo *unHilo = siguienteDeReadyAExec(atoi(pid));
+		unPrograma->exec = unHilo;
+		printf("tid en exec %i\n", ((programa*)dictionary_get(diccionarioDeProgramas, pid))->exec->tid );
+	}
+}
+
+hilo* siguienteDeReadyAExec(int pid){
+	sem_wait(&sem_diccionario_ready);
+	bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo){
+		return unHilo->estimacion < otroHilo->estimacion;
+	}
+	t_list *listaDeReady = list_create();
+
+	list_add_all(listaDeReady, ((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid)))) );
+
+	//printf("diccionario antes :%i\n", (list_size((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid)))) ) );
+
+	list_sort(listaDeReady, (void*)tieneMenorEstimacion);
+
+	//Lo saco de ready y lo pongo en exec
+
+	hilo *unHilo = malloc(sizeof(hilo));
+	unHilo->estimacion = ((hilo*)list_get(listaDeReady, 0))->estimacion;
+	unHilo->pid = ((hilo*)list_get(listaDeReady, 0))->pid;
+	unHilo->rafaga = ((hilo*)list_get(listaDeReady, 0))->rafaga;
+	unHilo->tid = ((hilo*)list_get(listaDeReady, 0))->tid;
+
+	list_remove(listaDeReady, 0);
+
+	dictionary_remove_and_destroy(diccionarioDeListasDeReady, string_itoa(unHilo->pid), (void*)free);
+	dictionary_put(diccionarioDeListasDeReady, string_itoa(unHilo->pid), listaDeReady);
+	sem_post(&sem_diccionario_ready);
+	return unHilo;
+
 }
 
 void crearHilo(int sd){
@@ -133,6 +201,7 @@ void crearHilo(int sd){
 	unHilo->tid = *tid;
 	unHilo->estimacion = *tid;
 	queue_push(new, unHilo);
+	sem_post(&hayNuevos);
 	free(tid);
 }
 
@@ -142,6 +211,13 @@ void pasarAReady(hilo *unHilo){
 		t_list *listaDeReady = list_create();
 		list_add(listaDeReady, unHilo);
 		dictionary_put(diccionarioDeListasDeReady, string_itoa(unHilo->pid), listaDeReady);
+
+		programa *unPrograma = malloc(sizeof(programa));
+		unPrograma->exec = NULL;
+		unPrograma->pid = unHilo->pid;
+		//sem_wait(&sem_programas);
+		dictionary_put(diccionarioDeProgramas, string_itoa(unPrograma->pid), unPrograma);
+		//sem_post(&sem_programas);
 	}
 	else{
 		hilo *otroHilo = malloc(sizeof(hilo));
@@ -162,7 +238,8 @@ void pasarAReady(hilo *unHilo){
 
 //todo: optimizar la region critica
 int siguienteAEjecutar(int pid){
-	bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo){
+
+	/*bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo){
 		return unHilo->estimacion < otroHilo->estimacion;
 	}
 	t_list *listaDeReady = list_create();
@@ -193,7 +270,7 @@ int siguienteAEjecutar(int pid){
 
 	//printf("diccionario despues :%i\n", (list_size((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid)))) ) );
 
-	sem_post(&sem_diccionario_ready);
+	sem_post(&sem_diccionario_ready);*/
 
 	/*
 	 * La Region critica abarca hasta aca porque si mientras calculo cual es el
@@ -201,14 +278,14 @@ int siguienteAEjecutar(int pid){
 	 *
 	 */
 
-	return tid;
+	//return tid;
 
-	//return 0;
+	return 0;
 }
 
-void pasarAExec(hilo* unHilo){
+/*void pasarAExec(hilo* unHilo){
 	printf("---- TID: %i\n", unHilo->tid);
-}
+}*/
 
 void actualizarEstimacion(hilo* unHilo){
 	//En+1 = (1-alpha)En + alpha*Rn
