@@ -162,7 +162,6 @@ hilo* siguienteDeReadyAExec(int pid){
 	//Como lo inserte ordenado, el primero que saco de la lista es el que va
 	hilo *unHilo = (hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0);
 
-
 	sem_post(&sem_diccionario_ready);
 	return unHilo;
 
@@ -183,6 +182,7 @@ void crearHilo(int sd){
 	unHilo->pid = pid;
 	unHilo->tid = *tid;
 	unHilo->estimacion = *tid;
+	unHilo->rafaga = 0;
 	queue_push(new, unHilo);
 	sem_post(&hayNuevos);
 	free(tid);
@@ -198,18 +198,11 @@ void pasarAReady(hilo *unHilo){
 		programa *unPrograma = malloc(sizeof(programa));
 		unPrograma->exec = NULL;
 		unPrograma->pid = unHilo->pid;
-		//sem_wait(&sem_programas);
+		sem_wait(&sem_programas);
 		dictionary_put(diccionarioDeProgramas, string_itoa(unPrograma->pid), unPrograma);
-		//sem_post(&sem_programas);
+		sem_post(&sem_programas);
 	}
 	else{
-
-		/*t_list *listaDeReadyNueva = list_create();
-		list_add_all(listaDeReadyNueva, (t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))));
-		list_add(listaDeReadyNueva, unHilo);
-		dictionary_remove_and_destroy(diccionarioDeListasDeReady, string_itoa(unHilo->pid), (void*)free);
-		dictionary_put(diccionarioDeListasDeReady, string_itoa(unHilo->pid), listaDeReadyNueva);
-		 */
 
 		//Lo agrego a la lista correspondiente
 		list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))), unHilo);
@@ -224,13 +217,22 @@ void pasarAReady(hilo *unHilo){
 
 //Esta es la funcion que se invoca cuando se llama a schedule_next
 int siguienteAEjecutar(int pid){
+	sem_wait(&sem_programas);
+	//El programa existe cuando algun hilo paso a ready en algun momento
+	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, string_itoa(pid));
+
+	//Si existe el programa y hay alguien en ejecucion
+	if(existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL){
+		//Aumento la rafaga del que esta actualmente en ejecucion
+		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga++;
+		printf("TID: %i - Rafaga: %f\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid,((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga);
+	}
+		//printf("TID: %i - Rafaga: %f\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid,((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga);
+	sem_post(&sem_programas);
 
 	return ((hilo*)siguienteDeReadyAExec(pid))->tid;
 }
 
-/*void pasarAExec(hilo* unHilo){
-	printf("---- TID: %i\n", unHilo->tid);
-}*/
 
 void actualizarEstimacion(hilo* unHilo){
 	//En+1 = (1-alpha)En + alpha*Rn
@@ -239,7 +241,7 @@ void actualizarEstimacion(hilo* unHilo){
 }
 
 bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo){
-	return unHilo->estimacion < otroHilo->estimacion;
+	return unHilo->estimacion <= otroHilo->estimacion;
 }
 
 
