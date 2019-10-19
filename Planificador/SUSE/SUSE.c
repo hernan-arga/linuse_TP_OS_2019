@@ -53,6 +53,7 @@ void planificarReady();
 void sem_suse_signal(char*);
 void pasarAReady(hilo*);
 void actualizarEstimacion(hilo*);
+bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo);
 void pasarAExec(hilo*);
 void crearHilo(int);
 int siguienteAEjecutar(int);
@@ -128,18 +129,15 @@ void iniciarSUSE(){
 
 void planificarReady(){
 	while(1){
-		//if(!queue_is_empty(new)){
-			sem_wait(&hayNuevos);
-			hilo *unHilo = queue_pop(new);
-			sem_wait(&MAXIMOPROCESAMIENTO);
-			pasarAReady(unHilo);
-		//}
+		sem_wait(&hayNuevos);
+		hilo *unHilo = queue_pop(new);
+		sem_wait(&MAXIMOPROCESAMIENTO);
+		pasarAReady(unHilo);
 	}
 }
-
+//todo: optimizar esto con algun semaforo (productor consumidor)
 void planificarExec(){
 	while(1){
-		//Problema en los semaforos?
 		sem_wait(&sem_programas);
 		dictionary_iterator(diccionarioDeProgramas, (void*)planificarExecParaUnPrograma);
 		sem_post(&sem_programas);
@@ -150,36 +148,21 @@ void planificarExecParaUnPrograma(char *pid, programa *unPrograma){
 	if(unPrograma->exec==NULL){
 		//Me fijo en la lista de ready del diccionario el que sigue para ejecutar
 		hilo *unHilo = siguienteDeReadyAExec(atoi(pid));
+		//Lo elimino de las listas de ready
+		list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, pid)),0);
 		unPrograma->exec = unHilo;
 		printf("tid en exec %i\n", ((programa*)dictionary_get(diccionarioDeProgramas, pid))->exec->tid );
 	}
 }
 
 hilo* siguienteDeReadyAExec(int pid){
+
 	sem_wait(&sem_diccionario_ready);
-	bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo){
-		return unHilo->estimacion < otroHilo->estimacion;
-	}
-	t_list *listaDeReady = list_create();
 
-	list_add_all(listaDeReady, ((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid)))) );
+	//Como lo inserte ordenado, el primero que saco de la lista es el que va
+	hilo *unHilo = (hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0);
 
-	//printf("diccionario antes :%i\n", (list_size((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid)))) ) );
 
-	list_sort(listaDeReady, (void*)tieneMenorEstimacion);
-
-	//Lo saco de ready y lo pongo en exec
-
-	hilo *unHilo = malloc(sizeof(hilo));
-	unHilo->estimacion = ((hilo*)list_get(listaDeReady, 0))->estimacion;
-	unHilo->pid = ((hilo*)list_get(listaDeReady, 0))->pid;
-	unHilo->rafaga = ((hilo*)list_get(listaDeReady, 0))->rafaga;
-	unHilo->tid = ((hilo*)list_get(listaDeReady, 0))->tid;
-
-	list_remove(listaDeReady, 0);
-
-	dictionary_remove_and_destroy(diccionarioDeListasDeReady, string_itoa(unHilo->pid), (void*)free);
-	dictionary_put(diccionarioDeListasDeReady, string_itoa(unHilo->pid), listaDeReady);
 	sem_post(&sem_diccionario_ready);
 	return unHilo;
 
@@ -220,67 +203,29 @@ void pasarAReady(hilo *unHilo){
 		//sem_post(&sem_programas);
 	}
 	else{
-		hilo *otroHilo = malloc(sizeof(hilo));
-		otroHilo->estimacion = unHilo->estimacion;
-		otroHilo->pid = unHilo->pid;
-		otroHilo->rafaga = unHilo->rafaga;
-		otroHilo->tid = unHilo->tid;
 
-		t_list *listaDeReadyNueva = list_create();
+		/*t_list *listaDeReadyNueva = list_create();
 		list_add_all(listaDeReadyNueva, (t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))));
-		list_add(listaDeReadyNueva, otroHilo);
+		list_add(listaDeReadyNueva, unHilo);
 		dictionary_remove_and_destroy(diccionarioDeListasDeReady, string_itoa(unHilo->pid), (void*)free);
 		dictionary_put(diccionarioDeListasDeReady, string_itoa(unHilo->pid), listaDeReadyNueva);
-		//printf("tid :%i\n", ((hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))), 0) )->tid );
+		 */
+
+		//Lo agrego a la lista correspondiente
+		list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))), unHilo);
+
+		//Ordeno la lista por el que tiene menor estimacion
+		list_sort((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))) , (void*)tieneMenorEstimacion);
+
+		printf("tid :%i\n", ((hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))), 0) )->tid );
 	}
 	sem_post(&sem_diccionario_ready);
 }
 
-//todo: optimizar la region critica
+//Esta es la funcion que se invoca cuando se llama a schedule_next
 int siguienteAEjecutar(int pid){
 
-	/*bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo){
-		return unHilo->estimacion < otroHilo->estimacion;
-	}
-	t_list *listaDeReady = list_create();
-
-	sem_wait(&sem_diccionario_ready);
-	list_add_all(listaDeReady, ((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid)))) );
-
-	printf("diccionario antes :%i\n", (list_size((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid)))) ) );
-
-	list_sort(listaDeReady, (void*)tieneMenorEstimacion);
-	int tid = ((hilo*)list_get(listaDeReady, 0))->tid;
-
-	//Lo saco de ready y lo pongo en exec
-
-	hilo *unHilo = malloc(sizeof(hilo));
-	unHilo->estimacion = ((hilo*)list_get(listaDeReady, 0))->estimacion;
-	unHilo->pid = ((hilo*)list_get(listaDeReady, 0))->pid;
-	unHilo->rafaga = ((hilo*)list_get(listaDeReady, 0))->rafaga;
-	unHilo->tid = ((hilo*)list_get(listaDeReady, 0))->tid;
-	list_remove(listaDeReady, 0);
-	pasarAExec(unHilo);
-
-	//Actualizo diccionarioDeListasDeReady con la nueva lista
-
-	//dictionary_remove(diccionarioDeListasDeReady, string_itoa(unHilo->pid));
-	dictionary_remove_and_destroy(diccionarioDeListasDeReady, string_itoa(unHilo->pid), (void*)free);
-	dictionary_put(diccionarioDeListasDeReady, string_itoa(unHilo->pid), listaDeReady);
-
-	//printf("diccionario despues :%i\n", (list_size((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid)))) ) );
-
-	sem_post(&sem_diccionario_ready);*/
-
-	/*
-	 * La Region critica abarca hasta aca porque si mientras calculo cual es el
-	 * siguiente a ejecutar, se agrega otro a ready lo podria perder
-	 *
-	 */
-
-	//return tid;
-
-	return 0;
+	return ((hilo*)siguienteDeReadyAExec(pid))->tid;
 }
 
 /*void pasarAExec(hilo* unHilo){
@@ -292,6 +237,11 @@ void actualizarEstimacion(hilo* unHilo){
 	unHilo->estimacion = (1-configuracion.ALPHA_SJF)*unHilo->estimacion +
 			(configuracion.ALPHA_SJF * unHilo->rafaga);
 }
+
+bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo){
+	return unHilo->estimacion < otroHilo->estimacion;
+}
+
 
 void sem_suse_signal (char* semID){
 	if(dictionary_has_key(configuracion.SEMAFOROS, semID)){
