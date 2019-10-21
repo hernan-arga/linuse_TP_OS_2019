@@ -184,10 +184,6 @@ ptrGBloque determinar_nodo(const char* path){
 		return 0;
 	}
 
-	int cache_result;
-	/* Realiza el chequeo de la cache */
-	if ((cache_result = name_cache_look(&node_cache, path)) > 0) return cache_result;
-
 	int i, nodo_anterior, err = 0;
 	// Super_path usado para obtener la parte superior del path, sin el nombre.
 	char *super_path = (char*) malloc(strlen(path) +1), *nombre = (char*) malloc(strlen(path)+1);
@@ -199,29 +195,112 @@ ptrGBloque determinar_nodo(const char* path){
 
 	nodo_anterior = determinar_nodo(super_path);
 
-
 	pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
-			log_lock_trace(logger, "Determinar_nodo: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+	log_lock_trace(logger, "Determinar_nodo: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
 
 	node = node_table_start;
 
 	// Busca el nodo sobre el cual se encuentre el nombre.
 	node_name = &(node->fname[0]);
-	for (i = 0; ( (node->parent_dir_block != nodo_anterior) | (strcmp(nombre, (char*) node_name) != 0) | (node->state == 0)) &  (i < GFILEBYTABLE) ; i++ ){
+	for (i = 0; ( (node->parent_dir_block != nodo_anterior)
+				  | (strcmp(nombre, (char*) node_name) != 0)
+				  | (node->state == 0)) &  (i < GFILEBYTABLE) ; i++ ){
 		node = &(node[1]);
 		node_name = &(node->fname[0]);
 	}
 
 	// Cierra conexiones y libera memoria. Contempla casos de error.
 	pthread_rwlock_unlock(&rwlock);
-			log_lock_trace(logger, "Determinar_nodo: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+	log_lock_trace(logger, "Determinar_nodo: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+
 	free(start);
 	free(start_super_path);
 	if (err != 0) return err;
 	if (i >= GFILEBYTABLE) return -1;
 
-	/* Guarda el resultado de la operacion en la cache */
-	cache_renew(&node_cache, path, (i+1));
 	return (i+1);
+}
 
+
+/*
+ *  @DESC
+ *  	Obtiene un bloque libre, actualiza el bitmap.
+ *
+ *  @PARAM
+*		(void)
+ *
+ *  @RETURN
+ *  	Devuelve el numero de un bloque listo para escribir. Si hay error, un numero negativo, correspondiente al error.
+ */
+int get_node(void){
+	t_bitarray *bitarray;
+	int res;
+
+	bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B, ARRAY64SIZE, ARRAY64LEAK);
+
+	res = bitarray_test_and_set(bitarray, GHEADERBLOCKS+BITMAP_BLOCK_SIZE+GFILEBYTABLE);
+
+	// Cierra el bitmap
+	bitarray_destroy(bitarray);
+	return res;
+}
+
+
+/*
+ *  @DESC
+ *  	Actualiza la informacion del archivo.
+ *
+ *  @PARAM
+ *		file_data - El puntero al nodo en el que se encuentra el archivo.
+ *		node_number - El numero de nodo que se le debe agregar.
+ *
+ *  @RET
+ *  	Devuelve 0 si salio bien, negativo si hubo problemas.
+ */
+int add_node(struct gfile *file_data, int node_number){
+	int node_pointer_number, position;
+	size_t tam = file_data->tamanio_archivo;
+	int new_pointer_block;
+	ptrGBloque *nodo_punteros;
+
+	// Ubica el ultimo nodo escrito y se posiciona en el mismo.
+	set_position(&node_pointer_number, &position, 0, tam);
+
+	if((node_pointer_number == BLKINDIRECT-1) & (position == PTRGBLOQUE_SIZE-1)){
+		return -ENOSPC;
+	}
+
+	// Si es el primer nodo del archivo y esta escrito, debe escribir el segundo.
+	// Se sabe que el primer nodo del archivo esta escrito si el primer
+	// puntero a bloque punteros del nodo es distinto de 0 (file_data->blk_indirect[0] != 0)
+	// ya que se le otorga esa marca (=0) al escribir el archivo, para indicar que es un archivo nuevo.
+	if ((file_data->bloques_indirectos[node_pointer_number] != 0)){
+		if (position == 1024) {
+			position = 0;
+			node_pointer_number++;
+		}
+	}
+	// Si es el ultimo nodo en el bloque de punteros, pasa al siguiente
+	if (position == 0){
+		new_pointer_block = get_node();
+		if(new_pointer_block < 0) {
+			return new_pointer_block;
+			/* Si sucede que sea menor a 0, contendra el codigo de error */
+		}
+		memset((char*)&(header_start[new_pointer_block]), 0, BLOCKSIZE);
+		file_data->bloques_indirectos[node_pointer_number] = new_pointer_block;
+		// Cuando crea un bloque, settea al siguente como 0, dejando una marca.
+		file_data->bloques_indirectos[node_pointer_number +1] = 0;
+	} else {
+		new_pointer_block = file_data->bloques_indirectos[node_pointer_number];
+		//Se usa como auxiliar para encontrar el numero del bloque de punteros
+	}
+
+	// Ubica el nodo de punteros, relativo al bloque de datos.
+	nodo_punteros = (ptrGBloque*) &data_block_start[new_pointer_block - (GHEADERBLOCKS + NODE_TABLE_SIZE + BITMAP_BLOCK_SIZE)];
+
+	// Hace que dicho puntero, en la posicion ya obtenida, apunte al nodo indicado.
+	nodo_punteros[position] = node_number;
+
+	return 0;
 }

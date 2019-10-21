@@ -79,37 +79,6 @@ int o_create(char* path){
 	return res;
 
 
-
-
-
-
-
-
-	//creo un nodo
-	gfile* p_gfile = malloc(1 + 4 + 2 * sizeof(unsigned long long) + 4);
-
-	p_gfile->estado = OCUPADO;
-
-	char* pathCopia;
-	memcpy(pathCopia, path, strlen(path));
-	p_gfile->nombre_archivo = malloc(strlen(basename(path)));
-	memcpy(p_gfile->nombre_archivo, path, strlen(path));
-
-	p_gfile->bloque_padre = buscarPadre(pathCopia);
-
-	p_gfile->tamanio_archivo = 4096;
-	p_gfile->fecha_creacion = getMicrotime();
-	p_gfile->fecha_modificacion = getMicrotime();
-
-	ptrGBloque bloqueLibre = asignarBloqueLibre();
-	p_gfile->bloques_indirectos = list_create();
-	list_add(p_gfile->bloques_indirectos, bloqueLibre);
-
-	//Agrego este nodo a la tabla de nodos
-	list_add(tablaNodos, p_gfile);
-
-	return 0;
-
 	/*
 	 * FUNCIONAMIENTO ANTERIOR
 	 *

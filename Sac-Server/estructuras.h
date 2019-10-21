@@ -1,10 +1,8 @@
 #ifndef ESTRUCTURAS_H_
 #define ESTRUCTURAS_H_
 #define _GNU_SOURCE
-
 #include <dirent.h>
 #include <sys/stat.h>
-
 #include <sys/socket.h>
 #include <stdio.h>
 #include <string.h>
@@ -42,14 +40,14 @@ int split_path(const char*, char**, char**);
 #define GFILENAMELENGTH 71
 #define GHEADERBLOCKS 1
 #define BLKINDIRECT 1000
-#define BLOCK_SIZE 4096
+#define BLOCKSIZE 4096
 #define NODE_TABLE_SIZE 1024
 #define PTRGBLOQUE_SIZE 1024
 #define GFILENAMELENGTH 71
 #define BLKINDIRECT 1000
 
 typedef uint32_t ptrGBloque;
-t_list* tablaNodos;
+typedef ptrGBloque pointer_data_block [PTRGBLOQUE_SIZE];
 
 typedef enum __attribute__((packed)){
 	BORRADO = '\0',
@@ -57,15 +55,13 @@ typedef enum __attribute__((packed)){
 	DIRECTORIO = '\2'
 }estado_archivo;
 
-typedef struct { // un bloque (4096 bytes)
+typedef struct gheader{ // un bloque (4096 bytes)
 	unsigned char identificador[3]; // valor "SAC"
 	uint32_t version; // valor 1
-	ptrGBloque bloque_inicio_bitmap; // valor 1
+	uint32_t bloque_inicio_bitmap; // valor 1
 	uint32_t tamanio_bitmap; // valor n (bloques)
-	unsigned char relleno[4081]; // padding
+	unsigned char padding[4081]; // relleno
 } gheader;
-
-typedef ptrGBloque pointer_data_block [PTRGBLOQUE_SIZE];
 
 typedef struct gfile{
 	uint8_t estado; // 0: borrado, 1: archivo, 2: directorio
@@ -78,5 +74,10 @@ typedef struct gfile{
 } gfile;
 
 struct gfile *node_table_start;
+struct gheader *header_start;
+struct gfile *node_table_start, *data_block_start, *bitmap_start;
+struct gheader Header_Data;
+
+#define BITMAP_BLOCK_SIZE Header_Data.tamanio_bitmap
 
 #endif /* ESTRUCTURAS_H_ */
