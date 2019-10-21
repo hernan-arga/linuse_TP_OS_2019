@@ -50,7 +50,8 @@ typedef struct {
 void iniciarSUSE();
 int32_t iniciarConexion();
 void planificarReady();
-void sem_suse_signal(char*);
+void sem_suse_wait(int pid, int tid, char*);
+void sem_suse_signal(int pid, int tid, char*);
 void pasarAReady(hilo*);
 void actualizarEstimacion(hilo*);
 bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo);
@@ -60,21 +61,24 @@ int siguienteAEjecutar(int);
 hilo* siguienteDeReadyAExec(int);
 void planificarExecParaUnPrograma(char *, programa *);
 void planificarExec();
-
+void planificarBlocked();
+void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, int tid, char *semID);
 
 pthread_t hiloLevantarConexion;
 pthread_t hiloPlanificadorReady;
 pthread_t hiloPlanficadorExec;
+pthread_t hiloPlanficadorBlocked;
 archivoConfiguracion configuracion;
 t_config *config;
 t_dictionary *diccionarioDeListasDeReady;
 t_dictionary *diccionarioDeExec;
+t_dictionary *diccionarioDeBlocked;
 t_dictionary *diccionarioDeProgramas;
 sem_t MAXIMOPROCESAMIENTO;
 sem_t sem_diccionario_ready;
 sem_t sem_programas;
 sem_t hayNuevos;
-
+sem_t SEMAFOROS;
 t_queue *new;
 t_queue *exitCola;
 
@@ -85,12 +89,16 @@ int main(int argc, char *argv[]){
 
 	iniciarSUSE();
 
+	//printf("%i\n", ((semaforo*) dictionary_get(configuracion.SEMAFOROS, "B"))->VALOR_ACTUAL_SEMAFORO );
+
 	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciarConexion, NULL);
 	pthread_create(&hiloPlanificadorReady, NULL, (void*) planificarReady, NULL);
 	pthread_create(&hiloPlanficadorExec, NULL, (void*) planificarExec, NULL);
+	pthread_create(&hiloPlanficadorBlocked, NULL, (void*) planificarBlocked, NULL);
 	pthread_join(hiloLevantarConexion, NULL);
 	pthread_join(hiloPlanificadorReady, NULL);
 	pthread_join(hiloPlanficadorExec, NULL);
+	pthread_join(hiloPlanficadorBlocked, NULL);
 	return 0;
 }
 
@@ -105,7 +113,8 @@ void iniciarSUSE(){
 
 	//printf("%f\n", configuracion.ALPHA_SJF);
 
-	//todo: Preguntar por la perdida de memoria en get_array_value
+	diccionarioDeBlocked = dictionary_create();
+
 	int i = 0;
 	while((config_get_array_value(config, "SEM_IDS"))[i] != NULL){
 		semaforo *unSemaforo = malloc(sizeof(semaforo));
@@ -113,6 +122,10 @@ void iniciarSUSE(){
 		unSemaforo->VALOR_ACTUAL_SEMAFORO = atoi((config_get_array_value(config, "SEM_INIT"))[i]);
 		unSemaforo->VALOR_MAXIMO_SEMAFORO = atoi((config_get_array_value(config, "SEM_MAX"))[i]);
 		dictionary_put(configuracion.SEMAFOROS, (config_get_array_value(config, "SEM_IDS"))[i], unSemaforo);
+
+		t_queue *colaParaElSemaforo = queue_create();
+		dictionary_put(diccionarioDeBlocked, (config_get_array_value(config, "SEM_IDS"))[i], colaParaElSemaforo);
+
 		i++;
 	}
 
@@ -125,6 +138,7 @@ void iniciarSUSE(){
 	sem_init(&sem_diccionario_ready,0,1);
 	sem_init(&sem_programas,0,1);
 	sem_init(&hayNuevos, 0, 0);
+	sem_init(&SEMAFOROS, 0, 1);
 }
 
 void planificarReady(){
@@ -142,6 +156,10 @@ void planificarExec(){
 		dictionary_iterator(diccionarioDeProgramas, (void*)planificarExecParaUnPrograma);
 		sem_post(&sem_programas);
 	}
+}
+
+void planificarBlocked(){
+
 }
 
 void planificarExecParaUnPrograma(char *pid, programa *unPrograma){
@@ -245,33 +263,56 @@ bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo){
 }
 
 
-void sem_suse_signal (char* semID){
+void sem_suse_signal (int pid, int tid, char* semID){
+	sem_wait(&SEMAFOROS);
 	if(dictionary_has_key(configuracion.SEMAFOROS, semID)){
 		int valorActualSemaforo = ((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_ACTUAL_SEMAFORO;
 		int valorMaximoSemaforo = ((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_MAXIMO_SEMAFORO;
 		if(valorActualSemaforo+1 <= valorMaximoSemaforo){
-			semaforo *unSemaforo = malloc(sizeof(semaforo));
-			unSemaforo->VALOR_ACTUAL_SEMAFORO = valorActualSemaforo+1;
-			unSemaforo->VALOR_MAXIMO_SEMAFORO = valorMaximoSemaforo;
-			dictionary_remove_and_destroy(configuracion.SEMAFOROS, semID, (void*)free);
-			dictionary_put(configuracion.SEMAFOROS, semID, unSemaforo);
+			int noHayNadieBloqueado =
+					queue_is_empty((t_queue*)dictionary_get(diccionarioDeBlocked, semID));
+			if(noHayNadieBloqueado){
+				((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_ACTUAL_SEMAFORO++;
+			}
+			else{
+				sacar1HiloDeLaColaDeBloqueadosPorSemaforo(pid, tid, semID);
+			}
 		}
 	}
-
+	sem_post(&SEMAFOROS);
 }
 
-void sem_suse_wait(char* semID){
+void sem_suse_wait(int pid, int tid, char* semID){
+	sem_wait(&SEMAFOROS);
 	if(dictionary_has_key(configuracion.SEMAFOROS, semID)){
 		int valorActualSemaforo = ((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_ACTUAL_SEMAFORO;
 		int valorMaximoSemaforo = ((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_MAXIMO_SEMAFORO;
-		//Se queda colgado hasta que le hagan un signal
-		while(((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_ACTUAL_SEMAFORO==0);
-		semaforo *unSemaforo = malloc(sizeof(semaforo));
-		unSemaforo->VALOR_ACTUAL_SEMAFORO = valorActualSemaforo-1;
-		unSemaforo->VALOR_MAXIMO_SEMAFORO = valorMaximoSemaforo;
-		dictionary_remove_and_destroy(configuracion.SEMAFOROS, semID, (void*)free);
-		dictionary_put(configuracion.SEMAFOROS, semID, unSemaforo);
+
+		if(valorActualSemaforo > 0){
+			((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_ACTUAL_SEMAFORO--;
+		}
+
+		else{
+			//Mandar el hilo a blocked
+		}
+
 	}
+	sem_post(&SEMAFOROS);
+}
+
+void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, int tid, char *semID){
+
+}
+
+void atenderWait(int sd){
+	int *tid = malloc(sizeof(int));
+	read(sd, tid, sizeof(int));
+	int *longitudIDSemaforo= malloc(sizeof(int));
+	read(sd, longitudIDSemaforo, sizeof(int));
+	char *semID = malloc(*longitudIDSemaforo+1);
+	read(sd, semID, *longitudIDSemaforo+1);
+	printf("%i, %s\n", *tid, semID);
+	//sem_suse_wait();
 }
 
 int32_t iniciarConexion() {
@@ -415,12 +456,13 @@ int32_t iniciarConexion() {
 							free(buffer);
 							break;
 						case 3: //suse_wait
+							atenderWait(sd);
 							break;
 						case 4: //suse_signal
 							break;
 						case 5: //suse_join
 							break;
-						case 6: //suse_return
+						case 6: //suse_close
 							break;
 						default:
 							break;
