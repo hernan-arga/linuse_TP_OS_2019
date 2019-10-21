@@ -5,33 +5,78 @@
 #include <libgen.h>
 
 
-
 int o_create(char* path){
 
-	//creo un nodo
-	gfile* p_gfile = malloc(1 + 4 + 2 * sizeof(unsigned long long) + 4);
+	if (determinar_nodo(path) != -1){
+		return -EEXIST;
+	}
+	log_info(logger, "Create: Path: %s", path);
 
-	p_gfile->estado = OCUPADO;
+	int nodo_padre, i, res = 0;
+	int new_free_node;
+	struct gfile *node;
+	char *nombre = malloc(strlen(path) + 1), *nom_to_free = nombre;
+	char *dir_padre = malloc(strlen(path) + 1), *dir_to_free = dir_padre;
+	char *data_block;
 
-	char* pathCopia;
-	memcpy(pathCopia, path, strlen(path));
-	p_gfile->nombre_archivo = malloc(strlen(basename(path)));
-	memcpy(p_gfile->nombre_archivo, path, strlen(path));
+	split_path(path, &dir_padre, &nombre);
 
-	p_gfile->bloque_padre = buscarPadre(pathCopia);
+	// Ubica el nodo correspondiente. Si es el raiz, lo marca como 0,
+	// si es menor a 0, lo crea (mismos permisos).
+	if (strcmp(dir_padre, "/") == 0) {
+		nodo_padre = 0;
+	} else if ((nodo_padre = determinar_nodo(dir_padre)) < 0){
+		return -ENOENT;
+	}
 
-	p_gfile->tamanio_archivo = 4096;
-	p_gfile->fecha_creacion = getMicrotime();
-	p_gfile->fecha_modificacion = getMicrotime();
+	node = node_table_start;
 
-	ptrGBloque bloqueLibre = asignarBloqueLibre();
-	p_gfile->bloques_indirectos = list_create();
-	list_add(p_gfile->bloques_indirectos, bloqueLibre);
+	// Toma un lock de escritura.
+	log_lock_trace(logger, "Mknod: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
+	pthread_rwlock_wrlock(&rwlock);
+	log_lock_trace(logger, "Mknod: Recibe lock escritura.");
 
-	//Agrego este nodo a la tabla de nodos
-	list_add(tablaNodos, p_gfile);
+	// Busca el primer nodo libre (state 0) y cuando lo encuentra, lo crea:
+	for (i = 0; (node->estado != 0) & (i <= NODE_TABLE_SIZE); i++) {
+		node = &(node_table_start[i]);
+	}
+	// Si no hay un nodo libre, devuelve un error.
+	if (i > NODE_TABLE_SIZE){
+		res = -EDQUOT;
+		goto finalizar;
+	}
 
-	return 0;
+	// Escribe datos del archivo
+	node->estado = OCUPADO;
+	strcpy((char*) &(node->nombre_archivo[0]), nombre);
+	node->tamanio_archivo = 0; // El tamanio se ira sumando a medida que se escriba en el archivo.
+	node->bloque_padre = nodo_padre;
+	node->bloques_indirectos[0] = 0; // Se utiliza esta marca para avisar que es un archivo nuevo. De esta manera, la funcion add_node conoce que esta recien creado.
+	node->fecha_creacion = node->fecha_modificacion = time(NULL);
+	res = 0;
+
+	// Obtiene un bloque libre para escribir.
+	new_free_node = get_node();
+
+	// Actualiza la informacion del archivo.
+	add_node(node, new_free_node);
+
+	// Lo relativiza al data block.
+	new_free_node -= (GHEADERBLOCKS + NODE_TABLE_SIZE + BITMAP_BLOCK_SIZE);
+	data_block = (char*) &(data_block_start[new_free_node]);
+
+	// Escribe en ese bloque de datos.
+	memset(data_block, '\0', BLOCKSIZE);
+
+	finalizar:
+	free(nom_to_free);
+	free(dir_to_free);
+
+	// Devuelve el lock de escritura.
+	pthread_rwlock_unlock(&rwlock);
+	log_lock_trace(logger, "Mknod: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
+
+	return res;
 
 	/*
 	 * FUNCIONAMIENTO ANTERIOR
@@ -57,22 +102,6 @@ int o_create(char* path){
 	*/
 }
 
-
-ptrGBloque buscarPadre(char* path){
-	int tieneNombre(gfile* unNodo){
-		return strcmp( unNodo->nombre_archivo, basename(dirname(path))) == 0;
-	}
-
-	gfile* nodoPadre = listfind(tablaNodos, tieneNombre);
-
-	if(nodoPadre){
-		return list_get(nodoPadre->bloques_indirectos, 0);
-	}
-	else{
-		return 0;
-	}
-
-}
 
 
 int o_open(char* path){
