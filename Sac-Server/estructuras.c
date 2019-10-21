@@ -40,7 +40,7 @@ t_bitarray* crearBitmap(){
 
 	void * bmap = mmap(NULL, mystat.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, bitmap, 0);
 
-    int tamanioBitmap = mystat.st_size / BLOCK_SIZE / 8;
+    int tamanioBitmap = mystat.st_size / BLOCKSIZE / 8;
     memset(bmap,0,tamanioBitmap);
 
     printf("El tamaño del archivo es %li \n",mystat.st_size);
@@ -66,7 +66,7 @@ t_bitarray* crearBitmap(){
 
 	printf("El tamano del bitarray creado es de: %i\n\n\n",(int)bitarray_get_max_bit(bitarray));
 	printf("Bloques ocupados %i\n",tope2);
-	printf("Bloques libres %li\n",(mystat.st_size / BLOCK_SIZE) - tope2);
+	printf("Bloques libres %li\n",(mystat.st_size / BLOCKSIZE) - tope2);
 	munmap(bmap,mystat.st_size);
 	close(bitmap);
 
@@ -263,16 +263,16 @@ int add_node(struct gfile *file_data, int node_number){
 	int new_pointer_block;
 	ptrGBloque *nodo_punteros;
 
-	// Ubica el ultimo nodo escrito y se posiciona en el mismo.
+	// Ubica el ultimo bloque escrito y se posiciona en el mismo.
 	set_position(&node_pointer_number, &position, 0, tam);
 
 	if((node_pointer_number == BLKINDIRECT-1) & (position == PTRGBLOQUE_SIZE-1)){
 		return -ENOSPC;
 	}
 
-	// Si es el primer nodo del archivo y esta escrito, debe escribir el segundo.
-	// Se sabe que el primer nodo del archivo esta escrito si el primer
-	// puntero a bloque punteros del nodo es distinto de 0 (file_data->blk_indirect[0] != 0)
+	// Si es el primer bloque del archivo y esta escrito, debe escribir el segundo.
+	// Se sabe que el primer bloque del archivo esta escrito si el primer
+	// puntero a bloque punteros del bloque es distinto de 0 (file_data->blk_indirect[0] != 0)
 	// ya que se le otorga esa marca (=0) al escribir el archivo, para indicar que es un archivo nuevo.
 	if ((file_data->bloques_indirectos[node_pointer_number] != 0)){
 		if (position == 1024) {
@@ -280,7 +280,7 @@ int add_node(struct gfile *file_data, int node_number){
 			node_pointer_number++;
 		}
 	}
-	// Si es el ultimo nodo en el bloque de punteros, pasa al siguiente
+	// Si es el ultimo bloque en el bloque de punteros, pasa al siguiente
 	if (position == 0){
 		new_pointer_block = get_node();
 		if(new_pointer_block < 0) {

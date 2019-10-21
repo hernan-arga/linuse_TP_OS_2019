@@ -78,7 +78,6 @@ int o_create(char* path){
 
 	return res;
 
-
 	/*
 	 * FUNCIONAMIENTO ANTERIOR
 	 *
@@ -103,22 +102,6 @@ int o_create(char* path){
 	*/
 }
 
-
-ptrGBloque buscarPadre(char* path){
-	int tieneNombre(gfile* unNodo){
-		return strcmp( unNodo->nombre_archivo, basename(dirname(path))) == 0;
-	}
-
-	gfile* nodoPadre = listfind(tablaNodos, tieneNombre);
-
-	if(nodoPadre){
-		return list_get(nodoPadre->bloques_indirectos, 0);
-	}
-	else{
-		return 0;
-	}
-
-}
 
 
 int o_open(char* path){
