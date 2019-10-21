@@ -10,7 +10,7 @@ int o_create(char* path){
 	if (determinar_nodo(path) != -1){
 		return -EEXIST;
 	}
-	log_info(logger, "Mknod: Path: %s", path);
+	log_info(logger, "Create: Path: %s", path);
 
 	int nodo_padre, i, res = 0;
 	int new_free_node;
@@ -25,8 +25,7 @@ int o_create(char* path){
 	// si es menor a 0, lo crea (mismos permisos).
 	if (strcmp(dir_padre, "/") == 0) {
 		nodo_padre = 0;
-	}
-	else if ((nodo_padre = determinar_nodo(dir_padre)) < 0){
+	} else if ((nodo_padre = determinar_nodo(dir_padre)) < 0){
 		return -ENOENT;
 	}
 
@@ -38,7 +37,7 @@ int o_create(char* path){
 	log_lock_trace(logger, "Mknod: Recibe lock escritura.");
 
 	// Busca el primer nodo libre (state 0) y cuando lo encuentra, lo crea:
-	for (i = 0; (node->state != 0) & (i <= NODE_TABLE_SIZE); i++) {
+	for (i = 0; (node->estado != 0) & (i <= NODE_TABLE_SIZE); i++) {
 		node = &(node_table_start[i]);
 	}
 	// Si no hay un nodo libre, devuelve un error.
@@ -48,12 +47,12 @@ int o_create(char* path){
 	}
 
 	// Escribe datos del archivo
-	node->state = FILE_T;
-	strcpy((char*) &(node->fname[0]), nombre);
-	node->file_size = 0; // El tamanio se ira sumando a medida que se escriba en el archivo.
-	node->parent_dir_block = nodo_padre;
-	node->blk_indirect[0] = 0; // Se utiliza esta marca para avisar que es un archivo nuevo. De esta manera, la funcion add_node conoce que esta recien creado.
-	node->c_date = node->m_date = time(NULL);
+	node->estado = OCUPADO;
+	strcpy((char*) &(node->nombre_archivo[0]), nombre);
+	node->tamanio_archivo = 0; // El tamanio se ira sumando a medida que se escriba en el archivo.
+	node->bloque_padre = nodo_padre;
+	node->bloques_indirectos[0] = 0; // Se utiliza esta marca para avisar que es un archivo nuevo. De esta manera, la funcion add_node conoce que esta recien creado.
+	node->fecha_creacion = node->fecha_modificacion = time(NULL);
 	res = 0;
 
 	// Obtiene un bloque libre para escribir.

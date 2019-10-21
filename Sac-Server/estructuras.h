@@ -43,10 +43,13 @@ int split_path(const char*, char**, char**);
 #define GHEADERBLOCKS 1
 #define BLKINDIRECT 1000
 #define BLOCK_SIZE 4096
+#define NODE_TABLE_SIZE 1024
+#define PTRGBLOQUE_SIZE 1024
+#define GFILENAMELENGTH 71
+#define BLKINDIRECT 1000
 
 typedef uint32_t ptrGBloque;
 t_list* tablaNodos;
-
 
 typedef enum __attribute__((packed)){
 	BORRADO = '\0',
@@ -62,12 +65,7 @@ typedef struct { // un bloque (4096 bytes)
 	unsigned char relleno[4081]; // padding
 } gheader;
 
-#define PTRGBLOQUE_SIZE 1024
-#define GFILENAMELENGTH 71
-#define BLKINDIRECT 1000
-
 typedef ptrGBloque pointer_data_block [PTRGBLOQUE_SIZE];
-typedef uint32_t ptrGBloque;
 
 typedef struct gfile{
 	uint8_t estado; // 0: borrado, 1: archivo, 2: directorio
@@ -79,5 +77,6 @@ typedef struct gfile{
 	ptrGBloque bloques_indirectos[BLKINDIRECT];
 } gfile;
 
+struct gfile *node_table_start;
 
 #endif /* ESTRUCTURAS_H_ */

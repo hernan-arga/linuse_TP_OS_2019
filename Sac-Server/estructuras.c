@@ -77,7 +77,6 @@ t_bitarray* crearBitmap(){
 unsigned long long getMicrotime(){
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
-	//return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
 	return ((unsigned long long)( (tv.tv_sec)*1000 + (tv.tv_usec)/1000 ));
 }
 
@@ -144,6 +143,7 @@ int tamanioEnBytesDelBitarray(){
  *
  */
 int split_path(const char* path, char** super_path, char** name){
+
 	int aux;
 	strcpy(*super_path, path);
 	strcpy(*name, path);
@@ -162,4 +162,66 @@ int split_path(const char* path, char** super_path, char** name){
 	(*super_path)[aux] = '\0';
 
 	return 0;
+}
+
+
+
+/* @DESC
+ * 		Determina cual es el nodo sobre el cual se encuentra un path.
+ *
+ * 	@PARAM
+ * 		path - Direccion del directorio o archivo a buscar.
+ *
+ * 	@RETURN
+ * 		Devuelve el numero de bloque en el que se encuentra el nombre.
+ * 		Si el nombre no se encuentra, devuelve -1.
+ *
+ */
+ptrGBloque determinar_nodo(const char* path){
+
+	// Si es el directorio raiz, devuelve 0:
+	if(!strcmp(path, "/")){
+		return 0;
+	}
+
+	int cache_result;
+	/* Realiza el chequeo de la cache */
+	if ((cache_result = name_cache_look(&node_cache, path)) > 0) return cache_result;
+
+	int i, nodo_anterior, err = 0;
+	// Super_path usado para obtener la parte superior del path, sin el nombre.
+	char *super_path = (char*) malloc(strlen(path) +1), *nombre = (char*) malloc(strlen(path)+1);
+	char *start = nombre, *start_super_path = super_path; //Estos liberaran memoria.
+	struct grasa_file_t *node;
+	unsigned char *node_name;
+
+	split_path(path, &super_path, &nombre);
+
+	nodo_anterior = determinar_nodo(super_path);
+
+
+	pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
+			log_lock_trace(logger, "Determinar_nodo: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+
+	node = node_table_start;
+
+	// Busca el nodo sobre el cual se encuentre el nombre.
+	node_name = &(node->fname[0]);
+	for (i = 0; ( (node->parent_dir_block != nodo_anterior) | (strcmp(nombre, (char*) node_name) != 0) | (node->state == 0)) &  (i < GFILEBYTABLE) ; i++ ){
+		node = &(node[1]);
+		node_name = &(node->fname[0]);
+	}
+
+	// Cierra conexiones y libera memoria. Contempla casos de error.
+	pthread_rwlock_unlock(&rwlock);
+			log_lock_trace(logger, "Determinar_nodo: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+	free(start);
+	free(start_super_path);
+	if (err != 0) return err;
+	if (i >= GFILEBYTABLE) return -1;
+
+	/* Guarda el resultado de la operacion en la cache */
+	cache_renew(&node_cache, path, (i+1));
+	return (i+1);
+
 }
