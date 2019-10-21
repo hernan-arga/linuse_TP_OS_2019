@@ -34,6 +34,7 @@ char* obtenerNombreArchivo(char*);
 int asignarBloqueLibre();
 void loguearBloqueQueCambio(int);
 int tamanioEnBytesDelBitarray();
+int split_path(const char*, char**, char**);
 
 
 #define GFILEBYTABLE 1024
@@ -61,14 +62,21 @@ typedef struct { // un bloque (4096 bytes)
 	unsigned char relleno[4081]; // padding
 } gheader;
 
-typedef struct {
-	char estado; // 0: borrado, 1: archivo, 2: directorio
-	char* nombre_archivo; // maximo 71 bytes
-	ptrGBloque bloque_padre; // nro de bloque del directorio padre, 0 si esta en el raiz
-	int tamanio_archivo; // maximo tamanio de archivo 4GB
-	unsigned long long fecha_creacion;
-	unsigned long long fecha_modificacion;
-	t_list* bloques_indirectos;
+#define PTRGBLOQUE_SIZE 1024
+#define GFILENAMELENGTH 71
+#define BLKINDIRECT 1000
+
+typedef ptrGBloque pointer_data_block [PTRGBLOQUE_SIZE];
+typedef uint32_t ptrGBloque;
+
+typedef struct gfile{
+	uint8_t estado; // 0: borrado, 1: archivo, 2: directorio
+	unsigned char nombre_archivo[GFILENAMELENGTH];
+	uint32_t bloque_padre;
+	uint32_t tamanio_archivo;
+	uint64_t fecha_creacion;
+	uint64_t fecha_modificacion;
+	ptrGBloque bloques_indirectos[BLKINDIRECT];
 } gfile;
 
 

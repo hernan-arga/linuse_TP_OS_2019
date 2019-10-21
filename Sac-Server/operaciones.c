@@ -5,8 +5,86 @@
 #include <libgen.h>
 
 
-
 int o_create(char* path){
+
+	if (determinar_nodo(path) != -1){
+		return -EEXIST;
+	}
+	log_info(logger, "Mknod: Path: %s", path);
+
+	int nodo_padre, i, res = 0;
+	int new_free_node;
+	struct gfile *node;
+	char *nombre = malloc(strlen(path) + 1), *nom_to_free = nombre;
+	char *dir_padre = malloc(strlen(path) + 1), *dir_to_free = dir_padre;
+	char *data_block;
+
+	split_path(path, &dir_padre, &nombre);
+
+	// Ubica el nodo correspondiente. Si es el raiz, lo marca como 0,
+	// si es menor a 0, lo crea (mismos permisos).
+	if (strcmp(dir_padre, "/") == 0) {
+		nodo_padre = 0;
+	}
+	else if ((nodo_padre = determinar_nodo(dir_padre)) < 0){
+		return -ENOENT;
+	}
+
+	node = node_table_start;
+
+	// Toma un lock de escritura.
+	log_lock_trace(logger, "Mknod: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
+	pthread_rwlock_wrlock(&rwlock);
+	log_lock_trace(logger, "Mknod: Recibe lock escritura.");
+
+	// Busca el primer nodo libre (state 0) y cuando lo encuentra, lo crea:
+	for (i = 0; (node->state != 0) & (i <= NODE_TABLE_SIZE); i++) {
+		node = &(node_table_start[i]);
+	}
+	// Si no hay un nodo libre, devuelve un error.
+	if (i > NODE_TABLE_SIZE){
+		res = -EDQUOT;
+		goto finalizar;
+	}
+
+	// Escribe datos del archivo
+	node->state = FILE_T;
+	strcpy((char*) &(node->fname[0]), nombre);
+	node->file_size = 0; // El tamanio se ira sumando a medida que se escriba en el archivo.
+	node->parent_dir_block = nodo_padre;
+	node->blk_indirect[0] = 0; // Se utiliza esta marca para avisar que es un archivo nuevo. De esta manera, la funcion add_node conoce que esta recien creado.
+	node->c_date = node->m_date = time(NULL);
+	res = 0;
+
+	// Obtiene un bloque libre para escribir.
+	new_free_node = get_node();
+
+	// Actualiza la informacion del archivo.
+	add_node(node, new_free_node);
+
+	// Lo relativiza al data block.
+	new_free_node -= (GHEADERBLOCKS + NODE_TABLE_SIZE + BITMAP_BLOCK_SIZE);
+	data_block = (char*) &(data_block_start[new_free_node]);
+
+	// Escribe en ese bloque de datos.
+	memset(data_block, '\0', BLOCKSIZE);
+
+	finalizar:
+	free(nom_to_free);
+	free(dir_to_free);
+
+	// Devuelve el lock de escritura.
+	pthread_rwlock_unlock(&rwlock);
+	log_lock_trace(logger, "Mknod: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
+
+	return res;
+
+
+
+
+
+
+
 
 	//creo un nodo
 	gfile* p_gfile = malloc(1 + 4 + 2 * sizeof(unsigned long long) + 4);
