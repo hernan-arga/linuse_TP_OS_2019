@@ -63,6 +63,8 @@ void planificarExecParaUnPrograma(char *, programa *);
 void planificarExec();
 void planificarBlocked();
 void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, int tid, char *semID);
+void atenderSignal(int sd);
+void atenderWait(int sd);
 
 pthread_t hiloLevantarConexion;
 pthread_t hiloPlanificadorReady;
@@ -293,15 +295,19 @@ void sem_suse_wait(int pid, int tid, char* semID){
 		}
 
 		else{
-			//Mandar el hilo a blocked
+			//todo Mandar el hilo a blocked
 		}
 
 	}
 	sem_post(&SEMAFOROS);
 }
 
-void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, int tid, char *semID){
 
+void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, int tid, char *semID){
+	/*
+	 * todo Saco del diccionario en la cola de semID el primero y lo paso a la cola
+	 * de ready correspondiente
+	 */
 }
 
 void atenderWait(int sd){
@@ -311,8 +317,23 @@ void atenderWait(int sd){
 	read(sd, longitudIDSemaforo, sizeof(int));
 	char *semID = malloc(*longitudIDSemaforo+1);
 	read(sd, semID, *longitudIDSemaforo+1);
-	printf("%i, %s\n", *tid, semID);
-	//sem_suse_wait();
+	sem_suse_wait(sd, *tid, semID);
+	free(tid);
+	free(longitudIDSemaforo);
+	free(semID);
+}
+
+void atenderSignal(int sd){
+	int *tid = malloc(sizeof(int));
+	read(sd, tid, sizeof(int));
+	int *longitudIDSemaforo= malloc(sizeof(int));
+	read(sd, longitudIDSemaforo, sizeof(int));
+	char *semID = malloc(*longitudIDSemaforo+1);
+	read(sd, semID, *longitudIDSemaforo+1);
+	sem_suse_signal(sd, *tid, semID);
+	free(tid);
+	free(longitudIDSemaforo);
+	free(semID);
 }
 
 int32_t iniciarConexion() {
@@ -459,6 +480,7 @@ int32_t iniciarConexion() {
 							atenderWait(sd);
 							break;
 						case 4: //suse_signal
+							atenderSignal(sd);
 							break;
 						case 5: //suse_join
 							break;

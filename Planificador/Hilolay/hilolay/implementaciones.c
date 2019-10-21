@@ -61,7 +61,7 @@ int suse_close(int tid){
 	return 0;
 }
 
-void suse_wait(int tid, char *semID){
+int suse_wait(int tid, char *semID){
 	printf("Pedir wait\n");
 	char* buffer = malloc(3*sizeof(int) + strlen(semID) + 1);
 	int operacion = 3;
@@ -74,10 +74,23 @@ void suse_wait(int tid, char *semID){
 
 	send(servidorSUSE, buffer, 3*sizeof(int) + strlen(semID) + 1, 0);
 	free(buffer);
+	return 0;
 }
 
-void suse_signal(int tid, char *semID){
+int suse_signal(int tid, char *semID){
 	printf("Pedir signal\n");
+	char* buffer = malloc(3*sizeof(int) + strlen(semID) + 1);
+	int operacion = 4;
+	int longitudIDSemaforo = strlen(semID);
+
+	memcpy(buffer, &operacion, sizeof(int));
+	memcpy(buffer + sizeof(int), &tid, sizeof(int));
+	memcpy(buffer + 2*sizeof(int), &longitudIDSemaforo, sizeof(int));
+	memcpy(buffer + 3*sizeof(int), semID, longitudIDSemaforo+1);
+
+	send(servidorSUSE, buffer, 3*sizeof(int) + strlen(semID) + 1, 0);
+	free(buffer);
+	return 0;
 }
 
 void suse_init(){
@@ -107,7 +120,6 @@ void hilolay_init(void){
 	//Iniciar socket para comunicarse con suse?
 	//verificar que suse este levantado?
 	suse_init();
-	suse_wait(2, "c3");
 	init_internal(&hiloops);
 
 }
