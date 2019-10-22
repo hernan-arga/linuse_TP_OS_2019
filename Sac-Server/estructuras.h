@@ -69,11 +69,12 @@ struct gheader *header_start;
 struct gfile *node_table_start, *data_block_start, *bitmap_start;
 struct gheader Header_Data;
 
+int fuse_disc_size;
 // Macros que definen los tamanios de los bloques.
 #define NODE_TABLE_SIZE 1024
 #define NODE_TABLE_SIZE_B ((int) NODE_TABLE_SIZE * BLOCKSIZE)
 #define DISC_PATH fuse_disc_path
-#define DISC_SIZE_B(p) path_size_in_bytes(p)
+//#define DISC_SIZE_B(p) path_size_in_bytes(p)
 #define ACTUAL_DISC_SIZE_B fuse_disc_size
 #define BITMAP_SIZE_B (int) (get_size() / CHAR_BIT)
 #define BITMAP_SIZE_BITS get_size()
@@ -84,6 +85,7 @@ struct gheader Header_Data;
 size_t _bitarray_64;
 #define ARRAY64LEAK _bitarray_64_leak
 size_t _bitarray_64_leak;
+t_log *logger;
 
 pthread_rwlock_t rwlock;
 
@@ -97,5 +99,6 @@ int split_path(const char*, char**, char**);
 int add_node(struct gfile*, int);
 int get_node(void);
 ptrGBloque determinar_nodo(const char*);
+int get_size(void);
 
 #endif /* ESTRUCTURAS_H_ */

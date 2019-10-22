@@ -52,6 +52,11 @@ static int hello_create (const char *path, mode_t mode, struct fuse_file_info *f
 
 static int hello_open(const char *path, struct fuse_file_info *fi) {
 
+	return 0;
+
+	/*
+ * FUNCIONAMIENTO ANTERIOR
+ *
 	//Serializo peticion y path
 	char* buffer = malloc(3 * sizeof(int) + strlen(path));
 
@@ -77,6 +82,7 @@ static int hello_open(const char *path, struct fuse_file_info *fi) {
 	else{
 		return errno;
 	}
+*/
 }
 
 static int hello_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {

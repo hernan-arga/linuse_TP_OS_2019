@@ -3,6 +3,7 @@
 #define _GNU_SOURCE
 #include <dirent.h>
 #include <sys/stat.h>
+#include "estructuras.h"
 
 int o_create(char*);
 int o_open(char*);

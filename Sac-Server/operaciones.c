@@ -107,7 +107,10 @@ int o_create(char* path){
 
 int o_open(char* path){
 
-	char* pathAppend = string_new();
+	/*
+	 * FUNCIONAMIENTO ANTERIOR:
+	 *
+	 * char* pathAppend = string_new();
 	string_append(&pathAppend, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
 	string_append(&pathAppend, path);
 
@@ -120,10 +123,16 @@ int o_open(char* path){
 		respuesta = 0;
 	}
 	return respuesta;
+	*/
+
 }
 
 void o_read(char* path, int size, int offset, char* texto){
 
+
+	/*
+	 * FUNCIONAMIENTO ANTERIOR
+	 *
 	FILE *f;
 
 	//open the file for write operation
@@ -137,6 +146,7 @@ void o_read(char* path, int size, int offset, char* texto){
 	}
 
 	fclose(f);
+*/
 }
 
 void o_readDir(char* path, int cliente){
@@ -273,11 +283,9 @@ int o_unlink(char* pathC){
 	pthread_rwlock_unlock(&rwlock);
 	//Log_lock_trace(logger, "Ulink: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
 
-	// Borra la estructura de cache:
-	name_cache_free(&node_cache);
 	//DISABLE_DELETE_MODE;
 
-	return grasa_rmdir(path);
+	return grasa_rmdir(pathC);
 
 	/*
 	 * FUNCIONAMIENTO ANTERIOR

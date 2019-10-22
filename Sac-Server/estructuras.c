@@ -188,7 +188,7 @@ ptrGBloque determinar_nodo(const char* path){
 	// Super_path usado para obtener la parte superior del path, sin el nombre.
 	char *super_path = (char*) malloc(strlen(path) +1), *nombre = (char*) malloc(strlen(path)+1);
 	char *start = nombre, *start_super_path = super_path; //Estos liberaran memoria.
-	struct grasa_file_t *node;
+	struct gfile *node;
 	unsigned char *node_name;
 
 	split_path(path, &super_path, &nombre);
@@ -196,22 +196,22 @@ ptrGBloque determinar_nodo(const char* path){
 	nodo_anterior = determinar_nodo(super_path);
 
 	pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
-	log_lock_trace(logger, "Determinar_nodo: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+	//log_lock_trace(logger, "Determinar_nodo: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
 
 	node = node_table_start;
 
 	// Busca el nodo sobre el cual se encuentre el nombre.
-	node_name = &(node->fname[0]);
-	for (i = 0; ( (node->parent_dir_block != nodo_anterior)
+	node_name = &(node->nombre_archivo[0]);
+	for (i = 0; ( (node->bloque_padre != nodo_anterior)
 				  | (strcmp(nombre, (char*) node_name) != 0)
-				  | (node->state == 0)) &  (i < GFILEBYTABLE) ; i++ ){
+				  | (node->estado == 0)) &  (i < GFILEBYTABLE) ; i++ ){
 		node = &(node[1]);
-		node_name = &(node->fname[0]);
+		node_name = &(node->nombre_archivo[0]);
 	}
 
 	// Cierra conexiones y libera memoria. Contempla casos de error.
 	pthread_rwlock_unlock(&rwlock);
-	log_lock_trace(logger, "Determinar_nodo: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+	//log_lock_trace(logger, "Determinar_nodo: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
 
 	free(start);
 	free(start_super_path);
@@ -236,7 +236,7 @@ int get_node(void){
 	t_bitarray *bitarray;
 	int res;
 
-	bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B, ARRAY64SIZE, ARRAY64LEAK);
+	bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B);
 
 	res = bitarray_test_and_set(bitarray, GHEADERBLOCKS+BITMAP_BLOCK_SIZE+GFILEBYTABLE);
 
@@ -271,7 +271,8 @@ int add_node(struct gfile *file_data, int node_number){
 	}
 
 	// Si es el primer nodo del archivo y esta escrito, debe escribir el segundo.
-		// Se sabe que el primer nodo del archivo esta escrito siempre que el primer puntero a bloque punteros del nodo sea distinto de 0 (file_data->blk_indirect[0] != 0)
+		// Se sabe que el primer nodo del archivo esta escrito siempre que el primer
+	    //puntero a bloque punteros del nodo sea distinto de 0 (file_data->blk_indirect[0] != 0)
 		// ya que se le otorga esa marca (=0) al escribir el archivo, para indicar que es un archivo nuevo
 	if ((file_data->bloques_indirectos[node_pointer_number] != 0)){
 		if (position == 1024) {
@@ -304,4 +305,6 @@ int add_node(struct gfile *file_data, int node_number){
 	return 0;
 }
 
-
+int get_size(void){
+	return ((int) (ACTUAL_DISC_SIZE_B / BLOCKSIZE));
+}
