@@ -261,7 +261,7 @@ void tomarPeticionOpen(int cliente){
 
 	int ok = o_open(path);
 
-	//logueo respuesta create
+	//logueo respuesta open
 	if (ok == 1){
 		loguearInfo(" + Se hizo un open en SacServer\n");
 	}

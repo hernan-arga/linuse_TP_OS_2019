@@ -189,10 +189,10 @@ static int hello_getattr(const char *path, struct stat *stbuf) {
 	// Deserializo respuesta
 	int* tamanioRespuesta = malloc(sizeof(int));
 	read(sacServer, tamanioRespuesta, sizeof(int));
-	int* ok = malloc(*tamanioRespuesta);
-	read(sacServer, ok, *tamanioRespuesta);
-	if (*ok == 1) {
-		//Deserializo mode y nlink
+	int* res = malloc(*tamanioRespuesta);
+	read(sacServer, res, *tamanioRespuesta);
+	if (*res == 0) {
+		//Deserializo mode, nlink y size
 		int* tamanioMode = malloc(sizeof(int));
 		read(sacServer, tamanioMode, sizeof(int));
 		void* mode = malloc(*tamanioMode);
