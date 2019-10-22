@@ -254,7 +254,35 @@ int o_mkdir(char* path){
 }
 
 int o_unlink(char* pathC){
-	int ok;
+
+	struct grasa_file_t* file_data;
+	int node = determinar_nodo(pathC);
+
+	//ENABLE_DELETE_MODE;
+
+	file_data = &(node_table_start[node - 1]);
+
+	// Toma un lock de escritura.
+	//log_lock_trace(logger, "Ulink: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
+	pthread_rwlock_wrlock(&rwlock);
+	//log_lock_trace(logger, "Ulink: Recibe lock escritura.");
+
+	delete_nodes_upto(file_data, 0, 0);
+
+	// Devuelve el lock de escritura.
+	pthread_rwlock_unlock(&rwlock);
+	//Log_lock_trace(logger, "Ulink: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
+
+	// Borra la estructura de cache:
+	name_cache_free(&node_cache);
+	//DISABLE_DELETE_MODE;
+
+	return grasa_rmdir(path);
+
+	/*
+	 * FUNCIONAMIENTO ANTERIOR
+	 *
+	 * int ok;
 
 	char* path = string_new();
 	string_append(&path, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
@@ -283,6 +311,7 @@ int o_unlink(char* pathC){
 	}
 
 	return ok;
+	*/
 }
 
 int o_rmdir(char* pathC){
