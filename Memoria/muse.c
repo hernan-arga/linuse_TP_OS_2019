@@ -29,7 +29,7 @@ int main(){
 	//Se hace una unica vez
 	reservarMemoriaPrincipal(pconfig->tamanio_memoria);
 	//Se hace una unica vez
-	inicializarBitmapFrames(bitmapFrames[cantidadFrames]);
+	crearBitmapFrames();
 	//Se hace una unica vez
 	tablasSegmentos = dictionary_create();
 
@@ -62,17 +62,26 @@ void crearTablaSegmentosProceso(char *idProceso){ //Id proceso = id + ip
 
 ///////////////Bitmap de Frames///////////////
 
-void inicializarBitmapFrames(int bitmapFrames[cantidadFrames]){
+void crearBitmapFrames(){
+	//Bitarray de cantidad frames posiciones - en bytes
+	double framesEnBytes = cantidadFrames / 8;
+	int bytesNecesarios = ceil(framesEnBytes);
+	void* bitsBitmap = malloc(bytesNecesarios);
 
-	for (int i = 0; i < cantidadFrames; i++){
-		bitmapFrames[i] = 0;
+	bitmapFrames = bitarray_create(bitsBitmap, bytesNecesarios);
+}
+
+void inicializarBitmapFrames(){
+
+	for (int i = 0; i < bitarray_get_max_bit(bitmapFrames); i++){
+		bitarray_set_bit(bitmapFrames, i);
 	}
 
 }
 
-bool estaLibre(int indiceFrame){
+bool frameEstaLibre(int indiceFrame){
 
-	if(bitmapFrames[indiceFrame] == 0){
+	if(bitarray_test_bit(bitmapFrames,indiceFrame) == 0){
 		return true;
 	} else{
 		return false;
@@ -82,7 +91,7 @@ bool estaLibre(int indiceFrame){
 
 int ocuparFrame(int indiceFrame, uint32_t tamanio){
 
-	if(bitmapFrames[indiceFrame] == 0){ //Esta libre o tiene algo de espacio libre
+	if(frameEstaLibre(indiceFrame)){ //Esta libre o tiene algo de espacio libre
 
 		void *pos = &memoriaPrincipal + (indiceFrame * tam_pagina); //Me posiciono en el frame
 		struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
@@ -109,8 +118,9 @@ int ocuparFrame(int indiceFrame, uint32_t tamanio){
 						pos = nuevoHeader;
 
 						if(estaOcupadoCompleto(indiceFrame) == true){ /*Chequeo si el espacio ACTUAL
-						restante es 0, de ser asi lo marco como ocupado*/
-							bitmapFrames[indiceFrame] = 1;
+																		restante es 0, de ser asi lo marco
+																		como ocupado*/
+							//Ocupar posicion bitarray
 						}
 
 
@@ -155,17 +165,13 @@ bool estaOcupadoCompleto(int indiceFrame){
 
 }
 
-void liberarFrame(int indiceFrame){
-	bitmapFrames [indiceFrame] = 0;
-}
-
 /* Recorre los frames en orden buscando uno libre y retorna el indice
  * del primero libre, de no haber libres retorna -1 (memoria virtual)
  * */
 int buscarFrameLibre(){
 
-	for(int i = 0; i < cantidadFrames; i++){
-		if(bitmapFrames[i] == 0){
+	for(int i = 0; i < bitarray_get_max_bit(bitmapFrames); i++){
+		if(bitarray_test_bit(bitmapFrames,i) == 0){
 			return i;
 		}
 	}
