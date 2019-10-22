@@ -365,8 +365,46 @@ int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
 	return false;
 }
 
-void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
+void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
+	t_list *paginasSegmento = unSegmento->tablaPaginas;
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+	void *pos;
+	void *end;
 
+	for(int i = 0; i < list_size(paginasSegmento); i++){
+		struct Pagina *pagina = list_get(paginasSegmento, i);
+
+		if(frameEstaLibre(pagina->numeroFrame) && espacioLibreFrame(pagina->numeroFrame) >= (tamanio+5)){
+			//Busco el espacio libre del frame
+			pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
+			end = retornarPosicionMemoriaFrame(pagina->numeroFrame + 1);
+
+			//Recorro el frame actual buscando la posicion libre
+			while(pos < end){
+				memcpy(metadata,pos,sizeof(struct HeapMetadata));
+
+				if(metadata->isFree == true && metadata->size >= (tamanio + 5)){
+					int unSize = metadata->size;
+
+					//Ocupo el heapmetadata que encontre libre
+					metadata->isFree = false;
+					metadata->size = tamanio;
+
+					//Me muevo adonde debo crear el proximo heapmetadata
+					pos = pos + sizeof(struct HeapMetadata) + unSize;
+
+					//Creo el proximo heapmetadata
+					struct HeapMetadata *nuevoMetadata = malloc(sizeof(struct HeapMetadata));
+					nuevoMetadata->isFree = true;
+					nuevoMetadata->size = unSize - tamanio - sizeof(struct HeapMetadata);
+				}
+			}
+
+			return retornarPosicionMemoriaFrame(pagina->numeroFrame);
+		}
+	}
+
+	return NULL; //Nunca deberia llegar a retornar NULL pq ya se chequeo anteriorimente que hubiera espacio libre
 }
 
 int esExtendible(t_list *segmentosProceso, int unIndice) {

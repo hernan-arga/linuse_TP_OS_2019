@@ -64,7 +64,7 @@ int museinit(int idSocket);
 uint32_t musemalloc(uint32_t tamanio, int idSocketCliente);
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
-void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
+void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 int esExtendible(t_list *segmentosProceso,int unIndice);
 void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio);
 
