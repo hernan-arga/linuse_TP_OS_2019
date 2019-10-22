@@ -38,17 +38,6 @@ struct Pagina{
 ///////////////Funciones//////////////////
 void reservarMemoriaPrincipal(int tamanio);
 void crearTablaSegmentos();
-/* UTILS
-int atenderMuseInit(int sd);
-int atenderMuseClose(int sd); //Verificar retorno
-//uint32_t atenderMuseAlloc(int sd);
-//int atenderMuseFree(int sd);
-int atenderMuseGet(int sd);
-int atenderMuseCopy(int sd);
-uint32_t atenderMuseMap(int sd);
-int atenderMuseSync(int sd);
-int atenderMuseUnmap(int sd);
-*/
 void *crearHeaderInicial(uint32_t tamanio);
 void *buscarEspacioLibre(uint32_t tamanio);
 void unificarHeaders(char *idProceso, int idSegmento);
@@ -68,10 +57,10 @@ bool estaOcupadoCompleto(int indiceFrame);
 bool frameEstaLibre(int indice);
 
 //Funciones init
-int museinit(int id, char* ip/*, int puerto*/);
+int museinit(int idSocket);
 
 //Funciones subyacentes malloc
-void *musemalloc(uint32_t tamanio, int idSocketCliente);
+uint32_t musemalloc(uint32_t tamanio, int idSocketCliente);
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);

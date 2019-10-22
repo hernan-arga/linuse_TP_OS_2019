@@ -20,6 +20,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <pthread.h>
+#include "muse.h"
 
 int iniciar_conexion(int, int);
 void levantarConfigFile();
