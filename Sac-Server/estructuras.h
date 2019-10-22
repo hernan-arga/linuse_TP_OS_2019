@@ -100,6 +100,7 @@ t_log *logger;
 uint64_t _max = ~((uint64_t) 0);
 
 pthread_rwlock_t rwlock;
+#define THELARGESTFILE (uint32_t) (BLKINDIRECT*PTRGBLOQUE_SIZE*BLOCKSIZE)
 
 t_bitarray * crearBitmap();
 unsigned long long getMicrotime();

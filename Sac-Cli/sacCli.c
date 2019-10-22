@@ -304,7 +304,20 @@ static int hello_rmdir(const char *path)
 	}
 }
 
-
+/*
+ * 	@DESC
+ * 		Funcion que escribe archivos en fuse. Tiene la posta.
+ *
+ * 	@PARAM
+ * 		path - Dir del archivo
+ * 		buf - Buffer que indica que datos copiar.
+ * 		size - Tam de los datos a copiar
+ * 		offset - Situa una posicion sobre la cual empezar a copiar datos
+ * 		fi - File Info. Contiene flags y otras cosas locas que no hay que usar
+ *
+ * 	@RET
+ * 		Devuelve la cantidad de bytes escritos, siempre y cuando este OK. Caso contrario, numero negativo tipo -ENOENT.
+ */
 static int hello_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
 	//Serializo peticion, path, size, offset y buf

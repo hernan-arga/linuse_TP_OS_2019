@@ -682,8 +682,125 @@ int o_rmdir_2(char* path){
 }
 
 
-void o_write(char* path, int size, int offset, char* buffer){
+void o_write(char* path, int size, int offset, char* buf){
 
+	log_trace(logger, "Writing: Path: %s - Size: %d - Offset %d", path, size, offset);
+
+	int nodo = determinar_nodo(path);
+	if (nodo == -1){
+		loguearError(" - NO se pudo hacer el WRITE en SacServer\n");
+	}
+	int new_free_node;
+	struct gfile *node;
+	char *data_block;
+	size_t tam = size, file_size, space_in_block, offset_in_block = offset % BLOCKSIZE;
+	off_t off = offset;
+	int *n_pointer_block = malloc(sizeof(int)), *n_data_block = malloc(sizeof(int));
+	ptrGBloque *pointer_block;
+	int res = size;
+
+	// Ubica el nodo correspondiente al archivo
+	node = &(node_table_start[nodo-1]);
+	file_size = node->tamanio_archivo;
+
+	if ((file_size + size) >= THELARGESTFILE){
+		loguearError(" - NO se pudo hacer el WRITE en SacServer\n");
+	}
+
+	// Toma un lock de escritura.
+			log_lock_trace(logger, "Write: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
+	pthread_rwlock_wrlock(&rwlock);
+			log_lock_trace(logger, "Write: Recibe lock escritura.");
+
+	// Guarda tantas veces como sea necesario, consigue nodos y actualiza el archivo.
+	while (tam != 0){
+
+		// Actualiza los valores de espacio restante en bloque.
+		space_in_block = BLOCKSIZE - (file_size % BLOCKSIZE);
+		if (space_in_block == BLOCKSIZE){
+			(space_in_block = 0); // Porque significa que el bloque esta lleno.
+		}
+		if (file_size == 0){
+			space_in_block = BLOCKSIZE; /* Significa que el archivo esta recien creado y ya tiene un bloque de datos asignado */
+		}
+
+		// Si el offset es mayor que el tamanio del archivo mas el resto del bloque libre, significa que hay que pedir un bloque nuevo
+		// file_size == 0 indica que es un archivo que recien se comienza a escribir, por lo que tiene un tratamiento distinto (ya tiene un bloque de datos asignado).
+		if ((off >= (file_size + space_in_block)) & (file_size != 0)){
+
+			// Si no hay espacio en el disco, retorna error.
+			if (bitmap_free_blocks == 0){
+				loguearError(" - NO se pudo hacer el WRITE en SacServer\n");
+			}
+
+			// Obtiene un bloque libre para escribir.
+			new_free_node = get_node();
+			if (new_free_node < 0){
+				goto finalizar;
+			}
+
+			// Agrega el nodo al archivo.
+			res = add_node(node, new_free_node);
+			if (res != 0){
+				goto finalizar;
+			}
+
+			// Lo relativiza al data block.
+			new_free_node -= (GHEADERBLOCKS + NODE_TABLE_SIZE + BITMAP_BLOCK_SIZE);
+			data_block = (char*) &(data_block_start[new_free_node]);
+
+			// Actualiza el espacio libre en bloque.
+			space_in_block = BLOCKSIZE;
+
+		} else {
+			// Ubica a que nodo le corresponderia guardar el dato
+			set_position(n_pointer_block, n_data_block, file_size, off);
+
+			//Ubica el nodo a escribir.
+			*n_pointer_block = node->bloques_indirectos[*n_pointer_block];
+			*n_pointer_block -= (GHEADERBLOCKS + NODE_TABLE_SIZE + BITMAP_BLOCK_SIZE);
+			pointer_block = (ptrGBloque*) &(data_block_start[*n_pointer_block]);
+			*n_data_block = pointer_block[*n_data_block];
+			*n_data_block -= (GHEADERBLOCKS + NODE_TABLE_SIZE + BITMAP_BLOCK_SIZE);
+			data_block = (char*) &(data_block_start[*n_data_block]);
+		}
+
+		// Escribe en ese bloque de datos.
+		if (tam >= BLOCKSIZE){
+			memcpy(data_block, buf, BLOCKSIZE);
+			if ((node->tamanio_archivo) <= (off)) file_size = node->tamanio_archivo += BLOCKSIZE;
+			buf += BLOCKSIZE;
+			off += BLOCKSIZE;
+			tam -= BLOCKSIZE;
+			offset_in_block = 0;
+		} else if (tam <= space_in_block){ /*Hay lugar suficiente en ese bloque para escribir el resto del archivo */
+			memcpy(data_block + offset_in_block, buf, tam);
+			if (node->tamanio_archivo <= off) file_size = node->tamanio_archivo += tam;
+			else if (node->tamanio_archivo <= (off + tam)) file_size = node->tamanio_archivo += (off + tam - node->tamanio_archivo);
+			tam = 0;
+		} else { /* Como no hay lugar suficiente, llena el bloque y vuelve a buscar uno nuevo */
+			memcpy(data_block + offset_in_block, buf, space_in_block);
+			file_size = node->tamanio_archivo += space_in_block;
+			buf += space_in_block;
+			off += space_in_block;
+			tam -= space_in_block;
+			offset_in_block = 0;
+		}
+	}
+
+		node->fecha_modificacion= time(NULL);
+
+		res = size;
+
+		finalizar:
+		// Devuelve el lock de escritura.
+		pthread_rwlock_unlock(&rwlock);
+		//log_lock_trace(logger, "Write: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
+		log_trace(logger, "Terminada escritura.");
+
+/*
+ * FUNCIONAMIENTO ANTERIOR:
+ *
 	FILE *f;
 	f = fopen(path,"wb");
 
@@ -696,4 +813,5 @@ void o_write(char* path, int size, int offset, char* buffer){
 	}
 
 	fclose(f);
+*/
 }
