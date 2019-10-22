@@ -110,15 +110,28 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 
 	send(sacServer, buffer, 7 * sizeof(int) + strlen(path), 0);
 
-	//Deserializo el texto del archivo que te manda SacCli y lo guardo en buf
-	int *tamanioTexto = malloc(sizeof(int));
-	read(sacServer, tamanioTexto, sizeof(int));
-	char *texto = malloc(*tamanioTexto);
-	read(sacServer, texto, *tamanioTexto);
+	// Deserializo respuesta
+	int* tamanioRespuesta = malloc(sizeof(int));
+	read(sacServer, tamanioRespuesta, sizeof(int));
+	int* respuesta = malloc(*tamanioRespuesta);
+	read(sacServer, respuesta, *tamanioRespuesta);
+	if (*respuesta == 0) {
+		//Deserializo el texto del archivo que te manda SacServer y lo guardo en buf
+		int *tamanioTexto = malloc(sizeof(int));
+		read(sacServer, tamanioTexto, sizeof(int));
+		char *texto = malloc(*tamanioTexto);
+		read(sacServer, texto, *tamanioTexto);
 
-	memcpy(buf + offset, texto, *tamanioTexto);
+		memcpy(buf + offset, texto, *tamanioTexto);
 
-	return *tamanioTexto;
+		return 0;
+	}
+	else{
+		return errno;
+	}
+
+	// antes hacia return *tamanioTexto;
+
 }
 
 static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){

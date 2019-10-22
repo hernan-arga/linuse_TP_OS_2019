@@ -231,21 +231,21 @@ void tomarPeticionCreate(int cliente){
 	read(cliente, path, *tamanioPath);
 	char *pathCortado = string_substring_until(path, *tamanioPath);
 
-	int ok = o_create(pathCortado);
+	int respuesta = o_create(pathCortado);
 
 	char* buffer = malloc(2 * sizeof(int));
 
 	//logueo respuesta create
-	if (ok == 1){
+	if (respuesta == 0){
 		loguearInfo(" + Se hizo un create en SacServer\n");
 	}
-	if (ok == 0) {
+	else {
 		loguearError(" - NO se pudo hacer el create en SacServer\n");
 	}
 
 	int tamanioOk = sizeof(int);
 	memcpy(buffer, &tamanioOk, sizeof(int));
-	memcpy(buffer + sizeof(int), &ok, sizeof(int));
+	memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
 }
@@ -302,23 +302,32 @@ void tomarPeticionRead(int cliente){
 	read(cliente, offset, *tamanioOffset);
 
 	char* texto = malloc(*size);
-	o_read(pathAppend, *size, *offset, texto);
+	int respuesta = o_read(pathAppend, *size, *offset, texto);
 
-	//logueo respuesta read
-	//char* textoLog = string_new();
-	//string_append(&textoLog, " + Se realizo un read : ");
-	//string_append(&textoLog, &texto);
-	//loguearInfo(textoLog);
+	if (respuesta == 0){
+			loguearInfo(" + Se hizo un read en SacServer\n");
 
-	//le envio el read a sacCli
-	char* buffer = malloc(sizeof(int) + *size);
+			char* buffer = malloc(3 * sizeof(int) + strlen(texto));
+			int tamanioRespuesta = sizeof(int);
+			memcpy(buffer, &tamanioRespuesta, sizeof(int));
+			memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
-	int tamanioLeido = *size;
-	memcpy(buffer, &tamanioLeido, sizeof(int));
-	memcpy(buffer + sizeof(int), texto, tamanioLeido);
+			int tamanioLeido = *size;
+			memcpy(buffer + 2*sizeof(int), &tamanioLeido, sizeof(int));
+			memcpy(buffer + 3*sizeof(int), texto, tamanioLeido);
 
-	send(cliente, buffer, sizeof(int) + tamanioLeido, 0);
+			send(cliente, buffer, 2*sizeof(int) + tamanioLeido + strlen(texto), 0);
+	}
+	else {
+		loguearError(" - NO se pudo hacer el read en SacServer\n");
 
+		char* buffer = malloc(2 * sizeof(int));
+		int tamanioRespuesta = sizeof(int);
+		memcpy(buffer, &tamanioRespuesta, sizeof(int));
+		memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
+
+		send(cliente, buffer, 2*sizeof(int), 0);
+	}
 }
 
 void tomarPeticionReadDir(int cliente){
