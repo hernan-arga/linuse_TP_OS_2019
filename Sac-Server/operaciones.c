@@ -32,9 +32,9 @@ int o_create(char* path){
 	node = node_table_start;
 
 	// Toma un lock de escritura.
-	log_lock_trace(logger, "Mknod: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
+	//log_lock_trace(logger, "Mknod: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
 	pthread_rwlock_wrlock(&rwlock);
-	log_lock_trace(logger, "Mknod: Recibe lock escritura.");
+	//log_lock_trace(logger, "Mknod: Recibe lock escritura.");
 
 	// Busca el primer nodo libre (state 0) y cuando lo encuentra, lo crea:
 	for (i = 0; (node->estado != 0) & (i <= NODE_TABLE_SIZE); i++) {
@@ -51,7 +51,8 @@ int o_create(char* path){
 	strcpy((char*) &(node->nombre_archivo[0]), nombre);
 	node->tamanio_archivo = 0; // El tamanio se ira sumando a medida que se escriba en el archivo.
 	node->bloque_padre = nodo_padre;
-	node->bloques_indirectos[0] = 0; // Se utiliza esta marca para avisar que es un archivo nuevo. De esta manera, la funcion add_node conoce que esta recien creado.
+	// (Abajo) se utiliza esta marca para avisar que es un archivo nuevo. De esta manera, la funcion add_node conoce que esta recien creado.
+	node->bloques_indirectos[0] = 0;
 	node->fecha_creacion = node->fecha_modificacion = time(NULL);
 	res = 0;
 
@@ -74,7 +75,7 @@ int o_create(char* path){
 
 	// Devuelve el lock de escritura.
 	pthread_rwlock_unlock(&rwlock);
-	log_lock_trace(logger, "Mknod: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
+	//log_lock_trace(logger, "Mknod: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
 
 	return res;
 

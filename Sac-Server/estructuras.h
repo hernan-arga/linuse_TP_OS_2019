@@ -26,15 +26,6 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 
-t_bitarray * crearBitmap();
-unsigned long long getMicrotime();
-char* obtenerNombreArchivo(char*);
-int asignarBloqueLibre();
-void loguearBloqueQueCambio(int);
-int tamanioEnBytesDelBitarray();
-int split_path(const char*, char**, char**);
-
-
 #define GFILEBYTABLE 1024
 #define GFILEBYBLOCK 1
 #define GFILENAMELENGTH 71
@@ -93,5 +84,18 @@ struct gheader Header_Data;
 size_t _bitarray_64;
 #define ARRAY64LEAK _bitarray_64_leak
 size_t _bitarray_64_leak;
+
+pthread_rwlock_t rwlock;
+
+t_bitarray * crearBitmap();
+unsigned long long getMicrotime();
+char* obtenerNombreArchivo(char*);
+int asignarBloqueLibre();
+void loguearBloqueQueCambio(int);
+int tamanioEnBytesDelBitarray();
+int split_path(const char*, char**, char**);
+int add_node(struct gfile*, int);
+int get_node(void);
+ptrGBloque determinar_nodo(const char*);
 
 #endif /* ESTRUCTURAS_H_ */
