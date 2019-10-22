@@ -186,6 +186,27 @@ void *retornarPosicionMemoriaFrame(int unFrame) {
 	 bytes que se encuentran ocupados por una metadata indicando que está ocupado y cuánto*/
 }
 
+int espacioLibreFrame(int unFrame){
+	void *pos = retornarPosicionMemoriaFrame(unFrame);
+	void *end = retornarPosicionMemoriaFrame(unFrame + 1); //Comienzo del proximo frame
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+
+	while(pos < end){
+		memcpy(metadata, pos, sizeof(struct HeapMetadata));
+
+		if(metadata->isFree == true){
+			return metadata->size;
+		} else{
+			int unSize = metadata->size;
+
+			pos = pos + sizeof(struct HeapMetadata) + unSize; //Se mueve al proximo heapmetadata
+		}
+	}
+
+	//Si sale sin retornar, no encontro espacio libre
+	return -1;
+}
+
 ///////////////Funciones MUSE///////////////
 
 //MUSE INIT
@@ -326,14 +347,22 @@ void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio) {
 
 }
 
-/* Recorre el espacio del segmento buscando espacio libre (desde la base logica hasta
- * base logica + tamanio). Debe encontrar un header que isFree = true y
- * size >= tamanio + 5 (5 para el proximo header) */
+/* Recorre el espacio del segmento buscando espacio libre. Debe encontrar un header
+ * que isFree = true y size >= tamanio + 5 (5 para el proximo header) */
 
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
-	/*DESARROLLAR - consulta mail*/
+	t_list *paginasSegmento = unSegmento->tablaPaginas;
 
-	return 0;
+	for(int i = 0; i < list_size(paginasSegmento); i++){
+		struct Pagina *pagina = list_get(paginasSegmento, i);
+
+		if(frameEstaLibre(pagina->numeroFrame) && espacioLibreFrame(pagina->numeroFrame) >= (tamanio+5)){
+			return true;
+		}
+	}
+
+	//Si sale del false sin retorno, no encontro ninguna pagina en el segmento que sirva
+	return false;
 }
 
 void asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
