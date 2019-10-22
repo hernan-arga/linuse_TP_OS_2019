@@ -16,8 +16,7 @@ int main() {
 	levantarConfigFile(pconfig);
 
 	// Levanta conexion por socket
-	pthread_create(&hiloLevantarConexion, NULL,
-			(void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
+	pthread_create(&hiloLevantarConexion, NULL,(void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
 	log_info(log, "MUSE levantado correctamente\n");
 
 	pthread_join(hiloLevantarConexion, NULL);
@@ -205,7 +204,10 @@ int museinit(int idSocketCliente) {
 
 //MUSE ALLOC
 
-void *musemalloc(uint32_t tamanio, int idSocketCliente) {
+uint32_t musemalloc(uint32_t tamanio, int idSocketCliente) {
+	//hago una respuesta fija para que ya tengamos bien los tipos que tengamos que devolver
+	uint32_t respuesta = 2;
+
 	char* idProceso = string_new();
 	string_append(&idProceso, string_itoa(idSocketCliente));
 
@@ -233,7 +235,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 				asignarEspacioLibre(unSegmento, tamanio); //Se hace el return de la posicion asignada
 			}
 
-			return NULL; //Momentaneo para que no rompa
+			return respuesta; //Momentaneo para que no rompa
 		}
 
 		//Si sale del for sin retorno, tengo que buscar algun segmento de heap
@@ -247,7 +249,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 				//busco un frame libre en mi bitmap de frames
 				//asigno la data y retorno la posicion donde COMIENZA LA DATA
 
-				return NULL; //Momentaneo para que no rompa
+				return respuesta; //Momentaneo para que no rompa
 			}
 		}
 
@@ -256,10 +258,10 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
 		//creo segmento nuevo y retorno la posicion asignada
 
-		return NULL; //Momentaneo para que no rompa
+		return respuesta; //Momentaneo para que no rompa
 	}
 
-	return NULL;
+	return respuesta;
 }
 
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
