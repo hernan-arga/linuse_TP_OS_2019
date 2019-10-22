@@ -365,20 +365,20 @@ void tomarPeticionMkdir(int cliente){
 	read(cliente, path, *tamanioPath);
 	char *pathCortado = string_substring_until(path, *tamanioPath);
 
-	int ok = o_mkdir(pathCortado);
+	int res = o_mkdir(pathCortado);
 
 	char* buffer = malloc(2 * sizeof(int));
 	//logueo respuesta mkdir
-	if (ok == 1){
+	if (res == 0){
 		loguearInfo(" + Se hizo un mkdir en SacServer\n");
 	}
-	if (ok == 0) {
+	if (res == 1) {
 		loguearError(" - NO se pudo hacer el mkdir en SacServer\n");
 	}
 
-	int tamanioOk = sizeof(int);
-	memcpy(buffer, &tamanioOk, sizeof(int));
-	memcpy(buffer + sizeof(int), &ok, sizeof(int));
+	int tamanioRes = sizeof(int);
+	memcpy(buffer, &tamanioRes, sizeof(int));
+	memcpy(buffer + sizeof(int), &res, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
 }

@@ -238,9 +238,9 @@ static int hello_mkdir(const char *path, mode_t mode)
 	// Deserializo respuesta
 	int* tamanioRespuesta = malloc(sizeof(int));
 	read(sacServer, tamanioRespuesta, sizeof(int));
-	int* ok = malloc(*tamanioRespuesta);
-	read(sacServer, ok, *tamanioRespuesta);
-	if (*ok == 1) {
+	int* res = malloc(*tamanioRespuesta);
+	read(sacServer, res, *tamanioRespuesta);
+	if (*res == 0) {
 		return 0;
 	}
 	else{

@@ -256,7 +256,7 @@ int o_readDir(char* path, int cliente){
 
 	// Carga los nodos que cumple la condicion en el buffer.
 	for (i = 0; i < GFILEBYTABLE;  (i++)){
-		if ((nodo==(node->bloque_padre)) & (((node->estado) == DIRECTORY_T)
+		if ((nodo==(node->bloque_padre)) & (((node->estado) == DIRECTORIO)
 		| ((node->estado) == FILE_T)))  filler(buf, (char*) &(node->nombre_archivo[0]), NULL, 0);
 			node = &node[1];
 	}
@@ -436,7 +436,65 @@ void o_getAttr(char* path, int cliente){
 }
 
 int o_mkdir(char* path){
-	int ok;
+
+	log_info(logger, "Mkdir: Path: %s", path);
+	int nodo_padre, i, res = 0;
+	struct gfile *node;
+	char *nombre = malloc(strlen(path) + 1), *nom_to_free = nombre;
+	char *dir_padre = malloc(strlen(path) + 1), *dir_to_free = dir_padre;
+
+	if (determinar_nodo(path) != -1){
+		return 1;
+	}
+
+	split_path(path, &dir_padre, &nombre);
+
+	// Ubica el nodo correspondiente. Si es el raiz, lo marca como 0. Si no existe, lo informa.
+	if (strcmp(dir_padre, "/") == 0){
+		nodo_padre = 0;
+	} else if ((nodo_padre = determinar_nodo(dir_padre)) < 0){
+		return 1;
+	}
+
+	node = node_table_start;
+
+	// Toma un lock de escritura.
+	//log_lock_trace(logger, "Mkdir: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
+	pthread_rwlock_wrlock(&rwlock);
+	//log_lock_trace(logger, "Mkdir: Recibe lock escritura.");
+	// Abrir conexion y traer directorios, guarda el bloque de inicio para luego liberar memoria
+
+	// Busca el primer nodo libre (state 0) y cuando lo encuentra, lo crea:
+	for (i = 0; (node->estado != 0) & (i <= NODE_TABLE_SIZE); i++){
+		node = &(node_table_start[i]);
+	}
+	// Si no hay un nodo libre, devuelve un error.
+	if (i > NODE_TABLE_SIZE){
+		res = 1;
+		goto finalizar;
+	}
+
+	// Escribe datos del archivo
+	node->estado = DIRECTORIO;
+	strcpy((char*) &(node->nombre_archivo[0]), nombre);
+	node->tamanio_archivo = 0;
+	node->bloque_padre = nodo_padre;
+	res = 0;
+
+	finalizar:
+	free(nom_to_free);
+	free(dir_to_free);
+
+	// Devuelve el lock de escritura.
+	pthread_rwlock_unlock(&rwlock);
+	//log_lock_trace(logger, "Mkdir: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
+
+	return res;
+
+/*
+ * FUNCIONAMIENTO ANTERIOR
+ *
+ * int ok;
 	struct stat sb;
 
 	char* folder = string_new();
@@ -463,6 +521,7 @@ int o_mkdir(char* path){
 	}
 
 	return ok;
+*/
 }
 
 int o_unlink(char* pathC){
