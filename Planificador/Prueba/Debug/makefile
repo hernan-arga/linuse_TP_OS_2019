@@ -24,14 +24,11 @@ endif
 # All Target
 all: Prueba
 
-dependents:
-	-cd /home/utnso/Escritorio/TP-Operativos/Hilolay/Debug && $(MAKE) all
-
 # Tool invocations
-Prueba: $(OBJS) $(USER_OBJS) /home/utnso/Escritorio/TP-Operativos/Hilolay/Debug/libHilolay.so
+Prueba: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -L"/home/utnso/Escritorio/TP-Operativos/Hilolay/Debug" -o "Prueba" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc  -o "Prueba" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -41,6 +38,5 @@ clean:
 	-@echo ' '
 
 .PHONY: all clean dependents
-/home/utnso/Escritorio/TP-Operativos/Hilolay/Debug/libHilolay.so:
 
 -include ../makefile.targets

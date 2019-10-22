@@ -68,7 +68,7 @@ bool estaOcupadoCompleto(int indiceFrame);
 bool frameEstaLibre(int indice);
 
 //Funciones init
-int museinit(int id, char* ip/*, int puerto*/);
+int museinit(int idSocket);
 
 //Funciones subyacentes malloc
 void *musemalloc(uint32_t tamanio, int idSocketCliente);
