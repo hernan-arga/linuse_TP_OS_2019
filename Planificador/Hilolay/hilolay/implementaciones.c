@@ -50,8 +50,16 @@ int suse_schedule_next(void){
 	return tid;
 }
 
-int suse_join(int tid){
+int suse_join(int tidAEsperar){
 	printf("Llamaste a join\n");
+	char* buffer = malloc(2*sizeof(int));
+	int operacion = 5;
+
+	memcpy(buffer, &operacion, sizeof(int));
+	memcpy(buffer + sizeof(int), &tidAEsperar, sizeof(int));
+
+	send(servidorSUSE, buffer, 2*sizeof(int), 0);
+	free(buffer);
 	return 0;
 }
 

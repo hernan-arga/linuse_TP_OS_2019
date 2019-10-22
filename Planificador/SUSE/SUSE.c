@@ -45,6 +45,7 @@ typedef struct {
 typedef struct {
 	int pid;
 	hilo *exec;
+	t_dictionary *blocked;
 } programa;
 
 void iniciarSUSE();
@@ -65,6 +66,8 @@ void planificarBlocked();
 void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, int tid, char *semID);
 void atenderSignal(int sd);
 void atenderWait(int sd);
+void atenderJoin(int sd);
+void ponerEnBlocked(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar);
 
 pthread_t hiloLevantarConexion;
 pthread_t hiloPlanificadorReady;
@@ -74,7 +77,8 @@ archivoConfiguracion configuracion;
 t_config *config;
 t_dictionary *diccionarioDeListasDeReady;
 t_dictionary *diccionarioDeExec;
-t_dictionary *diccionarioDeBlocked;
+t_dictionary *diccionarioDeBlockedPorSemaforo;
+t_dictionary *diccionarioDeListasDeBlockedPorHilo;
 t_dictionary *diccionarioDeProgramas;
 sem_t MAXIMOPROCESAMIENTO;
 sem_t sem_diccionario_ready;
@@ -115,7 +119,7 @@ void iniciarSUSE(){
 
 	//printf("%f\n", configuracion.ALPHA_SJF);
 
-	diccionarioDeBlocked = dictionary_create();
+	diccionarioDeBlockedPorSemaforo = dictionary_create();
 
 	int i = 0;
 	while((config_get_array_value(config, "SEM_IDS"))[i] != NULL){
@@ -126,7 +130,7 @@ void iniciarSUSE(){
 		dictionary_put(configuracion.SEMAFOROS, (config_get_array_value(config, "SEM_IDS"))[i], unSemaforo);
 
 		t_queue *colaParaElSemaforo = queue_create();
-		dictionary_put(diccionarioDeBlocked, (config_get_array_value(config, "SEM_IDS"))[i], colaParaElSemaforo);
+		dictionary_put(diccionarioDeBlockedPorSemaforo, (config_get_array_value(config, "SEM_IDS"))[i], colaParaElSemaforo);
 
 		i++;
 	}
@@ -215,9 +219,13 @@ void pasarAReady(hilo *unHilo){
 		list_add(listaDeReady, unHilo);
 		dictionary_put(diccionarioDeListasDeReady, string_itoa(unHilo->pid), listaDeReady);
 
+		t_dictionary *diccionarioDeListasDeBlockedPorHilo = dictionary_create();
+
 		programa *unPrograma = malloc(sizeof(programa));
 		unPrograma->exec = NULL;
 		unPrograma->pid = unHilo->pid;
+		unPrograma->blocked = diccionarioDeListasDeBlockedPorHilo;
+
 		sem_wait(&sem_programas);
 		dictionary_put(diccionarioDeProgramas, string_itoa(unPrograma->pid), unPrograma);
 		sem_post(&sem_programas);
@@ -272,7 +280,7 @@ void sem_suse_signal (int pid, int tid, char* semID){
 		int valorMaximoSemaforo = ((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_MAXIMO_SEMAFORO;
 		if(valorActualSemaforo+1 <= valorMaximoSemaforo){
 			int noHayNadieBloqueado =
-					queue_is_empty((t_queue*)dictionary_get(diccionarioDeBlocked, semID));
+					queue_is_empty((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID));
 			if(noHayNadieBloqueado){
 				((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_ACTUAL_SEMAFORO++;
 			}
@@ -310,6 +318,23 @@ void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, int tid, char *semID){
 	 */
 }
 
+void realizarJoin(int pid, int tidAEsperar){
+	sem_wait(&sem_programas);
+	int hayAlguienEnExec = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL;
+	if(hayAlguienEnExec){
+		//Pongo el que esta ejecutando en blockeado
+		ponerEnBlocked(pid, ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec, tidAEsperar);
+		//Lo saco de exec
+		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
+	}
+	sem_post(&sem_programas);
+}
+
+//todo ver si puede haber mas de 1 hilo bloqueado por 1 mismo hilo
+void ponerEnBlocked(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar){
+	dictionary_put(((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->blocked, string_itoa(tidAEsperar), hiloAPonerEnBlocked);
+}
+
 void atenderWait(int sd){
 	int *tid = malloc(sizeof(int));
 	read(sd, tid, sizeof(int));
@@ -334,6 +359,13 @@ void atenderSignal(int sd){
 	free(tid);
 	free(longitudIDSemaforo);
 	free(semID);
+}
+
+void atenderJoin(int sd){
+	int *tidAEsperar = malloc(sizeof(int));
+	read(sd, tidAEsperar, sizeof(int));
+	realizarJoin(sd, *tidAEsperar);
+	free(tidAEsperar);
 }
 
 int32_t iniciarConexion() {
@@ -483,6 +515,7 @@ int32_t iniciarConexion() {
 							atenderSignal(sd);
 							break;
 						case 5: //suse_join
+							//atenderJoin(sd);
 							break;
 						case 6: //suse_close
 							break;
