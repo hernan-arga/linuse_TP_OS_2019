@@ -393,20 +393,20 @@ void tomarPeticionUnlink(int cliente){
 	read(cliente, path, *tamanioPath);
 	char *pathCortado = string_substring_until(path, *tamanioPath);
 
-	int ok = o_unlink(pathCortado);
+	int res = o_unlink(pathCortado);
 
 	char* buffer = malloc(2 * sizeof(int));
 	//logueo respuesta unlink
-	if (ok == 1){
+	if (res == 0){
 		loguearInfo(" + Se hizo un unlink en SacServer\n");
 	}
-	if (ok == 0) {
+	else {
 		loguearError(" - NO se pudo hacer el unlink en SacServer\n");
 	}
 
 	int tamanioOk = sizeof(int);
 	memcpy(buffer, &tamanioOk, sizeof(int));
-	memcpy(buffer + sizeof(int), &ok, sizeof(int));
+	memcpy(buffer + sizeof(int), &res, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
 }

@@ -526,10 +526,10 @@ int o_mkdir(char* path){
 
 int o_unlink(char* pathC){
 
-	struct grasa_file_t* file_data;
+	struct gfile* file_data;
 	int node = determinar_nodo(pathC);
 
-	//ENABLE_DELETE_MODE;
+	ENABLE_DELETE_MODE;
 
 	file_data = &(node_table_start[node - 1]);
 
@@ -546,9 +546,9 @@ int o_unlink(char* pathC){
 
 	//DISABLE_DELETE_MODE;
 
-	return grasa_rmdir(pathC);
+	return o_rmdir(pathC);
 
-	/*
+/*
 	 * FUNCIONAMIENTO ANTERIOR
 	 *
 	 * int ok;

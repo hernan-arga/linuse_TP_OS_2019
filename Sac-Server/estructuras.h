@@ -40,6 +40,15 @@
 typedef uint32_t ptrGBloque;
 typedef ptrGBloque pointer_data_block [PTRGBLOQUE_SIZE];
 
+// Se guardara aqui la cantidad de bloques libres en el bitmap
+int bitmap_free_blocks;
+
+// Se utiliza esta variable para saber si se encuentra en modo "borrar". Esto afecta, principalmente, al delete_nodes_upto
+#define DELETE_MODE _del_mode
+#define ENABLE_DELETE_MODE _del_mode=1
+#define DISABLE_DELETE_MODE _del_mode=0
+int _del_mode;
+
 typedef enum __attribute__((packed)){
 	BORRADO = '\0',
 	OCUPADO = '\1',
@@ -105,5 +114,6 @@ ptrGBloque determinar_nodo(const char*);
 int get_size(void);
 int lastchar(const char*, char);
 int set_position (int *, int *, size_t, off_t);
+int delete_nodes_upto (struct gfile *, int, int);
 
 #endif /* ESTRUCTURAS_H_ */

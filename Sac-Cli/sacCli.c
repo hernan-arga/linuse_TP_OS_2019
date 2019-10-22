@@ -269,7 +269,7 @@ static int hello_unlink(const char *path)
 	read(sacServer, tamanioRespuesta, sizeof(int));
 	int* ok = malloc(*tamanioRespuesta);
 	read(sacServer, ok, *tamanioRespuesta);
-	if (*ok == 1) {
+	if (*ok == 0) {
 		return 0;
 	} else {
 		return errno;

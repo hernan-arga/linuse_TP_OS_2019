@@ -333,3 +333,77 @@ int set_position (int *pointer_block, int *data_block, size_t size, off_t offset
 	*data_block = divi.rem / BLOCKSIZE;
 	return 0;
 }
+
+/*
+ *	@DESC
+ *		Borra los nodos hasta la estructura correspondiente (upto:hasta) especificadas. EXCLUSIVE.
+ *
+ *	@PARAM
+ *
+ *
+ *	@RET
+ *
+ */
+int delete_nodes_upto (struct gfile *file_data, int pointer_upto, int data_upto){
+	t_bitarray *bitarray;
+	size_t file_size = file_data->tamanio_archivo;
+	int node_to_delete, node_pointer_to_delete, delete_upto;
+	ptrGBloque *aux; // Auxiliar utilizado para saber que nodo redireccionar
+	int data_pos, pointer_pos;
+
+	// Ubica cual es el ultimo nodo del archivo
+	set_position(&pointer_pos, &data_pos, 0, file_size);
+	if (file_size%(BLOCKSIZE*PTRGBLOQUE_SIZE) == 0) {
+		pointer_pos--;
+		data_pos = PTRGBLOQUE_SIZE-1;
+	}
+	else if (file_size%BLOCKSIZE == 0) data_pos--;
+
+	// Crea el bitmap
+	bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B);
+
+	// Activa el DELETE_MODE. Este modo NO debe activarse cuando se hacen operaciones que
+	// dejen al archivo con un solo nodo. Por ejemplo, truncate -s 0.
+	// Deberia estar activo en otro momento.
+	if((pointer_upto != 0) | (data_upto != 0)){
+		DISABLE_DELETE_MODE;
+	}
+
+	// Borra hasta que los nodos de posicion coincidan con los nodos especificados.
+	while( (data_pos != data_upto) | (pointer_pos != pointer_upto) | (DELETE_MODE == 1) ){  // | ((data_pos == 0) & (pointer_pos == 0)) ){
+		if ((data_pos < 0) | (pointer_pos < 0)) break;
+
+		// localiza el puntero de datos a borrar.
+		node_pointer_to_delete = file_data->bloques_indirectos[pointer_pos];
+		aux = (ptrGBloque*) &(header_start[node_pointer_to_delete]);
+
+		// Indica hasta que nodo debe borrar.
+		if (pointer_pos == pointer_upto){
+			delete_upto = data_upto;
+		} else {
+			delete_upto = 0;
+		}
+
+		// Borra los nodos de datos que sean necesarios.
+		while ((data_pos + DELETE_MODE) != delete_upto){
+			node_to_delete = aux[data_pos];
+			bitarray_clean_bit(bitarray, node_to_delete);
+			bitmap_free_blocks++;
+			data_pos--;
+		}
+
+		// Si es necesario, borra el nodo de punteros.
+		if ((pointer_pos + DELETE_MODE) != pointer_upto){
+			bitarray_clean_bit(bitarray, node_pointer_to_delete);
+			file_data->bloques_indirectos[pointer_pos] = 0;
+			pointer_pos--;
+			data_pos = 1023;
+		}
+
+	}
+
+	// Cierra el bitmap
+	bitarray_destroy(bitarray);
+	return 0;
+}
+
