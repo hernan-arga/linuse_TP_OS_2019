@@ -87,6 +87,9 @@ size_t _bitarray_64;
 size_t _bitarray_64_leak;
 t_log *logger;
 
+#define INT64MAX _max
+uint64_t _max = ~((uint64_t) 0);
+
 pthread_rwlock_t rwlock;
 
 t_bitarray * crearBitmap();
@@ -100,5 +103,7 @@ int add_node(struct gfile*, int);
 int get_node(void);
 ptrGBloque determinar_nodo(const char*);
 int get_size(void);
+int lastchar(const char*, char);
+int set_position (int *, int *, size_t, off_t);
 
 #endif /* ESTRUCTURAS_H_ */

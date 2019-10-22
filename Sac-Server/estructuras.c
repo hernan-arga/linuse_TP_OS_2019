@@ -305,6 +305,31 @@ int add_node(struct gfile *file_data, int node_number){
 	return 0;
 }
 
+
+/*
+ *
+ *
+ * OPERACIONES DE MIERDA
+ *
+ *
+ *
+ */
+
 int get_size(void){
 	return ((int) (ACTUAL_DISC_SIZE_B / BLOCKSIZE));
+}
+
+int lastchar(const char* str, char chr){
+	if ( ( str[strlen(str)-1]  == chr) ){
+		return 1;
+	}
+	return 0;
+}
+
+int set_position (int *pointer_block, int *data_block, size_t size, off_t offset){
+	div_t divi;
+	divi = div(offset, (BLOCKSIZE*PTRGBLOQUE_SIZE));
+	*pointer_block = divi.quot;
+	*data_block = divi.rem / BLOCKSIZE;
+	return 0;
 }
