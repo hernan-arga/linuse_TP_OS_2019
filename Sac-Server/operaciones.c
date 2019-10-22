@@ -583,8 +583,45 @@ int o_unlink(char* pathC){
 	*/
 }
 
-int o_rmdir(char* pathC){
+int o_rmdir(char* path){
 
+	log_trace(logger, "Rmdir: Path: %s", path);
+	int nodo_padre = determinar_nodo(path), i, res = 0;
+	if (nodo_padre == -1){
+		return -ENOENT;
+	}
+	struct grasa_file_t *node;
+
+	// Toma un lock de escritura.
+	//log_lock_trace(logger, "Rmdir: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
+	pthread_rwlock_wrlock(&rwlock);
+	//log_lock_trace(logger, "Rmdir: Recibe lock escritura.");
+	// Abre conexiones y levanta la tabla de nodos en memoria.
+	node = &(node_table_start[-1]);
+
+	node = &(node[nodo_padre]);
+
+	// Chequea si el directorio esta vacio. En caso que eso suceda, FUSE se encarga de borrar lo que hay dentro.
+	for (i=0; i < 1024 ;i++){
+		if (((&node_table_start[i])->estado != BORRADO) & ((&node_table_start[i])->bloque_padre == nodo_padre)) {
+			res = -ENOTEMPTY;
+			goto finalizar;
+		}
+	}
+
+	node->state = BORRADO; // Aca le dice que el estado queda "Borrado"
+
+	// Cierra, ponele la alarma y se va para su casa. Mejor dicho, retorna 0 :D
+	finalizar:
+	// Devuelve el lock de escritura.
+	pthread_rwlock_unlock(&rwlock);
+	//log_lock_trace(logger, "Rmdir: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
+
+	return res;
+
+/*
+ * FUNCIONAMIENTO ANTERIOR:
+ *
 	char* path = string_new();
 	string_append(&path, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
 	string_append(&path, pathC);
@@ -592,6 +629,7 @@ int o_rmdir(char* pathC){
 	int retorno = o_rmdir_2(path);
 
 	return retorno;
+*/
 }
 
 int o_rmdir_2(char* path){

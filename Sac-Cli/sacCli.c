@@ -295,9 +295,9 @@ static int hello_rmdir(const char *path)
 	// Deserializo respuesta
 	int* tamanioRespuesta = malloc(sizeof(int));
 	read(sacServer, tamanioRespuesta, sizeof(int));
-	int* ok = malloc(*tamanioRespuesta);
-	read(sacServer, ok, *tamanioRespuesta);
-	if (*ok == 1) {
+	int* resp = malloc(*tamanioRespuesta);
+	read(sacServer, resp, *tamanioRespuesta);
+	if (*resp == 0) {
 		return 0;
 	} else {
 		return errno;
