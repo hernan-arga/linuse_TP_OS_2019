@@ -125,10 +125,97 @@ int o_open(char* path){
 	return respuesta;
 	*/
 
+	return 0;
 }
 
-void o_read(char* path, int size, int offset, char* texto){
+int o_read(char* path, int size, int offset, char* texto){
 
+	log_info(logger, "Reading: Path: %s - Size: %d - Offset %d", path, size, offset);
+	unsigned int nodo = determinar_nodo(path), bloque_punteros, num_bloque_datos;
+	unsigned int bloque_a_buscar; // Estructura auxiliar para no dejar choclos
+	struct gfile *node;
+	ptrGBloque *pointer_block;
+	char *data_block;
+	size_t tam = size;
+	int res;
+
+	if (nodo == -1){
+		return -ENOENT;
+	}
+
+	node = node_table_start;
+
+	// Ubica el nodo correspondiente al archivo
+	node = &(node[nodo-1]);
+
+	pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
+	//log_lock_trace(logger, "Read: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+
+	if(node->tamanio_archivo <= offset){
+	log_error(logger, "Fuse intenta leer un offset mayor o igual que el tamanio de archivo. Se retorna size 0. File: %s, Size: %d", path, node->tamanio_archivo);
+	res = 0;
+	goto finalizar;
+	} else if (node->tamanio_archivo <= (offset+size)){
+	tam = size = ((node->tamanio_archivo)-(offset));
+	log_error(logger, "Fuse intenta leer una posicion mayor o igual que el tamanio de archivo. Se retornaran %d bytes. File: %s, Size: %d", size, path, node->tamanio_archivo);
+	}
+	// Recorre todos los punteros en el bloque de la tabla de nodos
+	for (bloque_punteros = 0; bloque_punteros < BLKINDIRECT; bloque_punteros++){
+
+	// Chequea el offset y lo acomoda para leer lo que realmente necesita
+	if (offset > BLOCKSIZE * 1024){
+		offset -= (BLOCKSIZE * 1024);
+		continue;
+	}
+
+	bloque_a_buscar = (node->bloques_indirectos)[bloque_punteros];	// Ubica el nodo de punteros a nodos de datos, es relativo al nodo 0: Header.
+	bloque_a_buscar -= (GFILEBYBLOCK + BITMAP_BLOCK_SIZE + NODE_TABLE_SIZE);	// Acomoda el nodo de punteros a nodos de datos, es relativo al bloque de datos.
+	pointer_block =(ptrGBloque *) &(data_block_start[bloque_a_buscar]);		// Apunta al nodo antes ubicado. Lo utiliza para saber de donde leer los datos.
+
+	// Recorre el bloque de punteros correspondiente.
+	for (num_bloque_datos = 0; num_bloque_datos < 1024; num_bloque_datos++){
+
+		// Chequea el offset y lo acomoda para leer lo que realmente necesita
+		if (offset >= BLOCKSIZE){
+			offset -= BLOCKSIZE;
+			continue;
+		}
+
+		bloque_a_buscar = pointer_block[num_bloque_datos]; 	// Ubica el nodo de datos correspondiente. Relativo al nodo 0: Header.
+		bloque_a_buscar -= (GFILEBYBLOCK + BITMAP_BLOCK_SIZE + NODE_TABLE_SIZE);	// Acomoda el nodo, haciendolo relativo al bloque de datos.
+		data_block = (char *) &(data_block_start[bloque_a_buscar]);
+
+		// Corre el offset hasta donde sea necesario para poder leer lo que quiere.
+		if (offset > 0){
+			data_block += offset;
+			offset = 0;
+		}
+
+		if (tam < BLOCKSIZE){
+			memcpy(buf, data_block, tam);
+			buf = &(buf[tam]);
+			tam = 0;
+			break;
+		} else {
+			memcpy(buf, data_block, BLOCKSIZE);
+			tam -= BLOCKSIZE;
+			buf = &(buf[BLOCKSIZE]);
+			if (tam == 0) break;
+		}
+
+	}
+
+	if (tam == 0) break;
+	}
+	res = size;
+
+	finalizar:
+	pthread_rwlock_unlock(&rwlock); //Devuelve el lock de lectura.
+	log_lock_trace(logger, "Read: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+
+	log_trace(logger, "Terminada lectura.");
+
+	return res;
 
 	/*
 	 * FUNCIONAMIENTO ANTERIOR
