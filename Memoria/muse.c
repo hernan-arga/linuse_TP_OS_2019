@@ -225,21 +225,23 @@ int museinit(int idSocketCliente) {
 
 //MUSE ALLOC
 
-uint32_t musemalloc(uint32_t tamanio, int idSocketCliente) {
+void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 	//hago una respuesta fija para que ya tengamos bien los tipos que tengamos que devolver
-	uint32_t respuesta = 2;
+	void *respuesta = NULL;
 
-	char* idProceso = string_new();
-	string_append(&idProceso, string_itoa(idSocketCliente));
+	//Comentado ya que -creo- queda el idSocketCliente como idProceso FIJATE QUE PREFERIS NACHITO TKM
+	//char* idProceso = string_new();
+	//string_append(&idProceso, string_itoa(idSocketCliente));
 
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos, idProceso);
-	int cantidadARecorrer = list_size(segmentosProceso);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	int cantidadSegmentosARecorrer = list_size(segmentosProceso);
 
 	if (list_is_empty(segmentosProceso)) {
-
+	//Si no tiene ningun segmento, se lo creo
 		struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 		unSegmento = crearSegmento(tamanio, idSocketCliente); /*Se crea un segmento con el minimo
-		 de frames necesarios para alocar tamanio*/
+		 	 	 	 	 	 	 	 	 	 	 	 	 	   *de frames necesarios para alocar
+		 	 	 	 	 	 	 	 	 	 	 	 	 	   *tamanio*/
 
 		struct Pagina *primeraPagina = malloc(sizeof(struct Pagina));
 		primeraPagina = list_get(unSegmento->tablaPaginas, 0);
@@ -247,8 +249,8 @@ uint32_t musemalloc(uint32_t tamanio, int idSocketCliente) {
 		retornarPosicionMemoriaFrame(primeraPagina->numeroFrame);
 
 	} else {
-
-		for (int i = 0; i < cantidadARecorrer; i++) {
+		//Sino, recorro segmentos buscando ultimo header free
+		for (int i = 0; i < cantidadSegmentosARecorrer; i++) {
 			struct Segmento *unSegmento2 = malloc(sizeof(struct Segmento));
 			unSegmento2 = list_get(segmentosProceso, i);
 
@@ -256,13 +258,12 @@ uint32_t musemalloc(uint32_t tamanio, int idSocketCliente) {
 				asignarEspacioLibre(unSegmento2, tamanio); //Se hace el return de la posicion asignada
 			}
 
-			return respuesta; //Momentaneo para que no rompa
 		}
 
 		//Si sale del for sin retorno, tengo que buscar algun segmento de heap
 		//que se pueda extender -siguiente for-
 
-		for (int j = 0; j < cantidadARecorrer; j++) {
+		for (int j = 0; j < cantidadSegmentosARecorrer; j++) {
 			struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 			unSegmento = list_get(segmentosProceso, j);
 
@@ -273,28 +274,28 @@ uint32_t musemalloc(uint32_t tamanio, int idSocketCliente) {
 				return respuesta; //Momentaneo para que no rompa
 			}
 		}
-
-		//Si sale de este for sin retorno, es que no encontro espacio libre ni
-		//espacio que se pueda extender, por lo que debera crear un segmento nuevo
-
-		//Creo segmento nuevo y retorno la posicion asignada
-		struct Segmento *nuevoSegmento = crearSegmento(tamanio,idSocketCliente);
-
-		posicionMemoriaUnSegmento(nuevoSegmento); //Funcion temporal - tengo que consultar
 	}
 
-	return respuesta;
+	//Si sale de todas las condiciones sin retorno, es que no encontro espacio libre ni
+	//espacio que se pueda extender, por lo que debera crear un segmento nuevo
+
+	//Creo segmento nuevo y retorno la posicion asignada
+	struct Segmento *nuevoSegmento = crearSegmento(tamanio,idSocketCliente);
+
+	return posicionMemoriaUnSegmento(nuevoSegmento); //Funcion temporal - tengo que consultar
 }
 
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
-	char* idProceso = string_new();
-	string_append(&idProceso, string_itoa(idSocketCliente));
+	//Comentado porque creo nos manejaremos con idSocket
+	//char* idProceso = string_new();
+	//string_append(&idProceso, string_itoa(idSocketCliente));
 
-	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos,idProceso);
+	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 	struct Segmento *nuevoSegmento = malloc(sizeof(struct Segmento));
 
 	//Identificar segmento
 	if (list_is_empty(listaSegmentosProceso)) {
+		//Si es el primer segmento le pongo id 0, sino el id incremental que le corresponda
 		nuevoSegmento->id = 0;
 	} else {
 		nuevoSegmento->id = list_size(listaSegmentosProceso) + 1;
@@ -302,13 +303,14 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 
 	//Nuevo segmento - base logica ??
 
-	//Asignar frames necesarios para *tamanio*
+	/*Asignar frames necesarios para *tamanio*, calculo paginas necesarias y le calculo
+	 *el techo, asigno paginas y sus correspondientes frames*/
 	int paginasNecesarias;
 	double paginas;
 	paginas = tamanio / tam_pagina;
 	paginasNecesarias = (int) (ceil(paginas)); /*Funcion techo para definir el minimo de
-	 paginas/frames que necesito, expresado
-	 paginas/frames en un numero entero*/
+												*paginas/frames que necesito, expresando
+												*paginas/frames en un numero entero*/
 	nuevoSegmento->tablaPaginas = list_create();
 
 	while (paginasNecesarias > 0) {

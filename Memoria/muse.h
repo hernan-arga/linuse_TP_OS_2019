@@ -62,7 +62,7 @@ int espacioLibreFrame(int indice);
 int museinit(int idSocket);
 
 //Funciones subyacentes malloc
-uint32_t musemalloc(uint32_t tamanio, int idSocketCliente);
+void *musemalloc(uint32_t tamanio, int idSocketCliente);
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
