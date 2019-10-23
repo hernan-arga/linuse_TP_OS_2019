@@ -280,7 +280,7 @@ uint32_t musemalloc(uint32_t tamanio, int idSocketCliente) {
 		//Creo segmento nuevo y retorno la posicion asignada
 		struct Segmento *nuevoSegmento = crearSegmento(tamanio,idSocketCliente);
 
-		return posicionMemoriaUnSegmento(nuevoSegmento); //Funcion temporal - tengo que consultar
+		posicionMemoriaUnSegmento(nuevoSegmento); //Funcion temporal - tengo que consultar
 	}
 
 	return respuesta;
