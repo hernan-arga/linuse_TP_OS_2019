@@ -238,7 +238,7 @@ void pasarAReady(hilo *unHilo){
 		//Ordeno la lista por el que tiene menor estimacion
 		list_sort((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))) , (void*)tieneMenorEstimacion);
 
-		printf("tid :%i\n", ((hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))), 0) )->tid );
+		printf("1° tid en ready:%i\n", ((hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))), 0) )->tid );
 	}
 	sem_post(&sem_diccionario_ready);
 }
@@ -320,7 +320,14 @@ void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, int tid, char *semID){
 
 void realizarJoin(int pid, int tidAEsperar){
 	sem_wait(&sem_programas);
-	int hayAlguienEnExec = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL;
+	/*
+	 * Puede pasar que todavia no haya llegado a ready alguno de los hilos de mi programa
+	 * por lo que no se crearia mi clave para ese programa dentro del diccionarioDeProgramas
+	 * y al querer ver si hay alguien en exec valgrind chilla, por eso primero me fijo si existe
+	 * el programa y despues si hay alguien en exec para hacer el cambio
+	 */
+	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, string_itoa(pid));
+	int hayAlguienEnExec = existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL;
 	if(hayAlguienEnExec){
 		//Pongo el que esta ejecutando en blockeado
 		ponerEnBlocked(pid, ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec, tidAEsperar);
@@ -515,7 +522,7 @@ int32_t iniciarConexion() {
 							atenderSignal(sd);
 							break;
 						case 5: //suse_join
-							//atenderJoin(sd);
+							atenderJoin(sd);
 							break;
 						case 6: //suse_close
 							break;
