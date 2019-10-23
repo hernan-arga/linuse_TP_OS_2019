@@ -9,7 +9,8 @@
 #include <sys/types.h>
 
 void* memoriaPrincipal;
-t_dictionary* tablasSegmentos; //Diccionario que contiene las tablas de segmentos por proceso, la key es el pid de cada proceso
+t_dictionary* tablasSegmentos; /*Diccionario que contiene las tablas de segmentos por
+								*proceso, la key es el pid de cada proceso*/
 int tam_mem;
 int tam_pagina;
 int cantidadFrames;
@@ -44,7 +45,7 @@ void unificarHeaders(char *idProceso, int idSegmento);
 void *buscarPosicionSegmento(char *idProceso, int idSegmento);
 int calcularTamanioSegmento(char *idProceso, int idSegmento);
 uint32_t espacioPaginas(char *idProceso, int idSegmento);
-void crearTablaSegmentosProceso(char *idProceso);
+void crearTablaSegmentosProceso(int idProceso);
 void *posicionMemoriaUnSegmento(struct Segmento *unSegmento);
 
 //Funciones bitmap de frames
@@ -60,13 +61,14 @@ int espacioLibreFrame(int indice);
 
 //Funciones init
 int museinit(int idSocket);
+bool hayMemoriaDisponible();
 
 //Funciones subyacentes malloc
 void *musemalloc(uint32_t tamanio, int idSocketCliente);
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
-int esExtendible(t_list *segmentosProceso,int unIndice);
+int esExtendible(t_list *segmentosProceso, int unIndice);
 void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio);
 
 #endif /* MUSE_H_ */

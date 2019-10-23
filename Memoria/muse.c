@@ -53,10 +53,11 @@ void *crearHeaderInicial(uint32_t tamanio) {
 	return NULL;
 }
 
-void crearTablaSegmentosProceso(char *idProceso) { //Id proceso = id + ip
+void crearTablaSegmentosProceso(int idSocketCliente) {
 	t_list *listaDeSegmentos = list_create();
 
-	dictionary_put(tablasSegmentos, idProceso, listaDeSegmentos); //Creo la estructura, pero no tiene segmentos aun
+	//Creo la estructura, pero no tiene segmentos aun
+	dictionary_put(tablasSegmentos, (char*)idSocketCliente, listaDeSegmentos);
 }
 
 ///////////////Bitmap de Frames///////////////
@@ -179,11 +180,11 @@ int buscarFrameLibre() {
 	return -1;
 }
 
+/*Retorna la posicion de memoria donde comienza un frame en particular*/
 void *retornarPosicionMemoriaFrame(int unFrame) {
 	int offset = tam_pagina * unFrame; //Los frames estan en orden y se recorren de may a men
 
-	return ((&memoriaPrincipal) + offset + sizeof(struct HeapMetadata)); /*Le sumo los primeros
-	 bytes que se encuentran ocupados por una metadata indicando que está ocupado y cuánto*/
+	return ((&memoriaPrincipal) + offset);
 }
 
 int espacioLibreFrame(int unFrame){
@@ -215,12 +216,23 @@ int espacioLibreFrame(int unFrame){
 int museinit(int idSocketCliente) {
 	//Usamos el id del socket que
 	//Funcionara como id del proceso y sera la key en el diccionario
-	char* idProceso = string_new();
-	string_append(&idProceso, string_itoa(idSocketCliente));
+	//char* idProceso = string_new();
+	//string_append(&idProceso, string_itoa(idSocketCliente));
 
-	crearTablaSegmentosProceso(idProceso);
+	if(hayMemoriaDisponible() == false){ /*Si no hay mas mm ppal ni mm virtual, error*/
+		return -1;
+	} else{
+		crearTablaSegmentosProceso(idSocketCliente);
 
-	return 0; //Retorna -1 ante un error
+		return 0;
+	}
+
+}
+
+//Chequea si hay mm ppal o mm virtual disponible - A DESARROLLAR
+bool hayMemoriaDisponible(){
+
+	return true;
 }
 
 //MUSE ALLOC
@@ -237,7 +249,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 	int cantidadSegmentosARecorrer = list_size(segmentosProceso);
 
 	if (list_is_empty(segmentosProceso)) {
-	//Si no tiene ningun segmento, se lo creo
+		//Si no tiene ningun segmento, se lo creo
 		struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 		unSegmento = crearSegmento(tamanio, idSocketCliente); /*Se crea un segmento con el minimo
 		 	 	 	 	 	 	 	 	 	 	 	 	 	   *de frames necesarios para alocar
@@ -328,6 +340,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	}
 
 	list_add(listaSegmentosProceso, nuevoSegmento);
+
 	return nuevoSegmento;
 }
 
