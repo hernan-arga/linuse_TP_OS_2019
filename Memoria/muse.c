@@ -249,11 +249,11 @@ uint32_t musemalloc(uint32_t tamanio, int idSocketCliente) {
 	} else {
 
 		for (int i = 0; i < cantidadARecorrer; i++) {
-			struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
-			unSegmento = list_get(segmentosProceso, i);
+			struct Segmento *unSegmento2 = malloc(sizeof(struct Segmento));
+			unSegmento2 = list_get(segmentosProceso, i);
 
-			if (poseeTamanioLibre(unSegmento, tamanio)) {
-				asignarEspacioLibre(unSegmento, tamanio); //Se hace el return de la posicion asignada
+			if (poseeTamanioLibre(unSegmento2, tamanio)) {
+				asignarEspacioLibre(unSegmento2, tamanio); //Se hace el return de la posicion asignada
 			}
 
 			return respuesta; //Momentaneo para que no rompa
@@ -277,9 +277,10 @@ uint32_t musemalloc(uint32_t tamanio, int idSocketCliente) {
 		//Si sale de este for sin retorno, es que no encontro espacio libre ni
 		//espacio que se pueda extender, por lo que debera crear un segmento nuevo
 
-		//creo segmento nuevo y retorno la posicion asignada
+		//Creo segmento nuevo y retorno la posicion asignada
+		struct Segmento *nuevoSegmento = crearSegmento(tamanio,idSocketCliente);
 
-		return respuesta; //Momentaneo para que no rompa
+		return posicionMemoriaUnSegmento(nuevoSegmento); //Funcion temporal - tengo que consultar
 	}
 
 	return respuesta;
@@ -409,6 +410,15 @@ void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
 
 int esExtendible(t_list *segmentosProceso, int unIndice) {
 	return 0;
+}
+
+/*Retorna la posicion de memoria donde comienza la primera pagina de un segmento*/
+
+void *posicionMemoriaUnSegmento(struct Segmento *unSegmento){
+	t_list *paginas = unSegmento->tablaPaginas;
+	struct Pagina *primeraPagina = list_get(paginas,0);
+
+	return retornarPosicionMemoriaFrame(primeraPagina->numeroFrame);
 }
 
 //Funcion recorre buscando heapmetadata libre - mayor o igual - a cierto size

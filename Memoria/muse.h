@@ -45,6 +45,7 @@ void *buscarPosicionSegmento(char *idProceso, int idSegmento);
 int calcularTamanioSegmento(char *idProceso, int idSegmento);
 uint32_t espacioPaginas(char *idProceso, int idSegmento);
 void crearTablaSegmentosProceso(char *idProceso);
+void *posicionMemoriaUnSegmento(struct Segmento *unSegmento);
 
 //Funciones bitmap de frames
 void crearBitmapFrames();
