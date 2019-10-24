@@ -63,11 +63,16 @@ hilo* siguienteDeReadyAExec(int);
 void planificarExecParaUnPrograma(char *, programa *);
 void planificarExec();
 void planificarBlocked();
-void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, int tid, char *semID);
+void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, char *semID);
 void atenderSignal(int sd);
 void atenderWait(int sd);
 void atenderJoin(int sd);
-void ponerEnBlocked(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar);
+void atenderClose(int sd);
+void ponerEnBlockedPorHilo(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar);
+void pasarAExit(hilo *unHilo);
+void realizarClose(int pid, int tid);
+void realizarJoin(int pid, int tidAEsperar);
+
 
 pthread_t hiloLevantarConexion;
 pthread_t hiloPlanificadorReady;
@@ -79,12 +84,16 @@ t_dictionary *diccionarioDeListasDeReady;
 t_dictionary *diccionarioDeExec;
 t_dictionary *diccionarioDeBlockedPorSemaforo;
 t_dictionary *diccionarioDeListasDeBlockedPorHilo;
+t_dictionary *diccionarioDeListasDeExit;
 t_dictionary *diccionarioDeProgramas;
 sem_t MAXIMOPROCESAMIENTO;
 sem_t sem_diccionario_ready;
 sem_t sem_programas;
 sem_t hayNuevos;
 sem_t SEMAFOROS;
+sem_t blockedPorSemaforo;
+sem_t sem_exit;
+sem_t hayQueActualizarUnExec;
 t_queue *new;
 t_queue *exitCola;
 
@@ -120,6 +129,7 @@ void iniciarSUSE(){
 	//printf("%f\n", configuracion.ALPHA_SJF);
 
 	diccionarioDeBlockedPorSemaforo = dictionary_create();
+	diccionarioDeListasDeExit = dictionary_create();
 
 	int i = 0;
 	while((config_get_array_value(config, "SEM_IDS"))[i] != NULL){
@@ -145,6 +155,9 @@ void iniciarSUSE(){
 	sem_init(&sem_programas,0,1);
 	sem_init(&hayNuevos, 0, 0);
 	sem_init(&SEMAFOROS, 0, 1);
+	sem_init(&blockedPorSemaforo, 0, 1);
+	sem_init(&sem_exit, 0, 1);
+	sem_init(&hayQueActualizarUnExec, 0, 0);
 }
 
 void planificarReady(){
@@ -158,6 +171,7 @@ void planificarReady(){
 //todo: optimizar esto con algun semaforo (productor consumidor)
 void planificarExec(){
 	while(1){
+		sem_wait(&hayQueActualizarUnExec);
 		sem_wait(&sem_programas);
 		dictionary_iterator(diccionarioDeProgramas, (void*)planificarExecParaUnPrograma);
 		sem_post(&sem_programas);
@@ -172,10 +186,15 @@ void planificarExecParaUnPrograma(char *pid, programa *unPrograma){
 	if(unPrograma->exec==NULL){
 		//Me fijo en la lista de ready del diccionario el que sigue para ejecutar
 		hilo *unHilo = siguienteDeReadyAExec(atoi(pid));
-		//Lo elimino de las listas de ready
-		list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, pid)),0);
-		unPrograma->exec = unHilo;
-		printf("tid en exec %i\n", ((programa*)dictionary_get(diccionarioDeProgramas, pid))->exec->tid );
+		if(unHilo!=NULL){
+			//Lo elimino de las listas de ready
+			list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, pid)),0);
+			unPrograma->exec = unHilo;
+			printf("tid en exec %i\n", ((programa*)dictionary_get(diccionarioDeProgramas, pid))->exec->tid );
+		}
+		else{
+			//XXX: termino el programa, limpiar todas las estructuras?
+		}
 	}
 }
 
@@ -187,7 +206,11 @@ hilo* siguienteDeReadyAExec(int pid){
 	hilo *unHilo = (hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0);
 
 	sem_post(&sem_diccionario_ready);
-	return unHilo;
+
+	if(unHilo==NULL){
+		return NULL;
+	}
+	return unHilo;	//XXX: puede ser que unHilo necesite proteccion de semaforo
 
 }
 
@@ -228,6 +251,7 @@ void pasarAReady(hilo *unHilo){
 
 		sem_wait(&sem_programas);
 		dictionary_put(diccionarioDeProgramas, string_itoa(unPrograma->pid), unPrograma);
+		sem_post(&hayQueActualizarUnExec);
 		sem_post(&sem_programas);
 	}
 	else{
@@ -243,6 +267,7 @@ void pasarAReady(hilo *unHilo){
 	sem_post(&sem_diccionario_ready);
 }
 
+//XXX: si hay uno actualmente en ejecucion ese es el que se devuelve, y sino?
 //Esta es la funcion que se invoca cuando se llama a schedule_next
 int siguienteAEjecutar(int pid){
 	sem_wait(&sem_programas);
@@ -258,7 +283,7 @@ int siguienteAEjecutar(int pid){
 		//printf("TID: %i - Rafaga: %f\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid,((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga);
 	sem_post(&sem_programas);
 
-	return ((hilo*)siguienteDeReadyAExec(pid))->tid;
+	return ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid;
 }
 
 
@@ -272,21 +297,23 @@ bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo){
 	return unHilo->estimacion <= otroHilo->estimacion;
 }
 
-
+//todo: preguntar si sirve de algo el tid en el signal
 void sem_suse_signal (int pid, int tid, char* semID){
 	sem_wait(&SEMAFOROS);
 	if(dictionary_has_key(configuracion.SEMAFOROS, semID)){
 		int valorActualSemaforo = ((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_ACTUAL_SEMAFORO;
 		int valorMaximoSemaforo = ((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_MAXIMO_SEMAFORO;
 		if(valorActualSemaforo+1 <= valorMaximoSemaforo){
+			sem_wait(&blockedPorSemaforo);
 			int noHayNadieBloqueado =
 					queue_is_empty((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID));
 			if(noHayNadieBloqueado){
 				((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_ACTUAL_SEMAFORO++;
 			}
 			else{
-				sacar1HiloDeLaColaDeBloqueadosPorSemaforo(pid, tid, semID);
+				sacar1HiloDeLaColaDeBloqueadosPorSemaforo(pid, semID);
 			}
+			sem_post(&blockedPorSemaforo);
 		}
 	}
 	sem_post(&SEMAFOROS);
@@ -296,26 +323,39 @@ void sem_suse_wait(int pid, int tid, char* semID){
 	sem_wait(&SEMAFOROS);
 	if(dictionary_has_key(configuracion.SEMAFOROS, semID)){
 		int valorActualSemaforo = ((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_ACTUAL_SEMAFORO;
-		int valorMaximoSemaforo = ((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_MAXIMO_SEMAFORO;
+		//int valorMaximoSemaforo = ((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_MAXIMO_SEMAFORO;
 
 		if(valorActualSemaforo > 0){
 			((semaforo*)dictionary_get(configuracion.SEMAFOROS, semID))->VALOR_ACTUAL_SEMAFORO--;
 		}
 
 		else{
-			//todo Mandar el hilo a blocked
+
+			if( ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid == tid ){
+				sem_wait(&blockedPorSemaforo);
+				//Mandar el hilo a blocked por semaforo
+				queue_push((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID), ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec);
+				sem_post(&blockedPorSemaforo);
+				//Lo saco de ejecucion
+				((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
+				sem_post(&hayQueActualizarUnExec);
+			}
+			else{
+				printf("El hilo en ejecucion no pidio el wait\n");
+				exit(-1);
+			}
 		}
 
 	}
 	sem_post(&SEMAFOROS);
 }
 
-
-void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, int tid, char *semID){
-	/*
-	 * todo Saco del diccionario en la cola de semID el primero y lo paso a la cola
-	 * de ready correspondiente
-	 */
+//Saco del diccionario en la cola de semID el primero y lo paso a la cola de ready correspondiente
+void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, char *semID){
+	//Si esta vacia no hace nada
+	if( !queue_is_empty((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID)) ){
+		pasarAReady( queue_pop((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID)) );
+	}
 }
 
 void realizarJoin(int pid, int tidAEsperar){
@@ -330,15 +370,45 @@ void realizarJoin(int pid, int tidAEsperar){
 	int hayAlguienEnExec = existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL;
 	if(hayAlguienEnExec){
 		//Pongo el que esta ejecutando en blockeado
-		ponerEnBlocked(pid, ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec, tidAEsperar);
+		ponerEnBlockedPorHilo(pid, ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec, tidAEsperar);
 		//Lo saco de exec
 		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
+		sem_post(&hayQueActualizarUnExec);
 	}
 	sem_post(&sem_programas);
 }
 
+void realizarClose(int pid, int tid){
+	if( ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid == tid ){
+		//Pongo el que esta ejecutando en exit
+		pasarAExit(((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec);
+		//Lo saco de exec
+		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
+		sem_post(&hayQueActualizarUnExec);
+	}
+	else{
+		//XXX se fija en los de ready, bloqueados, etc?
+	}
+
+}
+
+void pasarAExit(hilo *unHilo){
+	sem_wait(&sem_exit);
+	//Si ya existe una entrada para el proceso en la lista de exit, lo agrego a su lista
+	if(!dictionary_has_key(diccionarioDeListasDeExit, string_itoa(unHilo->pid))){
+			t_list *listaDeExit = list_create();
+			list_add(listaDeExit, unHilo);
+			dictionary_put(diccionarioDeListasDeExit, string_itoa(unHilo->pid), listaDeExit);
+	}
+	else{
+		//Lo agrego a la lista correspondiente
+		list_add((t_list*)(dictionary_get(diccionarioDeListasDeExit, string_itoa(unHilo->pid))), unHilo);
+	}
+	sem_post(&sem_exit);
+}
+
 //todo ver si puede haber mas de 1 hilo bloqueado por 1 mismo hilo
-void ponerEnBlocked(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar){
+void ponerEnBlockedPorHilo(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar){
 	dictionary_put(((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->blocked, string_itoa(tidAEsperar), hiloAPonerEnBlocked);
 }
 
@@ -373,6 +443,13 @@ void atenderJoin(int sd){
 	read(sd, tidAEsperar, sizeof(int));
 	realizarJoin(sd, *tidAEsperar);
 	free(tidAEsperar);
+}
+
+void atenderClose(int sd){
+	int *tidACerrar = malloc(sizeof(int));
+	read(sd, tidACerrar, sizeof(int));
+	realizarClose(sd, *tidACerrar);
+	free(tidACerrar);
 }
 
 int32_t iniciarConexion() {
@@ -525,6 +602,7 @@ int32_t iniciarConexion() {
 							atenderJoin(sd);
 							break;
 						case 6: //suse_close
+							atenderClose(sd);
 							break;
 						default:
 							break;

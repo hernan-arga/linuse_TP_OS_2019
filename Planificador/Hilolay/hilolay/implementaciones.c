@@ -64,8 +64,15 @@ int suse_join(int tidAEsperar){
 }
 
 int suse_close(int tid){
-	printf("Closed thread %i\n", tid);
-	//max_tid--;
+	printf("Finalizar tid: %i\n", tid);
+	char* buffer = malloc(2*sizeof(int));
+	int operacion = 6;
+
+	memcpy(buffer, &operacion, sizeof(int));
+	memcpy(buffer + sizeof(int), &tid, sizeof(int));
+
+	send(servidorSUSE, buffer, 2*sizeof(int), 0);
+	free(buffer);
 	return 0;
 }
 
