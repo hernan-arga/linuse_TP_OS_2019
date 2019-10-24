@@ -71,4 +71,9 @@ void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 int esExtendible(t_list *segmentosProceso, int unIndice);
 void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio);
 
+//Funciones cpy
+int musecpy(uint32_t dst, void* src, int n);
+int idSegmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
+struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento, void *direccion);
+
 #endif /* MUSE_H_ */

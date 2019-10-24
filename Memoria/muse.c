@@ -548,3 +548,83 @@ uint32_t espacioPaginas(char *idProceso, int idSegmento) {
 
 	return (list_size(unSegmento->tablaPaginas) * tam_pagina);
 }
+
+
+
+//MUSE CPY
+
+/**
+  * Copia una cantidad `n` de bytes desde una posición de memoria local a una `dst` en MUSE.
+  * @param dst Posición de memoria de MUSE con tamaño suficiente para almacenar `n` bytes.
+  * @param src Posición de memoria local de donde leer los `n` bytes.
+  * @param n Cantidad de bytes a copiar.
+  * @return Si pasa un error, retorna -1. Si la operación se realizó correctamente, retorna 0.
+  */
+
+int musecpy(uint32_t dst, void* src, int n){
+	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+	struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
+
+	int idSocketCliente /*= obtenerlo (?)*/;
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+
+	//Obtencion segmento, pagina, frame, desplazamiento
+	int idSegmento;
+	int pagina;
+	int frame;
+	int desplazamiento;
+
+	int direccion = (int)src; //Casteo a int la direccion recibida
+
+	//Obtencion desplazamiento
+	desplazamiento = direccion % tam_pagina;
+
+	//Obtencion idSegmento y segmento
+	idSegmento = idSegmentoQueContieneDireccion(listaSegmentos,src);
+	unSegmento = list_get(listaSegmentos, idSegmento);
+
+	//Obtencion pagina y frame
+	unaPagina = paginaQueContieneDireccion(unSegmento,src); //Me retorna directamente la pagina
+	frame = unaPagina->numeroFrame;
+	//////////////////////////////////////////////////
+
+	/*Ya se tienen todos los datos necesarios y se puede ir a mm ppal a buscar la data*/
+
+	return 0;
+}
+
+
+int idSegmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion){
+	int segmentosARecorrer = list_size(listaSegmentos);
+	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+
+	for(int i = 0; i < segmentosARecorrer; i++){
+		unSegmento = list_get(listaSegmentos, i);
+
+		if(((int)direccion) > unSegmento->baseLogica && ((int)direccion) < unSegmento->tamanio){ //Chequear si en base logica tengo en cuenta heap o no
+			return unSegmento->id;
+		}
+	}
+
+	//Si sale del for sin retorno, no hay ningun segmento que contenga esa direc
+	return -1; //error
+}
+
+struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento, void *direccion){
+	t_list *listaPaginas = unSegmento->tablaPaginas;
+	int indicePagina;
+
+	/*Obtencion Pagina: (base logica segmento - direccion) / tam_pagina (pag es el resultado piso)*/
+	indicePagina = floor(((unSegmento->baseLogica) - ((int)direccion)) / tam_pagina);
+
+	struct Pagina *pagina = list_get(listaPaginas, indicePagina);
+
+	return pagina;
+}
+
+
+
+
+
+
+
