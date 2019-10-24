@@ -168,7 +168,7 @@ void planificarReady(){
 		pasarAReady(unHilo);
 	}
 }
-//todo: optimizar esto con algun semaforo (productor consumidor)
+
 void planificarExec(){
 	while(1){
 		sem_wait(&hayQueActualizarUnExec);
@@ -210,7 +210,7 @@ hilo* siguienteDeReadyAExec(int pid){
 	if(unHilo==NULL){
 		return NULL;
 	}
-	return unHilo;	//XXX: puede ser que unHilo necesite proteccion de semaforo
+	return unHilo;	//XXX: puede ser que "unHilo" necesite proteccion de semaforo?
 
 }
 
@@ -236,6 +236,9 @@ void crearHilo(int sd){
 }
 
 void pasarAReady(hilo *unHilo){
+
+	actualizarEstimacion(unHilo);
+
 	sem_wait(&sem_diccionario_ready);
 	if(!dictionary_has_key(diccionarioDeListasDeReady, string_itoa(unHilo->pid))){
 		t_list *listaDeReady = list_create();
@@ -407,7 +410,7 @@ void pasarAExit(hilo *unHilo){
 	sem_post(&sem_exit);
 }
 
-//todo ver si puede haber mas de 1 hilo bloqueado por 1 mismo hilo
+//todo puede haber mas de 1 hilo bloqueado por 1 mismo hilo. Hacer una lista aca
 void ponerEnBlockedPorHilo(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar){
 	dictionary_put(((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->blocked, string_itoa(tidAEsperar), hiloAPonerEnBlocked);
 }
