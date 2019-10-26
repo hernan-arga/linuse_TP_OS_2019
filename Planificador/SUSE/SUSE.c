@@ -72,7 +72,10 @@ void ponerEnBlockedPorHilo(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar);
 void pasarAExit(hilo *unHilo);
 void realizarClose(int pid, int tid);
 void realizarJoin(int pid, int tidAEsperar);
-
+unsigned long long getMicrotime();
+int calcularSiguienteHilo(int pid);
+void replanificarHilos(int pid);
+void recalcularEstimacion(int pid);
 
 pthread_t hiloLevantarConexion;
 pthread_t hiloPlanificadorReady;
@@ -97,6 +100,8 @@ sem_t hayQueActualizarUnExec;
 t_queue *new;
 t_queue *exitCola;
 
+float inicioRafaga = 0;
+
 
 int main(int argc, char *argv[]){
 
@@ -108,11 +113,11 @@ int main(int argc, char *argv[]){
 
 	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciarConexion, NULL);
 	pthread_create(&hiloPlanificadorReady, NULL, (void*) planificarReady, NULL);
-	pthread_create(&hiloPlanficadorExec, NULL, (void*) planificarExec, NULL);
+	//pthread_create(&hiloPlanficadorExec, NULL, (void*) planificarExec, NULL);
 	pthread_create(&hiloPlanficadorBlocked, NULL, (void*) planificarBlocked, NULL);
 	pthread_join(hiloLevantarConexion, NULL);
 	pthread_join(hiloPlanificadorReady, NULL);
-	pthread_join(hiloPlanficadorExec, NULL);
+	//pthread_join(hiloPlanficadorExec, NULL);
 	pthread_join(hiloPlanficadorBlocked, NULL);
 	return 0;
 }
@@ -182,14 +187,25 @@ void planificarBlocked(){
 
 }
 
+unsigned long long getMicrotime(){
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	//return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
+	return ((unsigned long long)( (tv.tv_sec)*1000 + (tv.tv_usec)/1000 ));
+}
+
 void planificarExecParaUnPrograma(char *pid, programa *unPrograma){
 	if(unPrograma->exec==NULL){
+		sem_wait(&sem_diccionario_ready);
 		//Me fijo en la lista de ready del diccionario el que sigue para ejecutar
 		hilo *unHilo = siguienteDeReadyAExec(atoi(pid));
+		sem_post(&sem_diccionario_ready);
+
 		if(unHilo!=NULL){
 			//Lo elimino de las listas de ready
 			list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, pid)),0);
 			unPrograma->exec = unHilo;
+			inicioRafaga = getMicrotime();
 			printf("tid en exec %i\n", ((programa*)dictionary_get(diccionarioDeProgramas, pid))->exec->tid );
 		}
 		else{
@@ -199,19 +215,13 @@ void planificarExecParaUnPrograma(char *pid, programa *unPrograma){
 }
 
 hilo* siguienteDeReadyAExec(int pid){
-
-	sem_wait(&sem_diccionario_ready);
-
 	//Como lo inserte ordenado, el primero que saco de la lista es el que va
 	hilo *unHilo = (hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0);
-
-	sem_post(&sem_diccionario_ready);
 
 	if(unHilo==NULL){
 		return NULL;
 	}
 	return unHilo;	//XXX: puede ser que "unHilo" necesite proteccion de semaforo?
-
 }
 
 void crearHilo(int sd){
@@ -228,7 +238,7 @@ void crearHilo(int sd){
 	hilo *unHilo = malloc(sizeof(hilo));
 	unHilo->pid = pid;
 	unHilo->tid = *tid;
-	unHilo->estimacion = *tid;
+	unHilo->estimacion = 0;
 	unHilo->rafaga = 0;
 	queue_push(new, unHilo);
 	sem_post(&hayNuevos);
@@ -236,8 +246,6 @@ void crearHilo(int sd){
 }
 
 void pasarAReady(hilo *unHilo){
-
-	actualizarEstimacion(unHilo);
 
 	sem_wait(&sem_diccionario_ready);
 	if(!dictionary_has_key(diccionarioDeListasDeReady, string_itoa(unHilo->pid))){
@@ -263,30 +271,94 @@ void pasarAReady(hilo *unHilo){
 		list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))), unHilo);
 
 		//Ordeno la lista por el que tiene menor estimacion
-		list_sort((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))) , (void*)tieneMenorEstimacion);
+		//list_sort((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))) , (void*)tieneMenorEstimacion);
 
-		printf("1° tid en ready:%i\n", ((hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))), 0) )->tid );
+		//printf("1° tid en ready:%i\n", ((hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))), 0) )->tid );
 	}
 	sem_post(&sem_diccionario_ready);
 }
 
-//XXX: si hay uno actualmente en ejecucion ese es el que se devuelve, y sino?
 //Esta es la funcion que se invoca cuando se llama a schedule_next
 int siguienteAEjecutar(int pid){
+	recalcularEstimacion(pid);
+	replanificarHilos(pid);
+
+	sem_wait(&sem_diccionario_ready);
+	sem_wait(&sem_programas);
+	int siguienteTIDAEjecutar = calcularSiguienteHilo(pid);
+
+	sem_post(&sem_diccionario_ready);
+	sem_post(&sem_programas);
+
+	return siguienteTIDAEjecutar;
+	//printf("microtime: %f\n", (float)getMicrotime());
+	//return ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid;
+}
+
+int calcularSiguienteHilo(int pid){
+
+	hilo *candidatoAEjecutar = ((hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0) );
+
+	//El programa existe cuando algun hilo paso a ready en algun momento
+	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, string_itoa(pid));
+
+	//Si existe el programa y hay alguien en ejecucion
+	if(existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL){
+		hilo *elQueEstaEjecutando = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec;
+
+		printf("TID en exec: %i - Estimacion: %f\n TID candidato: %i - Estimacion: %f\n\n", elQueEstaEjecutando->tid, elQueEstaEjecutando->estimacion, candidatoAEjecutar->tid, candidatoAEjecutar->estimacion);
+
+		//Si el que esta en ready tiene menos ejecucion ese sigue, sino el que estaba en exec
+		if(candidatoAEjecutar->estimacion < ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->estimacion){
+			//Paso a ready el que esta ejecutando y a exec el que estaba en ready (sacandolo de ready)
+			candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0) );
+			list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), elQueEstaEjecutando);
+			((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = candidatoAEjecutar;
+			inicioRafaga = getMicrotime();
+			return candidatoAEjecutar->tid;
+		}
+		else{
+			return elQueEstaEjecutando->tid;
+		}
+	}
+
+	//Si no hay ninguno en exec paso el siguiente
+	candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0) );
+	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = candidatoAEjecutar;
+	inicioRafaga = getMicrotime();
+	return candidatoAEjecutar->tid;
+}
+
+void replanificarHilos(int pid){
+	sem_wait(&sem_diccionario_ready);
+	//Ordeno la lista por el que tiene menor estimacion
+	list_sort((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))) , (void*)tieneMenorEstimacion);
+	sem_post(&sem_diccionario_ready);
+}
+
+void recalcularEstimacion(int pid){
+
 	sem_wait(&sem_programas);
 	//El programa existe cuando algun hilo paso a ready en algun momento
 	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, string_itoa(pid));
 
 	//Si existe el programa y hay alguien en ejecucion
 	if(existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL){
-		//Aumento la rafaga del que esta actualmente en ejecucion
-		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga++;
-		printf("TID: %i - Rafaga: %f\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid,((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga);
+		float loQueTardo = getMicrotime() - inicioRafaga;
+		//Actualizo la rafaga y la estimacion del que esta en ejecucion
+		printf("Rafaga :%f\n", loQueTardo);
+		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga = loQueTardo;
+		actualizarEstimacion( ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec );
 	}
 		//printf("TID: %i - Rafaga: %f\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid,((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga);
 	sem_post(&sem_programas);
 
-	return ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid;
+	//No hace falta calcular la estimacion de los demas hilos
+	/*sem_wait(&sem_diccionario_ready);
+	//Actualizo la estimacion de todos los que estan en ready
+	list_iterate( (t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))) , (void*)actualizarEstimacion);
+	sem_post(&sem_diccionario_ready);*/
+
 }
 
 
