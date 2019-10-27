@@ -56,7 +56,6 @@ void sem_suse_signal(int pid, int tid, char*);
 void pasarAReady(hilo*);
 void actualizarEstimacion(hilo*);
 bool tieneMenorEstimacion(hilo *unHilo, hilo *otroHilo);
-void pasarAExec(hilo*);
 void crearHilo(int);
 int siguienteAEjecutar(int);
 hilo* siguienteDeReadyAExec(int);
@@ -117,11 +116,11 @@ int main(int argc, char *argv[]){
 	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciarConexion, NULL);
 	pthread_create(&hiloPlanificadorReady, NULL, (void*) planificarReady, NULL);
 	//pthread_create(&hiloPlanficadorExec, NULL, (void*) planificarExec, NULL);
-	pthread_create(&hiloPlanficadorBlocked, NULL, (void*) planificarBlocked, NULL);
+	//pthread_create(&hiloPlanficadorBlocked, NULL, (void*) planificarBlocked, NULL);
 	pthread_join(hiloLevantarConexion, NULL);
 	pthread_join(hiloPlanificadorReady, NULL);
 	//pthread_join(hiloPlanficadorExec, NULL);
-	pthread_join(hiloPlanficadorBlocked, NULL);
+	//pthread_join(hiloPlanficadorBlocked, NULL);
 	return 0;
 }
 
@@ -137,6 +136,7 @@ void iniciarSUSE(){
 	//printf("%f\n", configuracion.ALPHA_SJF);
 
 	diccionarioDeBlockedPorSemaforo = dictionary_create();
+	//todo modelar el exit
 	diccionarioDeListasDeExit = dictionary_create();
 
 	int i = 0;
@@ -186,9 +186,6 @@ void planificarExec(){
 	}
 }
 
-void planificarBlocked(){
-
-}
 
 unsigned long long getMicrotime(){
 	struct timeval tv;
@@ -515,7 +512,6 @@ void liberarBloqueadosPorElHilo(hilo *hiloBloqueante){
 			hilo *hiloBloqueado = tomarHiloBloqueadoPor(hiloBloqueante);
 			sem_post(&sem_programas);
 
-
 			sem_wait(&MAXIMOPROCESAMIENTO);
 			sem_wait(&sem_diccionario_ready);
 			//Lo agrego a ready
@@ -533,7 +529,7 @@ void liberarBloqueadosPorElHilo(hilo *hiloBloqueante){
 hilo *tomarHiloBloqueadoPor(hilo *hiloBloqueante){
 	t_dictionary *diccionarioDeBloqueadosPorProceso = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(hiloBloqueante->pid)))->blocked;
 	t_list *listaDeBloqueados = (t_list *)dictionary_get(diccionarioDeBloqueadosPorProceso, string_itoa(hiloBloqueante->tid));
-	return (hilo*)list_get(listaDeBloqueados, 0);
+	return (hilo*)list_remove(listaDeBloqueados, 0);
 }
 
 void atenderWait(int sd){
@@ -574,6 +570,13 @@ void atenderClose(int sd){
 	read(sd, tidACerrar, sizeof(int));
 	realizarClose(sd, *tidACerrar);
 	free(tidACerrar);
+}
+
+void limpiarEstructuras(int pid){
+	//limpiarDiccionarioDeListasDeExit
+	dictionary_remove(diccionarioDeListasDeReady, string_itoa(pid));
+	dictionary_remove(diccionarioDeExec, string_itoa(pid));
+	dictionary_remove(diccionarioDeProgramas, string_itoa(pid));
 }
 
 int32_t iniciarConexion() {
@@ -701,6 +704,8 @@ int32_t iniciarConexion() {
 							ntohs(address.sin_port));
 					close(sd);
 					client_socket[i] = 0;
+
+					limpiarEstructuras(sd);
 				} else {
 
 					switch (*operacion) {
