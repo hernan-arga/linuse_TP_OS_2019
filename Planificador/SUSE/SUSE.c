@@ -76,6 +76,9 @@ unsigned long long getMicrotime();
 int calcularSiguienteHilo(int pid);
 void replanificarHilos(int pid);
 void recalcularEstimacion(int pid);
+void liberarBloqueadosPorElHilo(hilo *);
+hilo *tomarHiloBloqueadoPor(hilo *hiloBloqueante);
+
 
 pthread_t hiloLevantarConexion;
 pthread_t hiloPlanificadorReady;
@@ -302,14 +305,14 @@ int calcularSiguienteHilo(int pid){
 	//El programa existe cuando algun hilo paso a ready en algun momento
 	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, string_itoa(pid));
 
-	//Si existe el programa y hay alguien en ejecucion
-	if(existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL){
-		hilo *elQueEstaEjecutando = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec;
+	hilo *elQueEstaEjecutando = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec;
 
-		printf("TID en exec: %i - Estimacion: %f\n TID candidato: %i - Estimacion: %f\n\n", elQueEstaEjecutando->tid, elQueEstaEjecutando->estimacion, candidatoAEjecutar->tid, candidatoAEjecutar->estimacion);
+	if(existeElPrograma && elQueEstaEjecutando != NULL){
 
 		//Si el que esta en ready tiene menos ejecucion ese sigue, sino el que estaba en exec
-		if(candidatoAEjecutar->estimacion < ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->estimacion){
+		if(candidatoAEjecutar!=NULL && candidatoAEjecutar->estimacion < ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->estimacion){
+			//printf("TID en exec: %i - Estimacion: %f\n TID candidato: %i - Estimacion: %f\n\n", elQueEstaEjecutando->tid, elQueEstaEjecutando->estimacion, candidatoAEjecutar->tid, candidatoAEjecutar->estimacion);
+
 			//Paso a ready el que esta ejecutando y a exec el que estaba en ready (sacandolo de ready)
 			candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0) );
 			list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), elQueEstaEjecutando);
@@ -455,11 +458,18 @@ void realizarJoin(int pid, int tidAEsperar){
 
 void realizarClose(int pid, int tid){
 	if( ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid == tid ){
+		hilo *elQueEstaEjecutando = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec;
 		//Pongo el que esta ejecutando en exit
-		pasarAExit(((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec);
+		pasarAExit(elQueEstaEjecutando);
 		//Lo saco de exec
 		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
 		sem_post(&hayQueActualizarUnExec);
+
+		//todo Libero la lista de los bloqueados por este hilo que termino
+		pthread_t hiloLiberarBloqueados;
+		pthread_create(&hiloLiberarBloqueados, NULL, (void*) liberarBloqueadosPorElHilo,
+								(void *) elQueEstaEjecutando);
+		pthread_detach(hiloLiberarBloqueados);
 	}
 	else{
 		//XXX se fija en los de ready, bloqueados, etc?
@@ -484,7 +494,46 @@ void pasarAExit(hilo *unHilo){
 
 //todo puede haber mas de 1 hilo bloqueado por 1 mismo hilo. Hacer una lista aca
 void ponerEnBlockedPorHilo(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar){
-	dictionary_put(((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->blocked, string_itoa(tidAEsperar), hiloAPonerEnBlocked);
+	t_dictionary *diccionarioDeBloqueados = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->blocked;
+	if( !dictionary_has_key(diccionarioDeBloqueados, string_itoa(tidAEsperar)) ){
+		t_list *listaDeBloqueados = list_create();
+		dictionary_put(diccionarioDeBloqueados, string_itoa(tidAEsperar), listaDeBloqueados);
+	}
+	list_add((t_list*)dictionary_get(diccionarioDeBloqueados, string_itoa(tidAEsperar)), hiloAPonerEnBlocked);
+}
+
+//fixme estos semaforos estan raros
+void liberarBloqueadosPorElHilo(hilo *hiloBloqueante){
+	sem_wait(&sem_programas);
+	t_dictionary *diccionarioDeBloqueadosPorProceso = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(hiloBloqueante->pid)))->blocked;
+	t_list *listaDeBloqueados = (t_list *)dictionary_get(diccionarioDeBloqueadosPorProceso, string_itoa(hiloBloqueante->tid));
+
+	//Puede ser que no se haya bloqueado ningun hilo nunca todavia para ese proceso
+	if(listaDeBloqueados!=NULL){
+
+		while(!list_is_empty(listaDeBloqueados)){
+			hilo *hiloBloqueado = tomarHiloBloqueadoPor(hiloBloqueante);
+			sem_post(&sem_programas);
+
+
+			sem_wait(&MAXIMOPROCESAMIENTO);
+			sem_wait(&sem_diccionario_ready);
+			//Lo agrego a ready
+			list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(hiloBloqueado->pid))), hiloBloqueado);
+			sem_post(&sem_diccionario_ready);
+
+			sem_wait(&sem_programas);
+		}
+
+	}
+
+	sem_post(&sem_programas);
+}
+
+hilo *tomarHiloBloqueadoPor(hilo *hiloBloqueante){
+	t_dictionary *diccionarioDeBloqueadosPorProceso = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(hiloBloqueante->pid)))->blocked;
+	t_list *listaDeBloqueados = (t_list *)dictionary_get(diccionarioDeBloqueadosPorProceso, string_itoa(hiloBloqueante->tid));
+	return (hilo*)list_get(listaDeBloqueados, 0);
 }
 
 void atenderWait(int sd){
