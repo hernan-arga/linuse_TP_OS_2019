@@ -76,6 +76,7 @@ int calcularSiguienteHilo(int pid);
 void replanificarHilos(int pid);
 void recalcularEstimacion(int pid);
 void liberarBloqueadosPorElHilo(hilo *);
+void postSemaforoMultiprogramacion();
 hilo *tomarHiloBloqueadoPor(hilo *hiloBloqueante);
 
 
@@ -165,7 +166,17 @@ void iniciarSUSE(){
 	sem_init(&SEMAFOROS, 0, 1);
 	sem_init(&blockedPorSemaforo, 0, 1);
 	sem_init(&sem_exit, 0, 1);
-	sem_init(&hayQueActualizarUnExec, 0, 0);
+	//sem_init(&hayQueActualizarUnExec, 0, 0);
+}
+
+//Esto es para limitar la cantidad de post que se hace sobre el semaforo
+void postSemaforoMultiprogramacion(){
+	int valorSemaforo;
+	sem_getvalue(&MAXIMOPROCESAMIENTO, &valorSemaforo);
+	if(valorSemaforo < configuracion.GRADO_DE_MULTIPROGRAMACION){
+		sem_post(&MAXIMOPROCESAMIENTO);
+	}
+
 }
 
 void planificarReady(){
@@ -177,14 +188,14 @@ void planificarReady(){
 	}
 }
 
-void planificarExec(){
+/*void planificarExec(){
 	while(1){
 		sem_wait(&hayQueActualizarUnExec);
 		sem_wait(&sem_programas);
 		dictionary_iterator(diccionarioDeProgramas, (void*)planificarExecParaUnPrograma);
 		sem_post(&sem_programas);
 	}
-}
+}*/
 
 
 unsigned long long getMicrotime(){
@@ -194,7 +205,7 @@ unsigned long long getMicrotime(){
 	return ((unsigned long long)( (tv.tv_sec)*1000 + (tv.tv_usec)/1000 ));
 }
 
-void planificarExecParaUnPrograma(char *pid, programa *unPrograma){
+/*void planificarExecParaUnPrograma(char *pid, programa *unPrograma){
 	if(unPrograma->exec==NULL){
 		sem_wait(&sem_diccionario_ready);
 		//Me fijo en la lista de ready del diccionario el que sigue para ejecutar
@@ -212,7 +223,7 @@ void planificarExecParaUnPrograma(char *pid, programa *unPrograma){
 			//XXX: termino el programa, limpiar todas las estructuras?
 		}
 	}
-}
+}*/
 
 hilo* siguienteDeReadyAExec(int pid){
 	//Como lo inserte ordenado, el primero que saco de la lista es el que va
@@ -262,7 +273,7 @@ void pasarAReady(hilo *unHilo){
 
 		sem_wait(&sem_programas);
 		dictionary_put(diccionarioDeProgramas, string_itoa(unPrograma->pid), unPrograma);
-		sem_post(&hayQueActualizarUnExec);
+		//sem_post(&hayQueActualizarUnExec);
 		sem_post(&sem_programas);
 	}
 	else{
@@ -326,6 +337,7 @@ int calcularSiguienteHilo(int pid){
 	candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0) );
 	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = candidatoAEjecutar;
 	inicioRafaga = getMicrotime();
+	postSemaforoMultiprogramacion();
 	return candidatoAEjecutar->tid;
 }
 
@@ -413,7 +425,8 @@ void sem_suse_wait(int pid, int tid, char* semID){
 				sem_post(&blockedPorSemaforo);
 				//Lo saco de ejecucion
 				((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
-				sem_post(&hayQueActualizarUnExec);
+				postSemaforoMultiprogramacion();
+				//sem_post(&hayQueActualizarUnExec);
 			}
 			else{
 				printf("El hilo en ejecucion no pidio el wait\n");
@@ -448,7 +461,8 @@ void realizarJoin(int pid, int tidAEsperar){
 		ponerEnBlockedPorHilo(pid, ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec, tidAEsperar);
 		//Lo saco de exec
 		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
-		sem_post(&hayQueActualizarUnExec);
+		postSemaforoMultiprogramacion();
+		//sem_post(&hayQueActualizarUnExec);
 	}
 	sem_post(&sem_programas);
 }
@@ -460,7 +474,8 @@ void realizarClose(int pid, int tid){
 		pasarAExit(elQueEstaEjecutando);
 		//Lo saco de exec
 		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
-		sem_post(&hayQueActualizarUnExec);
+		postSemaforoMultiprogramacion();
+		//sem_post(&hayQueActualizarUnExec);
 
 		//todo Libero la lista de los bloqueados por este hilo que termino
 		pthread_t hiloLiberarBloqueados;
