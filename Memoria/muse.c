@@ -443,12 +443,26 @@ void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
 	return NULL; //Nunca deberia llegar a retornar NULL pq ya se chequeo anteriorimente que hubiera espacio libre
 }
 
-int esExtendible(t_list *segmentosProceso, int unIndice) {
-	return 0;
+/*Un segmento es extendible si no tiene otro segmento a continuacion*/
+bool esExtendible(t_list *segmentosProceso, int unIndice) {
+	//Momentaneamente, es extendible si es el ultimo de la lista de segmentos
+	int indiceUltimoSegmento = list_size(segmentosProceso) - 1;
+
+	struct Segmento *ultimoSegmento = malloc(sizeof(struct Segmento));
+	ultimoSegmento = list_get(segmentosProceso, indiceUltimoSegmento);
+
+	struct Segmento *segmento = malloc(sizeof(struct Segmento));
+	segmento = list_get(segmentosProceso, unIndice);
+
+	if(ultimoSegmento->id == segmento->id){
+		return true;
+	} else{
+		return false;
+	}
+
 }
 
 /*Retorna la posicion de memoria donde comienza la primera pagina de un segmento*/
-
 void *posicionMemoriaUnSegmento(struct Segmento *unSegmento){
 	t_list *paginas = unSegmento->tablaPaginas;
 	struct Pagina *primeraPagina = list_get(paginas,0);
@@ -456,8 +470,7 @@ void *posicionMemoriaUnSegmento(struct Segmento *unSegmento){
 	return retornarPosicionMemoriaFrame(primeraPagina->numeroFrame);
 }
 
-//Funcion recorre buscando heapmetadata libre - mayor o igual - a cierto size
-
+/*Funcion recorre buscando heapmetadata libre - mayor o igual - a cierto size*/
 void *buscarEspacioLibre(uint32_t tamanio) {
 	void *pos;
 	pos = &memoriaPrincipal;
@@ -499,9 +512,9 @@ void *buscarEspacioLibre(uint32_t tamanio) {
  * tiene que recorrer*/
 
 void unificarHeaders(int idSocketCliente, int idSegmento) {
-	uint32_t tamanioSegmento = obtenerTamanioSegmento(idSegmento, idSocketCliente); // VER, cambio funcion por cambio concepto tamaño
+	uint32_t tamanioSegmento = obtenerTamanioSegmento(idSegmento, idSocketCliente);
 
-	void *pos = buscarPosicionSegmento(idSocketCliente, idSegmento);
+	void *pos = NULL;/*= buscarPosicionSegmento(idSocketCliente, idSegmento);*/ //Recorre desde la pag 1 cada pagina
 	void *end = pos + tamanioSegmento;
 	struct HeapMetadata *header = malloc(sizeof(struct HeapMetadata));
 	struct HeapMetadata *siguienteHeader = malloc(sizeof(struct HeapMetadata));
@@ -528,11 +541,11 @@ void unificarHeaders(int idSocketCliente, int idSegmento) {
 		}
 	}
 }
+/*
+Recorre los segmentos anteriores calculando su size con calcularSizeSegmento(unSegmento)
+  size de su t_list de paginas por su cantidad de paginas y la posicion del segmento
+  es el inicio de la memoria + los tamaños de sus segmentos anteriores
 
-/**Recorre los segmentos anteriores calculando su size con calcularSizeSegmento(unSegmento)
- * size de su t_list de paginas por su cantidad de paginas y la posicion del segmento
- * es el inicio de la memoria + los tamaños de sus segmentos anteriores
- */
 void *buscarPosicionSegmento(int idSocketCliente, int idSegmento) {
 	t_list *tablaSegmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 	int offset = 0;
@@ -541,13 +554,14 @@ void *buscarPosicionSegmento(int idSocketCliente, int idSegmento) {
 	struct Segmento *unSegmento = list_get(tablaSegmentosProceso, indice);
 
 	while (unSegmento->id != idSegmento) {
-		offset = offset + obtenerTamanioSegmento(idSocketCliente, unSegmento->id); //Sumo el tamaño del segmento
+		offset = offset + obtenerTamanioSegmento(idSocketCliente, unSegmento->id); Sumo el tamaño del segmento
 		indice++;
-		unSegmento = list_get(tablaSegmentosProceso, indice); //Leo el proximo segmento
+		unSegmento = list_get(tablaSegmentosProceso, indice); Leo el proximo segmento
 	}
 
 	return &memoriaPrincipal + offset; //Esta MAL - modificar - respuesta mail
 }
+*/
 
 /*Funcion que me retorna el tamaño -actual- de un segmento determinado de un proceso determinado*/
 uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente) {
@@ -561,14 +575,37 @@ uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente) {
 
 /*Funcion que me retorna el espacio ocupado por las paginas de un segmento de un
  *proceso determinado*/
-uint32_t espacioPaginas(char *idProceso, int idSegmento) {
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos, idProceso);
+int espacioPaginas(int idSocketCliente, int idSegmento) {
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 	struct Segmento *unSegmento = list_get(segmentosProceso, idSegmento); //list find segmento
 
 	return (list_size(unSegmento->tablaPaginas) * tam_pagina);
 }
 
+void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio){
+	/* Si un segmento posee espacio libre, es en el frame de la ultima pagina
+	 * de algun segmento (que es donde se presenta fragmentacion interna)*/
 
+	/* Siempre tengo que buscar espacio libre para el tamaño que necesito
+	 * mas el tamaño que ocupa la nueva metadata (5 bytes)*/
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	int cantidadARecorrer = list_size(segmentosProceso);
+
+	for(int i = 0; i < cantidadARecorrer; i++){
+		struct Segmento *segmento = malloc(sizeof(struct Segmento));
+		segmento = list_get(segmentosProceso, i);
+
+		struct Pagina *ultimaPagina = malloc(sizeof(struct Pagina));
+		int cantidadPaginas = list_size(segmento->tablaPaginas);
+		ultimaPagina = list_get(segmento->tablaPaginas,cantidadPaginas - 1);
+
+		int frame = ultimaPagina->numeroFrame;
+
+		/*FALTA DESARROLLAR ACA*/
+	}
+
+	return NULL; //Momentaneo
+}
 
 //MUSE GET
 
@@ -641,7 +678,6 @@ struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento, void *dir
 
 	return pagina;
 }
-
 
 
 

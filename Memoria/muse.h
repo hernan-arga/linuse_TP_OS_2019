@@ -44,7 +44,7 @@ void *buscarEspacioLibre(uint32_t tamanio);
 void unificarHeaders(int idSocketCliente, int idSegmento);
 void *buscarPosicionSegmento(int idSocketCliente, int idSegmento);
 int calcularTamanioSegmento(char *idProceso, int idSegmento);
-uint32_t espacioPaginas(char *idProceso, int idSegmento);
+int espacioPaginas(int idProceso, int idSegmento);
 void crearTablaSegmentosProceso(int idProceso);
 void *posicionMemoriaUnSegmento(struct Segmento *unSegmento);
 uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
@@ -69,8 +69,11 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente);
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
-int esExtendible(t_list *segmentosProceso, int unIndice);
+bool esExtendible(t_list *segmentosProceso, int unIndice);
 void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio);
+void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
+uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
+void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
 
 //Funciones cpy
 int musecpy(uint32_t dst, void* src, int n);
