@@ -41,17 +41,18 @@ void reservarMemoriaPrincipal(int tamanio);
 void crearTablaSegmentos();
 void *crearHeaderInicial(uint32_t tamanio);
 void *buscarEspacioLibre(uint32_t tamanio);
-void unificarHeaders(char *idProceso, int idSegmento);
-void *buscarPosicionSegmento(char *idProceso, int idSegmento);
+void unificarHeaders(int idSocketCliente, int idSegmento);
+void *buscarPosicionSegmento(int idSocketCliente, int idSegmento);
 int calcularTamanioSegmento(char *idProceso, int idSegmento);
 uint32_t espacioPaginas(char *idProceso, int idSegmento);
 void crearTablaSegmentosProceso(int idProceso);
 void *posicionMemoriaUnSegmento(struct Segmento *unSegmento);
+uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
 
 //Funciones bitmap de frames
 void crearBitmapFrames();
 void inicializarBitmapFrames();
-int ocuparFrame(int indiceFrame, uint32_t tamanio);
+void ocuparFrame(int indiceFrame);
 void liberarFrame(int indiceFrame);
 int buscarFrameLibre();
 void *retornarPosicionMemoriaFrame(int unFrame);

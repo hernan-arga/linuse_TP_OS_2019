@@ -40,7 +40,7 @@ int main() {
 
 void reservarMemoriaPrincipal(int tamanio) {
 	memoriaPrincipal = malloc(tamanio);
-	crearHeaderInicial(tamanio - sizeof(struct HeapMetadata));
+	//crearHeaderInicial(tamanio - sizeof(struct HeapMetadata)); Se haria por cada primer malloc
 }
 
 void *crearHeaderInicial(uint32_t tamanio) {
@@ -89,14 +89,14 @@ bool frameEstaLibre(int indiceFrame) {
 
 }
 
-int ocuparFrame(int indiceFrame, uint32_t tamanio) {
+/*int ocuparFrame(int indiceFrame, uint32_t tamanio) {
 
 	if (frameEstaLibre(indiceFrame)) { //Esta libre o tiene algo de espacio libre
 
 		void *pos = &memoriaPrincipal + (indiceFrame * tam_pagina); //Me posiciono en el frame
 		struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 		memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo el primer header
-		void *end = pos + tam_pagina; /*Calculo el final del frame para recorrer SOLO los headers del frame*/
+		void *end = pos + tam_pagina; //Calculo el final del frame para recorrer SOLO los headers del frame
 
 		while (pos < end) {
 
@@ -121,7 +121,7 @@ int ocuparFrame(int indiceFrame, uint32_t tamanio) {
 
 						if (estaOcupadoCompleto(indiceFrame) == true) { /*Chequeo si el espacio ACTUAL
 						 restante es 0, de ser asi lo marco
-						 como ocupado*/
+						 como ocupado
 							//Ocupar posicion bitarray
 						}
 
@@ -144,8 +144,17 @@ int ocuparFrame(int indiceFrame, uint32_t tamanio) {
 
 	}
 
+}*/
+
+void ocuparFrame(int unFrame){
+	bitarray_set_bit(bitmapFrames, unFrame);
 }
 
+void liberarFrame(int unFrame){
+	bitarray_clean_bit(bitmapFrames, unFrame);
+}
+
+//No sirve con lo nuevo, pero lo dejo para funciones heapmetadata - puede servir
 bool estaOcupadoCompleto(int indiceFrame) {
 	void *pos = retornarPosicionMemoriaFrame(indiceFrame);
 	void *end = &pos + tam_pagina; //Comienzo del proximo frame
@@ -220,6 +229,8 @@ int museinit(int idSocketCliente) {
 	//string_append(&idProceso, string_itoa(idSocketCliente));
 
 	if(hayMemoriaDisponible() == false){ /*Si no hay mas mm ppal ni mm virtual, error*/
+		crearTablaSegmentosProceso(idSocketCliente); //Se le crea la tabla de segmentos igual, complicara mas adelante
+
 		return -1;
 	} else{
 		crearTablaSegmentosProceso(idSocketCliente);
@@ -313,7 +324,14 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 		nuevoSegmento->id = list_size(listaSegmentosProceso) + 1;
 	}
 
-	//Nuevo segmento - base logica ??
+	if (list_is_empty(listaSegmentosProceso)) {
+	//Si es el primer segmento, su base logica es 0
+		nuevoSegmento->baseLogica = 0;
+	} else {
+		//Obtengo el tamaño del ultimo segmento
+		int idSegmento = list_size(listaSegmentosProceso) - 1; //Id ultimo segmento
+		nuevoSegmento->baseLogica = obtenerTamanioSegmento(idSegmento, idSocketCliente) + 1;
+	}
 
 	/*Asignar frames necesarios para *tamanio*, calculo paginas necesarias y le calculo
 	 *el techo, asigno paginas y sus correspondientes frames*/
@@ -358,7 +376,7 @@ void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio) {
 		//Memoria virtual?
 	} else {
 		nuevaPagina->numeroFrame = nuevoFrame;
-		ocuparFrame(nuevoFrame, tamanio - 5);
+		//ocuparFrame(nuevoFrame, tamanio - 5);
 	}
 
 }
@@ -478,11 +496,10 @@ void *buscarEspacioLibre(uint32_t tamanio) {
  * recorriendo todos los headers DEL SEGMENTO. Le envio como parametro el id del segmento que
  * tiene que recorrer*/
 
-void unificarHeaders(char *idProceso, int idSegmento) {
-	int tamanioSegmento = calcularTamanioSegmento(idProceso, idSegmento); //va a devolver el tamanio del segmento
-	//que es el tamanio que voy a tener que recorrer sin salirme. Dentro del while
+void unificarHeaders(int idSocketCliente, int idSegmento) {
+	uint32_t tamanioSegmento = obtenerTamanioSegmento(idSegmento, idSocketCliente); // VER, cambio funcion por cambio concepto tamaño
 
-	void *pos = buscarPosicionSegmento(idProceso, idSegmento);
+	void *pos = buscarPosicionSegmento(idSocketCliente, idSegmento);
 	void *end = pos + tamanioSegmento;
 	struct HeapMetadata *header = malloc(sizeof(struct HeapMetadata));
 	struct HeapMetadata *siguienteHeader = malloc(sizeof(struct HeapMetadata));
@@ -514,15 +531,15 @@ void unificarHeaders(char *idProceso, int idSegmento) {
  * size de su t_list de paginas por su cantidad de paginas y la posicion del segmento
  * es el inicio de la memoria + los tamaños de sus segmentos anteriores
  */
-void *buscarPosicionSegmento(char *idProceso, int idSegmento) {
-	t_list *tablaSegmentosProceso = dictionary_get(tablasSegmentos, idProceso);
+void *buscarPosicionSegmento(int idSocketCliente, int idSegmento) {
+	t_list *tablaSegmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 	int offset = 0;
 	int indice = 0;
 
 	struct Segmento *unSegmento = list_get(tablaSegmentosProceso, indice);
 
 	while (unSegmento->id != idSegmento) {
-		offset = offset + calcularTamanioSegmento(idProceso, unSegmento->id); //Sumo el tamaño del segmento
+		offset = offset + obtenerTamanioSegmento(idSocketCliente, unSegmento->id); //Sumo el tamaño del segmento
 		indice++;
 		unSegmento = list_get(tablaSegmentosProceso, indice); //Leo el proximo segmento
 	}
@@ -530,14 +547,14 @@ void *buscarPosicionSegmento(char *idProceso, int idSegmento) {
 	return &memoriaPrincipal + offset; //Esta MAL - modificar - respuesta mail
 }
 
-/*Funcion que me retorna el tamanio ocupado por un segmento de un proceso determinado*/
-int calcularTamanioSegmento(char *idProceso, int idSegmento) {
-	uint32_t espacioTablaPaginas;
-	espacioTablaPaginas = espacioPaginas(idProceso, idSegmento);
+/*Funcion que me retorna el tamaño -actual- de un segmento determinado de un proceso determinado*/
+uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente) {
+	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	struct Segmento *unSegmento = malloc(sizeof(struct HeapMetadata));
 
-	return sizeof(int) + //idSegmento
-			2 * sizeof(uint32_t) + //base logica y tamanio
-			espacioTablaPaginas;
+	unSegmento = list_get(listaSegmentosProceso, idSegmento);
+
+	return unSegmento->tamanio;
 }
 
 /*Funcion que me retorna el espacio ocupado por las paginas de un segmento de un
