@@ -53,11 +53,17 @@ void *crearHeaderInicial(uint32_t tamanio) {
 	return NULL;
 }
 
+/* Crea la tabla de segmentos -vacia- para un proceso. Solo la crea si
+ * no la encuentra previamente en el diccionario (tema hilos) */
 void crearTablaSegmentosProceso(int idSocketCliente) {
-	t_list *listaDeSegmentos = list_create();
 
-	//Creo la estructura, pero no tiene segmentos aun
-	dictionary_put(tablasSegmentos, (char*)idSocketCliente, listaDeSegmentos);
+	if(dictionary_has_key(tablasSegmentos, (char*)idSocketCliente) == false){
+		t_list *listaDeSegmentos = list_create();
+
+		//Creo la estructura, pero no tiene segmentos aun
+		dictionary_put(tablasSegmentos, (char*)idSocketCliente, listaDeSegmentos);
+	}
+
 }
 
 ///////////////Bitmap de Frames///////////////
@@ -71,10 +77,11 @@ void crearBitmapFrames() {
 	bitmapFrames = bitarray_create(bitsBitmap, bytesNecesarios);
 }
 
+/*Pone todos los bits del bitarray en 0*/
 void inicializarBitmapFrames() {
 
 	for (int i = 0; i < bitarray_get_max_bit(bitmapFrames); i++) {
-		bitarray_set_bit(bitmapFrames, i);
+		bitarray_clean_bit(bitmapFrames, i);
 	}
 
 }
@@ -223,10 +230,7 @@ int espacioLibreFrame(int unFrame){
 //La llamamos en muse init, le crea al proceso (id) la tabla de segmentos correspondiente
 
 int museinit(int idSocketCliente) {
-	//Usamos el id del socket que
-	//Funcionara como id del proceso y sera la key en el diccionario
-	//char* idProceso = string_new();
-	//string_append(&idProceso, string_itoa(idSocketCliente));
+	//int idSocketCliente = getpeername();
 
 	if(hayMemoriaDisponible() == false){ /*Si no hay mas mm ppal ni mm virtual, error*/
 		crearTablaSegmentosProceso(idSocketCliente); //Se le crea la tabla de segmentos igual, complicara mas adelante
@@ -251,10 +255,7 @@ bool hayMemoriaDisponible(){
 void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 	//hago una respuesta fija para que ya tengamos bien los tipos que tengamos que devolver
 	void *respuesta = NULL;
-
-	//Comentado ya que -creo- queda el idSocketCliente como idProceso FIJATE QUE PREFERIS NACHITO TKM
-	//char* idProceso = string_new();
-	//string_append(&idProceso, string_itoa(idSocketCliente));
+	//int idSocketCliente = getpeername();
 
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 	int cantidadSegmentosARecorrer = list_size(segmentosProceso);
@@ -376,7 +377,8 @@ void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio) {
 		//Memoria virtual?
 	} else {
 		nuevaPagina->numeroFrame = nuevoFrame;
-		//ocuparFrame(nuevoFrame, tamanio - 5);
+		ocuparFrame(nuevoFrame);
+		//gestionar tamanio y heapmetadata
 	}
 
 }
@@ -568,17 +570,17 @@ uint32_t espacioPaginas(char *idProceso, int idSegmento) {
 
 
 
-//MUSE CPY
+//MUSE GET
 
 /**
-  * Copia una cantidad `n` de bytes desde una posición de memoria local a una `dst` en MUSE.
-  * @param dst Posición de memoria de MUSE con tamaño suficiente para almacenar `n` bytes.
-  * @param src Posición de memoria local de donde leer los `n` bytes.
-  * @param n Cantidad de bytes a copiar.
-  * @return Si pasa un error, retorna -1. Si la operación se realizó correctamente, retorna 0.
-  */
+     * Copia una cantidad `n` de bytes desde una posición de memoria de MUSE a una `dst` local.
+     * @param dst Posición de memoria local con tamaño suficiente para almacenar `n` bytes.
+     * @param src Posición de memoria de MUSE de donde leer los `n` bytes.
+     * @param n Cantidad de bytes a copiar.
+     * @return Si pasa un error, retorna -1. Si la operación se realizó correctamente, retorna 0.
+     */
 
-int musecpy(uint32_t dst, void* src, int n){
+int museget(uint32_t dst, void* src, int n){
 	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 	struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
 
@@ -587,7 +589,6 @@ int musecpy(uint32_t dst, void* src, int n){
 
 	//Obtencion segmento, pagina, frame, desplazamiento
 	int idSegmento;
-	int pagina;
 	int frame;
 	int desplazamiento;
 
@@ -606,6 +607,8 @@ int musecpy(uint32_t dst, void* src, int n){
 	//////////////////////////////////////////////////
 
 	/*Ya se tienen todos los datos necesarios y se puede ir a mm ppal a buscar la data*/
+	void *pos = retornarPosicionMemoriaFrame(frame) + desplazamiento;
+	memcpy((void*)dst, pos, n);
 
 	return 0;
 }

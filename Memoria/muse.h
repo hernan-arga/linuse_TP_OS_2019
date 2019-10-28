@@ -61,7 +61,7 @@ bool frameEstaLibre(int indice);
 int espacioLibreFrame(int indice);
 
 //Funciones init
-int museinit(int idSocket);
+int museinit(int idSocketCliente);
 bool hayMemoriaDisponible();
 
 //Funciones subyacentes malloc
