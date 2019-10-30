@@ -76,10 +76,10 @@ uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
 void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
 
 //Funciones cpy
-int musecpy(uint32_t dst, void* src, int n);
+int musecpy(uint32_t dst, void* src, int n, int idSocket);
 int idSegmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
 struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento, void *direccion);
 
-int museget(void* dst, uint32_t src, size_t n);
+int museget(void* dst, uint32_t src, size_t n, int idSocket);
 
 #endif /* MUSE_H_ */

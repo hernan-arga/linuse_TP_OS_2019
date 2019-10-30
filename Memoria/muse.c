@@ -522,36 +522,72 @@ void *buscarEspacioLibre(uint32_t tamanio) {
  * tiene que recorrer*/
 
 void unificarHeaders(int idSocketCliente, int idSegmento) {
-	uint32_t tamanioSegmento = obtenerTamanioSegmento(idSegmento,
-			idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 
-	void *pos = NULL;/*= buscarPosicionSegmento(idSocketCliente, idSegmento);*/ //Recorre desde la pag 1 cada pagina
-	void *end = pos + tamanioSegmento;
-	struct HeapMetadata *header = malloc(sizeof(struct HeapMetadata));
-	struct HeapMetadata *siguienteHeader = malloc(sizeof(struct HeapMetadata));
+	struct Segmento *segmento = malloc(sizeof(struct Segmento));
+	segmento = list_get(segmentosProceso, idSegmento);
 
-	memcpy(pos, header, sizeof(struct HeapMetadata));
+	t_list *paginasSegmento = segmento->tablaPaginas;
+	int numeroPagina = 0;
+	int paginasARecorrer = list_size(paginasSegmento);
 
-	while (pos != end) {
+	struct Pagina *primeraPagina = malloc(sizeof(struct Pagina));
+	primeraPagina = list_get(paginasSegmento, 0);
 
-		if (header->isFree == true) {
-			pos = pos + sizeof(struct HeapMetadata) + header->size; //Me muevo al siguiente header
-			memcpy(pos, siguienteHeader, sizeof(struct HeapMetadata)); //Leo el siguiente header
+	void *posInicio = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame);
+	void *pos = posInicio;
 
-			if (siguienteHeader->isFree == true) {
-				int size2 = siguienteHeader->size;
-				header->size = header->size + size2; //Unifico ambos headers en el primero
-				free(siguienteHeader); //Libero el segundo header
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 
-				pos = pos + sizeof(struct HeapMetadata) + size2; //Me muevo al tercer header - proximo a leer
+	//Antes de entrar a este for, estoy en la pagina 0, se que tengo metadata que leer
+	memcpy(metadata,posInicio,sizeof(struct HeapMetadata));
+	while(numeroPagina <= paginasARecorrer){
+		int sizeARecorrer = metadata->size;
+
+		if(metadata->isFree == true){
+
+			if(metadata->size <= (tam_pagina - sizeof(struct HeapMetadata)) ){ //Si el proximo header esta dentro de la misma pag
+				pos = pos + sizeof(struct HeapMetadata) + metadata->size;
+
+				struct HeapMetadata *otraMetadata = malloc(sizeof(struct HeapMetadata));
+				memcpy(otraMetadata,pos,sizeof(struct HeapMetadata));
+
+				if(otraMetadata->isFree == true){ //Y si ese proximo header esta libre
+					metadata->size = metadata->size + otraMetadata->size; //Los unifico
+					//Se esta borrando la metadata vieja? VER CON NACHIN
+				}
+			} else{ //Si el proximo header esta en otra pagina de las siguientes
+				//Me tengo que mover entre paginas AAAAAAA ACA SEGURO LA CAGO
+				int tamanioAMoverme = metadata->size;
+				int paginasQueContienenSizeMetadata = (ceil)(tamanioAMoverme/tam_pagina);
+
+				//Me muevo al proximo frame (consumo una pagina entera)
+				tamanioAMoverme = tamanioAMoverme - (tam_pagina - sizeof(struct HeapMetadata));
+
+				while(paginasQueContienenSizeMetadata > 0){
+					struct Pagina *proximaPagina = malloc(sizeof(struct Pagina));
+					numeroPagina++;
+					proximaPagina = list_get(paginasSegmento, numeroPagina);
+					pos = retornarPosicionMemoriaFrame(proximaPagina->numeroFrame);
+
+					if(tamanioAMoverme >= tam_pagina){
+						pos = pos + tam_pagina;
+					} else{
+						pos = pos + tamanioAMoverme;
+					}
+
+					paginasQueContienenSizeMetadata--;
+				}
+
+				//No se donde poronga hago numeroPagina ++
 			}
 
-		} else {
-			pos = pos + sizeof(struct HeapMetadata) + header->size; //Me muevo al siguiente header
-			memcpy(pos, header, sizeof(struct HeapMetadata)); //Leo el siguiente header
 		}
+
 	}
+
 }
+
 /*
  Recorre los segmentos anteriores calculando su size con calcularSizeSegmento(unSegmento)
  size de su t_list de paginas por su cantidad de paginas y la posicion del segmento
@@ -631,7 +667,7 @@ void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio) {
  * @return Si pasa un error, retorna -1. Si la operación se realizó correctamente, retorna 0.
  */
 
-int museget(uint32_t dst, void* src, int n, int idSocketCliente) {
+int museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 	struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
 
