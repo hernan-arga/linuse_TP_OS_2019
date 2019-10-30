@@ -80,4 +80,6 @@ int musecpy(uint32_t dst, void* src, int n);
 int idSegmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
 struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento, void *direccion);
 
+int museget(void* dst, uint32_t src, size_t n);
+
 #endif /* MUSE_H_ */

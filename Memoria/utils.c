@@ -290,6 +290,8 @@ void atenderMuseGet(int cliente) {
 	printf("%zu\n", *N);
 
 	//hacer en muse un get y mandar -1 error o 0 ok
+
+
 	int resultado = 0;
 
 	if (resultado == 0) {
