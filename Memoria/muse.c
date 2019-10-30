@@ -100,60 +100,60 @@ bool frameEstaLibre(int indiceFrame) {
 
 /*int ocuparFrame(int indiceFrame, uint32_t tamanio) {
 
- if (frameEstaLibre(indiceFrame)) { //Esta libre o tiene algo de espacio libre
+	if (frameEstaLibre(indiceFrame)) { //Esta libre o tiene algo de espacio libre
 
- void *pos = &memoriaPrincipal + (indiceFrame * tam_pagina); //Me posiciono en el frame
- struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
- memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo el primer header
- void *end = pos + tam_pagina; //Calculo el final del frame para recorrer SOLO los headers del frame
+		void *pos = &memoriaPrincipal + (indiceFrame * tam_pagina); //Me posiciono en el frame
+		struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+		memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo el primer header
+		void *end = pos + tam_pagina; //Calculo el final del frame para recorrer SOLO los headers del frame
 
- while (pos < end) {
+		while (pos < end) {
 
- if (metadata->isFree == true) { //Si esta libre y tiene el tamaño, ocupo el header
- if (metadata->size >= tamanio) {
- metadata->isFree = false;
- int espacioFrameDisponible = metadata->size - tamanio;
- metadata->size = metadata->size - tamanio;
+			if (metadata->isFree == true) { //Si esta libre y tiene el tamaño, ocupo el header
+				if (metadata->size >= tamanio) {
+					metadata->isFree = false;
+					int espacioFrameDisponible = metadata->size - tamanio;
+					metadata->size = metadata->size - tamanio;
 
- if (espacioFrameDisponible >= sizeof(struct HeapMetadata)) {
- //Veo si me entra un header, me muevo a la pos del prox header y lo creo
- int size = metadata->size;
- pos = pos + sizeof(struct HeapMetadata) + size;
+					if (espacioFrameDisponible >= sizeof(struct HeapMetadata)) {
+						//Veo si me entra un header, me muevo a la pos del prox header y lo creo
+						int size = metadata->size;
+						pos = pos + sizeof(struct HeapMetadata) + size;
 
- struct HeapMetadata *nuevoHeader = malloc(
- sizeof(struct HeapMetadata));
- nuevoHeader->isFree = true;
- nuevoHeader->size = espacioFrameDisponible
- - sizeof(struct HeapMetadata);
+						struct HeapMetadata *nuevoHeader = malloc(
+								sizeof(struct HeapMetadata));
+						nuevoHeader->isFree = true;
+						nuevoHeader->size = espacioFrameDisponible
+								- sizeof(struct HeapMetadata);
 
- pos = nuevoHeader;
+						pos = nuevoHeader;
 
- if (estaOcupadoCompleto(indiceFrame) == true) { /*Chequeo si el espacio ACTUAL
- restante es 0, de ser asi lo marco
- como ocupado
- //Ocupar posicion bitarray
- }
+						if (estaOcupadoCompleto(indiceFrame) == true) { //Chequeo si el espacio ACTUAL
+						 //restante es 0, de ser asi lo marco
+						 //como ocupado
+							//Ocupar posicion bitarray
+						}
 
- }
+					}
 
- return 0; //Exito - se pudo asignar la data
- }
- } else { //Como no esta libre, me muevo al proximo header
- int size = metadata->size;
- pos = pos + sizeof(struct HeapMetadata) + size; //Me muevo al siguiente header
- memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo el siguiente header
- }
- }
+					return 0; //Exito - se pudo asignar la data
+				}
+			} else { //Como no esta libre, me muevo al proximo header
+				int size = metadata->size;
+				pos = pos + sizeof(struct HeapMetadata) + size; //Me muevo al siguiente header
+				memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo el siguiente header
+			}
+		}
 
- return -1; //Error - no encontro el espacio necesario
+		return -1; //Error - no encontro el espacio necesario
 
- } else {
+	} else {
 
- return -1; //Error
+		return -1; //Error
 
- }
+	}
 
- }*/
+}*/
 
 void ocuparFrame(int unFrame) {
 	bitarray_set_bit(bitmapFrames, unFrame);
@@ -522,7 +522,8 @@ void *buscarEspacioLibre(uint32_t tamanio) {
  * tiene que recorrer*/
 
 void unificarHeaders(int idSocketCliente, int idSegmento) {
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos,
+			(char*) idSocketCliente);
 
 	struct Segmento *segmento = malloc(sizeof(struct Segmento));
 	segmento = list_get(segmentosProceso, idSegmento);
@@ -540,39 +541,44 @@ void unificarHeaders(int idSocketCliente, int idSegmento) {
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 
 	//Antes de entrar a este for, estoy en la pagina 0, se que tengo metadata que leer
-	memcpy(metadata,posInicio,sizeof(struct HeapMetadata));
-	while(numeroPagina <= paginasARecorrer){
+	memcpy(metadata, posInicio, sizeof(struct HeapMetadata));
+	while (numeroPagina <= paginasARecorrer) {
 		int sizeARecorrer = metadata->size;
 
-		if(metadata->isFree == true){
+		if (metadata->isFree == true) {
 
-			if(metadata->size <= (tam_pagina - sizeof(struct HeapMetadata)) ){ //Si el proximo header esta dentro de la misma pag
+			if (metadata->size <= (tam_pagina - sizeof(struct HeapMetadata))) { //Si el proximo header esta dentro de la misma pag
 				pos = pos + sizeof(struct HeapMetadata) + metadata->size;
 
-				struct HeapMetadata *otraMetadata = malloc(sizeof(struct HeapMetadata));
-				memcpy(otraMetadata,pos,sizeof(struct HeapMetadata));
+				struct HeapMetadata *otraMetadata = malloc(
+						sizeof(struct HeapMetadata));
+				memcpy(otraMetadata, pos, sizeof(struct HeapMetadata));
 
-				if(otraMetadata->isFree == true){ //Y si ese proximo header esta libre
+				if (otraMetadata->isFree == true) { //Y si ese proximo header esta libre
 					metadata->size = metadata->size + otraMetadata->size; //Los unifico
 					//Se esta borrando la metadata vieja? VER CON NACHIN
 				}
-			} else{ //Si el proximo header esta en otra pagina de las siguientes
+			} else { //Si el proximo header esta en otra pagina de las siguientes
 				//Me tengo que mover entre paginas AAAAAAA ACA SEGURO LA CAGO
 				int tamanioAMoverme = metadata->size;
-				int paginasQueContienenSizeMetadata = (ceil)(tamanioAMoverme/tam_pagina);
+				int paginasQueContienenSizeMetadata = (ceil)(
+						tamanioAMoverme / tam_pagina);
 
 				//Me muevo al proximo frame (consumo una pagina entera)
-				tamanioAMoverme = tamanioAMoverme - (tam_pagina - sizeof(struct HeapMetadata));
+				tamanioAMoverme = tamanioAMoverme
+						- (tam_pagina - sizeof(struct HeapMetadata));
 
-				while(paginasQueContienenSizeMetadata > 0){
-					struct Pagina *proximaPagina = malloc(sizeof(struct Pagina));
+				while (paginasQueContienenSizeMetadata > 0) {
+					struct Pagina *proximaPagina = malloc(
+							sizeof(struct Pagina));
 					numeroPagina++;
 					proximaPagina = list_get(paginasSegmento, numeroPagina);
-					pos = retornarPosicionMemoriaFrame(proximaPagina->numeroFrame);
+					pos = retornarPosicionMemoriaFrame(
+							proximaPagina->numeroFrame);
 
-					if(tamanioAMoverme >= tam_pagina){
+					if (tamanioAMoverme >= tam_pagina) {
 						pos = pos + tam_pagina;
-					} else{
+					} else {
 						pos = pos + tamanioAMoverme;
 					}
 
