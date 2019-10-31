@@ -25,7 +25,7 @@ endif
 all: Prueba
 
 dependents:
-	-cd /home/utnso/Escritorio/tp-2019-2c-Cbados/Planificador/Hilolay/Debug && $(MAKE) clean all
+	-cd /home/utnso/Escritorio/tp-2019-2c-Cbados/Planificador/Hilolay/Debug && $(MAKE) all
 
 # Tool invocations
 Prueba: $(OBJS) $(USER_OBJS) /home/utnso/Escritorio/tp-2019-2c-Cbados/Planificador/Hilolay/Debug/libHilolay.so

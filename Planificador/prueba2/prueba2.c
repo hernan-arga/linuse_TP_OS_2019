@@ -9,10 +9,10 @@ void recursiva(int cant) {
 void *test1(void *arg) {
     int i, tid;
 
-    for (i = 0; i < 50; i++) {
+    for (i = 100; i > 0; i--) {
         tid = hilolay_get_tid();
-        printf("Soy el ult %d mostrando el numero %d \n", tid, i);
-        usleep(5000 * i * tid); /* Randomizes the sleep, so it gets larger after a few iterations */
+        printf("Aqui ult %d, contador en: %d \n", tid, i);
+        usleep(9000 * i * tid); /* Randomizes the sleep, so it gets larger after a few iterations */
 
         recursiva(i);
 
@@ -28,8 +28,8 @@ void *test2(void *arg) {
 
     for (i = 0; i < 50; i++) {
         tid = hilolay_get_tid();
-        printf("Soy el ult %d mostrando el numero %d \n", tid, i);
-        usleep(2000 * i * tid); /* Randomizes the sleep, so it gets larger after a few iterations */
+        printf("Aqui ult %d, contador en: %d \n", tid, i);
+        usleep(1000 * i * tid); /* Randomizes the sleep, so it gets larger after a few iterations */
         recursiva(i);
         hilolay_yield();
     }

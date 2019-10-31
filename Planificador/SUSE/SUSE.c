@@ -39,7 +39,7 @@ typedef struct {
 	int pid;
 	int tid;
 	float estimacion;
-	float rafaga;
+	int rafaga;
 } hilo;
 
 typedef struct {
@@ -103,7 +103,7 @@ sem_t hayQueActualizarUnExec;
 t_queue *new;
 t_queue *exitCola;
 
-float inicioRafaga = 0;
+unsigned long long inicioRafaga = 0;
 
 
 int main(int argc, char *argv[]){
@@ -135,6 +135,7 @@ void iniciarSUSE(){
 	configuracion.PUERTO = config_get_int_value(config, "LISTEN_PORT");
 
 	//printf("%f\n", configuracion.ALPHA_SJF);
+	//printf("%llu\n", (unsigned long long)configuracion.ALPHA_SJF);
 
 	diccionarioDeBlockedPorSemaforo = dictionary_create();
 	//todo modelar el exit
@@ -320,7 +321,6 @@ int calcularSiguienteHilo(int pid){
 		//Si el que esta en ready tiene menos ejecucion ese sigue, sino el que estaba en exec
 		if(candidatoAEjecutar!=NULL && candidatoAEjecutar->estimacion < ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->estimacion){
 			//printf("TID en exec: %i - Estimacion: %f\n TID candidato: %i - Estimacion: %f\n\n", elQueEstaEjecutando->tid, elQueEstaEjecutando->estimacion, candidatoAEjecutar->tid, candidatoAEjecutar->estimacion);
-
 			//Paso a ready el que esta ejecutando y a exec el que estaba en ready (sacandolo de ready)
 			candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0) );
 			list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), elQueEstaEjecutando);
@@ -338,6 +338,7 @@ int calcularSiguienteHilo(int pid){
 	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = candidatoAEjecutar;
 	inicioRafaga = getMicrotime();
 	postSemaforoMultiprogramacion();
+	//printf("ES NULL %i\n", candidatoAEjecutar==NULL);
 	return candidatoAEjecutar->tid;
 }
 
@@ -356,9 +357,9 @@ void recalcularEstimacion(int pid){
 
 	//Si existe el programa y hay alguien en ejecucion
 	if(existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL){
-		float loQueTardo = getMicrotime() - inicioRafaga;
+		int loQueTardo = getMicrotime() - inicioRafaga;
 		//Actualizo la rafaga y la estimacion del que esta en ejecucion
-		printf("Rafaga :%f\n", loQueTardo);
+		printf("Rafaga del tid %i :%i\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid, loQueTardo);
 		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga = loQueTardo;
 		actualizarEstimacion( ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec );
 	}
@@ -477,11 +478,14 @@ void realizarClose(int pid, int tid){
 		postSemaforoMultiprogramacion();
 		//sem_post(&hayQueActualizarUnExec);
 
-		//todo Libero la lista de los bloqueados por este hilo que termino
-		pthread_t hiloLiberarBloqueados;
+		//Libero la lista de los bloqueados por este hilo que termino
+		liberarBloqueadosPorElHilo(elQueEstaEjecutando);
+		/*pthread_t hiloLiberarBloqueados;
+		printf("CLOSE1\n");
 		pthread_create(&hiloLiberarBloqueados, NULL, (void*) liberarBloqueadosPorElHilo,
 								(void *) elQueEstaEjecutando);
-		pthread_detach(hiloLiberarBloqueados);
+		printf("CLOSE2\n");
+		pthread_detach(hiloLiberarBloqueados);*/
 	}
 	else{
 		//XXX se fija en los de ready, bloqueados, etc?
@@ -531,6 +535,7 @@ void liberarBloqueadosPorElHilo(hilo *hiloBloqueante){
 			sem_wait(&sem_diccionario_ready);
 			//Lo agrego a ready
 			list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(hiloBloqueado->pid))), hiloBloqueado);
+			printf(" liberando tid bloqueado %i\n", hiloBloqueado->tid);
 			sem_post(&sem_diccionario_ready);
 
 			sem_wait(&sem_programas);
