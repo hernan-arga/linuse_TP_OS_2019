@@ -41,17 +41,18 @@ void reservarMemoriaPrincipal(int tamanio);
 void crearTablaSegmentos();
 void *crearHeaderInicial(uint32_t tamanio);
 void *buscarEspacioLibre(uint32_t tamanio);
-void unificarHeaders(char *idProceso, int idSegmento);
-void *buscarPosicionSegmento(char *idProceso, int idSegmento);
+void unificarHeaders(int idSocketCliente, int idSegmento);
+void *buscarPosicionSegmento(int idSocketCliente, int idSegmento);
 int calcularTamanioSegmento(char *idProceso, int idSegmento);
-uint32_t espacioPaginas(char *idProceso, int idSegmento);
+int espacioPaginas(int idProceso, int idSegmento);
 void crearTablaSegmentosProceso(int idProceso);
 void *posicionMemoriaUnSegmento(struct Segmento *unSegmento);
+uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
 
 //Funciones bitmap de frames
 void crearBitmapFrames();
 void inicializarBitmapFrames();
-int ocuparFrame(int indiceFrame, uint32_t tamanio);
+void ocuparFrame(int indiceFrame);
 void liberarFrame(int indiceFrame);
 int buscarFrameLibre();
 void *retornarPosicionMemoriaFrame(int unFrame);
@@ -60,7 +61,7 @@ bool frameEstaLibre(int indice);
 int espacioLibreFrame(int indice);
 
 //Funciones init
-int museinit(int idSocket);
+int museinit(int idSocketCliente);
 bool hayMemoriaDisponible();
 
 //Funciones subyacentes malloc
@@ -68,12 +69,17 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente);
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
-int esExtendible(t_list *segmentosProceso, int unIndice);
+bool esExtendible(t_list *segmentosProceso, int unIndice);
 void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio);
+void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
+uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
+void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
 
 //Funciones cpy
-int musecpy(uint32_t dst, void* src, int n);
+int musecpy(uint32_t dst, void* src, int n, int idSocket);
 int idSegmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
 struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento, void *direccion);
+
+int museget(void* dst, uint32_t src, size_t n, int idSocket);
 
 #endif /* MUSE_H_ */
