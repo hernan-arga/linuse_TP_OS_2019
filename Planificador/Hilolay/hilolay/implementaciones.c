@@ -32,8 +32,6 @@ void suse_create(int tid){
 }
 
 int suse_schedule_next(void){
-
-	printf("Pedir proximo hilo a ejecutar\n");
 	char* buffer = malloc(sizeof(int));
 	int operacion = 2;
 
@@ -46,12 +44,12 @@ int suse_schedule_next(void){
 
 	free(threadId);
 	free(buffer);
-	printf("Proximo hilo: %i\n", tid);
+	//printf("Proximo hilo: %i\n", tid);
 	return tid;
 }
 
 int suse_join(int tidAEsperar){
-	printf("Llamaste a join\n");
+	printf("Llamaste a join para esperar al tid %i\n", tidAEsperar);
 	char* buffer = malloc(2*sizeof(int));
 	int operacion = 5;
 
@@ -77,7 +75,7 @@ int suse_close(int tid){
 }
 
 int suse_wait(int tid, char *semID){
-	printf("Pedir wait\n");
+	//printf("WAIT %s\n", semID);
 	char* buffer = malloc(3*sizeof(int) + strlen(semID) + 1);
 	int operacion = 3;
 	int longitudIDSemaforo = strlen(semID);
@@ -93,7 +91,7 @@ int suse_wait(int tid, char *semID){
 }
 
 int suse_signal(int tid, char *semID){
-	printf("Pedir signal\n");
+	//printf("SIGNAL %s\n", semID);
 	char* buffer = malloc(3*sizeof(int) + strlen(semID) + 1);
 	int operacion = 4;
 	int longitudIDSemaforo = strlen(semID);

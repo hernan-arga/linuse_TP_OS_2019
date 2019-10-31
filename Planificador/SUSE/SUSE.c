@@ -359,9 +359,11 @@ void recalcularEstimacion(int pid){
 	if(existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL){
 		int loQueTardo = getMicrotime() - inicioRafaga;
 		//Actualizo la rafaga y la estimacion del que esta en ejecucion
-		printf("Rafaga del tid %i :%i\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid, loQueTardo);
+		//printf("Rafaga del tid %i :%i\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid, loQueTardo);
 		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga = loQueTardo;
 		actualizarEstimacion( ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec );
+		//printf("Estimacion del tid %i :%f\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid, ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->estimacion);
+
 	}
 		//printf("TID: %i - Rafaga: %f\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid,((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga);
 	sem_post(&sem_programas);
