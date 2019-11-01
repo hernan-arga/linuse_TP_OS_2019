@@ -71,7 +71,6 @@ int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 bool esExtendible(t_list *segmentosProceso, int unIndice);
 void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio);
-void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
 uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
 void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
 
