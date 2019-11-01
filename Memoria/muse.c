@@ -835,3 +835,54 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 	return 0;
 }
 
+int musefree(int idSocketCliente, uint32_t dir){
+
+	//busco los segmentos del proceso que me pide el free
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
+
+	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+
+	struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
+
+	//busco el segmento especifico que contiene la direccion
+	unSegmento = segmentoQueContieneDireccion(segmentosProceso, dir);
+
+
+	//voy a la pagina de ese segmento donde esta la direccion
+	unaPagina = paginaQueContieneDireccion(unSegmento,dir);
+
+	int desplazamiento = (int)dir % tam_pagina;
+
+	//retorno la posicion memoria dentro del frame
+	void *pos = retornarPosicionMemoriaFrame(unaPagina->numeroFrame) + desplazamiento;
+
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+	memcpy(metadata, pos, sizeof(struct HeapMetadata));
+
+	//se cambia la metadata para indicar que esta parte esta libre
+	metadata->isFree = true;
+
+	//una vez que realizo el free tengo que verifico que si la porcion anterior a la direccion o la siguiente se encuentran libres
+	//si lo estan unifico
+	unificarHeaders(idSocketCliente, unSegmento);
+
+	return 1;
+}
+
+struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion) {
+	int segmentosARecorrer = list_size(listaSegmentos);
+	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+
+	for (int i = 0; i < segmentosARecorrer; i++) {
+		unSegmento = list_get(listaSegmentos, i);
+
+		if (((int) direccion) > unSegmento->baseLogica
+				&& ((int) direccion) < unSegmento->tamanio) { //Chequear si en base logica tengo en cuenta heap o no
+			return unSegmento;
+		}
+	}
+
+	//Si sale del for sin retorno, no hay ningun segmento que contenga esa direc
+	return -1; //error
+}
+
