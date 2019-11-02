@@ -82,5 +82,6 @@ struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento, void *dir
 int museget(void* dst, uint32_t src, size_t n, int idSocket);
 
 int musefree(int idSocketCliente, uint32_t dir);
+struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
 
 #endif /* MUSE_H_ */
