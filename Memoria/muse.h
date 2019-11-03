@@ -78,6 +78,7 @@ void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
 int musecpy(uint32_t dst, void* src, int n, int idSocket);
 int idSegmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
 struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento, void *direccion);
+struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
 
 int museget(void* dst, uint32_t src, size_t n, int idSocket);
 

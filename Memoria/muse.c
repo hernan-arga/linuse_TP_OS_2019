@@ -257,10 +257,8 @@ bool hayMemoriaDisponible() {
 void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 	//hago una respuesta fija para que ya tengamos bien los tipos que tengamos que devolver
 	void *respuesta = NULL;
-	//int idSocketCliente = getpeername();
 
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
 	int cantidadSegmentosARecorrer = list_size(segmentosProceso);
 
 	if (list_is_empty(segmentosProceso)) {
@@ -313,12 +311,9 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 }
 
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
-	//Comentado porque creo nos manejaremos con idSocket
-	//char* idProceso = string_new();
-	//string_append(&idProceso, string_itoa(idSocketCliente));
+	//idsocket
 
-	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
 	struct Segmento *nuevoSegmento = malloc(sizeof(struct Segmento));
 
 	//Identificar segmento
@@ -335,8 +330,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	} else {
 		//Obtengo el tamaño del ultimo segmento
 		int idSegmento = list_size(listaSegmentosProceso) - 1; //Id ultimo segmento
-		nuevoSegmento->baseLogica = obtenerTamanioSegmento(idSegmento,
-				idSocketCliente) + 1;
+		nuevoSegmento->baseLogica = obtenerTamanioSegmento(idSegmento, idSocketCliente) + 1;
 	}
 
 	/*Asignar frames necesarios para *tamanio*, calculo paginas necesarias y le calculo
@@ -409,7 +403,7 @@ int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
 
 void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
 	t_list *paginasSegmento = unSegmento->tablaPaginas;
-	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+	struct HeapMetadata *metadata /*= malloc(sizeof(struct HeapMetadata))*/;
 	void *pos;
 	void *end;
 
@@ -424,7 +418,8 @@ void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
 
 			//Recorro el frame actual buscando la posicion libre
 			while (pos < end) {
-				memcpy(metadata, pos, sizeof(struct HeapMetadata));
+				//memcpy(metadata, pos, sizeof(struct HeapMetadata));
+				pos = (struct HeapMetadata*) metadata;
 
 				if (metadata->isFree == true
 						&& metadata->size >= (tamanio + 5)) {
@@ -438,11 +433,10 @@ void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
 					pos = pos + sizeof(struct HeapMetadata) + unSize;
 
 					//Creo el proximo heapmetadata
-					struct HeapMetadata *nuevoMetadata = malloc(
-							sizeof(struct HeapMetadata));
+					struct HeapMetadata *nuevoMetadata /*= malloc(sizeof(struct HeapMetadata))*/;
+					pos = (struct HeapMetadata*) nuevoMetadata;
 					nuevoMetadata->isFree = true;
-					nuevoMetadata->size = unSize - tamanio
-							- sizeof(struct HeapMetadata);
+					nuevoMetadata->size = unSize - tamanio - sizeof(struct HeapMetadata);
 				}
 			}
 
