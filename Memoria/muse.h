@@ -58,7 +58,6 @@ int buscarFrameLibre();
 void *retornarPosicionMemoriaFrame(int unFrame);
 bool estaOcupadoCompleto(int indiceFrame);
 bool frameEstaLibre(int indice);
-int espacioLibreFrame(int indice);
 
 //Funciones init
 int museinit(int idSocketCliente);
@@ -73,6 +72,7 @@ bool esExtendible(t_list *segmentosProceso, int unIndice);
 void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio);
 uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
 void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
+void asignarTamanioADireccion(uint32_t tamanio, void* src, int idSocketCliente); //A TERMINAR
 
 //Funciones cpy
 int musecpy(uint32_t dst, void* src, int n, int idSocket);
