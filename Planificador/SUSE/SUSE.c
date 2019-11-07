@@ -78,6 +78,11 @@ void recalcularEstimacion(int pid);
 void liberarBloqueadosPorElHilo(hilo *);
 void postSemaforoMultiprogramacion();
 hilo *tomarHiloBloqueadoPor(hilo *hiloBloqueante);
+int bloqueadoPorAlgunHilo(hilo *hiloBloqueado);
+int dictionary_algunoCumple(t_dictionary *self, int(*cumpleCondicion)(char*,void*, void*), void* parametro);
+int tieneBloqueadoAlHilo(char* key, t_list* listaDeBloqueados, void* posibleBloqueado);
+void sincronizarJoinYSchedule(int pid);
+void limpiarEstructuras(int pid);
 
 
 pthread_t hiloLevantarConexion;
@@ -268,7 +273,8 @@ void pasarAReady(hilo *unHilo){
 		t_dictionary *diccionarioDeListasDeBlockedPorHilo = dictionary_create();
 
 		programa *unPrograma = malloc(sizeof(programa));
-		unPrograma->exec = NULL;
+		//Si es la primera vez que llega pongo en exec el hilo main
+		unPrograma->exec = unHilo;
 		unPrograma->pid = unHilo->pid;
 		unPrograma->blocked = diccionarioDeListasDeBlockedPorHilo;
 
@@ -292,6 +298,7 @@ void pasarAReady(hilo *unHilo){
 
 //Esta es la funcion que se invoca cuando se llama a schedule_next
 int siguienteAEjecutar(int pid){
+
 	recalcularEstimacion(pid);
 	replanificarHilos(pid);
 
@@ -302,6 +309,7 @@ int siguienteAEjecutar(int pid){
 	sem_post(&sem_diccionario_ready);
 	sem_post(&sem_programas);
 
+	//printf("tid a ejec. %i\n", siguienteTIDAEjecutar);
 	return siguienteTIDAEjecutar;
 	//printf("microtime: %f\n", (float)getMicrotime());
 	//return ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid;
@@ -451,6 +459,7 @@ void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, char *semID){
 
 void realizarJoin(int pid, int tidAEsperar){
 	sem_wait(&sem_programas);
+	//printf("pediste join\n");
 	/*
 	 * Puede pasar que todavia no haya llegado a ready alguno de los hilos de mi programa
 	 * por lo que no se crearia mi clave para ese programa dentro del diccionarioDeProgramas
@@ -459,7 +468,9 @@ void realizarJoin(int pid, int tidAEsperar){
 	 */
 	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, string_itoa(pid));
 	int hayAlguienEnExec = existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL;
+	printf("existeElPrograma %i - hayAlguienEnExec %i\n", existeElPrograma, hayAlguienEnExec);
 	if(hayAlguienEnExec){
+		//printf("tid en exec: %i\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid);
 		//Pongo el que esta ejecutando en blockeado
 		ponerEnBlockedPorHilo(pid, ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec, tidAEsperar);
 		//Lo saco de exec
@@ -517,6 +528,7 @@ void ponerEnBlockedPorHilo(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar){
 		t_list *listaDeBloqueados = list_create();
 		dictionary_put(diccionarioDeBloqueados, string_itoa(tidAEsperar), listaDeBloqueados);
 	}
+	//printf("hiloAPonerEnBlocked %i - tidAEsperar %i\n", hiloAPonerEnBlocked->tid, tidAEsperar),
 	list_add((t_list*)dictionary_get(diccionarioDeBloqueados, string_itoa(tidAEsperar)), hiloAPonerEnBlocked);
 }
 
@@ -531,16 +543,21 @@ void liberarBloqueadosPorElHilo(hilo *hiloBloqueante){
 
 		while(!list_is_empty(listaDeBloqueados)){
 			hilo *hiloBloqueado = tomarHiloBloqueadoPor(hiloBloqueante);
-			sem_post(&sem_programas);
+			//sem_post(&sem_programas);
+			/*
+			 * Si al hilo no lo bloquea ningun otro hilo lo mando a ready, sino no solo lo saco de
+			 * la lista de bloqueados por el hiloBloqueante
+			 */
+			if(!bloqueadoPorAlgunHilo(hiloBloqueado)){
+				sem_wait(&MAXIMOPROCESAMIENTO);
+				sem_wait(&sem_diccionario_ready);
+				//Lo agrego a ready
+				list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(hiloBloqueado->pid))), hiloBloqueado);
+				printf(" liberando tid bloqueado %i\n", hiloBloqueado->tid);
+				sem_post(&sem_diccionario_ready);
+			}
 
-			sem_wait(&MAXIMOPROCESAMIENTO);
-			sem_wait(&sem_diccionario_ready);
-			//Lo agrego a ready
-			list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(hiloBloqueado->pid))), hiloBloqueado);
-			printf(" liberando tid bloqueado %i\n", hiloBloqueado->tid);
-			sem_post(&sem_diccionario_ready);
-
-			sem_wait(&sem_programas);
+			//sem_wait(&sem_programas);
 		}
 
 	}
@@ -553,6 +570,39 @@ hilo *tomarHiloBloqueadoPor(hilo *hiloBloqueante){
 	t_list *listaDeBloqueados = (t_list *)dictionary_get(diccionarioDeBloqueadosPorProceso, string_itoa(hiloBloqueante->tid));
 	return (hilo*)list_remove(listaDeBloqueados, 0);
 }
+
+int bloqueadoPorAlgunHilo(hilo *hiloBloqueado){
+	t_dictionary *diccionarioDeBloqueadosPorProceso = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(hiloBloqueado->pid)))->blocked;
+	int algunoLoBloquea = dictionary_algunoCumple(diccionarioDeBloqueadosPorProceso, (void *) tieneBloqueadoAlHilo, (void *) hiloBloqueado);
+	return algunoLoBloquea;
+}
+
+
+int dictionary_algunoCumple(t_dictionary *self, int(*cumpleCondicion)(char*,void*, void*), void* parametro) {
+	int table_index;
+	for (table_index = 0; table_index < self->table_max_size; table_index++) {
+		t_hash_element *element = self->elements[table_index];
+
+		while (element != NULL) {
+
+			if(cumpleCondicion(element->key, element->data, parametro)){
+				//printf("key: %s\n", element->key);
+				return 1;
+			}
+			element = element->next;
+
+		}
+	}
+	return 0;
+}
+
+int tieneBloqueadoAlHilo(char* key, t_list* listaDeBloqueados, void* posibleBloqueado){
+	bool estaElHilo(void* unHiloBloqueado){
+		return ((hilo*)unHiloBloqueado)->tid == ((hilo*)posibleBloqueado)->tid;
+	}
+	return list_any_satisfy(listaDeBloqueados, estaElHilo);;
+}
+
 
 void atenderWait(int sd){
 	int *tid = malloc(sizeof(int));
@@ -600,6 +650,17 @@ void limpiarEstructuras(int pid){
 	dictionary_remove(diccionarioDeExec, string_itoa(pid));
 	dictionary_remove(diccionarioDeProgramas, string_itoa(pid));
 }
+
+/*void sincronizarJoinYSchedule(int pid){
+	sem_wait(&sem_programas);
+	programa *elPrograma = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)));
+	if(!elPrograma->yaHizoScheduleNext1Vez){
+		sem_post(elPrograma->sincronizadorJoinYScheduleNext);
+		elPrograma->yaHizoScheduleNext1Vez = 1;
+	}
+	sem_post(&sem_programas);
+
+}*/
 
 int32_t iniciarConexion() {
 	int opt = 1;
@@ -741,6 +802,7 @@ int32_t iniciarConexion() {
 							char* buffer = malloc(sizeof(int));
 							memcpy(buffer, &tid, sizeof(int));
 							send(sd, buffer, sizeof(int), 0);
+							//sincronizarJoinYSchedule(sd);
 							free(buffer);
 							break;
 						case 3: //suse_wait

@@ -32,6 +32,7 @@ void suse_create(int tid){
 }
 
 int suse_schedule_next(void){
+	//printf("schedule next\n");
 	char* buffer = malloc(sizeof(int));
 	int operacion = 2;
 
