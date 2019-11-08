@@ -113,6 +113,12 @@ unsigned long long inicioRafaga = 0;
 
 int main(int argc, char *argv[]){
 
+
+	if(argv[1]==NULL){
+		printf("No se encontro archivo de configuracion\n");
+		exit(-1);
+	}
+
 	config = config_create(argv[1]);
 
 	iniciarSUSE();
@@ -147,6 +153,7 @@ void iniciarSUSE(){
 	diccionarioDeListasDeExit = dictionary_create();
 
 	int i = 0;
+
 	while((config_get_array_value(config, "SEM_IDS"))[i] != NULL){
 		semaforo *unSemaforo = malloc(sizeof(semaforo));
 
