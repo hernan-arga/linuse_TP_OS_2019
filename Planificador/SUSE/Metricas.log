@@ -1,0 +1,47 @@
+[INFO] 17:09:51:466 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 17:09:51:476 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 17:09:51:482 SUSE/(11500:11504): Valor actual del semaforo C3: 1
+[INFO] 17:09:51:487 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
+[INFO] 17:09:56:490 SUSE/(11500:11504): Programa 5: 0 en new, 0 en ready, 2 en blocked, 1 en exec
+[INFO] 17:09:56:499 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 0
+[INFO] 17:09:56:500 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 17:09:56:500 SUSE/(11500:11504): Valor actual del semaforo C3: 1
+[INFO] 17:09:56:500 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
+[INFO] 17:10:01:500 SUSE/(11500:11504): Programa 5: 0 en new, 0 en ready, 2 en blocked, 1 en exec
+[INFO] 17:10:01:502 SUSE/(11500:11504): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 17:10:01:502 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 0
+[INFO] 17:10:01:502 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 17:10:01:502 SUSE/(11500:11504): Valor actual del semaforo C3: 1
+[INFO] 17:10:01:502 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
+[INFO] 17:10:06:503 SUSE/(11500:11504): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 17:10:06:504 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 17:10:06:504 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 17:10:06:504 SUSE/(11500:11504): Valor actual del semaforo C3: 1
+[INFO] 17:10:06:504 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
+[INFO] 17:10:11:509 SUSE/(11500:11504): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 17:10:11:522 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 17:10:11:522 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 17:10:11:522 SUSE/(11500:11504): Valor actual del semaforo C3: 1
+[INFO] 17:10:11:523 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
+[INFO] 17:10:16:523 SUSE/(11500:11504): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 17:10:16:526 SUSE/(11500:11504): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 17:10:16:527 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 17:10:16:527 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 17:10:16:527 SUSE/(11500:11504): Valor actual del semaforo C3: 1
+[INFO] 17:10:16:527 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
+[INFO] 17:10:21:529 SUSE/(11500:11504): Programa 5: 0 en new, 2 en ready, 0 en blocked, 1 en exec
+[INFO] 17:10:21:532 SUSE/(11500:11504): Programa 7: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 17:10:21:532 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 0
+[INFO] 17:10:21:532 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 17:10:21:532 SUSE/(11500:11504): Valor actual del semaforo C3: 1
+[INFO] 17:10:21:532 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
+[INFO] 17:10:26:533 SUSE/(11500:11504): Programa 5: 0 en new, 2 en ready, 0 en blocked, 1 en exec
+[INFO] 17:10:26:535 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 0
+[INFO] 17:10:26:535 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 17:10:26:535 SUSE/(11500:11504): Valor actual del semaforo C3: 1
+[INFO] 17:10:26:535 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
+[INFO] 17:10:31:536 SUSE/(11500:11504): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 17:10:31:537 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 0
+[INFO] 17:10:31:538 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 17:10:31:538 SUSE/(11500:11504): Valor actual del semaforo C3: 1
+[INFO] 17:10:31:538 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
