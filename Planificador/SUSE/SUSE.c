@@ -20,6 +20,7 @@
 #include <commons/collections/dictionary.h>
 #include <commons/collections/queue.h>
 #include <commons/string.h>
+#include <commons/log.h>
 
 typedef struct {
 	int32_t PUERTO;
@@ -81,14 +82,18 @@ hilo *tomarHiloBloqueadoPor(hilo *hiloBloqueante);
 int bloqueadoPorAlgunHilo(hilo *hiloBloqueado);
 int dictionary_algunoCumple(t_dictionary *self, int(*cumpleCondicion)(char*,void*, void*), void* parametro);
 int tieneBloqueadoAlHilo(char* key, t_list* listaDeBloqueados, void* posibleBloqueado);
-void sincronizarJoinYSchedule(int pid);
+void tomarMetricas();
+void atenderMetricas();
 void limpiarEstructuras(int pid);
+
+void tomarMetricasGradoDeMultiprogramacion();
+void tomarMetricasSemaforos();
+void logearValorActualSemaforo(char *semID, semaforo *unSemaforo);
 
 
 pthread_t hiloLevantarConexion;
 pthread_t hiloPlanificadorReady;
-pthread_t hiloPlanficadorExec;
-pthread_t hiloPlanficadorBlocked;
+pthread_t hiloTomarMetricas;
 archivoConfiguracion configuracion;
 t_config *config;
 t_dictionary *diccionarioDeListasDeReady;
@@ -105,21 +110,26 @@ sem_t SEMAFOROS;
 sem_t blockedPorSemaforo;
 sem_t sem_exit;
 sem_t hayQueActualizarUnExec;
+sem_t semaforoConfiguracion;
 t_queue *new;
 t_queue *exitCola;
+
+char* pathConfiguracion;
+t_log *logger;
 
 unsigned long long inicioRafaga = 0;
 
 
 int main(int argc, char *argv[]){
 
+	pathConfiguracion = string_new();
 
 	if(argv[1]==NULL){
 		printf("No se encontro archivo de configuracion\n");
 		exit(-1);
 	}
-
-	config = config_create(argv[1]);
+	string_append(&pathConfiguracion, argv[1]);
+	config = config_create(pathConfiguracion);
 
 	iniciarSUSE();
 
@@ -127,11 +137,11 @@ int main(int argc, char *argv[]){
 
 	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciarConexion, NULL);
 	pthread_create(&hiloPlanificadorReady, NULL, (void*) planificarReady, NULL);
-	//pthread_create(&hiloPlanficadorExec, NULL, (void*) planificarExec, NULL);
+	pthread_create(&hiloTomarMetricas, NULL, (void*) atenderMetricas, NULL);
 	//pthread_create(&hiloPlanficadorBlocked, NULL, (void*) planificarBlocked, NULL);
+	pthread_join(hiloTomarMetricas, NULL);
 	pthread_join(hiloLevantarConexion, NULL);
 	pthread_join(hiloPlanificadorReady, NULL);
-	//pthread_join(hiloPlanficadorExec, NULL);
 	//pthread_join(hiloPlanficadorBlocked, NULL);
 	return 0;
 }
@@ -179,13 +189,61 @@ void iniciarSUSE(){
 	sem_init(&SEMAFOROS, 0, 1);
 	sem_init(&blockedPorSemaforo, 0, 1);
 	sem_init(&sem_exit, 0, 1);
+	sem_init(&semaforoConfiguracion, 0, 1);
 	//sem_init(&hayQueActualizarUnExec, 0, 0);
+	logger = log_create("Metricas.log", "SUSE", 0, LOG_LEVEL_INFO);
+}
+
+void atenderMetricas(){
+	while(1){
+		sem_wait(&semaforoConfiguracion);
+		config = config_create(pathConfiguracion);
+		configuracion.METRICAS_TIMER = config_get_int_value(config, "METRICS_TIMER");
+		sem_post(&semaforoConfiguracion);
+		sleep(configuracion.METRICAS_TIMER);
+		tomarMetricas();
+	}
+}
+
+void tomarMetricas(){
+	/*//Por cada hilo
+		tomarMetricasTiemposDeEjecucion();
+		tomarMetricasTiemposDeEspera();
+		tomarMetricasTiemposDeUsoDeCPU();
+		tomarMetricasPorcentajeDelTiempoDeEjecucion();
+	//Por cada semaforo
+		tomarMetricasCantidadDeHilosEnCadaEstado();*/
+	//Del sistema
+		tomarMetricasSemaforos();
+		tomarMetricasGradoDeMultiprogramacion();
+}
+
+void tomarMetricasSemaforos(){
+	sem_wait(&SEMAFOROS);
+	dictionary_iterator(configuracion.SEMAFOROS, (void*) logearValorActualSemaforo);
+	sem_post(&SEMAFOROS);
+}
+
+void logearValorActualSemaforo(char *semID, semaforo *unSemaforo){
+	log_info(logger,"Valor actual del semaforo %s: %i", semID, unSemaforo->VALOR_ACTUAL_SEMAFORO);
+}
+
+void tomarMetricasGradoDeMultiprogramacion(){
+	sem_wait(&semaforoConfiguracion);
+	config = config_create(pathConfiguracion);
+	configuracion.GRADO_DE_MULTIPROGRAMACION = config_get_int_value(config, "MAX_MULTIPROG");
+	sem_post(&semaforoConfiguracion);
+	log_info(logger,"Grado actual de multiprogramacion: %i", configuracion.GRADO_DE_MULTIPROGRAMACION);
 }
 
 //Esto es para limitar la cantidad de post que se hace sobre el semaforo
 void postSemaforoMultiprogramacion(){
 	int valorSemaforo;
 	sem_getvalue(&MAXIMOPROCESAMIENTO, &valorSemaforo);
+	sem_wait(&semaforoConfiguracion);
+	config = config_create(pathConfiguracion);
+	configuracion.GRADO_DE_MULTIPROGRAMACION = config_get_int_value(config, "MAX_MULTIPROG");
+	sem_post(&semaforoConfiguracion);
 	if(valorSemaforo < configuracion.GRADO_DE_MULTIPROGRAMACION){
 		sem_post(&MAXIMOPROCESAMIENTO);
 	}
@@ -393,6 +451,12 @@ void recalcularEstimacion(int pid){
 
 
 void actualizarEstimacion(hilo* unHilo){
+
+	sem_wait(&semaforoConfiguracion);
+	config = config_create(pathConfiguracion);
+	configuracion.ALPHA_SJF = config_get_double_value(config, "ALPHA_SJF");
+	sem_post(&semaforoConfiguracion);
+
 	//En+1 = (1-alpha)En + alpha*Rn
 	unHilo->estimacion = (1-configuracion.ALPHA_SJF)*unHilo->estimacion +
 			(configuracion.ALPHA_SJF * unHilo->rafaga);

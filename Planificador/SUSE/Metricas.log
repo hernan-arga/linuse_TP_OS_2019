@@ -1,0 +1,44 @@
+[INFO] 10:47:22:512 SUSE/(13114:13118): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 10:47:22:518 SUSE/(13114:13118): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 10:47:22:521 SUSE/(13114:13118): Valor actual del semaforo C3: 1
+[INFO] 10:47:22:526 SUSE/(13114:13118): Grado actual de multiprogramacion: 3
+[INFO] 10:47:42:530 SUSE/(13114:13118): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 10:47:42:531 SUSE/(13114:13118): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 10:47:42:531 SUSE/(13114:13118): Valor actual del semaforo C3: 1
+[INFO] 10:47:42:531 SUSE/(13114:13118): Grado actual de multiprogramacion: 3
+[INFO] 10:47:47:543 SUSE/(13114:13118): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 10:47:47:545 SUSE/(13114:13118): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 10:47:47:546 SUSE/(13114:13118): Valor actual del semaforo C3: 1
+[INFO] 10:47:47:546 SUSE/(13114:13118): Grado actual de multiprogramacion: 3
+[INFO] 10:47:52:549 SUSE/(13114:13118): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 10:47:52:556 SUSE/(13114:13118): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 10:47:52:558 SUSE/(13114:13118): Valor actual del semaforo C3: 1
+[INFO] 10:47:52:559 SUSE/(13114:13118): Grado actual de multiprogramacion: 3
+[INFO] 10:47:57:560 SUSE/(13114:13118): Valor actual del semaforo CONSUMIDOR: 0
+[INFO] 10:47:57:562 SUSE/(13114:13118): Valor actual del semaforo PRODUCTOR: 1
+[INFO] 10:47:57:562 SUSE/(13114:13118): Valor actual del semaforo C3: 1
+[INFO] 10:47:57:563 SUSE/(13114:13118): Grado actual de multiprogramacion: 3
+[INFO] 10:48:02:566 SUSE/(13114:13118): Valor actual del semaforo CONSUMIDOR: 0
+[INFO] 10:48:02:569 SUSE/(13114:13118): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 10:48:02:569 SUSE/(13114:13118): Valor actual del semaforo C3: 1
+[INFO] 10:48:02:570 SUSE/(13114:13118): Grado actual de multiprogramacion: 3
+[INFO] 10:48:07:571 SUSE/(13114:13118): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 10:48:07:582 SUSE/(13114:13118): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 10:48:07:583 SUSE/(13114:13118): Valor actual del semaforo C3: 1
+[INFO] 10:48:07:583 SUSE/(13114:13118): Grado actual de multiprogramacion: 3
+[INFO] 10:48:12:597 SUSE/(13114:13118): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 10:48:12:598 SUSE/(13114:13118): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 10:48:12:598 SUSE/(13114:13118): Valor actual del semaforo C3: 1
+[INFO] 10:48:12:599 SUSE/(13114:13118): Grado actual de multiprogramacion: 3
+[INFO] 10:48:17:600 SUSE/(13114:13118): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 10:48:17:611 SUSE/(13114:13118): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 10:48:17:612 SUSE/(13114:13118): Valor actual del semaforo C3: 1
+[INFO] 10:48:17:612 SUSE/(13114:13118): Grado actual de multiprogramacion: 3
+[INFO] 10:48:22:614 SUSE/(13114:13118): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 10:48:22:616 SUSE/(13114:13118): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 10:48:22:617 SUSE/(13114:13118): Valor actual del semaforo C3: 1
+[INFO] 10:48:22:617 SUSE/(13114:13118): Grado actual de multiprogramacion: 3
+[INFO] 10:48:42:618 SUSE/(13114:13118): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 10:48:42:622 SUSE/(13114:13118): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 10:48:42:623 SUSE/(13114:13118): Valor actual del semaforo C3: 1
+[INFO] 10:48:42:624 SUSE/(13114:13118): Grado actual de multiprogramacion: 3
