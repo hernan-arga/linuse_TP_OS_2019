@@ -1,47 +1,126 @@
-[INFO] 17:09:51:466 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 1
-[INFO] 17:09:51:476 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
-[INFO] 17:09:51:482 SUSE/(11500:11504): Valor actual del semaforo C3: 1
-[INFO] 17:09:51:487 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
-[INFO] 17:09:56:490 SUSE/(11500:11504): Programa 5: 0 en new, 0 en ready, 2 en blocked, 1 en exec
-[INFO] 17:09:56:499 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 0
-[INFO] 17:09:56:500 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
-[INFO] 17:09:56:500 SUSE/(11500:11504): Valor actual del semaforo C3: 1
-[INFO] 17:09:56:500 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
-[INFO] 17:10:01:500 SUSE/(11500:11504): Programa 5: 0 en new, 0 en ready, 2 en blocked, 1 en exec
-[INFO] 17:10:01:502 SUSE/(11500:11504): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
-[INFO] 17:10:01:502 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 0
-[INFO] 17:10:01:502 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
-[INFO] 17:10:01:502 SUSE/(11500:11504): Valor actual del semaforo C3: 1
-[INFO] 17:10:01:502 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
-[INFO] 17:10:06:503 SUSE/(11500:11504): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
-[INFO] 17:10:06:504 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 1
-[INFO] 17:10:06:504 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
-[INFO] 17:10:06:504 SUSE/(11500:11504): Valor actual del semaforo C3: 1
-[INFO] 17:10:06:504 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
-[INFO] 17:10:11:509 SUSE/(11500:11504): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
-[INFO] 17:10:11:522 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 1
-[INFO] 17:10:11:522 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
-[INFO] 17:10:11:522 SUSE/(11500:11504): Valor actual del semaforo C3: 1
-[INFO] 17:10:11:523 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
-[INFO] 17:10:16:523 SUSE/(11500:11504): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
-[INFO] 17:10:16:526 SUSE/(11500:11504): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
-[INFO] 17:10:16:527 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 1
-[INFO] 17:10:16:527 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
-[INFO] 17:10:16:527 SUSE/(11500:11504): Valor actual del semaforo C3: 1
-[INFO] 17:10:16:527 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
-[INFO] 17:10:21:529 SUSE/(11500:11504): Programa 5: 0 en new, 2 en ready, 0 en blocked, 1 en exec
-[INFO] 17:10:21:532 SUSE/(11500:11504): Programa 7: 0 en new, 0 en ready, 1 en blocked, 1 en exec
-[INFO] 17:10:21:532 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 0
-[INFO] 17:10:21:532 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
-[INFO] 17:10:21:532 SUSE/(11500:11504): Valor actual del semaforo C3: 1
-[INFO] 17:10:21:532 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
-[INFO] 17:10:26:533 SUSE/(11500:11504): Programa 5: 0 en new, 2 en ready, 0 en blocked, 1 en exec
-[INFO] 17:10:26:535 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 0
-[INFO] 17:10:26:535 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
-[INFO] 17:10:26:535 SUSE/(11500:11504): Valor actual del semaforo C3: 1
-[INFO] 17:10:26:535 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
-[INFO] 17:10:31:536 SUSE/(11500:11504): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
-[INFO] 17:10:31:537 SUSE/(11500:11504): Valor actual del semaforo CONSUMIDOR: 0
-[INFO] 17:10:31:538 SUSE/(11500:11504): Valor actual del semaforo PRODUCTOR: 0
-[INFO] 17:10:31:538 SUSE/(11500:11504): Valor actual del semaforo C3: 1
-[INFO] 17:10:31:538 SUSE/(11500:11504): Grado actual de multiprogramacion: 8
+[INFO] 15:46:20:498 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 5: 1728
+[INFO] 15:46:20:513 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 7: 722
+[INFO] 15:46:20:515 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 7: 701
+[INFO] 15:46:20:523 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 7: 708
+[INFO] 15:46:20:529 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 5: 1748
+[INFO] 15:46:20:529 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 7: 724
+[INFO] 15:46:20:529 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 15:46:20:529 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 15:46:20:529 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 7: 161
+[INFO] 15:46:20:529 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 7: 161
+[INFO] 15:46:20:529 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 5: 821
+[INFO] 15:46:20:530 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 7: 258
+[INFO] 15:46:20:530 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 15:46:20:530 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 15:46:20:530 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 7: 30
+[INFO] 15:46:20:530 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 7: 30
+[INFO] 15:46:20:530 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 5: 43
+[INFO] 15:46:20:530 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 7: 55
+[INFO] 15:46:23:531 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 5: 4763
+[INFO] 15:46:23:532 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 7: 3742
+[INFO] 15:46:23:532 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 5: 4757
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 7: 3727
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 5: 4757
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 7: 3727
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 5: 4752
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 7: 3718
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 5: 1670
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 7: 544
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 5: 1670
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 7: 544
+[INFO] 15:46:23:533 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 5: 1918
+[INFO] 15:46:23:534 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 7: 1503
+[INFO] 15:46:23:534 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 15:46:23:534 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 15:46:23:534 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 5: 0
+[INFO] 15:46:23:534 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 7: 92
+[INFO] 15:46:23:534 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 5: 0
+[INFO] 15:46:23:534 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 7: 92
+[INFO] 15:46:23:534 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 5: 39
+[INFO] 15:46:23:534 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 7: 90
+[INFO] 15:46:26:535 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 5: 7766
+[INFO] 15:46:26:535 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 7: 6744
+[INFO] 15:46:26:535 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 5: 7759
+[INFO] 15:46:26:535 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 7: 6721
+[INFO] 15:46:26:535 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 5: 7760
+[INFO] 15:46:26:535 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 7: 6721
+[INFO] 15:46:26:535 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 5: 7755
+[INFO] 15:46:26:535 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 7: 6730
+[INFO] 15:46:26:536 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 15:46:26:536 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 15:46:26:536 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 5: 2693
+[INFO] 15:46:26:536 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 7: 2351
+[INFO] 15:46:26:536 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 5: 2693
+[INFO] 15:46:26:536 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 7: 2351
+[INFO] 15:46:26:536 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 5: 3026
+[INFO] 15:46:26:536 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 7: 3161
+[INFO] 15:46:26:536 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 15:46:26:536 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 15:46:26:536 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 5: 0
+[INFO] 15:46:26:537 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 7: 118
+[INFO] 15:46:26:537 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 5: 0
+[INFO] 15:46:26:537 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 7: 118
+[INFO] 15:46:26:537 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 5: 40
+[INFO] 15:46:26:537 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 7: 146
+[INFO] 15:46:29:538 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 5: 10769
+[INFO] 15:46:29:538 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 7: 9747
+[INFO] 15:46:29:538 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 7: 9732
+[INFO] 15:46:29:538 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 7: 9732
+[INFO] 15:46:29:538 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 5: 10758
+[INFO] 15:46:29:538 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 7: 9724
+[INFO] 15:46:29:538 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 15:46:29:538 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 15:46:29:538 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 7: 3161
+[INFO] 15:46:29:538 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 7: 3161
+[INFO] 15:46:29:539 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 5: 4059
+[INFO] 15:46:29:539 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 7: 5548
+[INFO] 15:46:29:539 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 15:46:29:539 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 15:46:29:539 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 7: 181
+[INFO] 15:46:29:539 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 7: 181
+[INFO] 15:46:29:539 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 5: 41
+[INFO] 15:46:29:539 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 7: 134
+[INFO] 15:46:32:540 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 7: 12749
+[INFO] 15:46:32:540 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 7: 12734
+[INFO] 15:46:32:541 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 7: 12727
+[INFO] 15:46:32:541 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 15:46:32:541 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 7: 5234
+[INFO] 15:46:32:542 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 7: 7127
+[INFO] 15:46:32:542 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 15:46:32:542 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 7: 209
+[INFO] 15:46:32:542 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 7: 147
+[INFO] 15:46:35:543 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 7: 15753
+[INFO] 15:46:35:543 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 7: 15729
+[INFO] 15:46:35:544 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 7: 15738
+[INFO] 15:46:35:544 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 15:46:35:544 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 7: 7985
+[INFO] 15:46:35:544 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 7: 6968
+[INFO] 15:46:35:544 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 15:46:35:544 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 7: 177
+[INFO] 15:46:35:544 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 7: 238
+[INFO] 15:46:38:545 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 7: 18755
+[INFO] 15:46:38:547 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 7: 18733
+[INFO] 15:46:38:547 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 7: 18742
+[INFO] 15:46:38:548 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 15:46:38:548 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 7: 9139
+[INFO] 15:46:38:548 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 7: 8205
+[INFO] 15:46:38:548 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 15:46:38:549 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 7: 183
+[INFO] 15:46:38:549 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 7: 251
+[INFO] 15:46:41:550 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 7: 21759
+[INFO] 15:46:41:550 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 2 del programa 7: 21736
+[INFO] 15:46:41:550 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 7: 21745
+[INFO] 15:46:41:550 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 15:46:41:550 SUSE/(6505:6509): Tiempo de espera para el hilo 2 del programa 7: 10614
+[INFO] 15:46:41:551 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 7: 9749
+[INFO] 15:46:41:551 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 15:46:41:551 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 2 del programa 7: 200
+[INFO] 15:46:41:551 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 7: 269
+[INFO] 15:46:44:552 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 0 del programa 7: 24761
+[INFO] 15:46:44:552 SUSE/(6505:6509): Tiempo de ejecucion para el hilo 1 del programa 7: 24746
+[INFO] 15:46:44:552 SUSE/(6505:6509): Tiempo de espera para el hilo 0 del programa 7: 33
+[INFO] 15:46:44:552 SUSE/(6505:6509): Tiempo de espera para el hilo 1 del programa 7: 10444
+[INFO] 15:46:44:552 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 15:46:44:552 SUSE/(6505:6509): Tiempo de uso de CPU para el hilo 1 del programa 7: 292

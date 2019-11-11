@@ -41,6 +41,14 @@ typedef struct {
 	int tid;
 	float estimacion;
 	int rafaga;
+
+	int timestampCreacion;
+	int sumaDeIntervalosEnReady;
+	int sumaDeIntervalosEnExec;
+
+	unsigned long long timestampExec;
+	unsigned long long timestampReady;
+
 } hilo;
 
 typedef struct {
@@ -51,6 +59,8 @@ typedef struct {
 	int cantidadDeHilosEnNew;
 	int cantidadDeHilosEnReady;
 	int cantidadDeHilosEnBlocked;
+
+	int tiempoDeEjecucionDeTodosLosHilos;
 
 } programa;
 
@@ -89,6 +99,32 @@ void limpiarEstructuras(int pid);
 
 int terminoElHilo(int pid, int tid);
 int estaEnExit(char* key, t_list* listaDeExit, void* tidAEsperar);
+
+void tomarMetricasParaHilos();
+void tomarMetricasTiemposDeCpuParaLaLista(char *key, void* lista);
+void tomarMetricasTiemposDeCpuParaExec(char* pid, void *unPrograma);
+void tomarMetricasTiemposDeCpuParaReady(char* pid, void *unPrograma);
+void tomarMetricasTiemposDeCpuParaBlocked(char* pid, void *unPrograma);
+void tomarMetricasTiemposDeCpuParaSem(char *semID, t_queue *cola);
+void tomarMetricasTiemposDeCpuPara1Hilo(void *unHilo);
+
+void tomarMetricasTiemposDeEsperaParaSem(char *semID, t_queue *cola);
+void tomarMetricasTiemposDeEsperaParaExec(char* pid, void *unPrograma);
+void tomarMetricasTiemposDeEsperaParaLaLista(char *key, void* lista);
+void tomarMetricasTiemposDeEsperaParaReady(char* pid, void *unPrograma);
+void tomarMetricasTiemposDeEsperaParaBlocked(char* pid, void *unPrograma);
+void tomarMetricasTiemposDeEsperaPara1Hilo(void *unHilo);
+
+void tomarMetricasTiemposDeEjecucionPara1Hilo(void *unHilo);
+void tomarMetricasTiemposDeEjecucionParaSem(char *semID, t_queue *cola);
+void tomarMetricasParaLosNews(void (*criterioMetrica)(void*) );
+void tomarMetricasParaLosReady(void (*criterioMetrica)(char*, void*) );
+void tomarMetricasTiemposDeEjecucionParaLaLista(char *key, void* listaDeBloqueados);
+void tomarMetricasTiemposDeEjecucionParaReady(char* pid, void *unPrograma);
+void tomarMetricasTiemposDeEjecucionParaBlocked(char* pid, void *unPrograma);
+void tomarMetricasTiemposDeEjecucionParaExec(char* pid, void *unPrograma);
+void tomarMetricasParaLosProcesos(void (*criterioMetrica)(char*, void*) );
+void tomarMetricasParaBloqueadosPorSem(void (*criterioMetrica)(char*, void*) );
 
 void tomarMetricasGradoDeMultiprogramacion();
 void tomarMetricasSemaforos();
@@ -211,16 +247,194 @@ void atenderMetricas(){
 }
 
 void tomarMetricas(){
-	/*//Por cada hilo
-		tomarMetricasTiemposDeEjecucion();
-		tomarMetricasTiemposDeEspera();
-		tomarMetricasTiemposDeUsoDeCPU();
-		tomarMetricasPorcentajeDelTiempoDeEjecucion();*/
+	//Por cada hilo
+		tomarMetricasParaHilos();
 	//Por cada programa
-		tomarMetricasCantidadDeHilosEnCadaEstado();
+		/*tomarMetricasCantidadDeHilosEnCadaEstado();
 	//Del sistema
 		tomarMetricasSemaforos();
-		tomarMetricasGradoDeMultiprogramacion();
+		tomarMetricasGradoDeMultiprogramacion();*/
+}
+
+void tomarMetricasParaHilos(){
+	//Tiempo de ejecucion
+	tomarMetricasParaLosNews((void *) tomarMetricasTiemposDeEjecucionPara1Hilo);
+	tomarMetricasParaLosProcesos((void *) tomarMetricasTiemposDeEjecucionParaBlocked);
+	tomarMetricasParaLosReady((void *) tomarMetricasTiemposDeEjecucionParaReady);
+	tomarMetricasParaLosProcesos((void *) tomarMetricasTiemposDeEjecucionParaExec);
+	tomarMetricasParaBloqueadosPorSem((void *) tomarMetricasTiemposDeEjecucionParaSem);
+
+	//Tiempo de espera
+	tomarMetricasParaLosNews((void *) tomarMetricasTiemposDeEsperaPara1Hilo);
+	tomarMetricasParaLosProcesos((void *) tomarMetricasTiemposDeEsperaParaBlocked);
+	tomarMetricasParaLosReady((void *) tomarMetricasTiemposDeEsperaParaReady);
+	tomarMetricasParaLosProcesos((void *) tomarMetricasTiemposDeEsperaParaExec);
+	tomarMetricasParaBloqueadosPorSem((void *) tomarMetricasTiemposDeEsperaParaSem);
+
+	//Tiempo de uso de CPU
+	tomarMetricasParaLosNews((void *) tomarMetricasTiemposDeCpuPara1Hilo);
+	tomarMetricasParaLosProcesos((void *) tomarMetricasTiemposDeCpuParaBlocked);
+	tomarMetricasParaLosReady((void *) tomarMetricasTiemposDeCpuParaReady);
+	tomarMetricasParaLosProcesos((void *) tomarMetricasTiemposDeCpuParaExec);
+	tomarMetricasParaBloqueadosPorSem((void *) tomarMetricasTiemposDeCpuParaSem);
+
+
+	/*tomarMetricasPorcentajeDelTiempoDeEjecucion();*/
+}
+
+//Tiempo de uso de CPU
+void tomarMetricasTiemposDeCpuPara1Hilo(void *unHilo){
+	log_info(logger,"Tiempo de uso de CPU para el hilo %i del programa %i: %i", ((hilo*)unHilo)->tid, ((hilo*)unHilo)->pid, ((hilo*)unHilo)->sumaDeIntervalosEnExec);
+}
+
+void tomarMetricasTiemposDeCpuParaSem(char *semID, t_queue *cola){
+	t_queue *colaAux = queue_create();
+	hilo *unHilo = queue_pop(new);
+	while (unHilo != NULL) {
+		tomarMetricasTiemposDeCpuPara1Hilo(unHilo);
+		queue_push(colaAux, unHilo);
+		unHilo = queue_pop(new);
+	}
+	unHilo = queue_pop(colaAux);
+	while (unHilo != NULL) {
+		queue_push(new, unHilo);
+		unHilo = queue_pop(colaAux);
+	}
+	queue_destroy(colaAux);
+}
+
+void tomarMetricasTiemposDeCpuParaBlocked(char* pid, void *unPrograma){
+	dictionary_iterator(((programa*)unPrograma)->blocked, tomarMetricasTiemposDeCpuParaLaLista);
+}
+
+void tomarMetricasTiemposDeCpuParaReady(char* pid, void *unPrograma){
+	dictionary_iterator(diccionarioDeListasDeReady, tomarMetricasTiemposDeCpuParaLaLista);
+}
+
+void tomarMetricasTiemposDeCpuParaExec(char* pid, void *unPrograma){
+	if(((programa*)unPrograma)->exec!=NULL){
+		tomarMetricasTiemposDeCpuPara1Hilo(((programa*)unPrograma)->exec);
+	}
+}
+
+void tomarMetricasTiemposDeCpuParaLaLista(char *key, void* lista){
+	list_iterate((t_list*)lista, tomarMetricasTiemposDeCpuPara1Hilo);
+}
+
+//Tiempo de espera
+void tomarMetricasTiemposDeEsperaPara1Hilo(void *unHilo){
+	log_info(logger,"Tiempo de espera para el hilo %i del programa %i: %i", ((hilo*)unHilo)->tid, ((hilo*)unHilo)->pid, ((hilo*)unHilo)->sumaDeIntervalosEnReady);
+}
+
+void tomarMetricasTiemposDeEsperaParaSem(char *semID, t_queue *cola){
+	t_queue *colaAux = queue_create();
+	hilo *unHilo = queue_pop(new);
+	while (unHilo != NULL) {
+		tomarMetricasTiemposDeEsperaPara1Hilo(unHilo);
+		queue_push(colaAux, unHilo);
+		unHilo = queue_pop(new);
+	}
+	unHilo = queue_pop(colaAux);
+	while (unHilo != NULL) {
+		queue_push(new, unHilo);
+		unHilo = queue_pop(colaAux);
+	}
+	queue_destroy(colaAux);
+}
+
+void tomarMetricasTiemposDeEsperaParaBlocked(char* pid, void *unPrograma){
+	dictionary_iterator(((programa*)unPrograma)->blocked, tomarMetricasTiemposDeEsperaParaLaLista);
+}
+
+void tomarMetricasTiemposDeEsperaParaReady(char* pid, void *unPrograma){
+	dictionary_iterator(diccionarioDeListasDeReady, tomarMetricasTiemposDeEsperaParaLaLista);
+}
+
+void tomarMetricasTiemposDeEsperaParaLaLista(char *key, void* lista){
+	list_iterate((t_list*)lista, tomarMetricasTiemposDeEsperaPara1Hilo);
+}
+
+void tomarMetricasTiemposDeEsperaParaExec(char* pid, void *unPrograma){
+	if(((programa*)unPrograma)->exec!=NULL){
+		tomarMetricasTiemposDeEsperaPara1Hilo(((programa*)unPrograma)->exec);
+	}
+}
+
+//Tiempo de ejecucion
+void tomarMetricasTiemposDeEjecucionPara1Hilo(void *unHilo){
+	int tiempoDeEjecucion = getMicrotime() - ((hilo*)unHilo)->timestampCreacion;
+	log_info(logger,"Tiempo de ejecucion para el hilo %i del programa %i: %i", ((hilo*)unHilo)->tid, ((hilo*)unHilo)->pid, tiempoDeEjecucion);
+}
+
+void tomarMetricasTiemposDeEjecucionParaSem(char *semID, t_queue *cola){
+	t_queue *colaAux = queue_create();
+	hilo *unHilo = queue_pop(new);
+	while (unHilo != NULL) {
+		tomarMetricasTiemposDeEjecucionPara1Hilo(unHilo);
+		queue_push(colaAux, unHilo);
+		unHilo = queue_pop(new);
+	}
+	unHilo = queue_pop(colaAux);
+	while (unHilo != NULL) {
+		queue_push(new, unHilo);
+		unHilo = queue_pop(colaAux);
+	}
+	queue_destroy(colaAux);
+}
+
+void tomarMetricasTiemposDeEjecucionParaBlocked(char* pid, void *unPrograma){
+	dictionary_iterator(((programa*)unPrograma)->blocked, tomarMetricasTiemposDeEjecucionParaLaLista);
+}
+
+void tomarMetricasTiemposDeEjecucionParaExec(char* pid, void *unPrograma){
+	if(((programa*)unPrograma)->exec!=NULL){
+		tomarMetricasTiemposDeEjecucionPara1Hilo(((programa*)unPrograma)->exec);
+	}
+}
+
+void tomarMetricasTiemposDeEjecucionParaReady(char* pid, void *unPrograma){
+	dictionary_iterator(diccionarioDeListasDeReady, tomarMetricasTiemposDeEjecucionParaLaLista);
+}
+
+void tomarMetricasTiemposDeEjecucionParaLaLista(char *key, void* lista){
+	list_iterate((t_list*)lista, tomarMetricasTiemposDeEjecucionPara1Hilo);
+}
+
+void tomarMetricasParaLosProcesos(void (*criterioMetrica)(char*, void*) ){
+	sem_wait(&sem_programas);
+	dictionary_iterator(diccionarioDeProgramas, criterioMetrica);
+	sem_post(&sem_programas);
+}
+
+
+void tomarMetricasParaBloqueadosPorSem(void (*criterioMetrica)(char*, void*) ){
+	sem_wait(&blockedPorSemaforo);
+	dictionary_iterator(diccionarioDeBlockedPorSemaforo, criterioMetrica);
+	sem_post(&blockedPorSemaforo);
+}
+
+void tomarMetricasParaLosReady(void (*criterioMetrica)(char*, void*) ){
+	sem_wait(&sem_diccionario_ready);
+	dictionary_iterator(diccionarioDeListasDeReady, criterioMetrica);
+	sem_post(&sem_diccionario_ready);
+}
+
+void tomarMetricasParaLosNews(void (*criterioMetrica)(void*) ){
+	sem_wait(&sem_new);
+	t_queue *colaAux = queue_create();
+	hilo *unHilo = queue_pop(new);
+	while (unHilo != NULL) {
+		criterioMetrica(unHilo);
+		queue_push(colaAux, unHilo);
+		unHilo = queue_pop(new);
+	}
+	unHilo = queue_pop(colaAux);
+	while (unHilo != NULL) {
+		queue_push(new, unHilo);
+		unHilo = queue_pop(colaAux);
+	}
+	queue_destroy(colaAux);
+	sem_post(&sem_new);
 }
 
 void tomarMetricasCantidadDeHilosEnCadaEstado(){
@@ -311,6 +525,11 @@ void crearHilo(int sd){
 	unHilo->tid = *tid;
 	unHilo->estimacion = 0;
 	unHilo->rafaga = 0;
+
+	unHilo->timestampCreacion = getMicrotime();
+	unHilo->sumaDeIntervalosEnReady = 0;
+	unHilo->sumaDeIntervalosEnExec = 0;
+
 	sem_wait(&sem_new);
 	queue_push(new, unHilo);
 	sem_post(&sem_new);
@@ -338,6 +557,7 @@ void pasarAReady(hilo *unHilo){
 
 		//Lo agrego a la lista de ready correspondiente
 		list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))), unHilo);
+		unHilo->timestampReady = getMicrotime();
 
 		sem_wait(&sem_programas);
 
@@ -387,9 +607,17 @@ int calcularSiguienteHilo(int pid){
 			((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = candidatoAEjecutar;
 			inicioRafaga = getMicrotime();
 
+			elQueEstaEjecutando->sumaDeIntervalosEnExec = (getMicrotime() - elQueEstaEjecutando->timestampExec);
+			elQueEstaEjecutando->timestampReady = getMicrotime();
+			candidatoAEjecutar->sumaDeIntervalosEnReady += (getMicrotime() - candidatoAEjecutar->timestampReady);
+			candidatoAEjecutar->timestampExec = getMicrotime();
+
 			return candidatoAEjecutar->tid;
 		}
 		else{
+			elQueEstaEjecutando->sumaDeIntervalosEnExec = (getMicrotime() - elQueEstaEjecutando->timestampExec);
+			elQueEstaEjecutando->timestampExec = getMicrotime();
+
 			return elQueEstaEjecutando->tid;
 		}
 	}
@@ -400,8 +628,10 @@ int calcularSiguienteHilo(int pid){
 	inicioRafaga = getMicrotime();
 	postSemaforoMultiprogramacion();
 
-
 	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->cantidadDeHilosEnReady--;
+
+	candidatoAEjecutar->sumaDeIntervalosEnReady += (getMicrotime() - candidatoAEjecutar->timestampReady);
+	candidatoAEjecutar->timestampExec = getMicrotime();
 
 	return candidatoAEjecutar->tid;
 }
@@ -648,6 +878,9 @@ void liberarBloqueadosPorElHilo(hilo *hiloBloqueante){
 				//Lo agrego a ready
 				list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(hiloBloqueado->pid))), hiloBloqueado);
 				printf(" liberando tid bloqueado %i\n", hiloBloqueado->tid);
+
+				hiloBloqueado->timestampReady = getMicrotime();
+
 				sem_post(&sem_diccionario_ready);
 
 				//Disminuyo la cantidad de bloqueados
