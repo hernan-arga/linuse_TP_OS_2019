@@ -42,6 +42,7 @@ typedef struct {
 	float estimacion;
 	int rafaga;
 
+	int tiempoDeEjecucion;
 	int timestampCreacion;
 	int sumaDeIntervalosEnReady;
 	int sumaDeIntervalosEnExec;
@@ -101,6 +102,16 @@ int terminoElHilo(int pid, int tid);
 int estaEnExit(char* key, t_list* listaDeExit, void* tidAEsperar);
 
 void tomarMetricasParaHilos();
+void reiniciarTiempoDeEjecucionDe1Programa(char *pid, void *unPrograma);
+void reiniciarTiempoDeEjecucionTotal();
+
+void tomarMetricasPorcentajeDeEjecucionPara1Hilo(void *unHilo);
+void tomarMetricasPorcentajeDeEjecucionParaSem(char *semID, t_queue *cola);
+void tomarMetricasPorcentajeDeEjecucionParaBlocked(char* pid, void *unPrograma);
+void tomarMetricasPorcentajeDeEjecucionParaReady(char* pid, void *unPrograma);
+void tomarMetricasPorcentajeDeEjecucionParaExec(char* pid, void *unPrograma);
+void tomarMetricasPorcentajeParaLaLista(char *key, void* lista);
+
 void tomarMetricasTiemposDeCpuParaLaLista(char *key, void* lista);
 void tomarMetricasTiemposDeCpuParaExec(char* pid, void *unPrograma);
 void tomarMetricasTiemposDeCpuParaReady(char* pid, void *unPrograma);
@@ -250,10 +261,10 @@ void tomarMetricas(){
 	//Por cada hilo
 		tomarMetricasParaHilos();
 	//Por cada programa
-		/*tomarMetricasCantidadDeHilosEnCadaEstado();
+		tomarMetricasCantidadDeHilosEnCadaEstado();
 	//Del sistema
 		tomarMetricasSemaforos();
-		tomarMetricasGradoDeMultiprogramacion();*/
+		tomarMetricasGradoDeMultiprogramacion();
 }
 
 void tomarMetricasParaHilos(){
@@ -278,8 +289,66 @@ void tomarMetricasParaHilos(){
 	tomarMetricasParaLosProcesos((void *) tomarMetricasTiemposDeCpuParaExec);
 	tomarMetricasParaBloqueadosPorSem((void *) tomarMetricasTiemposDeCpuParaSem);
 
+	//Porcentaje tiempo de ejecucion
+	tomarMetricasParaLosNews((void *) tomarMetricasPorcentajeDeEjecucionPara1Hilo);
+	tomarMetricasParaLosProcesos((void *) tomarMetricasPorcentajeDeEjecucionParaBlocked);
+	tomarMetricasParaLosReady((void *) tomarMetricasPorcentajeDeEjecucionParaReady);
+	tomarMetricasParaLosProcesos((void *) tomarMetricasPorcentajeDeEjecucionParaExec);
+	tomarMetricasParaBloqueadosPorSem((void *) tomarMetricasPorcentajeDeEjecucionParaSem);
 
-	/*tomarMetricasPorcentajeDelTiempoDeEjecucion();*/
+	reiniciarTiempoDeEjecucionTotal();
+}
+
+void reiniciarTiempoDeEjecucionTotal(){
+	dictionary_iterator(diccionarioDeProgramas, (void*)reiniciarTiempoDeEjecucionDe1Programa);
+}
+
+void reiniciarTiempoDeEjecucionDe1Programa(char *pid, void *unPrograma){
+	sem_wait(&sem_programas);
+	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(((programa*)unPrograma)->pid)))->tiempoDeEjecucionDeTodosLosHilos = 0;
+	sem_post(&sem_programas);
+}
+
+//Porcentaje tiempo de ejecucion
+void tomarMetricasPorcentajeDeEjecucionPara1Hilo(void *unHilo){
+	int tiempoDeEjecucionDelHilo = ((hilo*)unHilo)->tiempoDeEjecucion;
+	int tiempoDeEjecucionDeTodosLosHilosDelPrograma = 	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(((hilo*)unHilo)->pid)))->tiempoDeEjecucionDeTodosLosHilos;
+	int porcentajeDeEjecucion = ((float)tiempoDeEjecucionDelHilo / (float)tiempoDeEjecucionDeTodosLosHilosDelPrograma)*100;
+	log_info(logger,"Porcentaje del tiempo de ejecucion para el hilo %i del programa %i: %i %%", ((hilo*)unHilo)->tid, ((hilo*)unHilo)->pid, porcentajeDeEjecucion);
+}
+
+void tomarMetricasPorcentajeDeEjecucionParaSem(char *semID, t_queue *cola){
+	t_queue *colaAux = queue_create();
+	hilo *unHilo = queue_pop(new);
+	while (unHilo != NULL) {
+		tomarMetricasPorcentajeDeEjecucionPara1Hilo(unHilo);
+		queue_push(colaAux, unHilo);
+		unHilo = queue_pop(new);
+	}
+	unHilo = queue_pop(colaAux);
+	while (unHilo != NULL) {
+		queue_push(new, unHilo);
+		unHilo = queue_pop(colaAux);
+	}
+	queue_destroy(colaAux);
+}
+
+void tomarMetricasPorcentajeDeEjecucionParaBlocked(char* pid, void *unPrograma){
+	dictionary_iterator(((programa*)unPrograma)->blocked, tomarMetricasPorcentajeParaLaLista);
+}
+
+void tomarMetricasPorcentajeDeEjecucionParaReady(char* pid, void *unPrograma){
+	dictionary_iterator(diccionarioDeListasDeReady, tomarMetricasPorcentajeParaLaLista);
+}
+
+void tomarMetricasPorcentajeDeEjecucionParaExec(char* pid, void *unPrograma){
+	if(((programa*)unPrograma)->exec!=NULL){
+		tomarMetricasPorcentajeDeEjecucionPara1Hilo(((programa*)unPrograma)->exec);
+	}
+}
+
+void tomarMetricasPorcentajeParaLaLista(char *key, void* lista){
+	list_iterate((t_list*)lista, tomarMetricasPorcentajeDeEjecucionPara1Hilo);
 }
 
 //Tiempo de uso de CPU
@@ -363,7 +432,10 @@ void tomarMetricasTiemposDeEsperaParaExec(char* pid, void *unPrograma){
 //Tiempo de ejecucion
 void tomarMetricasTiemposDeEjecucionPara1Hilo(void *unHilo){
 	int tiempoDeEjecucion = getMicrotime() - ((hilo*)unHilo)->timestampCreacion;
+	((hilo*) unHilo)->tiempoDeEjecucion = tiempoDeEjecucion;
 	log_info(logger,"Tiempo de ejecucion para el hilo %i del programa %i: %i", ((hilo*)unHilo)->tid, ((hilo*)unHilo)->pid, tiempoDeEjecucion);
+	//Acumulo en el programa el tiempo de ejecucion de cada hilo para calcuar el porcentaje
+	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(((hilo*)unHilo)->pid)))->tiempoDeEjecucionDeTodosLosHilos += tiempoDeEjecucion;
 }
 
 void tomarMetricasTiemposDeEjecucionParaSem(char *semID, t_queue *cola){
@@ -529,6 +601,7 @@ void crearHilo(int sd){
 	unHilo->timestampCreacion = getMicrotime();
 	unHilo->sumaDeIntervalosEnReady = 0;
 	unHilo->sumaDeIntervalosEnExec = 0;
+	unHilo->tiempoDeEjecucion = 0;
 
 	sem_wait(&sem_new);
 	queue_push(new, unHilo);
@@ -996,6 +1069,7 @@ void crearPrograma(int pid){
 	unPrograma->cantidadDeHilosEnNew = 0;
 	unPrograma->cantidadDeHilosEnReady = 0;
 	unPrograma->cantidadDeHilosEnBlocked = 0;
+	unPrograma->tiempoDeEjecucionDeTodosLosHilos = 0;
 
 	sem_wait(&sem_programas);
 	dictionary_put(diccionarioDeProgramas, string_itoa(unPrograma->pid), unPrograma);
