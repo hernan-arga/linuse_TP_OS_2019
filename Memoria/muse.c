@@ -70,25 +70,43 @@ void crearTablaSegmentosProceso(int idSocketCliente) {
 
 ///////////////Bitmap de Frames///////////////
 
-void crearBitmapFrames() {
+/*void crearBitmapFrames() {
 	//Bitarray de cantidad frames posiciones - en bytes
 	double framesEnBytes = cantidadFrames / 8;
 	int bytesNecesarios = ceil(framesEnBytes);
 	void* bitsBitmap = malloc(bytesNecesarios);
 
 	bitmapFrames = bitarray_create(bitsBitmap, bytesNecesarios);
+}*/ //COMENTADA, BITMAP FRAMES ANTERIOR
+
+void crearBitmapFrames() {
+	//Creo una t_list y le agrego sus cantidadFrames elementos que van a quedar estaticos
+	bitmapFrames = list_create();
+
+	for(int i = 0; i < cantidadFrames; i++){
+
+		struct Frame *nuevoFrame = malloc(sizeof(struct Frame));
+
+		nuevoFrame->modificado = 0;
+		nuevoFrame->presencia = 1;
+		nuevoFrame->uso = 0;
+
+		list_add(bitmapFrames, nuevoFrame);
+
+	}
+
 }
 
 /*Pone todos los bits del bitarray en 0*/
-void inicializarBitmapFrames() {
+/*void inicializarBitmapFrames() {
 
 	for (int i = 0; i < bitarray_get_max_bit(bitmapFrames); i++) {
 		bitarray_clean_bit(bitmapFrames, i);
 	}
 
-}
+}*/ //COMENTADA - es de la estructura bitmap frames anterior, ahora se inicializan directo al crear la lista
 
-bool frameEstaLibre(int indiceFrame) {
+/*bool frameEstaLibre(int indiceFrame) {
 
 	if (bitarray_test_bit(bitmapFrames, indiceFrame) == 0) {
 		return true;
@@ -96,6 +114,17 @@ bool frameEstaLibre(int indiceFrame) {
 		return false;
 	}
 
+}*/ //COMENTADA - es de la estructura bitmap frames anterior
+
+bool frameEstaLibre(int indiceFrame){
+	struct Frame *frame = malloc(sizeof(struct Frame));
+	frame = list_get(bitmapFrames, indiceFrame); //hace falta malloc? ? Creo que si, revisar
+
+	if(frame->uso == 0){
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /*int ocuparFrame(int indiceFrame, uint32_t tamanio) {
@@ -155,42 +184,53 @@ bool frameEstaLibre(int indiceFrame) {
 
 }*/
 
-void ocuparFrame(int unFrame) {
+/*void ocuparFrame(int unFrame) {
 	bitarray_set_bit(bitmapFrames, unFrame);
+}*/ //COMENTADA - estructura bitmap frames anterior
+
+void ocuparFrame(int unFrame) {
+	struct Frame *frame = malloc(sizeof(struct Frame));
+	frame = list_get(bitmapFrames, unFrame);
+
+	frame->uso = 1;
+
+	list_add_in_index(bitmapFrames, unFrame, frame); //Lo piso modificado
 }
+
+/*void liberarFrame(int unFrame) {
+	bitarray_clean_bit(bitmapFrames, unFrame);
+}*/ //COMENTADA - estructura bitmap frames anterior
 
 void liberarFrame(int unFrame) {
-	bitarray_clean_bit(bitmapFrames, unFrame);
-}
+	struct Frame *frame = malloc(sizeof(struct Frame));
+	frame = list_get(bitmapFrames, unFrame);
 
-//No sirve con lo nuevo, pero lo dejo para funciones heapmetadata - puede servir
-bool estaOcupadoCompleto(int indiceFrame) {
-	void *pos = retornarPosicionMemoriaFrame(indiceFrame);
-	void *end = &pos + tam_pagina; //Comienzo del proximo frame
-	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+	frame->uso = 0;
 
-	while (pos < end) {
-		memcpy(metadata, pos, sizeof(struct HeapMetadata));
-
-		if (metadata->isFree == true && metadata->size > 0) { //Si encuentra un espacio libre mayor a 0
-			return false;
-		}
-
-		int size = metadata->size;
-		pos = pos + sizeof(struct HeapMetadata) + size;
-	} //Si sale de este while sin retorno, significa que no encontro espacio libre
-
-	return true;
-
+	list_add_in_index(bitmapFrames, unFrame, frame); //Lo piso modificado
 }
 
 /* Recorre los frames en orden buscando uno libre y retorna el indice
  * del primero libre, de no haber libres retorna -1 (memoria virtual)
  * */
-int buscarFrameLibre() {
+/*int buscarFrameLibre() {
 
 	for (int i = 0; i < bitarray_get_max_bit(bitmapFrames); i++) {
 		if (bitarray_test_bit(bitmapFrames, i) == 0) {
+			return i;
+		}
+	}
+
+	return -1;
+}*/ //COMENTADA - es de la estructura anterior de bitmap frames
+
+int buscarFrameLibre() {
+	struct Frame *frame = malloc(sizeof(struct Frame));
+
+	for (int i = 0; i < cantidadFrames; i++) {
+		frame = list_get(bitmapFrames, i);
+
+		if (frame->uso == 0) {
 			return i;
 		}
 	}
@@ -227,6 +267,8 @@ int museinit(int idSocketCliente) {
 
 //Chequea si hay mm ppal o mm virtual disponible - A DESARROLLAR
 bool hayMemoriaDisponible() {
+	//Para la memoria principal nos va a convenir llevar un "contador" de
+	//bytes libres o algo asi, va a servir despues para las metricas
 
 	return true;
 }
@@ -345,10 +387,10 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio) {
 	struct Pagina *nuevaPagina = malloc(sizeof(struct Pagina));
 
-	//CHEQUEAR VALORES
+	/*CHEQUEAR VALORES
 	nuevaPagina->modificado = false;
 	nuevaPagina->presencia = 1;
-	nuevaPagina->uso = false;
+	nuevaPagina->uso = false;*/ //COMENTADO porque se cambio la estructura bitmap frames
 
 	int nuevoFrame = buscarFrameLibre(); //tamanio
 
@@ -356,6 +398,13 @@ void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio) {
 		//Memoria virtual?
 	} else {
 		nuevaPagina->numeroFrame = nuevoFrame;
+
+		struct Frame *frame = malloc(sizeof(struct Frame));
+		frame->modificado = 0;
+		frame->presencia = 1; //chequear?
+
+		list_add_in_index(bitmapFrames, nuevoFrame, frame);
+
 		ocuparFrame(nuevoFrame);
 		//gestionar tamanio y heapmetadata
 	}
@@ -893,6 +942,65 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 	}
 
 	//Si sale del for sin retorno, no hay ningun segmento que contenga esa direc
-	return -1; //error
+	return NULL; //error
+}
+
+
+
+//MEMORIA VIRTUAL
+
+//Algoritmo clock modificado
+
+/*Retorna un entero que es el marco elegido para el reemplazo*/
+
+/*Funcionamiento:
+ * PASO 1 - Empezando desde la posición actual del puntero, recorrer la lista de marcos.
+ * Durante el recorrido, dejar el bit de uso (U) intacto. El primer marco que se
+ * encuentre con U = 0 y M = 0 se elige para el reemplazo.
+ * PASO 2 - Si el paso 1 falla, recorrer nuevamente, buscando un marco con U = 0 y M = 1.
+ * El primer marco que cumpla la condición es seleccionado para el reemplazo. Durante
+ * este recorrido, cambiar el bit de uso a 0 de todos los marcos que no se elijan.
+ * PASO 3 - Si el paso 2 falla, volver al paso 1.
+ * */
+
+int clockModificado(){
+	struct Frame *frame = malloc(sizeof(struct Frame));
+
+	//Paso 1
+	for(int i = 0; i < cantidadFrames; i++){
+
+		frame = list_get(bitmapFrames, i);
+
+		if(frame->uso == 0 && frame->modificado == 0) {
+			return i;
+		}
+
+	}
+
+	//Paso 2
+	for(int j = 0; j < cantidadFrames; j++){
+
+		frame = list_get(bitmapFrames, j);
+
+		if(frame->uso == 0 && frame->modificado == 1){
+			return j;
+		}
+
+		//Si no se lo elige, se le pone u = 0 (se lo libera)
+		liberarFrame(j);
+	}
+
+	//Paso 3
+	for(int k = 0; k < cantidadFrames; k++){
+
+		frame = list_get(bitmapFrames, k);
+
+		if(frame->uso == 0 && frame->modificado == 0) {
+			return k;
+		}
+
+	}
+
+	return -1; //Nunca deberia llegar aca. Consultar.
 }
 
