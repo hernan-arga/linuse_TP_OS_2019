@@ -896,7 +896,7 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 	pos = retornarPosicionMemoriaFrame(frame) + desplazamiento - 5;
 	pos = (struct HeapMetadata *) metadata; //REVISAR ESTE CASTEO
 
-	if(metadata->size < desplazamiento){
+	if(metadata->size < n){
 		//SEGMENTATION FAULT
 		//Informar a libmuse para que lo avise
 		//muse close?
