@@ -888,10 +888,30 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 	//////////////////////////////////////////////////
 
 	/*Ya se tienen todos los datos necesarios y se puede ir a mm ppal a buscar la data*/
-	void *pos = retornarPosicionMemoriaFrame(frame) + desplazamiento;
-	memcpy(pos, src, n);
 
-	return 0;
+	//PRIMERO se debe chequear que no haya un segmentation fault
+	//para esto, leo heapmetadata de la posicion
+	void *pos;
+	struct HeapMetadata *metadata;
+	pos = retornarPosicionMemoriaFrame(frame) + desplazamiento - 5;
+	pos = (struct HeapMetadata *) metadata; //REVISAR ESTE CASTEO
+
+	if(metadata->size < desplazamiento){
+		//SEGMENTATION FAULT
+		//Informar a libmuse para que lo avise
+		//muse close?
+
+		return -1;
+
+	} else {
+
+		pos = retornarPosicionMemoriaFrame(frame) + desplazamiento;
+		memcpy(pos, src, n);
+
+		return 0;
+
+	}
+
 }
 
 int musefree(int idSocketCliente, uint32_t dir){
