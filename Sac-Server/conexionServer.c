@@ -1,6 +1,5 @@
 #include "conexionServer.h"
-#include "operaciones.h"
-#include "estructuras.h"
+
 
 int iniciar_conexion(int ip, int puerto){
 	int opt = 1;

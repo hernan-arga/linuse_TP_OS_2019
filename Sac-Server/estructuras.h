@@ -25,6 +25,8 @@
 #include <pthread.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include "unistd.h"
+#include <stdio.h>
 
 #define GFILEBYTABLE 1024
 #define GFILEBYBLOCK 1
@@ -97,7 +99,6 @@ size_t _bitarray_64_leak;
 t_log *logger;
 
 #define INT64MAX _max
-uint64_t _max = ~((uint64_t) 0);
 
 pthread_rwlock_t rwlock;
 #define THELARGESTFILE (uint32_t) (BLKINDIRECT*PTRGBLOQUE_SIZE*BLOCKSIZE)
@@ -116,5 +117,8 @@ int get_size(void);
 int lastchar(const char*, char);
 int set_position (int *, int *, size_t, off_t);
 int delete_nodes_upto (struct gfile *, int, int);
+
+t_bitarray* bitArray;
+char *mmapDeBitmap;
 
 #endif /* ESTRUCTURAS_H_ */

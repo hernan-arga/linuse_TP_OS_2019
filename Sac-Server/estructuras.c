@@ -1,8 +1,4 @@
-#include "unistd.h"
-#include <stdio.h>
-#include "operaciones.h"
 #include "estructuras.h"
-#include "sac-server.h"
 
 void iniciarMmap() {
 	char *pathBitmap = string_new();
@@ -238,7 +234,7 @@ int get_node(void){
 
 	bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B);
 
-	res = bitarray_test_and_set(bitarray, GHEADERBLOCKS+BITMAP_BLOCK_SIZE+GFILEBYTABLE);
+	//res = bitarray_test_and_set(bitarray, GHEADERBLOCKS+BITMAP_BLOCK_SIZE+GFILEBYTABLE);
 
 	// Cierra el bitmap
 	bitarray_destroy(bitarray);

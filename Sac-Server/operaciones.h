@@ -1,10 +1,7 @@
 #ifndef OPERACIONES_H_
 #define OPERACIONES_H_
-#define _GNU_SOURCE
-#include <dirent.h>
-#include <sys/stat.h>
 #include "estructuras.h"
-#include <errno.h>
+
 
 int o_create(char*);
 int o_open(char*);

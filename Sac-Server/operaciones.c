@@ -1,8 +1,5 @@
 #include "operaciones.h"
-#include "estructuras.h"
-#include "unistd.h"
-#include <stdio.h>
-#include <libgen.h>
+
 
 
 int o_create(char* path){
@@ -236,7 +233,7 @@ int o_read(char* path, int size, int offset, char* buf){
 
 int o_readDir(char* path, int cliente){
 
-	log_info(logger, "Readdir: Path: %s - Offset %d", path, offset);
+//	log_info(logger, "Readdir: Path: %s - Offset %d", path, offset);
 	int i, nodo = determinar_nodo(path);
 	struct gfile *node;
 
@@ -247,19 +244,19 @@ int o_readDir(char* path, int cliente){
 	node = node_table_start;
 
 	// "." y ".." obligatorios.
-	filler(buf, ".", NULL, 0);
-	filler(buf, "..", NULL, 0);
+//	filler(buf, ".", NULL, 0);
+	//filler(buf, "..", NULL, 0);
 
 	pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
 	//log_lock_trace(logger, "Readdir: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
-
+/*
 
 	// Carga los nodos que cumple la condicion en el buffer.
 	for (i = 0; i < GFILEBYTABLE;  (i++)){
 		if ((nodo==(node->bloque_padre)) & (((node->estado) == DIRECTORIO)
 		| ((node->estado) == FILE_T)))  filler(buf, (char*) &(node->nombre_archivo[0]), NULL, 0);
 			node = &node[1];
-	}
+	} */
 
 
 	pthread_rwlock_unlock(&rwlock); //Devuelve un lock de lectura.
@@ -599,7 +596,7 @@ int o_rmdir(char* path){
 	// Abre conexiones y levanta la tabla de nodos en memoria.
 	node = &(node_table_start[-1]);
 
-	node = &(node[nodo_padre]);
+//	node = &(node[nodo_padre]);
 
 	// Chequea si el directorio esta vacio. En caso que eso suceda, FUSE se encarga de borrar lo que hay dentro.
 	for (i=0; i < 1024 ;i++){
@@ -609,7 +606,7 @@ int o_rmdir(char* path){
 		}
 	}
 
-	node->state = BORRADO; // Aca le dice que el estado queda "Borrado"
+	//node->state = BORRADO; // Aca le dice que el estado queda "Borrado"
 
 	// Cierra, ponele la alarma y se va para su casa. Mejor dicho, retorna 0 :D
 	finalizar:
@@ -708,9 +705,9 @@ void o_write(char* path, int size, int offset, char* buf){
 	}
 
 	// Toma un lock de escritura.
-			log_lock_trace(logger, "Write: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
+		//	log_lock_trace(logger, "Write: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
 	pthread_rwlock_wrlock(&rwlock);
-			log_lock_trace(logger, "Write: Recibe lock escritura.");
+		//	log_lock_trace(logger, "Write: Recibe lock escritura.");
 
 	// Guarda tantas veces como sea necesario, consigue nodos y actualiza el archivo.
 	while (tam != 0){
