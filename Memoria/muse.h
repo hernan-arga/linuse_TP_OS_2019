@@ -6,6 +6,7 @@
 #include <commons/bitarray.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <sys/types.h>
 
 void* memoriaPrincipal;
@@ -18,7 +19,7 @@ int tam_swap;
 FILE *swap;
 
 int cantidadFrames;
-int cantidadPaginasSwap;
+size_t cantidadPaginasSwap;
 
 //t_bitarray *bitmapFrames;
 t_list *bitmapFrames; //Va a ser una t_list de struct Frame, el INDICE es el numero de frame
@@ -38,22 +39,14 @@ struct Segmento{ //Segmento NORMAL
 	t_list* tablaPaginas;
 };
 
-struct SegmentoMmap{ //Segmento Mmapeado
-	bool esComun;
-	int id;
-	uint32_t baseLogica;
-	uint32_t tamanio;
-	t_list* tablaPaginas;
-};
-
 struct Pagina{
 	int numeroFrame;
 	//struct Frame frame; ???
 };
 
 struct Frame{
-	bool modificado;
-	bool uso;
+	int modificado;
+	int uso;
 	int presencia;
 	int indiceSwap;
 };
@@ -105,6 +98,7 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 
 //Funciones get
 int museget(void* dst, uint32_t src, size_t n, int idSocket);
+int min(int num1, int num2);
 
 //Funciones free
 int musefree(int idSocketCliente, uint32_t dir);

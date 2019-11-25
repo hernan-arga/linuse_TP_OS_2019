@@ -38,7 +38,8 @@ int main() {
 	//Abro archivo swap
 	swap = fopen("swap.txt","a+"); //Validar modo apertura y limite tamaño tam_swap
 
-	bitmapSwap = bitarray_create(bitmapSwap, cantidadPaginasSwap);  //size - cantidad de bits del bitarray, expresado en bytes
+	bitmapSwap = bitarray_create((char*)bitmapSwap, cantidadPaginasSwap);  //size - cantidad de bits del bitarray, expresado en bytes
+	//verificar 1er parametro, swap?
 	inicializarBitmapSwap();
 
 	return 0;
@@ -65,12 +66,11 @@ void *crearHeaderInicial(uint32_t tamanio) {
  * no la encuentra previamente en el diccionario (tema hilos) */
 void crearTablaSegmentosProceso(int idSocketCliente) {
 
-	if (dictionary_has_key(tablasSegmentos, (char*) idSocketCliente) == false) {
+	if (dictionary_has_key(tablasSegmentos, (char*)idSocketCliente) == false) {
 		t_list *listaDeSegmentos = list_create();
 
 		//Creo la estructura, pero no tiene segmentos aun
-		dictionary_put(tablasSegmentos, (char*) idSocketCliente,
-				listaDeSegmentos);
+		dictionary_put(tablasSegmentos, (char*)idSocketCliente, listaDeSegmentos);
 	}
 
 }
@@ -202,7 +202,7 @@ void ocuparFrame(int unFrame) {
 
 	frame->uso = 1;
 
-	list_add_in_index(bitmapFrames, unFrame, frame); //Lo piso modificado
+	list_replace(bitmapFrames, unFrame, frame); //Lo reemplazo modificado, unFrame es el indice del frame
 }
 
 /*void liberarFrame(int unFrame) {
@@ -215,7 +215,7 @@ void liberarFrame(int unFrame) {
 
 	frame->uso = 0;
 
-	list_add_in_index(bitmapFrames, unFrame, frame); //Lo piso modificado
+	list_replace(bitmapFrames, unFrame, frame); //Lo reemplazo modificado
 }
 
 /* Recorre los frames en orden buscando uno libre y retorna el indice
@@ -389,6 +389,9 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 
 	list_add(listaSegmentosProceso, nuevoSegmento);
 
+	//Actualizo la data en el diccionario
+	dictionary_put(tablasSegmentos, (char*)idSocketCliente, listaSegmentosProceso);
+
 	return nuevoSegmento;
 }
 
@@ -411,7 +414,7 @@ void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio) {
 		frame->modificado = 0;
 		frame->presencia = 1; //chequear?
 
-		list_add_in_index(bitmapFrames, nuevoFrame, frame);
+		list_replace(bitmapFrames, nuevoFrame, frame);
 
 		ocuparFrame(nuevoFrame);
 		//gestionar tamanio y heapmetadata
@@ -790,6 +793,14 @@ int espacioPaginas(int idSocketCliente, int idSegmento) {
 	return (list_size(unSegmento->tablaPaginas) * tam_pagina);
 }
 
+/**
+ * Find minimum between two numbers.
+ */
+int min(int num1, int num2)
+{
+    return (num1 > num2 ) ? num2 : num1;
+}
+
 //MUSE GET
 
 /**
@@ -802,15 +813,14 @@ int espacioPaginas(int idSocketCliente, int idSegmento) {
 
 int museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
-	struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
+	struct Pagina *unaPagina = malloc(sizeof(struct Pagina)); //PRIMERA Pagina, podrian ser mas
 
 	//int idSocketCliente /*= obtenerlo (?)*/;  //El socketCliente lo recibimos directo desde el utils.
-	t_list *listaSegmentos = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
 
 	//Obtencion segmento, pagina, frame, desplazamiento
 	int idSegmento;
-	int frame;
+	struct Frame *frame;
 	int desplazamiento;
 
 	int direccion = (int) src; //Casteo a int la direccion recibida
@@ -822,13 +832,66 @@ int museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 	idSegmento = idSegmentoQueContieneDireccion(listaSegmentos, (void*)src);
 	unSegmento = list_get(listaSegmentos, idSegmento);
 
-	//Obtencion pagina y frame
+	//Obtencion pagina y frame (PRIMERA pagina y PRIMER frame, podrian ser más)
 	unaPagina = paginaQueContieneDireccion(unSegmento, (void*)src); //Me retorna directamente la pagina
-	frame = unaPagina->numeroFrame;
+	frame = list_get(bitmapFrames, unaPagina->numeroFrame);
+
+	int bytesPrimeraPagina = tam_pagina - desplazamiento; //heapmetadata estan incluidos en desplazamiento ???
+
 	//////////////////////////////////////////////////
+	int paginasARecorrer = (ceil)(n / tam_pagina);
+	int bytesALeer = n;
+	void *dataPedida;
 
 	/*Ya se tienen todos los datos necesarios y se puede ir a mm ppal a buscar la data*/
-	void *pos = retornarPosicionMemoriaFrame(frame) + desplazamiento;
+	/*PRIMERO se debe chequear si la data esta en mm ppal, en caso de que no este en mm ppal
+	 * page fault, clock modificado y se la trae a mm ppal*/
+	int paginasRecorridas = 0;
+	int indicePrimeraPagina = floor(((unSegmento->baseLogica) - ((int) src)) / tam_pagina);
+
+	//Primera pagina la recorro antes porque no se recorre entera
+	if(frame->presencia == 1){ //Frame de primera pag, obtenido mas arriba
+		memcpy(dataPedida, unaPagina->numeroFrame + desplazamiento, n);
+
+		bytesALeer = bytesALeer - n;
+
+		paginasRecorridas++;
+	}
+
+	while(paginasRecorridas < paginasARecorrer){
+		//Obtengo la pagina a recorrer (pagina siguiente a la ultima recorrida)
+		struct Pagina *pagina = malloc(sizeof(struct Pagina));
+		pagina = list_get(unSegmento->tablaPaginas, indicePrimeraPagina + paginasRecorridas);
+
+		struct Frame *framePagina = malloc(sizeof(struct Frame));
+		framePagina = list_get(bitmapFrames, pagina->numeroFrame);
+
+		//Me fijo si la pagina esta en mm ppal o debo ir a swap
+		if(framePagina->presencia == 1){
+			memcpy(dataPedida, retornarPosicionMemoriaFrame(pagina->numeroFrame), min(bytesALeer,tam_pagina)); //Lo esta copiando al final? Necesito concatenarlo a lo anterior
+			//Lee min para nunca pasarse de un frame
+
+			bytesALeer = bytesALeer - min(bytesALeer, tam_pagina);
+		}
+		//Si la pagina no esta en mm ppal, voy a swap y luego leo
+		else{
+			//PAGE FAULT
+			//Busco frame a desalojar con clock modificado
+			//Swappeo frame a desalojar
+			//Traigo al frame desalojado y copio desde ahi
+
+
+			//Una vez que la traje a mm ppal
+			memcpy(dataPedida, retornarPosicionMemoriaFrame(pagina->numeroFrame), min(bytesALeer,tam_pagina));
+
+			bytesALeer = bytesALeer - min(bytesALeer, tam_pagina);
+		}
+
+		paginasRecorridas++;
+	}
+
+
+	void *pos = retornarPosicionMemoriaFrame(frame) + desplazamiento; //VER CASO desplazamiento se pasa de frame
 	memcpy((void*) dst, pos, n);
 
 	return 0;
@@ -851,14 +914,12 @@ int idSegmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion) {
 	return -1; //error
 }
 
-struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento,
-		void *direccion) {
+struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento, void *direccion) {
 	t_list *listaPaginas = unSegmento->tablaPaginas;
 	int indicePagina;
 
 	/*Obtencion Pagina: (base logica segmento - direccion) / tam_pagina (pag es el resultado piso)*/
-	indicePagina = floor(
-			((unSegmento->baseLogica) - ((int) direccion)) / tam_pagina);
+	indicePagina = floor(((unSegmento->baseLogica) - ((int) direccion)) / tam_pagina);
 
 	struct Pagina *pagina = list_get(listaPaginas, indicePagina);
 
@@ -1068,16 +1129,32 @@ uint32_t musemap(char *path, size_t length/*, int flags*/){
 	int idSocketCliente = 1;
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 
-	struct SegmentoMmap *segmentoMappeado;
+	struct Segmento *segmentoMappeado = malloc(sizeof(struct Segmento));
 
 	segmentoMappeado->esComun = false; //Indica que es un segmento mmappeado
 	segmentoMappeado->id = list_size(segmentosProceso) + 1;
-	segmentoMappeado->baseLogica; //base logica ultimo segmento + tamanio + 1
+
+	//Obtengo el tamaño del ultimo segmento
+	int idSegmento = list_size(segmentosProceso) - 1; //Id ultimo segmento
+	segmentoMappeado->baseLogica = obtenerTamanioSegmento(idSegmento, idSocketCliente) + 1;
+
 	segmentoMappeado->tablaPaginas = list_create();
 
 	FILE *archivoMap = fopen(path,"r");
 
 	int paginasNecesarias = ceil(length / tam_pagina);
+
+	for(int i = paginasNecesarias; i < paginasNecesarias; i--){
+		struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
+
+		//frame se le asigna cuando se referencia
+		unaPagina->numeroFrame = -1;
+		list_add(segmentoMappeado->tablaPaginas, unaPagina);
+
+	}
+
+	//Agrego el nuevo segmentoMap a la lista de segmentos del proceso
+	list_add(dictionary_get(tablasSegmentos, (char*)idSocketCliente), segmentoMappeado);
 
 	return 0;
 }
