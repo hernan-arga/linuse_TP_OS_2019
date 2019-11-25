@@ -246,6 +246,17 @@ int buscarFrameLibre() {
 	return -1;
 }
 
+bool hayFramesLibres() {
+	int frameLibre = buscarFrameLibre();
+
+	if(frameLibre == -1){
+		return false;
+	} else{
+		return true;
+	}
+
+}
+
 /*Retorna la posicion de memoria donde comienza un frame en particular*/
 void *retornarPosicionMemoriaFrame(int unFrame) {
 	int offset = tam_pagina * unFrame; //Los frames estan en orden y se recorren de may a men
@@ -851,7 +862,7 @@ int museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 
 	//Primera pagina la recorro antes porque no se recorre entera
 	if(frame->presencia == 1){ //Frame de primera pag, obtenido mas arriba
-		memcpy(dataPedida, unaPagina->numeroFrame + desplazamiento, n);
+		memcpy(dataPedida, retornarPosicionMemoriaFrame(unaPagina->numeroFrame) + desplazamiento, n);
 
 		bytesALeer = bytesALeer - n;
 
@@ -890,9 +901,11 @@ int museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 		paginasRecorridas++;
 	}
 
+	dst = dataPedida; //return 0, return -1 caso error
 
-	void *pos = retornarPosicionMemoriaFrame(frame) + desplazamiento; //VER CASO desplazamiento se pasa de frame
-	memcpy((void*) dst, pos, n);
+	//Codigo anterior corregido
+	//void *pos = retornarPosicionMemoriaFrame(unaPagina->numeroFrame) + desplazamiento; //VER CASO desplazamiento se pasa de frame
+	//memcpy((void*) dst, pos, n);
 
 	return 0;
 }
@@ -1160,7 +1173,7 @@ uint32_t musemap(char *path, size_t length/*, int flags*/){
 }
 
 /*Trae a memoria principal una pagina de un segmento de un proceso en particular
- * y retorna el numero de frame en el que la ubico*/
+ *y retorna el numero de frame en el que la ubico*/
 int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCliente){
 	//Obtengo pagina swapeada
 	struct Pagina *paginaSwapeada = malloc(sizeof(struct Pagina));
@@ -1176,23 +1189,30 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 	//Obtengo indice de swap donde se encuentra
 	int indiceSwap = paginaSwapeada->indiceSwap;
 
-	//Busco frame donde traer la pagina
-	//int frameReemplazo = clockModificado();
-	int frameReemplazo = buscarFrameLibre();
+	//Busco frame donde traer la pagina - ejecuta el algoritmo de reemplazo en caso de
+	//ser necesario
+	int frameReemplazo;
+
+	if(hayFramesLibres() == true){
+		frameReemplazo = buscarFrameLibre();
+	} else{
+		frameReemplazo = clockModificado();
+	}
+
 	struct Frame *nuevoFrame = malloc(sizeof(struct Frame));
 
 	paginaSwapeada->indiceSwap = -1; //ya no esta en swap
 	paginaSwapeada->numeroFrame = frameReemplazo;
 
 	//"Libero" la posicion de swap en el bitarray de swap
-	bitarray_clean_bit(bitmapSwap, paginaSwapeada->indiceSwap);
+	bitarray_clean_bit(bitmapSwap, indiceSwap);
 
 	nuevoFrame = list_get(bitmapFrames, frameReemplazo);
 	nuevoFrame->modificado = 0; //No esta modificado, recien se carga
 	nuevoFrame->presencia = 1; //P = 1, esta cargada en mm ppal
 	nuevoFrame->uso = 1;
 
-	list_replace(bitmapFrames, nuevoFrame, frameReemplazo);
+	list_replace(bitmapFrames, frameReemplazo, nuevoFrame);
 
 	return frameReemplazo;
 }

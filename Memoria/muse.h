@@ -75,6 +75,7 @@ int buscarFrameLibre();
 void *retornarPosicionMemoriaFrame(int unFrame);
 bool estaOcupadoCompleto(int indiceFrame);
 bool frameEstaLibre(int indice);
+bool hayFramesLibres();
 
 //Funciones init
 int museinit(int idSocketCliente);
