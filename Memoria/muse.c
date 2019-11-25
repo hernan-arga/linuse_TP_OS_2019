@@ -27,6 +27,7 @@ int main() {
 	tam_pagina = pconfig->tamanio_pag; //Ver de poner como define
 	tam_swap = pconfig->tamanio_swap;
 	cantidadFrames = tam_mem / tam_pagina;
+	cantidadPaginasSwap = tam_swap / tam_pagina;
 
 	//Se hace una unica vez
 	reservarMemoriaPrincipal(pconfig->tamanio_memoria);
@@ -36,6 +37,9 @@ int main() {
 	tablasSegmentos = dictionary_create();
 	//Abro archivo swap
 	swap = fopen("swap.txt","a+"); //Validar modo apertura y limite tamaño tam_swap
+
+	bitmapSwap = bitarray_create(bitmapSwap, cantidadPaginasSwap);  //size - cantidad de bits del bitarray, expresado en bytes
+	inicializarBitmapSwap();
 
 	return 0;
 }
@@ -93,6 +97,7 @@ void crearBitmapFrames() {
 		nuevoFrame->modificado = 0;
 		nuevoFrame->presencia = 1;
 		nuevoFrame->uso = 0;
+		//nuevoFrame indiceswap
 
 		list_add(bitmapFrames, nuevoFrame);
 
@@ -1035,4 +1040,46 @@ int clockModificado(){
 
 	return -1; //Nunca deberia llegar aca. Consultar.
 }
+
+//Inicializa cada bit del bitmap de swap en 0
+void inicializarBitmapSwap() {
+
+	for (int i = 0; i < bitarray_get_max_bit(bitmapSwap); i++) {
+		bitarray_clean_bit(bitmapSwap, i);
+	}
+
+}
+
+//MUSE MAP
+
+/**Devuelve un puntero a una posición mappeada de páginas por una cantidad `length` de bytes
+  * el archivo del `path` dado.
+  * @param path Path a un archivo en el FileSystem de MUSE a mappear.
+  * @param length Cantidad de bytes de memoria a usar para mappear el archivo.
+  * @param flags
+  *          MAP_PRIVATE     Solo un proceso/hilo puede mappear el archivo.
+  *          MAP_SHARED      El segmento asociado al archivo es compartido.
+  * @return Retorna la posición de memoria de MUSE mappeada.
+  * @note: Si `length` sobrepasa el tamaño del archivo, toda extensión deberá estar llena de "\0".
+  * @note: muse_free no libera la memoria mappeada. @see muse_unmap
+*/
+uint32_t musemap(char *path, size_t length/*, int flags*/){
+	//Obtener id del proceso que me esta llamando
+	int idSocketCliente = 1;
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+
+	struct SegmentoMmap *segmentoMappeado;
+
+	segmentoMappeado->esComun = false; //Indica que es un segmento mmappeado
+	segmentoMappeado->id = list_size(segmentosProceso) + 1;
+	segmentoMappeado->baseLogica; //base logica ultimo segmento + tamanio + 1
+	segmentoMappeado->tablaPaginas = list_create();
+
+	FILE *archivoMap = fopen(path,"r");
+
+	int paginasNecesarias = ceil(length / tam_pagina);
+
+	return 0;
+}
+
 
