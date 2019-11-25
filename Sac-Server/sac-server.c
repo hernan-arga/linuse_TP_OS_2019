@@ -1,5 +1,20 @@
 #include "sac-server.h"
 
+int path_size_in_bytes(const char* path){
+	FILE *fd;
+	int size;
+
+	fd=fopen(path, "r"); // printf("Error al abrir el archivo calculando el tamanio");
+
+	fseek(fd, 0L, SEEK_END);
+	size = ftell(fd);
+
+	fclose(fd);
+
+	return size;
+}
+
+
 
 int main(){
 	// Levanta archivo de configuracion
@@ -7,20 +22,26 @@ int main(){
 	levantarConfigFile(pconfig);
 
 
-
-
 	// Obiene el tamanio del disco
-	//fuse_disc_size = path_size_in_bytes(DISC_PATH);
+	fuse_disc_size = path_size_in_bytes(DISC_PATH);
 
 	// Asigna el size del bitarray de 64 bits
 	_bitarray_64 = get_size() / 64;
 	_bitarray_64_leak = get_size() - (_bitarray_64 * 64);
 
 	// Abrir conexion y traer directorios, guarda el bloque de inicio para luego liberar memoria
-	if ((discDescriptor = fd = open(DISC_PATH, O_RDWR, 0)) == -1) printf("ERROR");
+	if ((discDescriptor = fd = open(DISC_PATH, O_RDWR, 0)) == -1){
+		printf("ERROR");
+	}
+
+	struct stat mystat;
+	if (fstat(fd, &mystat) < 0) {
+			close(fd);
+		}
+
 	// Abrir conexion y traer directorios, guarda el bloque de inicio para luego liberar memoria
-	header_start = (struct gheader*) mmap(NULL, ACTUAL_DISC_SIZE_B , PROT_WRITE | PROT_READ | PROT_EXEC, MAP_SHARED, fd, 0);
-	//Header_Data = *header_start;
+	header_start = (struct gheader*) mmap(NULL, mystat.st_size , PROT_WRITE | PROT_READ | PROT_EXEC, MAP_SHARED, fd, 0);
+	Header_Data = *header_start;
 	bitmap_start = (struct gfile*) &header_start[GHEADERBLOCKS];
 	node_table_start = (struct gfile*) &header_start[GHEADERBLOCKS + BITMAP_BLOCK_SIZE];
 	data_block_start = (struct gfile*) &header_start[GHEADERBLOCKS + BITMAP_BLOCK_SIZE + NODE_TABLE_SIZE];
@@ -45,3 +66,4 @@ int main(){
 	pthread_join(hiloLevantarConexion, NULL);
 	return 0;
 }
+

@@ -392,6 +392,7 @@ static struct fuse_operations hello_oper = {
 
 struct t_runtime_options {
 	char* welcome_msg;
+
 } runtime_options;
 
 
