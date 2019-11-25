@@ -1177,11 +1177,15 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 	int indiceSwap = paginaSwapeada->indiceSwap;
 
 	//Busco frame donde traer la pagina
-	int frameReemplazo = clockModificado();
+	//int frameReemplazo = clockModificado();
+	int frameReemplazo = buscarFrameLibre();
 	struct Frame *nuevoFrame = malloc(sizeof(struct Frame));
 
 	paginaSwapeada->indiceSwap = -1; //ya no esta en swap
 	paginaSwapeada->numeroFrame = frameReemplazo;
+
+	//"Libero" la posicion de swap en el bitarray de swap
+	bitarray_clean_bit(bitmapSwap, paginaSwapeada->indiceSwap);
 
 	nuevoFrame = list_get(bitmapFrames, frameReemplazo);
 	nuevoFrame->modificado = 0; //No esta modificado, recien se carga
