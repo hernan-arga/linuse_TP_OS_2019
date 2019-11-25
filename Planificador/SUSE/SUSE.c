@@ -164,6 +164,7 @@ sem_t sem_new;
 sem_t sem_exit;
 sem_t hayQueActualizarUnExec;
 sem_t semaforoConfiguracion;
+sem_t sem_metricas;
 t_queue *new;
 t_queue *exitCola;
 
@@ -243,6 +244,7 @@ void iniciarSUSE(){
 	sem_init(&sem_exit, 0, 1);
 	sem_init(&semaforoConfiguracion, 0, 1);
 	sem_init(&sem_new, 0, 1);
+	sem_init(&sem_metricas, 0, 1);
 	logger = log_create("Metricas.log", "SUSE", 0, LOG_LEVEL_INFO);
 }
 
@@ -253,7 +255,9 @@ void atenderMetricas(){
 		configuracion.METRICAS_TIMER = config_get_int_value(config, "METRICS_TIMER");
 		sem_post(&semaforoConfiguracion);
 		sleep(configuracion.METRICAS_TIMER);
+		sem_wait(&sem_metricas);
 		tomarMetricas();
+		sem_post(&sem_metricas);
 	}
 }
 
@@ -917,6 +921,10 @@ void pasarAExit(hilo *unHilo){
 		list_add((t_list*)(dictionary_get(diccionarioDeListasDeExit, string_itoa(unHilo->pid))), unHilo);
 	}
 	sem_post(&sem_exit);
+
+	sem_wait(&sem_metricas);
+	tomarMetricas();
+	sem_post(&sem_metricas);
 }
 
 void ponerEnBlockedPorHilo(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar){
