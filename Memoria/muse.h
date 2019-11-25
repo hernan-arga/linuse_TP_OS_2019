@@ -13,6 +13,10 @@ t_dictionary* tablasSegmentos; /*Diccionario que contiene las tablas de segmento
 								*proceso, la key es el pid de cada proceso*/
 int tam_mem;
 int tam_pagina;
+int tam_swap;
+
+FILE *swap;
+
 int cantidadFrames;
 //t_bitarray *bitmapFrames;
 t_list *bitmapFrames; //Va a ser una t_list de struct Frame, el INDICE es el numero de frame

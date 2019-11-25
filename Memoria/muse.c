@@ -25,6 +25,7 @@ int main() {
 	/////////////////////////
 	tam_mem = pconfig->tamanio_memoria; //Ver de poner como define
 	tam_pagina = pconfig->tamanio_pag; //Ver de poner como define
+	tam_swap = pconfig->tamanio_swap;
 	cantidadFrames = tam_mem / tam_pagina;
 
 	//Se hace una unica vez
@@ -33,6 +34,8 @@ int main() {
 	crearBitmapFrames();
 	//Se hace una unica vez
 	tablasSegmentos = dictionary_create();
+	//Abro archivo swap
+	swap = fopen("swap.txt","a+"); //Validar modo apertura y limite tamaño tam_swap
 
 	return 0;
 }
@@ -914,6 +917,8 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 
 }
 
+//MUSE FREE
+
 int musefree(int idSocketCliente, uint32_t dir){
 
 	//busco los segmentos del proceso que me pide el free
@@ -926,7 +931,6 @@ int musefree(int idSocketCliente, uint32_t dir){
 	//busco el segmento especifico que contiene la direccion
 	unSegmento = segmentoQueContieneDireccion(segmentosProceso, (void*)dir);
 
-
 	//voy a la pagina de ese segmento donde esta la direccion
 	unaPagina = paginaQueContieneDireccion(unSegmento,(void*)dir);
 
@@ -938,8 +942,16 @@ int musefree(int idSocketCliente, uint32_t dir){
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 	memcpy(metadata, pos, sizeof(struct HeapMetadata));
 
+	//almaceno cuanta memoria esta liberando - representa cuanto tendra que achicarse el segmento
+	int tamanio_liberado = metadata->size;
+
 	//se cambia la metadata para indicar que esta parte esta libre
 	metadata->isFree = true;
+
+	//modifico el tamanio del segmento en el que se hizo free
+	unSegmento->tamanio = unSegmento->tamanio - tamanio_liberado; //Consulta, tamanio liberado siempre multiplo de tam pag?
+
+	//ACTUALIZAR tabla segmentos de idproceso con el nuevo segmento modificado (unSegmento)
 
 	//una vez que realizo el free tengo que verifico que si la porcion anterior a la direccion o la siguiente se encuentran libres
 	//si lo estan unifico
