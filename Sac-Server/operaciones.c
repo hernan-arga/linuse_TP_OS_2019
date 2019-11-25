@@ -244,23 +244,36 @@ int o_readDir(char* path, int cliente){
 	node = node_table_start;
 
 	// "." y ".." obligatorios.
-//	filler(buf, ".", NULL, 0);
+	//filler(buf, ".", NULL, 0);
 	//filler(buf, "..", NULL, 0);
 
 	pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
 	//log_lock_trace(logger, "Readdir: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
-/*
 
+	char* directoriosPegoteados = string_new();
 	// Carga los nodos que cumple la condicion en el buffer.
 	for (i = 0; i < GFILEBYTABLE;  (i++)){
-		if ((nodo==(node->bloque_padre)) & (((node->estado) == DIRECTORIO)
-		| ((node->estado) == FILE_T)))  filler(buf, (char*) &(node->nombre_archivo[0]), NULL, 0);
+		if ((nodo==(node->bloque_padre)) & (((node->estado) == DIRECTORIO) | ((node->estado) == OCUPADO)))
+			//filler(buf, (char*) &(node->nombre_archivo[0]), NULL, 0);
+
+			string_append(&directoriosPegoteados, node->nombre_archivo[0]);
+		    string_append(&directoriosPegoteados, ";");
+
 			node = &node[1];
-	} */
+	}
 
 
 	pthread_rwlock_unlock(&rwlock); //Devuelve un lock de lectura.
 	//log_lock_trace(logger, "Readdir: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+
+	// serializo directoriosPegoteados y se los envio a saccli
+	char* buffer = malloc(sizeof(int) + strlen(directoriosPegoteados));
+
+	int tamanioDirectoriosPegoteados = strlen(directoriosPegoteados);
+	memcpy(buffer, &tamanioDirectoriosPegoteados, sizeof(int));
+	memcpy(buffer + sizeof(int), directoriosPegoteados, strlen(directoriosPegoteados));
+
+	send(cliente, buffer, sizeof(int) + strlen(directoriosPegoteados), 0);
 
 	return 0;
 
@@ -302,7 +315,7 @@ int o_readDir(char* path, int cliente){
 
 void o_getAttr(char* path, int cliente){
 
-	log_info(logger, "Getattr: Path: %s", path);
+	//log_info(logger, "Getattr: Path: %s", path);
 
 	struct stat stbuf;
 	int nodo = determinar_nodo(path), res;
@@ -319,47 +332,8 @@ void o_getAttr(char* path, int cliente){
 	if (strcmp(path, "/") == 0){
 		stbuf.st_mode = S_IFDIR | 0777;
 		stbuf.st_nlink = 2;
-		res = 0;
-	}
+		stbuf.st_size = 4096; // ??????????
 
-	pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
-	//log_lock_trace(logger, "Getattr: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
-
-	node = node_table_start;
-
-	node = &(node[nodo-1]);
-
-	if (node->estado == 2){
-		stbuf.st_mode = S_IFDIR | 0777;
-		stbuf.st_nlink = 2;
-		stbuf.st_size = 4096; // Default para los directorios, es una "convencion".
-		stbuf.st_mtime = node->fecha_modificacion;
-		stbuf.st_ctime = node->fecha_creacion;
-		stbuf.st_atime = time(NULL); /* Le decimos que el access time es la hora actual */
-		res = 0;
-	} else if(node->estado == 1){
-		stbuf.st_mode = S_IFREG | 0777;
-		stbuf.st_nlink = 1;
-		stbuf.st_size = node->tamanio_archivo;
-		stbuf.st_mtime = node->fecha_modificacion;
-		stbuf.st_ctime = node->fecha_creacion;
-		stbuf.st_atime = time(NULL); /* Le decimos que el access time es la hora actual */
-		res = 0;
-	}
-
-	pthread_rwlock_unlock(&rwlock); // Libera el lock.
-	//log_lock_trace(logger, "Getattr:: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
-
-	if(res == 1){
-		void* buffer = malloc( 2 * sizeof(int) );
-		int tamanioRes = sizeof(int);
-		memcpy(buffer, &tamanioRes, sizeof(int));
-		memcpy(buffer + sizeof(int), &res, sizeof(int));
-
-		send(cliente, buffer, 2 * sizeof(int), 0);
-	}
-	if(res == 0){
-		//Serializo respuesta = 0, stbuf
 		void* buffer = malloc( 7 * sizeof(int) + sizeof(stbuf.st_mode));
 
 		int tamanioResp = sizeof(int);
@@ -379,6 +353,66 @@ void o_getAttr(char* path, int cliente){
 		memcpy(buffer + 6 * sizeof(int) + sizeof(stbuf.st_size), &stbuf.st_size, sizeof(int));
 
 		send(cliente, buffer, 7 * sizeof(int) + sizeof(stbuf.st_mode), 0);
+	}
+	else{
+		pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
+		//log_lock_trace(logger, "Getattr: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+
+		node = node_table_start;
+
+		node = &(node[nodo-1]);
+
+		if (node->estado == 2){
+			stbuf.st_mode = S_IFDIR | 0777;
+			stbuf.st_nlink = 2;
+			stbuf.st_size = 4096; // Default para los directorios, es una "convencion".
+			stbuf.st_mtime = node->fecha_modificacion;
+			stbuf.st_ctime = node->fecha_creacion;
+			stbuf.st_atime = time(NULL); /* Le decimos que el access time es la hora actual */
+			res = 0;
+		} else if(node->estado == 1){
+			stbuf.st_mode = S_IFREG | 0777;
+			stbuf.st_nlink = 1;
+			stbuf.st_size = node->tamanio_archivo;
+			stbuf.st_mtime = node->fecha_modificacion;
+			stbuf.st_ctime = node->fecha_creacion;
+			stbuf.st_atime = time(NULL); /* Le decimos que el access time es la hora actual */
+			res = 0;
+		}
+
+		pthread_rwlock_unlock(&rwlock); // Libera el lock.
+		//log_lock_trace(logger, "Getattr:: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+
+		if(res == 1){
+			void* buffer = malloc( 2 * sizeof(int) );
+			int tamanioRes = sizeof(int);
+			memcpy(buffer, &tamanioRes, sizeof(int));
+			memcpy(buffer + sizeof(int), &res, sizeof(int));
+
+			send(cliente, buffer, 2 * sizeof(int), 0);
+		}
+		if(res == 0){
+			//Serializo respuesta = 0, stbuf
+			void* buffer = malloc( 7 * sizeof(int) + sizeof(stbuf.st_mode));
+
+			int tamanioResp = sizeof(int);
+			memcpy(buffer, &tamanioResp, sizeof(int));
+			memcpy(buffer + sizeof(int), &res, sizeof(int));
+
+			int tamanioStmode = sizeof(stbuf.st_mode);
+			memcpy(buffer + 2 * sizeof(int), &tamanioStmode, sizeof(int));
+			memcpy(buffer + 3 * sizeof(int), &stbuf.st_mode, sizeof(stbuf.st_mode));
+
+			int tamanioStnlink = sizeof(int);
+			memcpy(buffer + 3 * sizeof(int) + sizeof(stbuf.st_mode), &tamanioStnlink, sizeof(int));
+			memcpy(buffer + 4 * sizeof(int) + sizeof(stbuf.st_mode), &stbuf.st_nlink, sizeof(int));
+
+			int tamanioEscrito = sizeof(int);
+			memcpy(buffer + 5 * sizeof(int) + sizeof(stbuf.st_size), &tamanioEscrito, sizeof(int));
+			memcpy(buffer + 6 * sizeof(int) + sizeof(stbuf.st_size), &stbuf.st_size, sizeof(int));
+
+			send(cliente, buffer, 7 * sizeof(int) + sizeof(stbuf.st_mode), 0);
+		}
 	}
 
 /*

@@ -198,11 +198,9 @@ ptrGBloque determinar_nodo(const char* path){
 
 	// Busca el nodo sobre el cual se encuentre el nombre.
 	node_name = &(node->nombre_archivo[0]);
-	for (i = 0; ( (node->bloque_padre != nodo_anterior)
-				  | (strcmp(nombre, (char*) node_name) != 0)
-				  | (node->estado == 0)) &  (i < GFILEBYTABLE) ; i++ ){
-		node = &(node[1]);
-		node_name = &(node->nombre_archivo[0]);
+	for (i = 0; ( (node->bloque_padre != nodo_anterior) | (strcmp(nombre, (char*) node_name) != 0) | (node->estado == 0)) & (i < GFILEBYTABLE) ; i++ ){
+		 node = &(node[1]);
+		 node_name = &(node->nombre_archivo[0]);
 	}
 
 	// Cierra conexiones y libera memoria. Contempla casos de error.

@@ -171,6 +171,9 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 }
 
 static int hello_getattr(const char *path, struct stat *stbuf) {
+	// Si es el directorio raiz, devuelve 0:
+	if(!strcmp(path, "/hola") || !strcmp(path, "/")){
+
 
 	//Serializo peticion y path
 	char* buffer = malloc(3 * sizeof(int) + strlen(path));
@@ -213,6 +216,7 @@ static int hello_getattr(const char *path, struct stat *stbuf) {
 		memcpy(&stbuf->st_size, bytesEscritos, *tamanioEscrito);
 
 		return 0;
+	}
 	}
 	// else
 	return -ENOENT;

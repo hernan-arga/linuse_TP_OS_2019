@@ -75,7 +75,6 @@ typedef struct gfile{
 	ptrGBloque bloques_indirectos[BLKINDIRECT];
 } gfile;
 
-struct gfile *node_table_start;
 struct gheader *header_start;
 struct gfile *node_table_start, *data_block_start, *bitmap_start;
 struct gheader Header_Data;
@@ -84,19 +83,28 @@ int fuse_disc_size;
 // Macros que definen los tamanios de los bloques.
 #define NODE_TABLE_SIZE 1024
 #define NODE_TABLE_SIZE_B ((int) NODE_TABLE_SIZE * BLOCKSIZE)
-#define DISC_PATH fuse_disc_path
-//#define DISC_SIZE_B(p) path_size_in_bytes(p)
-#define ACTUAL_DISC_SIZE_B fuse_disc_size
+
 #define BITMAP_SIZE_B (int) (get_size() / CHAR_BIT)
 #define BITMAP_SIZE_BITS get_size()
 #define HEADER_SIZE_B ((int) GHEADERBLOCKS * BLOCKSIZE)
 #define BITMAP_BLOCK_SIZE Header_Data.tamanio_bitmap
 
+#define DISC_PATH fuse_disc_path
 #define ARRAY64SIZE _bitarray_64
 size_t _bitarray_64;
 #define ARRAY64LEAK _bitarray_64_leak
 size_t _bitarray_64_leak;
 t_log *logger;
+
+// Se guardara aqui la ruta al disco. Tiene un tamanio maximo.
+char fuse_disc_path[1000];
+
+// Se guardara aqui el tamanio del disco
+int fuse_disc_size;
+
+#define DISC_PATH "/home/utnso/miFS/disco.bin"
+//#define DISC_SIZE_B(p) path_size_in_bytes(p)
+#define ACTUAL_DISC_SIZE_B fuse_disc_size
 
 #define INT64MAX _max
 
@@ -120,5 +128,10 @@ int delete_nodes_upto (struct gfile *, int, int);
 
 t_bitarray* bitArray;
 char *mmapDeBitmap;
+
+int discDescriptor;
+int fd;
+#define LOG_PATH fuse_log_path
+char fuse_log_path[1000];
 
 #endif /* ESTRUCTURAS_H_ */
