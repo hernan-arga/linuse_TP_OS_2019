@@ -967,3 +967,820 @@ O] 12:36:44:979 SUSE/(5931:5934): Valor actual del semaforo PRODUCTOR: 0
 [INFO] 12:53:27:588 SUSE/(6094:6097): Valor actual del semaforo PRODUCTOR: 1
 [INFO] 12:53:27:588 SUSE/(6094:6097): Valor actual del semaforo C3: 1
 [INFO] 12:53:27:588 SUSE/(6094:6097): Grado actual de multiprogramacion: 3
+[INFO] 13:22:15:78 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:15:84 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:15:88 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:15:89 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:18:99 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:18:100 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:18:100 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:18:100 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:21:102 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:21:102 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:21:103 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:21:103 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:24:105 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:24:107 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:24:108 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:24:108 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:27:111 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:27:112 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:27:112 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:27:112 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:30:123 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:30:123 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:30:123 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:30:124 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:33:124 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:33:125 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:33:125 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:33:125 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:36:127 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:36:129 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:36:130 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:36:130 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:39:132 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:39:137 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:39:147 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:39:148 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:42:151 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:42:154 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:42:154 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:42:155 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:45:156 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:45:156 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:45:156 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:45:157 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:48:158 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:48:161 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:48:166 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:48:167 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:51:168 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:51:174 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:51:174 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:51:175 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:54:177 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:54:180 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:54:180 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:54:181 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:22:57:186 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:22:57:189 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:22:57:190 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:22:57:190 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:23:00:191 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:00:194 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:00:194 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:23:00:195 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:23:03:196 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:03:196 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:03:196 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:23:03:203 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:23:06:204 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:06:206 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:06:207 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:23:06:207 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:23:09:208 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:09:211 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:09:212 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:23:09:212 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:23:12:213 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:12:215 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:12:216 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:23:12:216 SUSE/(6590:6593): Grado actual de multiprogramacion: 3
+[INFO] 13:23:15:217 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:15:217 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:15:217 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:23:15:218 SUSE/(6590:6593): Grado actual de multiprogramacion: 5
+[INFO] 13:23:18:231 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:18:238 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:18:239 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:23:18:239 SUSE/(6590:6593): Grado actual de multiprogramacion: 5
+[INFO] 13:23:21:240 SUSE/(6590:6593): Tiempo de ejecucion para el hilo 0 del programa 5: 330
+[INFO] 13:23:21:241 SUSE/(6590:6593): Tiempo de ejecucion para el hilo 1 del programa 5: 325
+[INFO] 13:23:21:241 SUSE/(6590:6593): Tiempo de ejecucion para el hilo 2 del programa 5: 317
+[INFO] 13:23:21:241 SUSE/(6590:6593): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:23:21:241 SUSE/(6590:6593): Tiempo de espera para el hilo 1 del programa 5: 11
+[INFO] 13:23:21:241 SUSE/(6590:6593): Tiempo de espera para el hilo 2 del programa 5: 7
+[INFO] 13:23:21:241 SUSE/(6590:6593): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:23:21:241 SUSE/(6590:6593): Tiempo de uso de CPU para el hilo 1 del programa 5: 3
+[INFO] 13:23:21:241 SUSE/(6590:6593): Tiempo de uso de CPU para el hilo 2 del programa 5: 0
+[INFO] 13:23:21:242 SUSE/(6590:6593): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 33 %
+[INFO] 13:23:21:242 SUSE/(6590:6593): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 33 %
+[INFO] 13:23:21:242 SUSE/(6590:6593): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 32 %
+[INFO] 13:23:21:242 SUSE/(6590:6593): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:23:21:242 SUSE/(6590:6593): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:21:242 SUSE/(6590:6593): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:21:242 SUSE/(6590:6593): Valor actual del semaforo C3: 1
+[INFO] 13:23:21:242 SUSE/(6590:6593): Grado actual de multiprogramacion: 5
+[INFO] 13:23:36:478 SUSE/(6628:6631): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:36:483 SUSE/(6628:6631): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:36:491 SUSE/(6628:6631): Valor actual del semaforo C3: 1
+[INFO] 13:23:36:492 SUSE/(6628:6631): Grado actual de multiprogramacion: 5
+[INFO] 13:23:37:912 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 0 del programa 5: 1136
+[INFO] 13:23:37:914 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 0 del programa 7: 455
+[INFO] 13:23:37:914 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 2 del programa 5: 1113
+[INFO] 13:23:37:914 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 2 del programa 5: 1113
+[INFO] 13:23:37:915 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 1 del programa 5: 1129
+[INFO] 13:23:37:915 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 1 del programa 7: 448
+[INFO] 13:23:37:915 SUSE/(6628:6629): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:23:37:915 SUSE/(6628:6629): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:23:37:915 SUSE/(6628:6629): Tiempo de espera para el hilo 2 del programa 5: 169
+[INFO] 13:23:37:915 SUSE/(6628:6629): Tiempo de espera para el hilo 2 del programa 5: 169
+[INFO] 13:23:37:915 SUSE/(6628:6629): Tiempo de espera para el hilo 1 del programa 5: 849
+[INFO] 13:23:37:915 SUSE/(6628:6629): Tiempo de espera para el hilo 1 del programa 7: 18
+[INFO] 13:23:37:915 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:23:37:915 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:23:37:916 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 2 del programa 5: 248
+[INFO] 13:23:37:916 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 2 del programa 5: 248
+[INFO] 13:23:37:916 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 1 del programa 5: 2
+[INFO] 13:23:37:916 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 1 del programa 7: 45
+[INFO] 13:23:37:916 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 25 %
+[INFO] 13:23:37:916 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 50 %
+[INFO] 13:23:37:921 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 13:23:37:921 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 13:23:37:921 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 25 %
+[INFO] 13:23:37:922 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 49 %
+[INFO] 13:23:37:922 SUSE/(6628:6629): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:23:37:922 SUSE/(6628:6629): Programa 7: 1 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:23:37:922 SUSE/(6628:6629): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:37:922 SUSE/(6628:6629): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:37:922 SUSE/(6628:6629): Valor actual del semaforo C3: 1
+[INFO] 13:23:37:922 SUSE/(6628:6629): Grado actual de multiprogramacion: 5
+[INFO] 13:23:38:837 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 0 del programa 5: 2061
+[INFO] 13:23:38:837 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 0 del programa 7: 1379
+[INFO] 13:23:38:837 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 2 del programa 7: 1365
+[INFO] 13:23:38:841 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 2 del programa 7: 1365
+[INFO] 13:23:38:841 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 2 del programa 5: 2040
+[INFO] 13:23:38:841 SUSE/(6628:6629): Tiempo de ejecucion para el hilo 1 del programa 7: 1375
+[INFO] 13:23:38:841 SUSE/(6628:6629): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:23:38:842 SUSE/(6628:6629): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:23:38:842 SUSE/(6628:6629): Tiempo de espera para el hilo 2 del programa 7: 238
+[INFO] 13:23:38:842 SUSE/(6628:6629): Tiempo de espera para el hilo 2 del programa 7: 238
+[INFO] 13:23:38:842 SUSE/(6628:6629): Tiempo de espera para el hilo 2 del programa 5: 329
+[INFO] 13:23:38:842 SUSE/(6628:6629): Tiempo de espera para el hilo 1 del programa 7: 452
+[INFO] 13:23:38:842 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:23:38:842 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:23:38:843 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 2 del programa 7: 40
+[INFO] 13:23:38:843 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 2 del programa 7: 40
+[INFO] 13:23:38:843 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 2 del programa 5: 1
+[INFO] 13:23:38:843 SUSE/(6628:6629): Tiempo de uso de CPU para el hilo 1 del programa 7: 68
+[INFO] 13:23:38:843 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:23:38:843 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 25 %
+[INFO] 13:23:38:843 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 13:23:38:844 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 13:23:38:844 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 49 %
+[INFO] 13:23:38:844 SUSE/(6628:6629): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 25 %
+[INFO] 13:23:38:844 SUSE/(6628:6629): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:23:38:844 SUSE/(6628:6629): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:23:38:844 SUSE/(6628:6629): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:38:844 SUSE/(6628:6629): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:38:844 SUSE/(6628:6629): Valor actual del semaforo C3: 1
+[INFO] 13:23:38:844 SUSE/(6628:6629): Grado actual de multiprogramacion: 5
+[INFO] 13:23:39:493 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 0 del programa 7: 2035
+[INFO] 13:23:39:494 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 1 del programa 7: 2027
+[INFO] 13:23:39:494 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 2 del programa 7: 2021
+[INFO] 13:23:39:494 SUSE/(6628:6631): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:23:39:494 SUSE/(6628:6631): Tiempo de espera para el hilo 1 del programa 7: 743
+[INFO] 13:23:39:494 SUSE/(6628:6631): Tiempo de espera para el hilo 2 del programa 7: 838
+[INFO] 13:23:39:495 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:23:39:495 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 1 del programa 7: 84
+[INFO] 13:23:39:495 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 2 del programa 7: 52
+[INFO] 13:23:39:495 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 33 %
+[INFO] 13:23:39:496 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 33 %
+[INFO] 13:23:39:496 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 33 %
+[INFO] 13:23:39:496 SUSE/(6628:6631): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:23:39:497 SUSE/(6628:6631): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:39:510 SUSE/(6628:6631): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:39:510 SUSE/(6628:6631): Valor actual del semaforo C3: 1
+[INFO] 13:23:39:510 SUSE/(6628:6631): Grado actual de multiprogramacion: 5
+[INFO] 13:23:42:511 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 0 del programa 7: 5053
+[INFO] 13:23:42:512 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 2 del programa 7: 5039
+[INFO] 13:23:42:512 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 1 del programa 7: 5045
+[INFO] 13:23:42:512 SUSE/(6628:6631): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:23:42:512 SUSE/(6628:6631): Tiempo de espera para el hilo 2 del programa 7: 1851
+[INFO] 13:23:42:512 SUSE/(6628:6631): Tiempo de espera para el hilo 1 del programa 7: 2216
+[INFO] 13:23:42:512 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:23:42:512 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 2 del programa 7: 92
+[INFO] 13:23:42:514 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 1 del programa 7: 128
+[INFO] 13:23:42:515 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 33 %
+[INFO] 13:23:42:515 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 33 %
+[INFO] 13:23:42:515 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 33 %
+[INFO] 13:23:42:515 SUSE/(6628:6631): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:23:42:515 SUSE/(6628:6631): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:42:515 SUSE/(6628:6631): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:42:515 SUSE/(6628:6631): Valor actual del semaforo C3: 1
+[INFO] 13:23:42:515 SUSE/(6628:6631): Grado actual de multiprogramacion: 5
+[INFO] 13:23:45:517 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 0 del programa 7: 8059
+[INFO] 13:23:45:518 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 2 del programa 7: 8045
+[INFO] 13:23:45:518 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 1 del programa 7: 8051
+[INFO] 13:23:45:518 SUSE/(6628:6631): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:23:45:518 SUSE/(6628:6631): Tiempo de espera para el hilo 2 del programa 7: 3482
+[INFO] 13:23:45:518 SUSE/(6628:6631): Tiempo de espera para el hilo 1 del programa 7: 4009
+[INFO] 13:23:45:518 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:23:45:518 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 2 del programa 7: 131
+[INFO] 13:23:45:518 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 1 del programa 7: 154
+[INFO] 13:23:45:518 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 33 %
+[INFO] 13:23:45:519 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 33 %
+[INFO] 13:23:45:519 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 33 %
+[INFO] 13:23:45:519 SUSE/(6628:6631): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:23:45:519 SUSE/(6628:6631): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:45:519 SUSE/(6628:6631): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:45:519 SUSE/(6628:6631): Valor actual del semaforo C3: 1
+[INFO] 13:23:45:519 SUSE/(6628:6631): Grado actual de multiprogramacion: 5
+[INFO] 13:23:48:521 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 0 del programa 7: 11062
+[INFO] 13:23:48:525 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 2 del programa 7: 11053
+[INFO] 13:23:48:527 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 1 del programa 7: 11060
+[INFO] 13:23:48:527 SUSE/(6628:6631): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:23:48:527 SUSE/(6628:6631): Tiempo de espera para el hilo 2 del programa 7: 4489
+[INFO] 13:23:48:528 SUSE/(6628:6631): Tiempo de espera para el hilo 1 del programa 7: 5101
+[INFO] 13:23:48:528 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:23:48:528 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 2 del programa 7: 145
+[INFO] 13:23:48:528 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 1 del programa 7: 182
+[INFO] 13:23:48:540 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 33 %
+[INFO] 13:23:48:541 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 33 %
+[INFO] 13:23:48:541 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 33 %
+[INFO] 13:23:48:541 SUSE/(6628:6631): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:23:48:541 SUSE/(6628:6631): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:48:542 SUSE/(6628:6631): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:48:542 SUSE/(6628:6631): Valor actual del semaforo C3: 1
+[INFO] 13:23:48:542 SUSE/(6628:6631): Grado actual de multiprogramacion: 5
+[INFO] 13:23:51:543 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 0 del programa 7: 14084
+[INFO] 13:23:51:543 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 2 del programa 7: 14071
+[INFO] 13:23:51:544 SUSE/(6628:6631): Tiempo de ejecucion para el hilo 1 del programa 7: 14077
+[INFO] 13:23:51:544 SUSE/(6628:6631): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:23:51:544 SUSE/(6628:6631): Tiempo de espera para el hilo 2 del programa 7: 5776
+[INFO] 13:23:51:544 SUSE/(6628:6631): Tiempo de espera para el hilo 1 del programa 7: 6486
+[INFO] 13:23:51:544 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:23:51:544 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 2 del programa 7: 159
+[INFO] 13:23:51:544 SUSE/(6628:6631): Tiempo de uso de CPU para el hilo 1 del programa 7: 212
+[INFO] 13:23:51:545 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 33 %
+[INFO] 13:23:51:545 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 33 %
+[INFO] 13:23:51:545 SUSE/(6628:6631): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 33 %
+[INFO] 13:23:51:545 SUSE/(6628:6631): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:23:51:545 SUSE/(6628:6631): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:51:545 SUSE/(6628:6631): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:51:545 SUSE/(6628:6631): Valor actual del semaforo C3: 1
+[INFO] 13:23:51:546 SUSE/(6628:6631): Grado actual de multiprogramacion: 5
+[INFO] 13:23:54:546 SUSE/(6628:6631): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:23:54:547 SUSE/(6628:6631): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:23:54:547 SUSE/(6628:6631): Valor actual del semaforo C3: 1
+[INFO] 13:23:54:547 SUSE/(6628:6631): Grado actual de multiprogramacion: 5
+[INFO] 13:24:04:55 SUSE/(6649:6650): Tiempo de ejecucion para el hilo 0 del programa 5: 941
+[INFO] 13:24:04:55 SUSE/(6649:6650): Tiempo de ejecucion para el hilo 2 del programa 5: 928
+[INFO] 13:24:04:71 SUSE/(6649:6650): Tiempo de ejecucion para el hilo 1 del programa 5: 954
+[INFO] 13:24:04:71 SUSE/(6649:6650): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:24:04:71 SUSE/(6649:6650): Tiempo de espera para el hilo 2 del programa 5: 172
+[INFO] 13:24:04:72 SUSE/(6649:6650): Tiempo de espera para el hilo 1 del programa 5: 602
+[INFO] 13:24:04:72 SUSE/(6649:6650): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:24:04:72 SUSE/(6649:6650): Tiempo de uso de CPU para el hilo 2 del programa 5: 274
+[INFO] 13:24:04:72 SUSE/(6649:6650): Tiempo de uso de CPU para el hilo 1 del programa 5: 15
+[INFO] 13:24:04:72 SUSE/(6649:6650): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 33 %
+[INFO] 13:24:04:72 SUSE/(6649:6650): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 32 %
+[INFO] 13:24:04:72 SUSE/(6649:6650): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 33 %
+[INFO] 13:24:04:72 SUSE/(6649:6650): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:04:72 SUSE/(6649:6650): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:04:77 SUSE/(6649:6650): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:04:77 SUSE/(6649:6650): Valor actual del semaforo C3: 1
+[INFO] 13:24:04:77 SUSE/(6649:6650): Grado actual de multiprogramacion: 5
+[INFO] 13:24:05:24 SUSE/(6649:6652): Tiempo de ejecucion para el hilo 0 del programa 5: 1911
+[INFO] 13:24:05:26 SUSE/(6649:6652): Tiempo de ejecucion para el hilo 0 del programa 7: 847
+[INFO] 13:24:05:26 SUSE/(6649:6652): Tiempo de ejecucion para el hilo 2 del programa 7: 831
+[INFO] 13:24:05:26 SUSE/(6649:6652): Tiempo de ejecucion para el hilo 2 del programa 7: 832
+[INFO] 13:24:05:26 SUSE/(6649:6652): Tiempo de ejecucion para el hilo 2 del programa 5: 1899
+[INFO] 13:24:05:26 SUSE/(6649:6652): Tiempo de ejecucion para el hilo 1 del programa 7: 844
+[INFO] 13:24:05:26 SUSE/(6649:6652): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:24:05:26 SUSE/(6649:6652): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:24:05:33 SUSE/(6649:6652): Tiempo de espera para el hilo 2 del programa 7: 375
+[INFO] 13:24:05:33 SUSE/(6649:6652): Tiempo de espera para el hilo 2 del programa 7: 375
+[INFO] 13:24:05:34 SUSE/(6649:6652): Tiempo de espera para el hilo 2 del programa 5: 381
+[INFO] 13:24:05:34 SUSE/(6649:6652): Tiempo de espera para el hilo 1 del programa 7: 458
+[INFO] 13:24:05:34 SUSE/(6649:6652): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:24:05:34 SUSE/(6649:6652): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:24:05:34 SUSE/(6649:6652): Tiempo de uso de CPU para el hilo 2 del programa 7: 39
+[INFO] 13:24:05:34 SUSE/(6649:6652): Tiempo de uso de CPU para el hilo 2 del programa 7: 39
+[INFO] 13:24:05:34 SUSE/(6649:6652): Tiempo de uso de CPU para el hilo 2 del programa 5: 125
+[INFO] 13:24:05:34 SUSE/(6649:6652): Tiempo de uso de CPU para el hilo 1 del programa 7: 44
+[INFO] 13:24:05:34 SUSE/(6649:6652): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:24:05:34 SUSE/(6649:6652): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 25 %
+[INFO] 13:24:05:34 SUSE/(6649:6652): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 13:24:05:35 SUSE/(6649:6652): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 13:24:05:35 SUSE/(6649:6652): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 49 %
+[INFO] 13:24:05:35 SUSE/(6649:6652): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 25 %
+[INFO] 13:24:05:35 SUSE/(6649:6652): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:05:35 SUSE/(6649:6652): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:05:35 SUSE/(6649:6652): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:05:35 SUSE/(6649:6652): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:05:35 SUSE/(6649:6652): Valor actual del semaforo C3: 1
+[INFO] 13:24:05:35 SUSE/(6649:6652): Grado actual de multiprogramacion: 5
+[INFO] 13:24:05:223 SUSE/(6649:6650): Tiempo de ejecucion para el hilo 0 del programa 5: 2109
+[INFO] 13:24:05:223 SUSE/(6649:6650): Tiempo de ejecucion para el hilo 0 del programa 7: 1045
+[INFO] 13:24:05:223 SUSE/(6649:6650): Tiempo de ejecucion para el hilo 1 del programa 7: 1041
+[INFO] 13:24:05:224 SUSE/(6649:6650): Tiempo de ejecucion para el hilo 1 del programa 7: 1041
+[INFO] 13:24:05:224 SUSE/(6649:6650): Tiempo de ejecucion para el hilo 2 del programa 5: 2096
+[INFO] 13:24:05:224 SUSE/(6649:6650): Tiempo de ejecucion para el hilo 2 del programa 7: 1029
+[INFO] 13:24:05:224 SUSE/(6649:6650): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:24:05:224 SUSE/(6649:6650): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:24:05:224 SUSE/(6649:6650): Tiempo de espera para el hilo 1 del programa 7: 458
+[INFO] 13:24:05:224 SUSE/(6649:6650): Tiempo de espera para el hilo 1 del programa 7: 458
+[INFO] 13:24:05:224 SUSE/(6649:6650): Tiempo de espera para el hilo 2 del programa 5: 381
+[INFO] 13:24:05:224 SUSE/(6649:6650): Tiempo de espera para el hilo 2 del programa 7: 586
+[INFO] 13:24:05:224 SUSE/(6649:6650): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:24:05:225 SUSE/(6649:6650): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:24:05:233 SUSE/(6649:6650): Tiempo de uso de CPU para el hilo 1 del programa 7: 59
+[INFO] 13:24:05:233 SUSE/(6649:6650): Tiempo de uso de CPU para el hilo 1 del programa 7: 59
+[INFO] 13:24:05:233 SUSE/(6649:6650): Tiempo de uso de CPU para el hilo 2 del programa 5: 6
+[INFO] 13:24:05:233 SUSE/(6649:6650): Tiempo de uso de CPU para el hilo 2 del programa 7: 39
+[INFO] 13:24:05:233 SUSE/(6649:6650): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:24:05:233 SUSE/(6649:6650): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 25 %
+[INFO] 13:24:05:234 SUSE/(6649:6650): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 25 %
+[INFO] 13:24:05:234 SUSE/(6649:6650): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 25 %
+[INFO] 13:24:05:234 SUSE/(6649:6650): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 49 %
+[INFO] 13:24:05:234 SUSE/(6649:6650): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 13:24:05:234 SUSE/(6649:6650): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:05:234 SUSE/(6649:6650): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:05:234 SUSE/(6649:6650): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:05:234 SUSE/(6649:6650): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:05:234 SUSE/(6649:6650): Valor actual del semaforo C3: 1
+[INFO] 13:24:05:234 SUSE/(6649:6650): Grado actual de multiprogramacion: 5
+[INFO] 13:24:08:36 SUSE/(6649:6652): Tiempo de ejecucion para el hilo 0 del programa 7: 3858
+[INFO] 13:24:08:37 SUSE/(6649:6652): Tiempo de ejecucion para el hilo 1 del programa 7: 3855
+[INFO] 13:24:08:37 SUSE/(6649:6652): Tiempo de ejecucion para el hilo 2 del programa 7: 3843
+[INFO] 13:24:08:38 SUSE/(6649:6652): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:24:08:38 SUSE/(6649:6652): Tiempo de espera para el hilo 1 del programa 7: 1720
+[INFO] 13:24:08:38 SUSE/(6649:6652): Tiempo de espera para el hilo 2 del programa 7: 1908
+[INFO] 13:24:08:38 SUSE/(6649:6652): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:24:08:38 SUSE/(6649:6652): Tiempo de uso de CPU para el hilo 1 del programa 7: 104
+[INFO] 13:24:08:38 SUSE/(6649:6652): Tiempo de uso de CPU para el hilo 2 del programa 7: 84
+[INFO] 13:24:08:38 SUSE/(6649:6652): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 33 %
+[INFO] 13:24:08:38 SUSE/(6649:6652): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 33 %
+[INFO] 13:24:08:38 SUSE/(6649:6652): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 33 %
+[INFO] 13:24:08:38 SUSE/(6649:6652): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:08:39 SUSE/(6649:6652): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:08:39 SUSE/(6649:6652): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:08:39 SUSE/(6649:6652): Valor actual del semaforo C3: 1
+[INFO] 13:24:08:39 SUSE/(6649:6652): Grado actual de multiprogramacion: 5
+[INFO] 13:24:11:40 SUSE/(6649:6652): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:11:43 SUSE/(6649:6652): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:11:43 SUSE/(6649:6652): Valor actual del semaforo C3: 1
+[INFO] 13:24:11:44 SUSE/(6649:6652): Grado actual de multiprogramacion: 5
+[INFO] 13:24:14:48 SUSE/(6649:6652): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:14:49 SUSE/(6649:6652): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:14:49 SUSE/(6649:6652): Valor actual del semaforo C3: 1
+[INFO] 13:24:14:49 SUSE/(6649:6652): Grado actual de multiprogramacion: 5
+[INFO] 13:24:21:601 SUSE/(6661:6662): Tiempo de ejecucion para el hilo 0 del programa 5: 974
+[INFO] 13:24:21:618 SUSE/(6661:6662): Tiempo de ejecucion para el hilo 2 del programa 5: 966
+[INFO] 13:24:21:618 SUSE/(6661:6662): Tiempo de ejecucion para el hilo 1 del programa 5: 972
+[INFO] 13:24:21:618 SUSE/(6661:6662): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:24:21:618 SUSE/(6661:6662): Tiempo de espera para el hilo 2 del programa 5: 190
+[INFO] 13:24:21:618 SUSE/(6661:6662): Tiempo de espera para el hilo 1 del programa 5: 606
+[INFO] 13:24:21:618 SUSE/(6661:6662): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:24:21:618 SUSE/(6661:6662): Tiempo de uso de CPU para el hilo 2 del programa 5: 273
+[INFO] 13:24:21:618 SUSE/(6661:6662): Tiempo de uso de CPU para el hilo 1 del programa 5: 9
+[INFO] 13:24:21:619 SUSE/(6661:6662): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 33 %
+[INFO] 13:24:21:619 SUSE/(6661:6662): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 33 %
+[INFO] 13:24:21:619 SUSE/(6661:6662): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 33 %
+[INFO] 13:24:21:619 SUSE/(6661:6662): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:21:619 SUSE/(6661:6662): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:21:619 SUSE/(6661:6662): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:21:619 SUSE/(6661:6662): Valor actual del semaforo C3: 1
+[INFO] 13:24:21:619 SUSE/(6661:6662): Grado actual de multiprogramacion: 5
+[INFO] 13:24:21:779 SUSE/(6661:6664): Tiempo de ejecucion para el hilo 0 del programa 5: 1151
+[INFO] 13:24:21:779 SUSE/(6661:6664): Tiempo de ejecucion para el hilo 0 del programa 7: 39
+[INFO] 13:24:21:779 SUSE/(6661:6664): Tiempo de ejecucion para el hilo 1 del programa 7: 32
+[INFO] 13:24:21:779 SUSE/(6661:6664): Tiempo de ejecucion para el hilo 1 del programa 7: 32
+[INFO] 13:24:21:779 SUSE/(6661:6664): Tiempo de ejecucion para el hilo 2 del programa 5: 1128
+[INFO] 13:24:21:779 SUSE/(6661:6664): Tiempo de ejecucion para el hilo 2 del programa 7: 30
+[INFO] 13:24:21:779 SUSE/(6661:6664): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:24:21:779 SUSE/(6661:6664): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:24:21:779 SUSE/(6661:6664): Tiempo de espera para el hilo 1 del programa 7: 16
+[INFO] 13:24:21:780 SUSE/(6661:6664): Tiempo de espera para el hilo 1 del programa 7: 16
+[INFO] 13:24:21:780 SUSE/(6661:6664): Tiempo de espera para el hilo 2 del programa 5: 396
+[INFO] 13:24:21:780 SUSE/(6661:6664): Tiempo de espera para el hilo 2 del programa 7: 20
+[INFO] 13:24:21:780 SUSE/(6661:6664): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:24:21:780 SUSE/(6661:6664): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:24:21:780 SUSE/(6661:6664): Tiempo de uso de CPU para el hilo 1 del programa 7: 8
+[INFO] 13:24:21:780 SUSE/(6661:6664): Tiempo de uso de CPU para el hilo 1 del programa 7: 8
+[INFO] 13:24:21:780 SUSE/(6661:6664): Tiempo de uso de CPU para el hilo 2 del programa 5: 273
+[INFO] 13:24:21:780 SUSE/(6661:6664): Tiempo de uso de CPU para el hilo 2 del programa 7: 3
+[INFO] 13:24:21:780 SUSE/(6661:6664): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:24:21:780 SUSE/(6661:6664): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 29 %
+[INFO] 13:24:21:780 SUSE/(6661:6664): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 24 %
+[INFO] 13:24:21:780 SUSE/(6661:6664): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 24 %
+[INFO] 13:24:21:781 SUSE/(6661:6664): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 49 %
+[INFO] 13:24:21:782 SUSE/(6661:6664): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 22 %
+[INFO] 13:24:21:782 SUSE/(6661:6664): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:21:782 SUSE/(6661:6664): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:21:782 SUSE/(6661:6664): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:21:782 SUSE/(6661:6664): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:21:782 SUSE/(6661:6664): Valor actual del semaforo C3: 1
+[INFO] 13:24:21:782 SUSE/(6661:6664): Grado actual de multiprogramacion: 5
+[INFO] 13:24:22:757 SUSE/(6661:6662): Tiempo de ejecucion para el hilo 0 del programa 5: 2129
+[INFO] 13:24:22:758 SUSE/(6661:6662): Tiempo de ejecucion para el hilo 0 del programa 7: 1018
+[INFO] 13:24:22:758 SUSE/(6661:6662): Tiempo de ejecucion para el hilo 1 del programa 7: 1010
+[INFO] 13:24:22:758 SUSE/(6661:6662): Tiempo de ejecucion para el hilo 1 del programa 7: 1010
+[INFO] 13:24:22:758 SUSE/(6661:6662): Tiempo de ejecucion para el hilo 2 del programa 5: 2107
+[INFO] 13:24:22:758 SUSE/(6661:6662): Tiempo de ejecucion para el hilo 2 del programa 7: 1009
+[INFO] 13:24:22:758 SUSE/(6661:6662): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:24:22:758 SUSE/(6661:6662): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:24:22:758 SUSE/(6661:6662): Tiempo de espera para el hilo 1 del programa 7: 408
+[INFO] 13:24:22:758 SUSE/(6661:6662): Tiempo de espera para el hilo 1 del programa 7: 408
+[INFO] 13:24:22:759 SUSE/(6661:6662): Tiempo de espera para el hilo 2 del programa 5: 396
+[INFO] 13:24:22:759 SUSE/(6661:6662): Tiempo de espera para el hilo 2 del programa 7: 466
+[INFO] 13:24:22:759 SUSE/(6661:6662): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:24:22:759 SUSE/(6661:6662): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:24:22:759 SUSE/(6661:6662): Tiempo de uso de CPU para el hilo 1 del programa 7: 53
+[INFO] 13:24:22:759 SUSE/(6661:6662): Tiempo de uso de CPU para el hilo 1 del programa 7: 53
+[INFO] 13:24:22:759 SUSE/(6661:6662): Tiempo de uso de CPU para el hilo 2 del programa 5: 2
+[INFO] 13:24:22:759 SUSE/(6661:6662): Tiempo de uso de CPU para el hilo 2 del programa 7: 45
+[INFO] 13:24:22:759 SUSE/(6661:6662): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:24:22:759 SUSE/(6661:6662): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 25 %
+[INFO] 13:24:22:759 SUSE/(6661:6662): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 24 %
+[INFO] 13:24:22:759 SUSE/(6661:6662): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 24 %
+[INFO] 13:24:22:760 SUSE/(6661:6662): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 49 %
+[INFO] 13:24:22:760 SUSE/(6661:6662): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 13:24:22:760 SUSE/(6661:6662): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:22:760 SUSE/(6661:6662): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:22:760 SUSE/(6661:6662): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:22:760 SUSE/(6661:6662): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:22:765 SUSE/(6661:6662): Valor actual del semaforo C3: 1
+[INFO] 13:24:22:766 SUSE/(6661:6662): Grado actual de multiprogramacion: 5
+[INFO] 13:24:24:783 SUSE/(6661:6664): Tiempo de ejecucion para el hilo 0 del programa 7: 3044
+[INFO] 13:24:24:783 SUSE/(6661:6664): Tiempo de ejecucion para el hilo 2 del programa 7: 3034
+[INFO] 13:24:24:784 SUSE/(6661:6664): Tiempo de ejecucion para el hilo 1 del programa 7: 3036
+[INFO] 13:24:24:784 SUSE/(6661:6664): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:24:24:784 SUSE/(6661:6664): Tiempo de espera para el hilo 2 del programa 7: 1312
+[INFO] 13:24:24:784 SUSE/(6661:6664): Tiempo de espera para el hilo 1 del programa 7: 1514
+[INFO] 13:24:24:784 SUSE/(6661:6664): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:24:24:784 SUSE/(6661:6664): Tiempo de uso de CPU para el hilo 2 del programa 7: 76
+[INFO] 13:24:24:784 SUSE/(6661:6664): Tiempo de uso de CPU para el hilo 1 del programa 7: 92
+[INFO] 13:24:24:784 SUSE/(6661:6664): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 33 %
+[INFO] 13:24:24:784 SUSE/(6661:6664): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 33 %
+[INFO] 13:24:24:784 SUSE/(6661:6664): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 33 %
+[INFO] 13:24:24:785 SUSE/(6661:6664): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:24:785 SUSE/(6661:6664): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:24:786 SUSE/(6661:6664): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:24:786 SUSE/(6661:6664): Valor actual del semaforo C3: 1
+[INFO] 13:24:24:786 SUSE/(6661:6664): Grado actual de multiprogramacion: 5
+[INFO] 13:24:27:788 SUSE/(6661:6664): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:27:797 SUSE/(6661:6664): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:27:798 SUSE/(6661:6664): Valor actual del semaforo C3: 1
+[INFO] 13:24:27:798 SUSE/(6661:6664): Grado actual de multiprogramacion: 5
+[INFO] 13:24:30:800 SUSE/(6661:6664): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:30:803 SUSE/(6661:6664): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:30:803 SUSE/(6661:6664): Valor actual del semaforo C3: 1
+[INFO] 13:24:30:803 SUSE/(6661:6664): Grado actual de multiprogramacion: 5
+[INFO] 13:24:33:805 SUSE/(6661:6664): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:33:815 SUSE/(6661:6664): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:33:815 SUSE/(6661:6664): Valor actual del semaforo C3: 1
+[INFO] 13:24:33:816 SUSE/(6661:6664): Grado actual de multiprogramacion: 5
+[INFO] 13:24:36:817 SUSE/(6661:6664): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:36:820 SUSE/(6661:6664): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:36:820 SUSE/(6661:6664): Valor actual del semaforo C3: 1
+[INFO] 13:24:36:820 SUSE/(6661:6664): Grado actual de multiprogramacion: 5
+[INFO] 13:24:39:823 SUSE/(6661:6664): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:39:826 SUSE/(6661:6664): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:39:826 SUSE/(6661:6664): Valor actual del semaforo C3: 1
+[INFO] 13:24:39:826 SUSE/(6661:6664): Grado actual de multiprogramacion: 5
+[INFO] 13:24:42:828 SUSE/(6661:6664): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:42:830 SUSE/(6661:6664): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:42:831 SUSE/(6661:6664): Valor actual del semaforo C3: 1
+[INFO] 13:24:42:832 SUSE/(6661:6664): Grado actual de multiprogramacion: 5
+[INFO] 13:24:45:833 SUSE/(6661:6664): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:24:45:834 SUSE/(6661:6664): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:24:45:834 SUSE/(6661:6664): Valor actual del semaforo C3: 1
+[INFO] 13:24:45:834 SUSE/(6661:6664): Grado actual de multiprogramacion: 5
+[INFO] 13:24:53:995 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 5: 1843
+[INFO] 13:24:53:996 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 7: 630
+[INFO] 13:24:53:996 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 5: 1821
+[INFO] 13:24:53:996 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 5: 1821
+[INFO] 13:24:53:996 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 1 del programa 5: 1825
+[INFO] 13:24:53:996 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 1 del programa 7: 616
+[INFO] 13:24:53:996 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:24:53:996 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:24:53:996 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 5: 455
+[INFO] 13:24:53:996 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 5: 455
+[INFO] 13:24:53:996 SUSE/(6681:6684): Tiempo de espera para el hilo 1 del programa 5: 933
+[INFO] 13:24:54:11 SUSE/(6681:6684): Tiempo de espera para el hilo 1 del programa 7: 18
+[INFO] 13:24:54:11 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:24:54:11 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:24:54:11 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 5: 63
+[INFO] 13:24:54:11 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 5: 63
+[INFO] 13:24:54:12 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 1 del programa 5: 39
+[INFO] 13:24:54:12 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 1 del programa 7: 56
+[INFO] 13:24:54:12 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 25 %
+[INFO] 13:24:54:12 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 50 %
+[INFO] 13:24:54:12 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 13:24:54:12 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 13:24:54:12 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 24 %
+[INFO] 13:24:54:25 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 49 %
+[INFO] 13:24:54:26 SUSE/(6681:6684): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:54:26 SUSE/(6681:6684): Programa 7: 1 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:54:26 SUSE/(6681:6684): Valor actual del semaforo CONSUMIDOR: 0
+[INFO] 13:24:54:26 SUSE/(6681:6684): Valor actual del semaforo PRODUCTOR: 1
+[INFO] 13:24:54:26 SUSE/(6681:6684): Valor actual del semaforo C3: 1
+[INFO] 13:24:54:26 SUSE/(6681:6684): Grado actual de multiprogramacion: 5
+[INFO] 13:24:57:27 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 5: 4875
+[INFO] 13:24:57:29 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 7: 3664
+[INFO] 13:24:57:29 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 5: 4855
+[INFO] 13:24:57:30 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 5: 4855
+[INFO] 13:24:57:30 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 1 del programa 5: 4859
+[INFO] 13:24:57:30 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 1 del programa 7: 3650
+[INFO] 13:24:57:30 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:24:57:30 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:24:57:30 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 5: 1706
+[INFO] 13:24:57:30 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 5: 1706
+[INFO] 13:24:57:30 SUSE/(6681:6684): Tiempo de espera para el hilo 1 del programa 5: 1664
+[INFO] 13:24:57:30 SUSE/(6681:6684): Tiempo de espera para el hilo 1 del programa 7: 18
+[INFO] 13:24:57:31 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:24:57:31 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:24:57:31 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 5: 94
+[INFO] 13:24:57:31 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 5: 94
+[INFO] 13:24:57:31 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 1 del programa 5: 1
+[INFO] 13:24:57:31 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 1 del programa 7: 146
+[INFO] 13:24:57:31 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 25 %
+[INFO] 13:24:57:31 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 50 %
+[INFO] 13:24:57:31 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 13:24:57:45 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 13:24:57:45 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 49 %
+[INFO] 13:24:57:45 SUSE/(6681:6684): Programa 5: 0 en new, 1 en ready, 2 en blocked, 0 en exec
+[INFO] 13:24:57:45 SUSE/(6681:6684): Programa 7: 1 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:24:57:46 SUSE/(6681:6684): Valor actual del semaforo CONSUMIDOR: 0
+[INFO] 13:24:57:46 SUSE/(6681:6684): Valor actual del semaforo PRODUCTOR: 1
+[INFO] 13:24:57:47 SUSE/(6681:6684): Valor actual del semaforo C3: 1
+[INFO] 13:24:57:47 SUSE/(6681:6684): Grado actual de multiprogramacion: 5
+[INFO] 13:25:00:48 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 5: 7896
+[INFO] 13:25:00:48 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 7: 6683
+[INFO] 13:25:00:48 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 5: 7874
+[INFO] 13:25:00:48 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 1 del programa 7: 6669
+[INFO] 13:25:00:48 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:25:00:50 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:00:50 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 5: 2901
+[INFO] 13:25:00:50 SUSE/(6681:6684): Tiempo de espera para el hilo 1 del programa 7: 18
+[INFO] 13:25:00:50 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:25:00:50 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:00:50 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 5: 0
+[INFO] 13:25:00:50 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 1 del programa 7: 212
+[INFO] 13:25:00:50 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:25:00:50 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 50 %
+[INFO] 13:25:00:50 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 49 %
+[INFO] 13:25:00:51 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 49 %
+[INFO] 13:25:00:51 SUSE/(6681:6684): Programa 5: 0 en new, 0 en ready, 2 en blocked, 1 en exec
+[INFO] 13:25:00:51 SUSE/(6681:6684): Programa 7: 1 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:00:51 SUSE/(6681:6684): Valor actual del semaforo CONSUMIDOR: 0
+[INFO] 13:25:00:51 SUSE/(6681:6684): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:00:51 SUSE/(6681:6684): Valor actual del semaforo C3: 1
+[INFO] 13:25:00:51 SUSE/(6681:6684): Grado actual de multiprogramacion: 5
+[INFO] 13:25:02:791 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 0 del programa 5: 10640
+[INFO] 13:25:02:792 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 0 del programa 7: 9427
+[INFO] 13:25:02:797 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 2 del programa 5: 10623
+[INFO] 13:25:02:797 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 2 del programa 5: 10623
+[INFO] 13:25:02:797 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 1 del programa 5: 10627
+[INFO] 13:25:02:797 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 1 del programa 7: 9418
+[INFO] 13:25:02:797 SUSE/(6681:6682): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:25:02:798 SUSE/(6681:6682): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:02:798 SUSE/(6681:6682): Tiempo de espera para el hilo 2 del programa 5: 3746
+[INFO] 13:25:02:798 SUSE/(6681:6682): Tiempo de espera para el hilo 2 del programa 5: 3746
+[INFO] 13:25:02:798 SUSE/(6681:6682): Tiempo de espera para el hilo 1 del programa 5: 2619
+[INFO] 13:25:02:798 SUSE/(6681:6682): Tiempo de espera para el hilo 1 del programa 7: 18
+[INFO] 13:25:02:798 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:25:02:798 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:02:798 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 2 del programa 5: 138
+[INFO] 13:25:02:798 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 2 del programa 5: 138
+[INFO] 13:25:02:798 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 1 del programa 5: 1
+[INFO] 13:25:02:799 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 1 del programa 7: 234
+[INFO] 13:25:02:799 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 25 %
+[INFO] 13:25:02:799 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 50 %
+[INFO] 13:25:02:799 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 13:25:02:799 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 13:25:02:799 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 24 %
+[INFO] 13:25:02:799 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 49 %
+[INFO] 13:25:02:799 SUSE/(6681:6682): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:02:799 SUSE/(6681:6682): Programa 7: 1 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:02:799 SUSE/(6681:6682): Valor actual del semaforo CONSUMIDOR: 0
+[INFO] 13:25:02:799 SUSE/(6681:6682): Valor actual del semaforo PRODUCTOR: 1
+[INFO] 13:25:02:800 SUSE/(6681:6682): Valor actual del semaforo C3: 1
+[INFO] 13:25:02:800 SUSE/(6681:6682): Grado actual de multiprogramacion: 5
+[INFO] 13:25:03:13 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 0 del programa 5: 10862
+[INFO] 13:25:03:14 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 0 del programa 7: 9648
+[INFO] 13:25:03:14 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 2 del programa 7: 9621
+[INFO] 13:25:03:14 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 2 del programa 7: 9621
+[INFO] 13:25:03:14 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 2 del programa 5: 10840
+[INFO] 13:25:03:14 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 1 del programa 7: 9635
+[INFO] 13:25:03:14 SUSE/(6681:6682): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:25:03:15 SUSE/(6681:6682): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:03:15 SUSE/(6681:6682): Tiempo de espera para el hilo 2 del programa 7: 46
+[INFO] 13:25:03:15 SUSE/(6681:6682): Tiempo de espera para el hilo 2 del programa 7: 46
+[INFO] 13:25:03:15 SUSE/(6681:6682): Tiempo de espera para el hilo 2 del programa 5: 3832
+[INFO] 13:25:03:15 SUSE/(6681:6682): Tiempo de espera para el hilo 1 del programa 7: 81
+[INFO] 13:25:03:15 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:25:03:15 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:03:15 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 2 del programa 7: 13
+[INFO] 13:25:03:15 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 2 del programa 7: 13
+[INFO] 13:25:03:15 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 2 del programa 5: 1
+[INFO] 13:25:03:15 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 1 del programa 7: 233
+[INFO] 13:25:03:15 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:25:03:16 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 25 %
+[INFO] 13:25:03:16 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 13:25:03:16 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 13:25:03:16 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 49 %
+[INFO] 13:25:03:16 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 25 %
+[INFO] 13:25:03:16 SUSE/(6681:6682): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:03:16 SUSE/(6681:6682): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:03:16 SUSE/(6681:6682): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:03:16 SUSE/(6681:6682): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:03:16 SUSE/(6681:6682): Valor actual del semaforo C3: 1
+[INFO] 13:25:03:17 SUSE/(6681:6682): Grado actual de multiprogramacion: 5
+[INFO] 13:25:03:52 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 7: 9686
+[INFO] 13:25:03:52 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 5: 10900
+[INFO] 13:25:03:52 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 7: 9658
+[INFO] 13:25:03:52 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 5: 10900
+[INFO] 13:25:03:52 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 7: 9658
+[INFO] 13:25:03:52 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 1 del programa 7: 9673
+[INFO] 13:25:03:52 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:03:52 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:25:03:52 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 7: 46
+[INFO] 13:25:03:52 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:25:03:52 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 7: 46
+[INFO] 13:25:03:53 SUSE/(6681:6684): Tiempo de espera para el hilo 1 del programa 7: 81
+[INFO] 13:25:03:53 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:03:53 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:25:03:53 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 7: 13
+[INFO] 13:25:03:53 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:25:03:53 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 7: 13
+[INFO] 13:25:03:53 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 1 del programa 7: 233
+[INFO] 13:25:03:53 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 25 %
+[INFO] 13:25:03:53 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:25:03:53 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 13:25:03:53 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:25:03:53 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 13:25:03:53 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 25 %
+[INFO] 13:25:03:54 SUSE/(6681:6684): Programa 5: 0 en new, 1 en ready, 0 en blocked, 0 en exec
+[INFO] 13:25:03:54 SUSE/(6681:6684): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:03:54 SUSE/(6681:6684): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:03:54 SUSE/(6681:6684): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:03:54 SUSE/(6681:6684): Valor actual del semaforo C3: 1
+[INFO] 13:25:03:54 SUSE/(6681:6684): Grado actual de multiprogramacion: 5
+[INFO] 13:25:06:54 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 7: 12689
+[INFO] 13:25:06:55 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 7: 12661
+[INFO] 13:25:06:55 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 1 del programa 7: 12675
+[INFO] 13:25:06:55 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:06:55 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 7: 1518
+[INFO] 13:25:06:55 SUSE/(6681:6684): Tiempo de espera para el hilo 1 del programa 7: 1430
+[INFO] 13:25:06:55 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:06:55 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 7: 76
+[INFO] 13:25:06:55 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 1 del programa 7: 256
+[INFO] 13:25:06:56 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 33 %
+[INFO] 13:25:06:56 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 33 %
+[INFO] 13:25:06:56 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 33 %
+[INFO] 13:25:06:56 SUSE/(6681:6684): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:06:56 SUSE/(6681:6684): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:06:56 SUSE/(6681:6684): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:06:56 SUSE/(6681:6684): Valor actual del semaforo C3: 1
+[INFO] 13:25:06:56 SUSE/(6681:6684): Grado actual de multiprogramacion: 5
+[INFO] 13:25:09:64 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 7: 15698
+[INFO] 13:25:09:65 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 7: 15672
+[INFO] 13:25:09:66 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 1 del programa 7: 15686
+[INFO] 13:25:09:66 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:09:66 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 7: 2840
+[INFO] 13:25:09:67 SUSE/(6681:6684): Tiempo de espera para el hilo 1 del programa 7: 2775
+[INFO] 13:25:09:67 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:09:67 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 7: 103
+[INFO] 13:25:09:67 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 1 del programa 7: 277
+[INFO] 13:25:09:67 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 33 %
+[INFO] 13:25:09:68 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 33 %
+[INFO] 13:25:09:68 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 33 %
+[INFO] 13:25:09:68 SUSE/(6681:6684): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:09:68 SUSE/(6681:6684): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:09:70 SUSE/(6681:6684): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:09:71 SUSE/(6681:6684): Valor actual del semaforo C3: 1
+[INFO] 13:25:09:72 SUSE/(6681:6684): Grado actual de multiprogramacion: 5
+[INFO] 13:25:12:73 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 7: 18707
+[INFO] 13:25:12:73 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 1 del programa 7: 18693
+[INFO] 13:25:12:73 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 7: 18680
+[INFO] 13:25:12:73 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:12:73 SUSE/(6681:6684): Tiempo de espera para el hilo 1 del programa 7: 3812
+[INFO] 13:25:12:73 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 7: 5116
+[INFO] 13:25:12:74 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:12:74 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 1 del programa 7: 297
+[INFO] 13:25:12:74 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 7: 128
+[INFO] 13:25:12:74 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 33 %
+[INFO] 13:25:12:74 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 33 %
+[INFO] 13:25:12:74 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 33 %
+[INFO] 13:25:12:74 SUSE/(6681:6684): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:12:74 SUSE/(6681:6684): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:12:74 SUSE/(6681:6684): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:12:74 SUSE/(6681:6684): Valor actual del semaforo C3: 1
+[INFO] 13:25:12:75 SUSE/(6681:6684): Grado actual de multiprogramacion: 5
+[INFO] 13:25:13:810 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 0 del programa 7: 20444
+[INFO] 13:25:13:814 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 2 del programa 7: 20419
+[INFO] 13:25:13:815 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 1 del programa 7: 20436
+[INFO] 13:25:13:815 SUSE/(6681:6682): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:13:816 SUSE/(6681:6682): Tiempo de espera para el hilo 2 del programa 7: 5116
+[INFO] 13:25:13:816 SUSE/(6681:6682): Tiempo de espera para el hilo 1 del programa 7: 5002
+[INFO] 13:25:13:816 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:13:816 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 2 del programa 7: 139
+[INFO] 13:25:13:829 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 1 del programa 7: 306
+[INFO] 13:25:13:829 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 33 %
+[INFO] 13:25:13:829 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 33 %
+[INFO] 13:25:13:829 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 33 %
+[INFO] 13:25:13:829 SUSE/(6681:6682): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:13:830 SUSE/(6681:6682): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:13:830 SUSE/(6681:6682): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:13:830 SUSE/(6681:6682): Valor actual del semaforo C3: 1
+[INFO] 13:25:13:830 SUSE/(6681:6682): Grado actual de multiprogramacion: 5
+[INFO] 13:25:15:75 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 7: 21710
+[INFO] 13:25:15:76 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 7: 21682
+[INFO] 13:25:15:76 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:15:76 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 7: 6067
+[INFO] 13:25:15:76 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:15:76 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 7: 166
+[INFO] 13:25:15:78 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 50 %
+[INFO] 13:25:15:78 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 49 %
+[INFO] 13:25:15:78 SUSE/(6681:6684): Programa 7: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:15:78 SUSE/(6681:6684): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:15:79 SUSE/(6681:6684): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:15:79 SUSE/(6681:6684): Valor actual del semaforo C3: 1
+[INFO] 13:25:15:79 SUSE/(6681:6684): Grado actual de multiprogramacion: 5
+[INFO] 13:25:17:869 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 0 del programa 5: 288
+[INFO] 13:25:17:874 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 0 del programa 7: 24508
+[INFO] 13:25:17:874 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 1 del programa 5: 284
+[INFO] 13:25:17:875 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 2 del programa 7: 24481
+[INFO] 13:25:17:875 SUSE/(6681:6682): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:25:17:875 SUSE/(6681:6682): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:17:875 SUSE/(6681:6682): Tiempo de espera para el hilo 1 del programa 5: 18
+[INFO] 13:25:17:875 SUSE/(6681:6682): Tiempo de espera para el hilo 2 del programa 7: 6067
+[INFO] 13:25:17:875 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:25:17:875 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:17:879 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 1 del programa 5: 5
+[INFO] 13:25:17:879 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 2 del programa 7: 189
+[INFO] 13:25:17:879 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:25:17:879 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 50 %
+[INFO] 13:25:17:879 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 49 %
+[INFO] 13:25:17:879 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 49 %
+[INFO] 13:25:17:879 SUSE/(6681:6682): Programa 5: 1 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:17:880 SUSE/(6681:6682): Programa 7: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:17:880 SUSE/(6681:6682): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:17:880 SUSE/(6681:6682): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:17:880 SUSE/(6681:6682): Valor actual del semaforo C3: 1
+[INFO] 13:25:17:880 SUSE/(6681:6682): Grado actual de multiprogramacion: 5
+[INFO] 13:25:18:80 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 5: 499
+[INFO] 13:25:18:80 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 0 del programa 7: 24714
+[INFO] 13:25:18:80 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 5: 474
+[INFO] 13:25:18:80 SUSE/(6681:6684): Tiempo de ejecucion para el hilo 2 del programa 7: 24687
+[INFO] 13:25:18:80 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:25:18:80 SUSE/(6681:6684): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:18:82 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 5: 24
+[INFO] 13:25:18:82 SUSE/(6681:6684): Tiempo de espera para el hilo 2 del programa 7: 6067
+[INFO] 13:25:18:82 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:25:18:82 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:18:83 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 5: 0
+[INFO] 13:25:18:83 SUSE/(6681:6684): Tiempo de uso de CPU para el hilo 2 del programa 7: 194
+[INFO] 13:25:18:83 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 51 %
+[INFO] 13:25:18:83 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 50 %
+[INFO] 13:25:18:83 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 48 %
+[INFO] 13:25:18:83 SUSE/(6681:6684): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 49 %
+[INFO] 13:25:18:83 SUSE/(6681:6684): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:18:83 SUSE/(6681:6684): Programa 7: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:18:83 SUSE/(6681:6684): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:18:83 SUSE/(6681:6684): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:18:84 SUSE/(6681:6684): Valor actual del semaforo C3: 1
+[INFO] 13:25:18:84 SUSE/(6681:6684): Grado actual de multiprogramacion: 5
+[INFO] 13:25:19:228 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 0 del programa 5: 1648
+[INFO] 13:25:19:233 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 0 del programa 7: 25867
+[INFO] 13:25:19:233 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 2 del programa 5: 1628
+[INFO] 13:25:19:233 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 2 del programa 7: 25840
+[INFO] 13:25:19:233 SUSE/(6681:6682): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:25:19:233 SUSE/(6681:6682): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 13:25:19:234 SUSE/(6681:6682): Tiempo de espera para el hilo 2 del programa 5: 24
+[INFO] 13:25:19:234 SUSE/(6681:6682): Tiempo de espera para el hilo 2 del programa 7: 6067
+[INFO] 13:25:19:234 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:25:19:234 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 0 del programa 7: 0
+[INFO] 13:25:19:234 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 2 del programa 5: 188
+[INFO] 13:25:19:234 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 2 del programa 7: 201
+[INFO] 13:25:19:234 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:25:19:234 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 50 %
+[INFO] 13:25:19:237 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 49 %
+[INFO] 13:25:19:237 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 49 %
+[INFO] 13:25:19:237 SUSE/(6681:6682): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:19:237 SUSE/(6681:6682): Programa 7: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:19:237 SUSE/(6681:6682): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:19:238 SUSE/(6681:6682): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:19:238 SUSE/(6681:6682): Valor actual del semaforo C3: 1
+[INFO] 13:25:19:238 SUSE/(6681:6682): Grado actual de multiprogramacion: 5
+[INFO] 13:25:19:614 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 0 del programa 5: 2034
+[INFO] 13:25:19:617 SUSE/(6681:6682): Tiempo de ejecucion para el hilo 2 del programa 5: 2011
+[INFO] 13:25:19:617 SUSE/(6681:6682): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 13:25:19:617 SUSE/(6681:6682): Tiempo de espera para el hilo 2 del programa 5: 24
+[INFO] 13:25:19:617 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 0 del programa 5: 0
+[INFO] 13:25:19:618 SUSE/(6681:6682): Tiempo de uso de CPU para el hilo 2 del programa 5: 1
+[INFO] 13:25:19:618 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 13:25:19:618 SUSE/(6681:6682): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 49 %
+[INFO] 13:25:19:618 SUSE/(6681:6682): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 13:25:19:618 SUSE/(6681:6682): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:19:618 SUSE/(6681:6682): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:19:618 SUSE/(6681:6682): Valor actual del semaforo C3: 1
+[INFO] 13:25:19:619 SUSE/(6681:6682): Grado actual de multiprogramacion: 5
+[INFO] 13:25:21:85 SUSE/(6681:6684): Valor actual del semaforo CONSUMIDOR: 1
+[INFO] 13:25:21:85 SUSE/(6681:6684): Valor actual del semaforo PRODUCTOR: 0
+[INFO] 13:25:21:86 SUSE/(6681:6684): Valor actual del semaforo C3: 1
+[INFO] 13:25:21:86 SUSE/(6681:6684): Grado actual de multiprogramacion: 5
