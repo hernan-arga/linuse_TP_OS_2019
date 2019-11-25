@@ -6,6 +6,7 @@
 #include <commons/bitarray.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <sys/types.h>
 
 void* memoriaPrincipal;
@@ -13,16 +14,25 @@ t_dictionary* tablasSegmentos; /*Diccionario que contiene las tablas de segmento
 								*proceso, la key es el pid de cada proceso*/
 int tam_mem;
 int tam_pagina;
+int tam_swap;
+
+FILE *swap;
+
 int cantidadFrames;
+size_t cantidadPaginasSwap;
+
 //t_bitarray *bitmapFrames;
 t_list *bitmapFrames; //Va a ser una t_list de struct Frame, el INDICE es el numero de frame
+
+t_bitarray *bitmapSwap;
 
 struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
 	uint32_t size;
 	bool isFree;
 };
 
-struct Segmento{
+struct Segmento{ //Segmento NORMAL
+	bool esComun;
 	int id;
 	uint32_t baseLogica;
 	uint32_t tamanio;
@@ -30,17 +40,15 @@ struct Segmento{
 };
 
 struct Pagina{
-	//bool modificado;
-	//bool uso;
-	//int presencia;
 	int numeroFrame;
 	//struct Frame frame; ???
 };
 
 struct Frame{
-	bool modificado;
-	bool uso;
+	int modificado;
+	int uso;
 	int presencia;
+	int indiceSwap;
 };
 
 
@@ -90,6 +98,7 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 
 //Funciones get
 int museget(void* dst, uint32_t src, size_t n, int idSocket);
+int min(int num1, int num2);
 
 //Funciones free
 int musefree(int idSocketCliente, uint32_t dir);
@@ -97,6 +106,8 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 
 //Memoria virtual
 int clockModificado();
+void inicializarBitmapSwap();
+uint32_t musemap(char *path, size_t length/*, int flags*/);
 
 #endif /* MUSE_H_ */
 

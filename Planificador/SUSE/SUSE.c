@@ -150,7 +150,7 @@ pthread_t hiloTomarMetricas;
 archivoConfiguracion configuracion;
 t_config *config;
 t_dictionary *diccionarioDeListasDeReady;
-t_dictionary *diccionarioDeExec;
+//t_dictionary *diccionarioDeExec;
 t_dictionary *diccionarioDeBlockedPorSemaforo;
 t_dictionary *diccionarioDeListasDeExit;
 t_dictionary *diccionarioDeProgramas;
@@ -164,6 +164,7 @@ sem_t sem_new;
 sem_t sem_exit;
 sem_t hayQueActualizarUnExec;
 sem_t semaforoConfiguracion;
+sem_t sem_metricas;
 t_queue *new;
 t_queue *exitCola;
 
@@ -232,7 +233,7 @@ void iniciarSUSE(){
 	new = queue_create();
 	exitCola = queue_create();
 	diccionarioDeListasDeReady = dictionary_create();
-	diccionarioDeExec = dictionary_create();
+	//diccionarioDeExec = dictionary_create();
 	diccionarioDeProgramas = dictionary_create();
 	sem_init(&MAXIMOPROCESAMIENTO, 0, configuracion.GRADO_DE_MULTIPROGRAMACION);
 	sem_init(&sem_diccionario_ready,0,1);
@@ -243,6 +244,7 @@ void iniciarSUSE(){
 	sem_init(&sem_exit, 0, 1);
 	sem_init(&semaforoConfiguracion, 0, 1);
 	sem_init(&sem_new, 0, 1);
+	sem_init(&sem_metricas, 0, 1);
 	logger = log_create("Metricas.log", "SUSE", 0, LOG_LEVEL_INFO);
 }
 
@@ -253,7 +255,9 @@ void atenderMetricas(){
 		configuracion.METRICAS_TIMER = config_get_int_value(config, "METRICS_TIMER");
 		sem_post(&semaforoConfiguracion);
 		sleep(configuracion.METRICAS_TIMER);
+		sem_wait(&sem_metricas);
 		tomarMetricas();
+		sem_post(&sem_metricas);
 	}
 }
 
@@ -543,7 +547,7 @@ void tomarMetricasGradoDeMultiprogramacion(){
 }
 
 //Esto es para limitar la cantidad de post que se hace sobre el semaforo
-void postSemaforoMultiprogramacion(){
+/*void postSemaforoMultiprogramacion(){
 	int valorSemaforo;
 	sem_getvalue(&MAXIMOPROCESAMIENTO, &valorSemaforo);
 	sem_wait(&semaforoConfiguracion);
@@ -554,7 +558,7 @@ void postSemaforoMultiprogramacion(){
 		sem_post(&MAXIMOPROCESAMIENTO);
 	}
 
-}
+}*/
 
 void planificarReady(){
 	while(1){
@@ -699,7 +703,7 @@ int calcularSiguienteHilo(int pid){
 	candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0) );
 	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = candidatoAEjecutar;
 	inicioRafaga = getMicrotime();
-	postSemaforoMultiprogramacion();
+	//postSemaforoMultiprogramacion();
 
 	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->cantidadDeHilosEnReady--;
 
@@ -806,7 +810,7 @@ void sem_suse_wait(int pid, int tid, char* semID){
 				sem_post(&blockedPorSemaforo);
 				//Lo saco de ejecucion
 				((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
-				postSemaforoMultiprogramacion();
+				//postSemaforoMultiprogramacion();
 				//sem_post(&hayQueActualizarUnExec);
 			}
 			else{
@@ -864,7 +868,7 @@ void realizarJoin(int pid, int tidAEsperar){
 			ponerEnBlockedPorHilo(pid, ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec, tidAEsperar);
 			//Lo saco de exec
 			((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
-			postSemaforoMultiprogramacion();
+			//postSemaforoMultiprogramacion();
 		}
 	}
 	sem_post(&sem_programas);
@@ -892,7 +896,7 @@ void realizarClose(int pid, int tid){
 		pasarAExit(elQueEstaEjecutando);
 		//Lo saco de exec
 		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
-		postSemaforoMultiprogramacion();
+		//postSemaforoMultiprogramacion();
 		//sem_post(&hayQueActualizarUnExec);
 
 		//Libero la lista de los bloqueados por este hilo que termino
@@ -917,6 +921,12 @@ void pasarAExit(hilo *unHilo){
 		list_add((t_list*)(dictionary_get(diccionarioDeListasDeExit, string_itoa(unHilo->pid))), unHilo);
 	}
 	sem_post(&sem_exit);
+
+	sem_wait(&sem_metricas);
+	tomarMetricas();
+	sem_post(&sem_metricas);
+
+	sem_post(&MAXIMOPROCESAMIENTO);
 }
 
 void ponerEnBlockedPorHilo(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar){
@@ -946,7 +956,7 @@ void liberarBloqueadosPorElHilo(hilo *hiloBloqueante){
 			 * la lista de bloqueados por el hiloBloqueante
 			 */
 			if(!bloqueadoPorAlgunHilo(hiloBloqueado)){
-				sem_wait(&MAXIMOPROCESAMIENTO);
+
 				sem_wait(&sem_diccionario_ready);
 				//Lo agrego a ready
 				list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(hiloBloqueado->pid))), hiloBloqueado);
@@ -1052,11 +1062,29 @@ void atenderClose(int sd){
 }
 
 void limpiarEstructuras(int pid){
+
+	void borrarPrograma(programa* unPrograma){
+		free(unPrograma);
+	}
+
+	void liberarHilo(hilo* unHilo){
+		free(unHilo);
+	}
+
+	void borrarLista(t_list *lista){
+		list_destroy_and_destroy_elements(lista, (void*)liberarHilo);
+	}
+
 	//todo Limpiar lo que tiene adentro cada una
-	dictionary_remove(diccionarioDeListasDeExit, string_itoa(pid));
-	dictionary_remove(diccionarioDeListasDeReady, string_itoa(pid));
-	dictionary_remove(diccionarioDeExec, string_itoa(pid));
-	dictionary_remove(diccionarioDeProgramas, string_itoa(pid));
+	sem_wait(&sem_exit);
+	dictionary_remove_and_destroy(diccionarioDeListasDeExit, string_itoa(pid), (void*)borrarLista);
+	sem_post(&sem_exit);
+	sem_wait(&sem_diccionario_ready);
+	dictionary_remove_and_destroy(diccionarioDeListasDeReady, string_itoa(pid), (void*)borrarLista);
+	sem_post(&sem_diccionario_ready);
+	sem_wait(&sem_programas);
+	dictionary_remove_and_destroy(diccionarioDeProgramas, string_itoa(pid), (void*)borrarPrograma);
+	sem_post(&sem_programas);
 }
 
 void crearPrograma(int pid){
@@ -1204,6 +1232,7 @@ int32_t iniciarConexion() {
 					close(sd);
 					client_socket[i] = 0;
 
+					sem_post(&MAXIMOPROCESAMIENTO);
 					limpiarEstructuras(sd);
 				} else {
 
