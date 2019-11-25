@@ -1159,4 +1159,39 @@ uint32_t musemap(char *path, size_t length/*, int flags*/){
 	return 0;
 }
 
+/*Trae a memoria principal una pagina de un segmento de un proceso en particular
+ * y retorna el numero de frame en el que la ubico*/
+int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCliente){
+	//Obtengo pagina swapeada
+	struct Pagina *paginaSwapeada = malloc(sizeof(struct Pagina));
+	struct Segmento *segmentoQueContienePagina = malloc(sizeof(struct Segmento));
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+
+	segmentoQueContienePagina = list_get(segmentosProceso, indiceSegmento);
+	paginaSwapeada = list_get(segmentoQueContienePagina->tablaPaginas, indicePagina);
+
+	//Si se llamo a esta funcion, antes se chequeo que el frame tiene P = 0
+	//por lo que la pagina esta en swap
+
+	//Obtengo indice de swap donde se encuentra
+	int indiceSwap = paginaSwapeada->indiceSwap;
+
+	//Busco frame donde traer la pagina
+	int frameReemplazo = clockModificado();
+	struct Frame *nuevoFrame = malloc(sizeof(struct Frame));
+
+	paginaSwapeada->indiceSwap = -1; //ya no esta en swap
+	paginaSwapeada->numeroFrame = frameReemplazo;
+
+	nuevoFrame = list_get(bitmapFrames, frameReemplazo);
+	nuevoFrame->modificado = 0; //No esta modificado, recien se carga
+	nuevoFrame->presencia = 1; //P = 1, esta cargada en mm ppal
+	nuevoFrame->uso = 1;
+
+	list_replace(bitmapFrames, nuevoFrame, frameReemplazo);
+
+	return frameReemplazo;
+}
+
+
 

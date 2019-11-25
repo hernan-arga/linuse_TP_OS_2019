@@ -41,6 +41,7 @@ struct Segmento{ //Segmento NORMAL
 
 struct Pagina{
 	int numeroFrame;
+	int indiceSwap;
 	//struct Frame frame; ???
 };
 
@@ -48,7 +49,7 @@ struct Frame{
 	int modificado;
 	int uso;
 	int presencia;
-	int indiceSwap;
+	//int indiceSwap;
 };
 
 
@@ -108,6 +109,7 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 int clockModificado();
 void inicializarBitmapSwap();
 uint32_t musemap(char *path, size_t length/*, int flags*/);
+int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCliente);
 
 #endif /* MUSE_H_ */
 
