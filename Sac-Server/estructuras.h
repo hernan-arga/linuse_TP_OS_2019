@@ -57,7 +57,7 @@ typedef enum __attribute__((packed)){
 	DIRECTORIO = '\2'
 }estado_archivo;
 
-typedef struct gheader{ // un bloque (4096 bytes)
+typedef struct sac_header_t{ // un bloque (4096 bytes)
 	unsigned char identificador[3]; // valor "SAC"
 	uint32_t version; // valor 1
 	uint32_t bloque_inicio_bitmap; // valor 1
@@ -65,7 +65,7 @@ typedef struct gheader{ // un bloque (4096 bytes)
 	unsigned char padding[4081]; // relleno
 } gheader;
 
-typedef struct gfile{
+typedef struct sac_file_t{
 	uint8_t estado; // 0: borrado, 1: archivo, 2: directorio
 	unsigned char nombre_archivo[GFILENAMELENGTH];
 	uint32_t bloque_padre;
@@ -75,9 +75,9 @@ typedef struct gfile{
 	ptrGBloque bloques_indirectos[BLKINDIRECT];
 } gfile;
 
-struct gheader *header_start;
-struct gfile *node_table_start, *data_block_start, *bitmap_start;
-struct gheader Header_Data;
+struct sac_header_t *header_start;
+struct sac_file_t *node_table_start, *data_block_start, *bitmap_start;
+struct sac_header_t Header_Data;
 
 int fuse_disc_size;
 // Macros que definen los tamanios de los bloques.
@@ -118,13 +118,13 @@ int asignarBloqueLibre();
 void loguearBloqueQueCambio(int);
 int tamanioEnBytesDelBitarray();
 int split_path(const char*, char**, char**);
-int add_node(struct gfile*, int);
+int add_node(struct sac_file_t*, int);
 int get_node(void);
 ptrGBloque determinar_nodo(const char*);
 int get_size(void);
 int lastchar(const char*, char);
 int set_position (int *, int *, size_t, off_t);
-int delete_nodes_upto (struct gfile *, int, int);
+int delete_nodes_upto (struct sac_file_t *, int, int);
 
 t_bitarray* bitArray;
 char *mmapDeBitmap;

@@ -11,7 +11,7 @@ int o_create(char* path){
 
 	int nodo_padre, i, res;
 	int new_free_node;
-	struct gfile *node;
+	struct sac_file_t *node;
 	char *nombre = malloc(strlen(path) + 1), *nom_to_free = nombre;
 	char *dir_padre = malloc(strlen(path) + 1), *dir_to_free = dir_padre;
 	char *data_block;
@@ -131,7 +131,7 @@ int o_read(char* path, int size, int offset, char* buf){
 	log_info(logger, "Reading: Path: %s - Size: %d - Offset %d", path, size, offset);
 	unsigned int nodo = determinar_nodo(path), bloque_punteros, num_bloque_datos;
 	unsigned int bloque_a_buscar; // Estructura auxiliar para no dejar choclos
-	struct gfile *node;
+	struct sac_file_t *node;
 	ptrGBloque *pointer_block;
 	char *data_block;
 	size_t tam = size;
@@ -235,7 +235,7 @@ int o_readDir(char* path, int cliente){
 
 //	log_info(logger, "Readdir: Path: %s - Offset %d", path, offset);
 	int i, nodo = determinar_nodo(path);
-	struct gfile *node;
+	struct sac_file_t *node;
 
 	if (nodo == -1){
 		return -ENOENT;
@@ -322,7 +322,7 @@ void o_getAttr(char* path, int cliente){
 	if (nodo < 0){
 		res = 1;
 	}
-	struct gfile *node;
+	struct sac_file_t *node;
 	//memset(stbuf, 0, sizeof(struct stat)); no se para que lo hacia (abril)
 
 	if (nodo == -1){
@@ -470,7 +470,7 @@ int o_mkdir(char* path){
 
 	log_info(logger, "Mkdir: Path: %s", path);
 	int nodo_padre, i, res = 0;
-	struct gfile *node;
+	struct sac_file_t *node;
 	char *nombre = malloc(strlen(path) + 1), *nom_to_free = nombre;
 	char *dir_padre = malloc(strlen(path) + 1), *dir_to_free = dir_padre;
 
@@ -557,7 +557,7 @@ int o_mkdir(char* path){
 
 int o_unlink(char* pathC){
 
-	struct gfile* file_data;
+	struct sac_file_t* file_data;
 	int node = determinar_nodo(pathC);
 
 	ENABLE_DELETE_MODE;
@@ -722,7 +722,7 @@ void o_write(char* path, int size, int offset, char* buf){
 		loguearError(" - NO se pudo hacer el WRITE en SacServer\n");
 	}
 	int new_free_node;
-	struct gfile *node;
+	struct sac_file_t *node;
 	char *data_block;
 	size_t tam = size, file_size, space_in_block, offset_in_block = offset % BLOCKSIZE;
 	off_t off = offset;

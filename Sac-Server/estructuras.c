@@ -184,7 +184,7 @@ ptrGBloque determinar_nodo(const char* path){
 	// Super_path usado para obtener la parte superior del path, sin el nombre.
 	char *super_path = (char*) malloc(strlen(path) +1), *nombre = (char*) malloc(strlen(path)+1);
 	char *start = nombre, *start_super_path = super_path; //Estos liberaran memoria.
-	struct gfile *node;
+	struct sac_file_t *node;
 	unsigned char *node_name;
 
 	split_path(path, &super_path, &nombre);
@@ -251,7 +251,7 @@ int get_node(void){
  *  @RET
  *  	Devuelve 0 si salio bien, negativo si hubo problemas.
  */
-int add_node(struct gfile *file_data, int node_number){
+int add_node(struct sac_file_t *file_data, int node_number){
 	int node_pointer_number, position;
 	size_t tam = file_data->tamanio_archivo;
 	int new_pointer_block;
@@ -338,7 +338,7 @@ int set_position (int *pointer_block, int *data_block, size_t size, off_t offset
  *	@RET
  *
  */
-int delete_nodes_upto (struct gfile *file_data, int pointer_upto, int data_upto){
+int delete_nodes_upto (struct sac_file_t *file_data, int pointer_upto, int data_upto){
 	t_bitarray *bitarray;
 	size_t file_size = file_data->tamanio_archivo;
 	int node_to_delete, node_pointer_to_delete, delete_upto;
