@@ -18,15 +18,28 @@ int tam_swap;
 FILE *swap;
 
 int cantidadFrames;
+int cantidadPaginasSwap;
+
 //t_bitarray *bitmapFrames;
 t_list *bitmapFrames; //Va a ser una t_list de struct Frame, el INDICE es el numero de frame
+
+t_bitarray *bitmapSwap;
 
 struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
 	uint32_t size;
 	bool isFree;
 };
 
-struct Segmento{
+struct Segmento{ //Segmento NORMAL
+	bool esComun;
+	int id;
+	uint32_t baseLogica;
+	uint32_t tamanio;
+	t_list* tablaPaginas;
+};
+
+struct SegmentoMmap{ //Segmento Mmapeado
+	bool esComun;
 	int id;
 	uint32_t baseLogica;
 	uint32_t tamanio;
@@ -34,9 +47,6 @@ struct Segmento{
 };
 
 struct Pagina{
-	//bool modificado;
-	//bool uso;
-	//int presencia;
 	int numeroFrame;
 	//struct Frame frame; ???
 };
@@ -45,6 +55,7 @@ struct Frame{
 	bool modificado;
 	bool uso;
 	int presencia;
+	int indiceSwap;
 };
 
 
@@ -101,6 +112,8 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 
 //Memoria virtual
 int clockModificado();
+void inicializarBitmapSwap();
+uint32_t musemap(char *path, size_t length/*, int flags*/);
 
 #endif /* MUSE_H_ */
 
