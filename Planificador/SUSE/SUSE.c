@@ -150,7 +150,7 @@ pthread_t hiloTomarMetricas;
 archivoConfiguracion configuracion;
 t_config *config;
 t_dictionary *diccionarioDeListasDeReady;
-t_dictionary *diccionarioDeExec;
+//t_dictionary *diccionarioDeExec;
 t_dictionary *diccionarioDeBlockedPorSemaforo;
 t_dictionary *diccionarioDeListasDeExit;
 t_dictionary *diccionarioDeProgramas;
@@ -233,7 +233,7 @@ void iniciarSUSE(){
 	new = queue_create();
 	exitCola = queue_create();
 	diccionarioDeListasDeReady = dictionary_create();
-	diccionarioDeExec = dictionary_create();
+	//diccionarioDeExec = dictionary_create();
 	diccionarioDeProgramas = dictionary_create();
 	sem_init(&MAXIMOPROCESAMIENTO, 0, configuracion.GRADO_DE_MULTIPROGRAMACION);
 	sem_init(&sem_diccionario_ready,0,1);
@@ -1062,11 +1062,29 @@ void atenderClose(int sd){
 }
 
 void limpiarEstructuras(int pid){
+
+	void borrarPrograma(programa* unPrograma){
+		free(unPrograma);
+	}
+
+	void liberarHilo(hilo* unHilo){
+		free(unHilo);
+	}
+
+	void borrarLista(t_list *lista){
+		list_destroy_and_destroy_elements(lista, (void*)liberarHilo);
+	}
+
 	//todo Limpiar lo que tiene adentro cada una
-	dictionary_remove(diccionarioDeListasDeExit, string_itoa(pid));
-	dictionary_remove(diccionarioDeListasDeReady, string_itoa(pid));
-	dictionary_remove(diccionarioDeExec, string_itoa(pid));
-	dictionary_remove(diccionarioDeProgramas, string_itoa(pid));
+	sem_wait(&sem_exit);
+	dictionary_remove_and_destroy(diccionarioDeListasDeExit, string_itoa(pid), (void*)borrarLista);
+	sem_post(&sem_exit);
+	sem_wait(&sem_diccionario_ready);
+	dictionary_remove_and_destroy(diccionarioDeListasDeReady, string_itoa(pid), (void*)borrarLista);
+	sem_post(&sem_diccionario_ready);
+	sem_wait(&sem_programas);
+	dictionary_remove_and_destroy(diccionarioDeProgramas, string_itoa(pid), (void*)borrarPrograma);
+	sem_post(&sem_programas);
 }
 
 void crearPrograma(int pid){
@@ -1214,6 +1232,7 @@ int32_t iniciarConexion() {
 					close(sd);
 					client_socket[i] = 0;
 
+					sem_post(&MAXIMOPROCESAMIENTO);
 					limpiarEstructuras(sd);
 				} else {
 
