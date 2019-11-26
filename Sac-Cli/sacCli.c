@@ -128,7 +128,7 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 
 		memcpy(buf + offset, texto, *tamanioTexto);
 
-		return 0;
+		return *tamanioTexto;
 	}
 	else{
 		return errno;
