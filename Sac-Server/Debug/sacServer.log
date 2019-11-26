@@ -867,3 +867,9 @@
 
 [ERROR] 00:48:14:828 SacServer/(9031:9031):  - NO se pudo hacer el read en SacServer
 
+[INFO] 01:18:20:962 SacServer/(9999:9999):  + Se hizo un create en SacServer
+
+[ERROR] 01:18:22:174 SacServer/(9999:9999):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 01:18:22:288 SacServer/(9999:9999):  - NO se pudo hacer el read en SacServer
+

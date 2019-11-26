@@ -232,6 +232,18 @@ int get_node(void){
 
 	bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B);
 
+	int encontrado = 0;
+
+	for (int i =0; i < bitarray_get_max_bit(bitarray); i++) {
+		if(bitarray_test_bit(bitarray, i) == 0) {
+			bitarray_set_bit(bitarray, i);
+			encontrado = 1;
+			res = i;
+			break;
+
+		}
+	}
+
 	//res = bitarray_test_and_set(bitarray, GHEADERBLOCKS+BITMAP_BLOCK_SIZE+GFILEBYTABLE);
 
 	// Cierra el bitmap
