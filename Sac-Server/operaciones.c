@@ -256,7 +256,7 @@ int o_readDir(char* path, int cliente){
 		if ((nodo==(node->bloque_padre)) & (((node->estado) == DIRECTORIO) | ((node->estado) == OCUPADO)))
 			//filler(buf, (char*) &(node->nombre_archivo[0]), NULL, 0);
 
-			string_append(&directoriosPegoteados, node->nombre_archivo[0]);
+			string_append(&directoriosPegoteados, (char *) &node->nombre_archivo[0]);
 		    string_append(&directoriosPegoteados, ";");
 
 			node = &node[1];
@@ -317,42 +317,42 @@ void o_getAttr(char* path, int cliente){
 
 	//log_info(logger, "Getattr: Path: %s", path);
 
-	struct stat stbuf;
-	int nodo = determinar_nodo(path), res;
+	struct stat *stbuf = malloc(sizeof(struct stat));
+	int nodo = determinar_nodo(path), res = 0;
 	if (nodo < 0){
 		res = 1;
 	}
 	struct sac_file_t *node;
-	//memset(stbuf, 0, sizeof(struct stat)); no se para que lo hacia (abril)
+	memset(stbuf, 0, sizeof(struct stat));
 
 	if (nodo == -1){
 		res = 1;
 	}
 
 	if (strcmp(path, "/") == 0){
-		stbuf.st_mode = S_IFDIR | 0777;
-		stbuf.st_nlink = 2;
-		stbuf.st_size = 4096; // ??????????
+		stbuf->st_mode = S_IFDIR | 0777;
+		stbuf->st_nlink = 2;
+		stbuf->st_size = 4096; // ??????????
 
-		void* buffer = malloc( 7 * sizeof(int) + sizeof(stbuf.st_mode));
+		void* buffer = malloc( 7 * sizeof(int) + sizeof(stbuf->st_mode));
 
 		int tamanioResp = sizeof(int);
 		memcpy(buffer, &tamanioResp, sizeof(int));
 		memcpy(buffer + sizeof(int), &res, sizeof(int));
 
-		int tamanioStmode = sizeof(stbuf.st_mode);
+		int tamanioStmode = sizeof(stbuf->st_mode);
 		memcpy(buffer + 2 * sizeof(int), &tamanioStmode, sizeof(int));
-		memcpy(buffer + 3 * sizeof(int), &stbuf.st_mode, sizeof(stbuf.st_mode));
+		memcpy(buffer + 3 * sizeof(int), &stbuf->st_mode, sizeof(stbuf->st_mode));
 
 		int tamanioStnlink = sizeof(int);
-		memcpy(buffer + 3 * sizeof(int) + sizeof(stbuf.st_mode), &tamanioStnlink, sizeof(int));
-		memcpy(buffer + 4 * sizeof(int) + sizeof(stbuf.st_mode), &stbuf.st_nlink, sizeof(int));
+		memcpy(buffer + 3 * sizeof(int) + sizeof(stbuf->st_mode), &tamanioStnlink, sizeof(int));
+		memcpy(buffer + 4 * sizeof(int) + sizeof(stbuf->st_mode), &stbuf->st_nlink, sizeof(int));
 
 		int tamanioEscrito = sizeof(int);
-		memcpy(buffer + 5 * sizeof(int) + sizeof(stbuf.st_size), &tamanioEscrito, sizeof(int));
-		memcpy(buffer + 6 * sizeof(int) + sizeof(stbuf.st_size), &stbuf.st_size, sizeof(int));
+		memcpy(buffer + 5 * sizeof(int) + sizeof(stbuf->st_size), &tamanioEscrito, sizeof(int));
+		memcpy(buffer + 6 * sizeof(int) + sizeof(stbuf->st_size), &stbuf->st_size, sizeof(int));
 
-		send(cliente, buffer, 7 * sizeof(int) + sizeof(stbuf.st_mode), 0);
+		send(cliente, buffer, 7 * sizeof(int) + sizeof(stbuf->st_mode), 0);
 	}
 	else{
 		pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
@@ -363,20 +363,20 @@ void o_getAttr(char* path, int cliente){
 		node = &(node[nodo-1]);
 
 		if (node->estado == 2){
-			stbuf.st_mode = S_IFDIR | 0777;
-			stbuf.st_nlink = 2;
-			stbuf.st_size = 4096; // Default para los directorios, es una "convencion".
-			stbuf.st_mtime = node->fecha_modificacion;
-			stbuf.st_ctime = node->fecha_creacion;
-			stbuf.st_atime = time(NULL); /* Le decimos que el access time es la hora actual */
+			stbuf->st_mode = S_IFDIR | 0777;
+			stbuf->st_nlink = 2;
+			stbuf->st_size = 4096; // Default para los directorios, es una "convencion".
+			stbuf->st_mtime = node->fecha_modificacion;
+			stbuf->st_ctime = node->fecha_creacion;
+			stbuf->st_atime = time(NULL); /* Le decimos que el access time es la hora actual */
 			res = 0;
 		} else if(node->estado == 1){
-			stbuf.st_mode = S_IFREG | 0777;
-			stbuf.st_nlink = 1;
-			stbuf.st_size = node->tamanio_archivo;
-			stbuf.st_mtime = node->fecha_modificacion;
-			stbuf.st_ctime = node->fecha_creacion;
-			stbuf.st_atime = time(NULL); /* Le decimos que el access time es la hora actual */
+			stbuf->st_mode = S_IFREG | 0777;
+			stbuf->st_nlink = 1;
+			stbuf->st_size = node->tamanio_archivo;
+			stbuf->st_mtime = node->fecha_modificacion;
+			stbuf->st_ctime = node->fecha_creacion;
+			stbuf->st_atime = time(NULL); /* Le decimos que el access time es la hora actual */
 			res = 0;
 		}
 
@@ -393,25 +393,24 @@ void o_getAttr(char* path, int cliente){
 		}
 		if(res == 0){
 			//Serializo respuesta = 0, stbuf
-			void* buffer = malloc( 7 * sizeof(int) + sizeof(stbuf.st_mode));
+			void* buffer = malloc( 7 * sizeof(int) + sizeof(stbuf->st_mode));
 
 			int tamanioResp = sizeof(int);
 			memcpy(buffer, &tamanioResp, sizeof(int));
 			memcpy(buffer + sizeof(int), &res, sizeof(int));
-
-			int tamanioStmode = sizeof(stbuf.st_mode);
+			int tamanioStmode = sizeof(stbuf->st_mode);
 			memcpy(buffer + 2 * sizeof(int), &tamanioStmode, sizeof(int));
-			memcpy(buffer + 3 * sizeof(int), &stbuf.st_mode, sizeof(stbuf.st_mode));
+			memcpy(buffer + 3 * sizeof(int), &stbuf->st_mode, sizeof(stbuf->st_mode));
 
 			int tamanioStnlink = sizeof(int);
-			memcpy(buffer + 3 * sizeof(int) + sizeof(stbuf.st_mode), &tamanioStnlink, sizeof(int));
-			memcpy(buffer + 4 * sizeof(int) + sizeof(stbuf.st_mode), &stbuf.st_nlink, sizeof(int));
+			memcpy(buffer + 3 * sizeof(int) + sizeof(stbuf->st_mode), &tamanioStnlink, sizeof(int));
+			memcpy(buffer + 4 * sizeof(int) + sizeof(stbuf->st_mode), &stbuf->st_nlink, sizeof(int));
 
 			int tamanioEscrito = sizeof(int);
-			memcpy(buffer + 5 * sizeof(int) + sizeof(stbuf.st_size), &tamanioEscrito, sizeof(int));
-			memcpy(buffer + 6 * sizeof(int) + sizeof(stbuf.st_size), &stbuf.st_size, sizeof(int));
+			memcpy(buffer + 5 * sizeof(int) + sizeof(stbuf->st_size), &tamanioEscrito, sizeof(int));
+			memcpy(buffer + 6 * sizeof(int) + sizeof(stbuf->st_size), &stbuf->st_size, sizeof(int));
 
-			send(cliente, buffer, 7 * sizeof(int) + sizeof(stbuf.st_mode), 0);
+			send(cliente, buffer, 7 * sizeof(int) + sizeof(stbuf->st_mode), 0);
 		}
 	}
 

@@ -137,6 +137,8 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){
 	//if(strcmp(path, "/")== 0){
 		//Serializo peticion y path
+		filler(buf, ".", NULL, 0);
+		filler(buf, "..", NULL, 0);
 		char* buffer = malloc(3 * sizeof(int) + strlen(path));
 
 		int peticion = 4;
