@@ -89,7 +89,7 @@ int fuse_disc_size;
 #define HEADER_SIZE_B ((int) GHEADERBLOCKS * BLOCKSIZE)
 #define BITMAP_BLOCK_SIZE Header_Data.tamanio_bitmap
 
-#define DISC_PATH "/home/utnso/miFS/disco.bin"
+#define DISC_PATH "/home/utnso/miFS/sac-tools/disco.bin"
 #define ARRAY64SIZE _bitarray_64
 size_t _bitarray_64;
 #define ARRAY64LEAK _bitarray_64_leak
@@ -102,7 +102,6 @@ char fuse_disc_path[1000];
 // Se guardara aqui el tamanio del disco
 int fuse_disc_size;
 
-#define DISC_PATH "/home/utnso/miFS/disco.bin"
 //#define DISC_SIZE_B(p) path_size_in_bytes(p)
 #define ACTUAL_DISC_SIZE_B fuse_disc_size
 

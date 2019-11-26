@@ -839,3 +839,19 @@
 
 [ERROR] 18:21:56:565 SacServer/(13852:13852):  - NO se pudo hacer el open en SacServer
 
+[ERROR] 17:59:20:431 SacServer/(17366:17366):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 18:01:46:174 SacServer/(17457:17457):  - NO se pudo hacer el read en SacServer
+
+[INFO] 18:04:26:296 SacServer/(17644:17644):  + Se hizo un mkdir en SacServer
+
+[INFO] 18:04:43:215 SacServer/(17644:17644):  + Se hizo un mkdir en SacServer
+
+[ERROR] 18:04:46:444 SacServer/(17644:17644):  - NO se pudo hacer el mkdir en SacServer
+
+[ERROR] 18:04:53:823 SacServer/(17644:17644):  - NO se pudo hacer el mkdir en SacServer
+
+[INFO] 19:50:36:417 SacServer/(3304:3304):  + Se hizo un mkdir en SacServer
+
+[ERROR] 19:50:41:200 SacServer/(3304:3304):  - NO se pudo hacer el mkdir en SacServer
+

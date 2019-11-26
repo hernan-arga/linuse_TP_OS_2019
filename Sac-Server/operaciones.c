@@ -7,7 +7,7 @@ int o_create(char* path){
 	if (determinar_nodo(path) != -1){
 		return 1;
 	}
-	log_info(logger, "Create: Path: %s", path);
+	//log_info(logger, "Create: Path: %s", path);
 
 	int nodo_padre, i, res;
 	int new_free_node;
@@ -128,7 +128,7 @@ int o_open(char* path){
 
 int o_read(char* path, int size, int offset, char* buf){
 
-	log_info(logger, "Reading: Path: %s - Size: %d - Offset %d", path, size, offset);
+	//log_info(logger, "Reading: Path: %s - Size: %d - Offset %d", path, size, offset);
 	unsigned int nodo = determinar_nodo(path), bloque_punteros, num_bloque_datos;
 	unsigned int bloque_a_buscar; // Estructura auxiliar para no dejar choclos
 	struct sac_file_t *node;
@@ -233,7 +233,7 @@ int o_read(char* path, int size, int offset, char* buf){
 
 int o_readDir(char* path, int cliente){
 
-//	log_info(logger, "Readdir: Path: %s - Offset %d", path, offset);
+//	//log_info(logger, "Readdir: Path: %s - Offset %d", path, offset);
 	int i, nodo = determinar_nodo(path);
 	struct sac_file_t *node;
 
@@ -468,7 +468,7 @@ void o_getAttr(char* path, int cliente){
 
 int o_mkdir(char* path){
 
-	log_info(logger, "Mkdir: Path: %s", path);
+	//log_info(logger, "Mkdir: Path: %s", path);
 	int nodo_padre, i, res = 0;
 	struct sac_file_t *node;
 	char *nombre = malloc(strlen(path) + 1), *nom_to_free = nombre;

@@ -176,7 +176,7 @@ int split_path(const char* path, char** super_path, char** name){
 ptrGBloque determinar_nodo(const char* path){
 
 	// Si es el directorio raiz, devuelve 0:
-	if(!strcmp(path, "/")){
+	if(!strcmp(path,"/")){
 		return 0;
 	}
 

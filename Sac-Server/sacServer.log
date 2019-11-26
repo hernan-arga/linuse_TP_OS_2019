@@ -57,3 +57,29 @@
 [INFO] 00:27:21:93 SacServer/(18739:18739):  + Se hizo un create en SacServer
 
 [INFO] 22:11:25:435 SacServer/(4993:4993):  + Levantado Sac-Server correctamente
+[ERROR] 18:06:37:746 SacServer/(17735:17735):  - NO se pudo hacer el mkdir en SacServer
+
+[ERROR] 18:09:45:388 SacServer/(17735:17735):  - NO se pudo hacer el mkdir en SacServer
+
+[ERROR] 18:11:37:398 SacServer/(18037:18037):  - NO se pudo hacer el mkdir en SacServer
+
+[ERROR] 18:13:49:361 SacServer/(18147:18147):  - NO se pudo hacer el mkdir en SacServer
+
+[ERROR] 18:17:22:631 SacServer/(18147:18147):  - NO se pudo hacer el mkdir en SacServer
+
+[ERROR] 20:15:12:246 SacServer/(4106:4106):  - NO se pudo hacer el create en SacServer
+
+[ERROR] 20:15:26:888 SacServer/(4106:4106):  - NO se pudo hacer el create en SacServer
+
+[ERROR] 20:16:55:720 SacServer/(4106:4106):  - NO se pudo hacer el create en SacServer
+
+[ERROR] 20:17:06:961 SacServer/(4106:4106):  - NO se pudo hacer el create en SacServer
+
+[ERROR] 20:18:53:948 SacServer/(4410:4410):  - NO se pudo hacer el create en SacServer
+
+[ERROR] 20:31:01:310 SacServer/(4410:4410):  - NO se pudo hacer el create en SacServer
+
+[ERROR] 20:32:29:785 SacServer/(4410:4410):  - NO se pudo hacer el create en SacServer
+
+[ERROR] 20:32:53:647 SacServer/(4410:4410):  - NO se pudo hacer el create en SacServer
+
