@@ -174,10 +174,6 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 
 static int hello_getattr(const char *path, struct stat *stbuf) {
 	// Si es el directorio raiz, devuelve 0:
-	if(!strcmp(path, "/hola") ||
-			!strcmp(path, "/hola1") ||
-			!strcmp(path, "/.hola1.swp") ||
-			!strcmp(path, "/")){
 
 
 	//Serializo peticion y path
@@ -222,7 +218,7 @@ static int hello_getattr(const char *path, struct stat *stbuf) {
 
 		return 0;
 	}
-	}
+
 	// else
 	return -ENOENT;
 

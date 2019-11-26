@@ -329,6 +329,16 @@ void o_getAttr(char* path, int cliente){
 		res = 1;
 	}
 
+	if(res == 1){
+		void* buffer = malloc( 2 * sizeof(int) );
+		int tamanioRes = sizeof(int);
+		memcpy(buffer, &tamanioRes, sizeof(int));
+		memcpy(buffer + sizeof(int), &res, sizeof(int));
+
+		send(cliente, buffer, 2 * sizeof(int), 0);
+		return;
+	}
+
 	if (strcmp(path, "/") == 0){
 		stbuf->st_mode = S_IFDIR | 0777;
 		stbuf->st_nlink = 2;
@@ -382,15 +392,6 @@ void o_getAttr(char* path, int cliente){
 
 		pthread_rwlock_unlock(&rwlock); // Libera el lock.
 		//log_lock_trace(logger, "Getattr:: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
-
-		if(res == 1){
-			void* buffer = malloc( 2 * sizeof(int) );
-			int tamanioRes = sizeof(int);
-			memcpy(buffer, &tamanioRes, sizeof(int));
-			memcpy(buffer + sizeof(int), &res, sizeof(int));
-
-			send(cliente, buffer, 2 * sizeof(int), 0);
-		}
 		if(res == 0){
 			//Serializo respuesta = 0, stbuf
 			void* buffer = malloc( 7 * sizeof(int) + sizeof(stbuf->st_mode));

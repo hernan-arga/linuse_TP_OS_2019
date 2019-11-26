@@ -84,3 +84,13 @@
 [ERROR] 20:32:53:647 SacServer/(4410:4410):  - NO se pudo hacer el create en SacServer
 
 [INFO] 00:01:19:644 SacServer/(7173:7173):  + Levantado Sac-Server correctamente
+[ERROR] 00:53:35:755 SacServer/(9095:9095):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 00:53:35:758 SacServer/(9095:9095):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 00:53:53:523 SacServer/(9095:9095):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 00:53:53:528 SacServer/(9095:9095):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 00:53:56:174 SacServer/(9095:9095):  - NO se pudo hacer el read en SacServer
+
