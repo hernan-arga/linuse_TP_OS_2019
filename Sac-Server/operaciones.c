@@ -342,7 +342,7 @@ void o_getAttr(char* path, int cliente){
 	if (strcmp(path, "/") == 0){
 		stbuf->st_mode = S_IFDIR | 0777;
 		stbuf->st_nlink = 2;
-		stbuf->st_size = 4096; // ??????????
+		stbuf->st_size = 0; // ??????????
 
 		void* buffer = malloc( 7 * sizeof(int) + sizeof(stbuf->st_mode));
 
@@ -621,7 +621,7 @@ int o_rmdir(char* path){
 	if (nodo_padre == -1){
 		return -ENOENT;
 	}
-	struct grasa_file_t *node;
+	struct sac_file_t *node;
 
 	// Toma un lock de escritura.
 	//log_lock_trace(logger, "Rmdir: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);

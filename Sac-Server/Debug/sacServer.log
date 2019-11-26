@@ -873,3 +873,25 @@
 
 [ERROR] 01:18:22:288 SacServer/(9999:9999):  - NO se pudo hacer el read en SacServer
 
+[INFO] 01:21:31:801 SacServer/(14434:14434):  + Se hizo un create en SacServer
+
+[INFO] 01:21:36:845 SacServer/(14434:14434):  + Se hizo un create en SacServer
+
+[INFO] 01:21:42:753 SacServer/(14434:14434):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:21:47:351 SacServer/(14434:14434):  + Se hizo un create en SacServer
+
+[INFO] 01:22:32:11 SacServer/(14434:14434):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:22:37:837 SacServer/(14434:14434):  + Se hizo un create en SacServer
+
+[INFO] 01:23:01:417 SacServer/(14434:14434):  + Se hizo un create en SacServer
+
+[INFO] 01:23:07:933 SacServer/(14434:14434):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:23:14:436 SacServer/(14434:14434):  + Se hizo un create en SacServer
+
+[ERROR] 01:24:26:889 SacServer/(14434:14434):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 01:24:27:639 SacServer/(14434:14434):  - NO se pudo hacer el read en SacServer
+
