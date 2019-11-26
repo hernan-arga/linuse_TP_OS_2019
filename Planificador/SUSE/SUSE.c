@@ -23,6 +23,7 @@
 #include <commons/log.h>
 
 typedef struct {
+	char *IP_SUSE;
 	int32_t PUERTO;
 	int METRICAS_TIMER;
 	int GRADO_DE_MULTIPROGRAMACION;
@@ -201,6 +202,9 @@ int main(int argc, char *argv[]){
 }
 
 void iniciarSUSE(){
+	configuracion.IP_SUSE = malloc(strlen(config_get_string_value(config, "IP_SUSE"))+1);
+	strcpy(configuracion.IP_SUSE, config_get_string_value(config, "IP_SUSE"));
+
 	configuracion.SEMAFOROS = dictionary_create();
 
 	configuracion.ALPHA_SJF = config_get_double_value(config, "ALPHA_SJF");
@@ -250,10 +254,10 @@ void iniciarSUSE(){
 
 void atenderMetricas(){
 	while(1){
-		sem_wait(&semaforoConfiguracion);
-		config = config_create(pathConfiguracion);
-		configuracion.METRICAS_TIMER = config_get_int_value(config, "METRICS_TIMER");
-		sem_post(&semaforoConfiguracion);
+		/*sem_wait(&semaforoConfiguracion);
+		//config = config_create(pathConfiguracion);
+		//configuracion.METRICAS_TIMER = config_get_int_value(config, "METRICS_TIMER");
+		sem_post(&semaforoConfiguracion);*/
 		sleep(configuracion.METRICAS_TIMER);
 		sem_wait(&sem_metricas);
 		tomarMetricas();
@@ -287,11 +291,11 @@ void tomarMetricasParaHilos(){
 	tomarMetricasParaBloqueadosPorSem((void *) tomarMetricasTiemposDeEsperaParaSem);
 
 	//Tiempo de uso de CPU
-	tomarMetricasParaLosNews((void *) tomarMetricasTiemposDeCpuPara1Hilo);
+	/*tomarMetricasParaLosNews((void *) tomarMetricasTiemposDeCpuPara1Hilo);
 	tomarMetricasParaLosProcesos((void *) tomarMetricasTiemposDeCpuParaBlocked);
 	tomarMetricasParaLosReady((void *) tomarMetricasTiemposDeCpuParaReady);
 	tomarMetricasParaLosProcesos((void *) tomarMetricasTiemposDeCpuParaExec);
-	tomarMetricasParaBloqueadosPorSem((void *) tomarMetricasTiemposDeCpuParaSem);
+	tomarMetricasParaBloqueadosPorSem((void *) tomarMetricasTiemposDeCpuParaSem);*/
 
 	//Porcentaje tiempo de ejecucion
 	tomarMetricasParaLosNews((void *) tomarMetricasPorcentajeDeEjecucionPara1Hilo);
@@ -357,7 +361,10 @@ void tomarMetricasPorcentajeParaLaLista(char *key, void* lista){
 
 //Tiempo de uso de CPU
 void tomarMetricasTiemposDeCpuPara1Hilo(void *unHilo){
-	log_info(logger,"Tiempo de uso de CPU para el hilo %i del programa %i: %i", ((hilo*)unHilo)->tid, ((hilo*)unHilo)->pid, ((hilo*)unHilo)->sumaDeIntervalosEnExec);
+	log_info(logger,"Tiempo de uso de CPU para el hilo %i del programa %i: %i",
+			((hilo*)unHilo)->tid,
+			((hilo*)unHilo)->pid,
+			((hilo*)unHilo)->sumaDeIntervalosEnExec);
 }
 
 void tomarMetricasTiemposDeCpuParaSem(char *semID, t_queue *cola){
@@ -539,10 +546,10 @@ void logearValorActualSemaforo(char *semID, semaforo *unSemaforo){
 }
 
 void tomarMetricasGradoDeMultiprogramacion(){
-	sem_wait(&semaforoConfiguracion);
-	config = config_create(pathConfiguracion);
-	configuracion.GRADO_DE_MULTIPROGRAMACION = config_get_int_value(config, "MAX_MULTIPROG");
-	sem_post(&semaforoConfiguracion);
+	/*sem_wait(&semaforoConfiguracion);
+	//config = config_create(pathConfiguracion);
+	//configuracion.GRADO_DE_MULTIPROGRAMACION = config_get_int_value(config, "MAX_MULTIPROG");
+	sem_post(&semaforoConfiguracion);*/
 	log_info(logger,"Grado actual de multiprogramacion: %i", configuracion.GRADO_DE_MULTIPROGRAMACION);
 }
 
@@ -677,22 +684,21 @@ int calcularSiguienteHilo(int pid){
 
 		//Si el que esta en ready tiene menos ejecucion ese sigue, sino el que estaba en exec
 		if(candidatoAEjecutar!=NULL && candidatoAEjecutar->estimacion < ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->estimacion){
-			//todo: se deberia fijar la multiprogramacion?
 			//Paso a ready el que esta ejecutando y a exec el que estaba en ready (sacandolo de ready)
 			candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0) );
 			list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), elQueEstaEjecutando);
 			((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = candidatoAEjecutar;
 			inicioRafaga = getMicrotime();
 
-			elQueEstaEjecutando->sumaDeIntervalosEnExec = (getMicrotime() - elQueEstaEjecutando->timestampExec);
+			elQueEstaEjecutando->sumaDeIntervalosEnExec += (int)(getMicrotime() - elQueEstaEjecutando->timestampExec);
 			elQueEstaEjecutando->timestampReady = getMicrotime();
-			candidatoAEjecutar->sumaDeIntervalosEnReady += (getMicrotime() - candidatoAEjecutar->timestampReady);
+			candidatoAEjecutar->sumaDeIntervalosEnReady += (int)(getMicrotime() - candidatoAEjecutar->timestampReady);
 			candidatoAEjecutar->timestampExec = getMicrotime();
 
 			return candidatoAEjecutar->tid;
 		}
 		else{
-			elQueEstaEjecutando->sumaDeIntervalosEnExec = (getMicrotime() - elQueEstaEjecutando->timestampExec);
+			elQueEstaEjecutando->sumaDeIntervalosEnExec += (int)(getMicrotime() - elQueEstaEjecutando->timestampExec);
 			elQueEstaEjecutando->timestampExec = getMicrotime();
 
 			return elQueEstaEjecutando->tid;
@@ -707,7 +713,7 @@ int calcularSiguienteHilo(int pid){
 
 	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->cantidadDeHilosEnReady--;
 
-	candidatoAEjecutar->sumaDeIntervalosEnReady += (getMicrotime() - candidatoAEjecutar->timestampReady);
+	candidatoAEjecutar->sumaDeIntervalosEnReady += (int)(getMicrotime() - candidatoAEjecutar->timestampReady);
 	candidatoAEjecutar->timestampExec = getMicrotime();
 
 	return candidatoAEjecutar->tid;
@@ -750,10 +756,10 @@ void recalcularEstimacion(int pid){
 
 void actualizarEstimacion(hilo* unHilo){
 
-	sem_wait(&semaforoConfiguracion);
-	config = config_create(pathConfiguracion);
+	/*sem_wait(&semaforoConfiguracion);
+	//config = config_create(pathConfiguracion);
 	configuracion.ALPHA_SJF = config_get_double_value(config, "ALPHA_SJF");
-	sem_post(&semaforoConfiguracion);
+	sem_post(&semaforoConfiguracion);*/
 
 	//En+1 = (1-alpha)En + alpha*Rn
 	unHilo->estimacion = (1-configuracion.ALPHA_SJF)*unHilo->estimacion +
@@ -1063,9 +1069,6 @@ void atenderClose(int sd){
 
 void limpiarEstructuras(int pid){
 
-	void borrarPrograma(programa* unPrograma){
-		free(unPrograma);
-	}
 
 	void liberarHilo(hilo* unHilo){
 		free(unHilo);
@@ -1075,7 +1078,11 @@ void limpiarEstructuras(int pid){
 		list_destroy_and_destroy_elements(lista, (void*)liberarHilo);
 	}
 
-	//todo Limpiar lo que tiene adentro cada una
+	void borrarPrograma(programa* unPrograma){
+		dictionary_destroy_and_destroy_elements(unPrograma->blocked, (void*)borrarLista);
+		free(unPrograma);
+	}
+
 	sem_wait(&sem_exit);
 	dictionary_remove_and_destroy(diccionarioDeListasDeExit, string_itoa(pid), (void*)borrarLista);
 	sem_post(&sem_exit);
@@ -1098,9 +1105,10 @@ void crearPrograma(int pid){
 	unPrograma->cantidadDeHilosEnReady = 0;
 	unPrograma->cantidadDeHilosEnBlocked = 0;
 	unPrograma->tiempoDeEjecucionDeTodosLosHilos = 0;
+	unPrograma->exec = NULL;
 
 	sem_wait(&sem_programas);
-	dictionary_put(diccionarioDeProgramas, string_itoa(unPrograma->pid), unPrograma);
+	dictionary_put(diccionarioDeProgramas, string_itoa(pid), unPrograma);
 	sem_post(&sem_programas);
 }
 
@@ -1135,10 +1143,10 @@ int32_t iniciarConexion() {
 
 	//type of socket created
 	address.sin_family = AF_INET;
-	 address.sin_addr.s_addr = INADDR_ANY;
+	//address.sin_addr.s_addr = INADDR_ANY;
 	//address.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//address.sin_addr.s_addr = inet_addr(structConfiguracionLFS.IP);
-	address.sin_port = htons(5005);
+	address.sin_addr.s_addr = inet_addr(configuracion.IP_SUSE);
+	address.sin_port = htons(configuracion.PUERTO);
 
 	//bind the socket to localhost port 8888
 	if (bind(master_socket, (struct sockaddr *) &address, sizeof(address))
@@ -1234,6 +1242,9 @@ int32_t iniciarConexion() {
 
 					sem_post(&MAXIMOPROCESAMIENTO);
 					limpiarEstructuras(sd);
+					/*int valorSemaforo;
+					sem_getvalue(&MAXIMOPROCESAMIENTO, &valorSemaforo);
+					printf("semaforo %i\n", valorSemaforo);*/
 				} else {
 
 					switch (*operacion) {
@@ -1266,8 +1277,9 @@ int32_t iniciarConexion() {
 							break;
 					}
 
-					free(operacion);
 				}
+
+				free(operacion);
 			}
 		}
 	}
