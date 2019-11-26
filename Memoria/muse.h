@@ -92,6 +92,12 @@ uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
 void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
 void asignarTamanioADireccion(uint32_t tamanio, void* src, int idSocketCliente); //A TERMINAR
 
+bool existeSegmentoConTamanioDisponible(t_list *listaSegmentos, uint32_t tamanioRequerido);
+bool poseeTamanioDisponible(struct Segmento *segmento, uint32_t tamanioRequerido);
+bool existeSegmentoExtendible(t_list *listaSegmentos);
+struct Segmento *buscarSegmentoConTamanioDisponible(t_list *segmentosProceso, uint32_t tamanio);
+struct Segmento *asignarTamanioASegmento(uint32_t tamanio, struct Segmento *segmentoConTamanioDisponible, int idSocketCliente);
+
 //Funciones cpy
 int musecpy(uint32_t dst, void* src, int n, int idSocket);
 int idSegmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
