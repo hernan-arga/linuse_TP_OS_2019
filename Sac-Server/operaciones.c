@@ -148,68 +148,73 @@ int o_read(char* path, int size, int offset, char* buf){
 	pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
 	//log_lock_trace(logger, "Read: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
 
-	if(node->tamanio_archivo <= offset){
-	log_error(logger, "Fuse intenta leer un offset mayor o igual que el tamanio de archivo. Se retorna size 0. File: %s, Size: %d", path, node->tamanio_archivo);
-	goto finalizar;
-	} else if (node->tamanio_archivo <= (offset+size)){
-		tam = size = ((node->tamanio_archivo)-(offset));
-		log_error(logger, "Fuse intenta leer una posicion mayor o igual que el tamanio de archivo. Se retornaran %d bytes. File: %s, Size: %d", size, path, node->tamanio_archivo);
-	}
-	// Recorre todos los punteros en el bloque de la tabla de nodos
-	for (bloque_punteros = 0; bloque_punteros < BLKINDIRECT; bloque_punteros++){
+	if(node->tamanio_archivo == 0){
+		pthread_rwlock_unlock(&rwlock); //Devuelve el lock de lectura.
+		return -1;
+	} else{
 
-		// Chequea el offset y lo acomoda para leer lo que realmente necesita
-		if (offset > BLOCKSIZE * 1024){
-			offset -= (BLOCKSIZE * 1024);
-			continue;
+		if(node->tamanio_archivo <= offset){
+			loguearError("Fuse intenta leer un offset mayor o igual que el tamanio de archivo");
+			goto finalizar;
+		} else if (node->tamanio_archivo <= (offset+size)){
+			tam = size = ((node->tamanio_archivo)-(offset));
+			loguearError("Fuse intenta leer una posicion mayor o igual que el tamanio de archivo");
 		}
-
-		bloque_a_buscar = (node->bloques_indirectos)[bloque_punteros];	// Ubica el nodo de punteros a nodos de datos, es relativo al nodo 0: Header.
-		bloque_a_buscar -= (GFILEBYBLOCK + BITMAP_BLOCK_SIZE + NODE_TABLE_SIZE);	// Acomoda el nodo de punteros a nodos de datos, es relativo al bloque de datos.
-		pointer_block =(ptrGBloque *) &(data_block_start[bloque_a_buscar]);		// Apunta al nodo antes ubicado. Lo utiliza para saber de donde leer los datos.
-
-		// Recorre el bloque de punteros correspondiente.
-		for (num_bloque_datos = 0; num_bloque_datos < 1024; num_bloque_datos++){
+		// Recorre todos los punteros en el bloque de la tabla de nodos
+		for (bloque_punteros = 0; bloque_punteros < BLKINDIRECT; bloque_punteros++){
 
 			// Chequea el offset y lo acomoda para leer lo que realmente necesita
-			if (offset >= BLOCKSIZE){
-				offset -= BLOCKSIZE;
+			if (offset > BLOCKSIZE * 1024){
+				offset -= (BLOCKSIZE * 1024);
 				continue;
 			}
 
-			bloque_a_buscar = pointer_block[num_bloque_datos]; 	// Ubica el nodo de datos correspondiente. Relativo al nodo 0: Header.
-			bloque_a_buscar -= (GFILEBYBLOCK + BITMAP_BLOCK_SIZE + NODE_TABLE_SIZE);	// Acomoda el nodo, haciendolo relativo al bloque de datos.
-			data_block = (char *) &(data_block_start[bloque_a_buscar]);
+			bloque_a_buscar = (node->bloques_indirectos)[bloque_punteros];	// Ubica el nodo de punteros a nodos de datos, es relativo al nodo 0: Header.
+			bloque_a_buscar -= (GFILEBYBLOCK + BITMAP_BLOCK_SIZE + NODE_TABLE_SIZE);	// Acomoda el nodo de punteros a nodos de datos, es relativo al bloque de datos.
+			pointer_block =(ptrGBloque *) &(data_block_start[bloque_a_buscar]);		// Apunta al nodo antes ubicado. Lo utiliza para saber de donde leer los datos.
 
-			// Corre el offset hasta donde sea necesario para poder leer lo que quiere.
-			if (offset > 0){
-				data_block += offset;
-				offset = 0;
+			// Recorre el bloque de punteros correspondiente.
+			for (num_bloque_datos = 0; num_bloque_datos < 1024; num_bloque_datos++){
+
+				// Chequea el offset y lo acomoda para leer lo que realmente necesita
+				if (offset >= BLOCKSIZE){
+					offset -= BLOCKSIZE;
+					continue;
+				}
+
+				bloque_a_buscar = pointer_block[num_bloque_datos]; 	// Ubica el nodo de datos correspondiente. Relativo al nodo 0: Header.
+				bloque_a_buscar -= (GFILEBYBLOCK + BITMAP_BLOCK_SIZE + NODE_TABLE_SIZE);	// Acomoda el nodo, haciendolo relativo al bloque de datos.
+				data_block = (char *) &(data_block_start[bloque_a_buscar]);
+
+				// Corre el offset hasta donde sea necesario para poder leer lo que quiere.
+				if (offset > 0){
+					data_block += offset;
+					offset = 0;
+				}
+
+				if (tam < BLOCKSIZE){
+					memcpy(buf, data_block, tam);
+					buf = &(buf[tam]);
+					tam = 0;
+					break;
+				} else {
+					memcpy(buf, data_block, BLOCKSIZE);
+					tam -= BLOCKSIZE;
+					buf = &(buf[BLOCKSIZE]);
+					if (tam == 0) break;
+				}
+
 			}
 
-			if (tam < BLOCKSIZE){
-				memcpy(buf, data_block, tam);
-				buf = &(buf[tam]);
-				tam = 0;
-				break;
-			} else {
-				memcpy(buf, data_block, BLOCKSIZE);
-				tam -= BLOCKSIZE;
-				buf = &(buf[BLOCKSIZE]);
-				if (tam == 0) break;
-			}
-
+			if (tam == 0) break;
 		}
 
-		if (tam == 0) break;
+		finalizar:
+		pthread_rwlock_unlock(&rwlock); //Devuelve el lock de lectura.
+		//log_lock_trace(logger, "Read: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
+
+		//log_trace(logger, "Terminada lectura");
 	}
-
-	finalizar:
-	pthread_rwlock_unlock(&rwlock); //Devuelve el lock de lectura.
-	//log_lock_trace(logger, "Read: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
-
-	log_trace(logger, "Terminada lectura");
-
 	return 0;
 
 	/*
@@ -616,7 +621,7 @@ int o_unlink(char* pathC){
 
 int o_rmdir(char* path){
 
-	log_trace(logger, "Rmdir: Path: %s", path);
+	//log_trace(logger, "Rmdir: Path: %s", path);
 	int nodo_padre = determinar_nodo(path), i, res = 0;
 	if (nodo_padre == -1){
 		return -ENOENT;
@@ -715,7 +720,7 @@ int o_rmdir_2(char* path){
 
 void o_write(char* path, int size, int offset, char* buf){
 
-	log_trace(logger, "Writing: Path: %s - Size: %d - Offset %d", path, size, offset);
+	//log_trace(logger, "Writing: Path: %s - Size: %d - Offset %d", path, size, offset);
 
 	int nodo = determinar_nodo(path);
 	if (nodo == -1){
@@ -827,7 +832,7 @@ void o_write(char* path, int size, int offset, char* buf){
 		// Devuelve el lock de escritura.
 		pthread_rwlock_unlock(&rwlock);
 		//log_lock_trace(logger, "Write: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
-		log_trace(logger, "Terminada escritura.");
+		//log_trace(logger, "Terminada escritura.");
 
 /*
  * FUNCIONAMIENTO ANTERIOR:

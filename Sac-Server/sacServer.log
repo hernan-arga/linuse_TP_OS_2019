@@ -94,3 +94,149 @@
 
 [ERROR] 00:53:56:174 SacServer/(9095:9095):  - NO se pudo hacer el read en SacServer
 
+[INFO] 15:20:13:908 SacServer/(4390:4390):  + Se hizo un create en SacServer
+
+[ERROR] 15:20:25:34 SacServer/(4390:4390):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:20:25:390 SacServer/(4390:4390):  - NO se pudo hacer el read en SacServer
+
+[INFO] 15:21:14:838 SacServer/(4390:4390):  + Se hizo un create en SacServer
+
+[ERROR] 15:21:19:949 SacServer/(4390:4390):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:21:20:149 SacServer/(4390:4390):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:21:26:375 SacServer/(4390:4390):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:21:26:559 SacServer/(4390:4390):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:21:29:981 SacServer/(4390:4390):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:21:30:162 SacServer/(4390:4390):  - NO se pudo hacer el read en SacServer
+
+[INFO] 15:24:46:469 SacServer/(4827:4827):  + Se hizo un create en SacServer
+
+[ERROR] 15:24:50:114 SacServer/(4827:4827):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:24:50:499 SacServer/(4827:4827):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:25:04:413 SacServer/(4827:4827):  - NO se pudo hacer el WRITE en SacServer
+
+[ERROR] 15:25:17:511 SacServer/(4827:4827):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:25:17:856 SacServer/(4827:4827):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:25:22:804 SacServer/(4827:4827):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:25:22:984 SacServer/(4827:4827):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 15:25:29:327 SacServer/(4827:4827):  - NO se pudo hacer el WRITE en SacServer
+
+[INFO] 15:36:42:778 SacServer/(5284:5284):  + Se hizo un create en SacServer
+
+[ERROR] 15:37:14:768 SacServer/(5284:5284):  - NO se pudo hacer el read en SacServer
+
+[INFO] 15:40:49:446 SacServer/(5588:5588):  + Se hizo un create en SacServer
+
+[INFO] 15:47:44:809 SacServer/(5893:5893):  + Se hizo un create en SacServer
+
+[ERROR] 15:47:57:965 SacServer/(5893:5893): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 15:48:18:46 SacServer/(5893:5893):  + Se hizo un read en SacServer
+
+[INFO] 15:49:53:720 SacServer/(6111:6111):  + Se hizo un create en SacServer
+
+[ERROR] 15:50:10:318 SacServer/(6111:6111): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 15:52:16:261 SacServer/(6277:6277):  + Se hizo un create en SacServer
+
+[INFO] 16:22:56:681 SacServer/(7951:7951):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:44:10:894 SacServer/(9388:9388):  + Se hizo un create en SacServer
+
+[ERROR] 16:44:40:217 SacServer/(9388:9388):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 16:44:48:205 SacServer/(9388:9388):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 16:45:03:383 SacServer/(9388:9388):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 16:47:12:10 SacServer/(9680:9680):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 16:47:16:543 SacServer/(9680:9680):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 16:47:40:66 SacServer/(9680:9680):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 16:50:15:298 SacServer/(9872:9872):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 16:50:17:486 SacServer/(9872:9872):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 16:52:02:130 SacServer/(10092:10092):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 16:52:04:331 SacServer/(10092:10092):  - NO se pudo hacer el read en SacServer
+
+[INFO] 16:59:09:971 SacServer/(10462:10462):  + Levantado Sac-Server correctamente
+[INFO] 17:00:18:205 SacServer/(10582:10582):  + Se hizo un create en SacServer
+
+[ERROR] 17:00:26:709 SacServer/(10582:10582):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 17:00:30:573 SacServer/(10582:10582):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 17:02:42:816 SacServer/(10924:10924): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 17:02:43:1 SacServer/(10924:10924):  + Se hizo un read en SacServer
+
+[ERROR] 17:03:29:535 SacServer/(11042:11042): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 17:03:31:190 SacServer/(11042:11042):  + Se hizo un read en SacServer
+
+[ERROR] 17:04:20:116 SacServer/(11149:11149): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 17:06:09:417 SacServer/(11149:11149):  + Se hizo un read en SacServer
+
+[INFO] 17:13:15:163 SacServer/(11658:11658):  + Levantado Sac-Server correctamente
+[INFO] 17:13:30:208 SacServer/(11718:11718):  + Levantado Sac-Server correctamente
+[INFO] 17:13:50:25 SacServer/(11795:11795):  + Levantado Sac-Server correctamente
+[INFO] 17:14:09:613 SacServer/(11835:11835):  + Levantado Sac-Server correctamente
+[INFO] 17:14:54:765 SacServer/(11873:11873):  + Se hizo un create en SacServer
+
+[ERROR] 17:15:01:815 SacServer/(11873:11873):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 17:15:08:741 SacServer/(11873:11873):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 17:15:21:364 SacServer/(11873:11873):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 17:19:07:523 SacServer/(11873:11873): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 17:20:46:696 SacServer/(11873:11873):  + Se hizo un read en SacServer
+
+[ERROR] 17:29:51:374 SacServer/(12708:12708): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 17:29:52:990 SacServer/(12708:12708):  + Se hizo un read en SacServer
+
+[ERROR] 17:29:54:142 SacServer/(12708:12708):  - NO se pudo hacer el read en SacServer
+
+[INFO] 17:32:07:809 SacServer/(12870:12870):  + Se hizo un create en SacServer
+
+[ERROR] 17:32:23:738 SacServer/(12870:12870):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 17:32:32:472 SacServer/(12870:12870):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 17:32:54:965 SacServer/(12870:12870):  - NO se pudo hacer el read en SacServer
+
+[INFO] 17:35:52:567 SacServer/(13073:13073):  + Se hizo un create en SacServer
+
+[ERROR] 17:36:01:1 SacServer/(13073:13073):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 17:36:05:326 SacServer/(13073:13073):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 17:36:51:144 SacServer/(13073:13073): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 17:36:58:598 SacServer/(13073:13073):  + Se hizo un read en SacServer
+
+[ERROR] 17:40:07:295 SacServer/(13073:13073): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 17:40:11:589 SacServer/(13073:13073):  + Se hizo un read en SacServer
+
+[INFO] 17:48:26:793 SacServer/(13993:13993):  + Se hizo un create en SacServer
+
+[ERROR] 17:48:53:317 SacServer/(13993:13993):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 17:48:56:169 SacServer/(13993:13993):  - NO se pudo hacer el read en SacServer
+
+[ERROR] 17:51:01:141 SacServer/(13993:13993): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 17:51:04:948 SacServer/(13993:13993):  + Se hizo un read en SacServer
+
+[ERROR] 17:54:25:466 SacServer/(14453:14453): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 17:54:48:750 SacServer/(14453:14453):  + Se hizo un read en SacServer
+

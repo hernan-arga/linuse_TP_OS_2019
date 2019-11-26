@@ -119,6 +119,10 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 		//Deserializo el texto del archivo que te manda SacServer y lo guardo en buf
 		int *tamanioTexto = malloc(sizeof(int));
 		read(sacServer, tamanioTexto, sizeof(int));
+
+		if (*tamanioTexto == 0) {
+			return 0;
+		}
 		char *texto = malloc(*tamanioTexto);
 		read(sacServer, texto, *tamanioTexto);
 
@@ -174,7 +178,6 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 
 static int hello_getattr(const char *path, struct stat *stbuf) {
 	// Si es el directorio raiz, devuelve 0:
-
 
 	//Serializo peticion y path
 	char* buffer = malloc(3 * sizeof(int) + strlen(path));

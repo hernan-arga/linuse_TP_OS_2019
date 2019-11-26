@@ -286,9 +286,6 @@ void tomarPeticionRead(int cliente){
 	read(cliente, path, *tamanioPath);
 
 	char *pathCortado = string_substring_until(path, *tamanioPath);
-	char* pathAppend = string_new();
-	string_append(&pathAppend, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
-	string_append(&pathAppend, pathCortado);
 
 	int* tamanioSize = malloc(sizeof(int));
 	read(cliente, tamanioSize, sizeof(int));
@@ -301,21 +298,34 @@ void tomarPeticionRead(int cliente){
 	read(cliente, offset, *tamanioOffset);
 
 	char* texto = malloc(*size);
-	int respuesta = o_read(pathAppend, *size, *offset, texto);
+	int respuesta = o_read(pathCortado, *size, *offset, texto);
+
+	if(respuesta == -1) // tamaño es 0
+	{
+		int res = 0;
+		char* buffer = malloc(3 * sizeof(int));
+		int tamanioRespuesta = sizeof(int);
+		memcpy(buffer, &tamanioRespuesta, sizeof(int));
+		memcpy(buffer + sizeof(int), &res, sizeof(int));
+
+		int tamanioLeido = 0;
+		memcpy(buffer + 2*sizeof(int), &tamanioLeido, sizeof(int));
+		send(cliente, buffer, 3*sizeof(int), 0);
+	}
 
 	if (respuesta == 0){
-			loguearInfo(" + Se hizo un read en SacServer\n");
+		loguearInfo(" + Se hizo un read en SacServer\n");
 
-			char* buffer = malloc(3 * sizeof(int) + strlen(texto));
-			int tamanioRespuesta = sizeof(int);
-			memcpy(buffer, &tamanioRespuesta, sizeof(int));
-			memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
+		char* buffer = malloc(3 * sizeof(int) + strlen(texto));
+		int tamanioRespuesta = sizeof(int);
+		memcpy(buffer, &tamanioRespuesta, sizeof(int));
+		memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
-			int tamanioLeido = *size;
-			memcpy(buffer + 2*sizeof(int), &tamanioLeido, sizeof(int));
-			memcpy(buffer + 3*sizeof(int), texto, tamanioLeido);
+		int tamanioLeido = strlen(texto);
+		memcpy(buffer + 2*sizeof(int), &tamanioLeido, sizeof(int));
+		memcpy(buffer + 3*sizeof(int), texto, tamanioLeido);
 
-			send(cliente, buffer, 2*sizeof(int) + tamanioLeido + strlen(texto), 0);
+		send(cliente, buffer, 2*sizeof(int) + tamanioLeido + strlen(texto), 0);
 	}
 	else {
 		loguearError(" - NO se pudo hacer el read en SacServer\n");
@@ -446,9 +456,6 @@ void tomarPeticionWrite(int cliente){
 	read(cliente, path, *tamanioPath);
 
 	char *pathCortado = string_substring_until(path, *tamanioPath);
-	char* pathAppend = string_new();
-	string_append(&pathAppend, "/home/utnso/tp-2019-2c-Cbados/Sac-Server/miFS");
-	string_append(&pathAppend, pathCortado);
 
 	int* tamanioSize = malloc(sizeof(int));
 	read(cliente, tamanioSize, sizeof(int));
@@ -465,11 +472,6 @@ void tomarPeticionWrite(int cliente){
 	char *buf = malloc(*tamanioBuf);
 	read(cliente, buf, *tamanioBuf);
 
-	o_write(pathAppend, *size, *offset, buf);
+	o_write(pathCortado, *size, *offset, buf);
 
-	//logueo respuesta read
-	//char* textoLog = string_new();
-	//string_append(&textoLog, " + Se realizo un read : ");
-	//string_append(&textoLog, &texto);
-	//loguearInfo(textoLog);
 }
