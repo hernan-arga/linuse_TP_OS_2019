@@ -167,7 +167,6 @@ sem_t hayQueActualizarUnExec;
 sem_t semaforoConfiguracion;
 sem_t sem_metricas;
 t_queue *new;
-t_queue *exitCola;
 
 char* pathConfiguracion;
 t_log *logger;
@@ -185,6 +184,7 @@ int main(int argc, char *argv[]){
 	}
 	string_append(&pathConfiguracion, argv[1]);
 	config = config_create(pathConfiguracion);
+	free(pathConfiguracion); //XXX: Si tengo que actualizar los valores, borrar este free
 
 	iniciarSUSE();
 
@@ -235,7 +235,6 @@ void iniciarSUSE(){
 	}
 
 	new = queue_create();
-	exitCola = queue_create();
 	diccionarioDeListasDeReady = dictionary_create();
 	//diccionarioDeExec = dictionary_create();
 	diccionarioDeProgramas = dictionary_create();
@@ -321,10 +320,12 @@ void reiniciarTiempoDeEjecucionDe1Programa(char *pid, void *unPrograma){
 
 //Porcentaje tiempo de ejecucion
 void tomarMetricasPorcentajeDeEjecucionPara1Hilo(void *unHilo){
+	char *unPid = string_itoa(((hilo*)unHilo)->pid);
 	int tiempoDeEjecucionDelHilo = ((hilo*)unHilo)->tiempoDeEjecucion;
-	int tiempoDeEjecucionDeTodosLosHilosDelPrograma = 	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(((hilo*)unHilo)->pid)))->tiempoDeEjecucionDeTodosLosHilos;
+	int tiempoDeEjecucionDeTodosLosHilosDelPrograma = 	((programa*)dictionary_get(diccionarioDeProgramas, unPid))->tiempoDeEjecucionDeTodosLosHilos;
 	int porcentajeDeEjecucion = ((float)tiempoDeEjecucionDelHilo / (float)tiempoDeEjecucionDeTodosLosHilosDelPrograma)*100;
 	log_info(logger,"Porcentaje del tiempo de ejecucion para el hilo %i del programa %i: %i %%", ((hilo*)unHilo)->tid, ((hilo*)unHilo)->pid, porcentajeDeEjecucion);
+	free(unPid);
 }
 
 void tomarMetricasPorcentajeDeEjecucionParaSem(char *semID, t_queue *cola){
@@ -1109,7 +1110,6 @@ void atenderClose(int sd){
 
 void limpiarEstructuras(int pid){
 
-
 	void liberarHilo(hilo* unHilo){
 		free(unHilo);
 	}
@@ -1120,6 +1120,9 @@ void limpiarEstructuras(int pid){
 
 	void borrarPrograma(programa* unPrograma){
 		dictionary_destroy_and_destroy_elements(unPrograma->blocked, (void*)borrarLista);
+		if(unPrograma->exec!=NULL){
+			free(unPrograma->exec);
+		}
 		free(unPrograma);
 	}
 
