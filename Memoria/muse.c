@@ -1346,19 +1346,98 @@ int buscarIndiceSwapLibre(){
   * @return Si pasa un error, retorna -1. Si la operación se realizó correctamente, retorna 0.
   * @note Si `len` es menor que el tamaño de la página en la que se encuentre, se deberá escribir la página completa.
   */
-int musesync(uint32_t addr, size_t len) {
+int musesync(uint32_t addr, size_t len, int idSocketCliente) {
 
 	//Errores posibles:
 	//-No es un segmento map
 	//-El len se pasa (segmentation fault)
 
-	//Calculo la direccion
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
 
-	return 0;
+	//Obtencion segmento, pagina, frame, desplazamiento
+	int idSegmento;
+	int frame;
+	int desplazamiento;
+
+	//Obtencion desplazamiento
+	desplazamiento = addr % tam_pagina;
+
+	//Obtencion idSegmento y segmento
+	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+	idSegmento = idSegmentoQueContieneDireccion(listaSegmentos, (void*)addr);
+	unSegmento = list_get(listaSegmentos, idSegmento);
+
+	//Obtencion pagina y frame
+	struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
+	unaPagina = paginaQueContieneDireccion(unSegmento, (void*)addr); //Me retorna directamente la pagina
+	frame = unaPagina->numeroFrame;
+
+	void *datosAActualizar = malloc(sizeof(len));
+
+	//FIJARME SI ES UN SEGMENTO MAP
+
+	void *pos = retornarPosicionMemoriaFrame(frame);
+	pos = pos + desplazamiento;
+
+	int bytesACopiar = (int)len;
+
+	if((tam_pagina - desplazamiento) > len){
+
+		memcpy(datosAActualizar, pos, len);
+		return 0; //se realizo correctamente
+
+	}
+	else{
+		int cantidadPaginasALeer = (ceil)(len / tam_pagina);
+		memcpy(datosAActualizar, pos, (tam_pagina - desplazamiento));
+		cantidadPaginasALeer--;
+
+		bytesACopiar = bytesACopiar - (tam_pagina - desplazamiento);
+
+		//Me muevo a la proxima pagina (PRIMERO me tengo que fijar que haya pags para leer)
+		while(list_get(unSegmento->tablaPaginas, obtenerIndicePagina(unSegmento->tablaPaginas, unaPagina) + 1) != NULL && bytesACopiar > 0) {
+
+			unaPagina = list_get(unSegmento->tablaPaginas, obtenerIndicePagina(unSegmento->tablaPaginas, unaPagina) + 1);
+			pos = retornarPosicionMemoriaFrame(unaPagina->numeroFrame);
+
+			if(bytesACopiar >= tam_pagina){
+
+				memcpy(datosAActualizar, pos, tam_pagina);
+				bytesACopiar = bytesACopiar - tam_pagina;
+
+			} else {
+
+				memcpy(datosAActualizar, pos, bytesACopiar);
+				bytesACopiar = 0;
+				return 0;
+
+			}
+
+		}
+
+	}
+
+	//NI SIQUIERA ESTA TERMINADO BRO
+
+	return -1;
 
 }
 
+int obtenerIndicePagina(t_list *listaPaginas, struct Pagina *pagina){
 
+	struct Pagina *paginaPivote;
+
+	for(int i = 0; i < list_size(listaPaginas); i++){
+		paginaPivote = list_get(listaPaginas, i);
+
+		if(!memcmp(pagina, paginaPivote, sizeof(struct Pagina))) {
+			return i;
+		}
+
+	}
+
+	return -1;
+}
 
 
 

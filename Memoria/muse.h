@@ -117,7 +117,8 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 void cargarDatosEnFrame(int indiceFrame, char *datos);
 int llevarASwapUnaPagina(int indicePagina, int indiceSegmento, int idSocketCliente);
 int buscarIndiceSwapLibre();
-int musesync(uint32_t addr, size_t len);
+int musesync(uint32_t addr, size_t len, int idSocketCliente);
+int obtenerIndicePagina(t_list *listaPaginas, struct Pagina *pagina);
 
 #endif /* MUSE_H_ */
 
