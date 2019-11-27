@@ -137,7 +137,7 @@ int o_read(char* path, int size, int offset, char* buf){
 	size_t tam = size;
 
 	if (nodo == -1){
-		return 1;
+		return -1;
 	}
 
 	node = node_table_start;
@@ -150,13 +150,15 @@ int o_read(char* path, int size, int offset, char* buf){
 
 	if(node->tamanio_archivo == 0){
 		pthread_rwlock_unlock(&rwlock); //Devuelve el lock de lectura.
-		return -1;
+		return 0;
 	} else{
 
 		if(node->tamanio_archivo <= offset){
 			loguearError("Fuse intenta leer un offset mayor o igual que el tamanio de archivo");
-			goto finalizar;
-		} else if (node->tamanio_archivo <= (offset+size)){
+			pthread_rwlock_unlock(&rwlock); //Devuelve el lock de lectura.
+			return 0;
+		}
+		else if (node->tamanio_archivo <= (offset+size)){
 			tam = size = ((node->tamanio_archivo)-(offset));
 			loguearError("Fuse intenta leer una posicion mayor o igual que el tamanio de archivo");
 		}
@@ -193,11 +195,17 @@ int o_read(char* path, int size, int offset, char* buf){
 				}
 
 				if (tam < BLOCKSIZE){
+					//buf = malloc(4); //todo malloc de 4 para ejemplo de "jaja"
+					buf = malloc(strlen(data_block) +1);
+
 					memcpy(buf, data_block, tam);
 					buf = &(buf[tam]);
 					tam = 0;
 					break;
 				} else {
+					//buf = malloc(4); //todo malloc de 4 para ejemplo de "jaja"
+					buf = malloc(strlen(data_block) +1);
+
 					memcpy(buf, data_block, BLOCKSIZE);
 					tam -= BLOCKSIZE;
 					buf = &(buf[BLOCKSIZE]);
@@ -215,7 +223,7 @@ int o_read(char* path, int size, int offset, char* buf){
 
 		//log_trace(logger, "Terminada lectura");
 	}
-	return 0;
+	return 1;
 
 	/*
 	 * FUNCIONAMIENTO ANTERIOR
@@ -341,7 +349,6 @@ void o_getAttr(char* path, int cliente){
 		memcpy(buffer + sizeof(int), &res, sizeof(int));
 
 		send(cliente, buffer, 2 * sizeof(int), 0);
-		return;
 	}
 
 	if (strcmp(path, "/") == 0){
@@ -404,6 +411,7 @@ void o_getAttr(char* path, int cliente){
 			int tamanioResp = sizeof(int);
 			memcpy(buffer, &tamanioResp, sizeof(int));
 			memcpy(buffer + sizeof(int), &res, sizeof(int));
+
 			int tamanioStmode = sizeof(stbuf->st_mode);
 			memcpy(buffer + 2 * sizeof(int), &tamanioStmode, sizeof(int));
 			memcpy(buffer + 3 * sizeof(int), &stbuf->st_mode, sizeof(stbuf->st_mode));
@@ -718,7 +726,7 @@ int o_rmdir_2(char* path){
 }
 
 
-void o_write(char* path, int size, int offset, char* buf){
+int o_write(char* path, int size, int offset, char* buf){
 
 	//log_trace(logger, "Writing: Path: %s - Size: %d - Offset %d", path, size, offset);
 
@@ -766,7 +774,9 @@ void o_write(char* path, int size, int offset, char* buf){
 
 			// Si no hay espacio en el disco, retorna error.
 			if (bitmap_free_blocks == 0){
-				loguearError(" - NO se pudo hacer el WRITE en SacServer\n");
+				loguearError(" - NO se pudo hacer el WRITE en SacServer porque no hay espacio en el disco\n");
+				res = -1;
+				goto finalizar;
 			}
 
 			// Obtiene un bloque libre para escribir.
@@ -833,6 +843,7 @@ void o_write(char* path, int size, int offset, char* buf){
 		pthread_rwlock_unlock(&rwlock);
 		//log_lock_trace(logger, "Write: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
 		//log_trace(logger, "Terminada escritura.");
+		return res;
 
 /*
  * FUNCIONAMIENTO ANTERIOR:

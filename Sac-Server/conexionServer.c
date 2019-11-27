@@ -297,24 +297,28 @@ void tomarPeticionRead(int cliente){
 	int* offset = malloc(*tamanioOffset);
 	read(cliente, offset, *tamanioOffset);
 
-	char* texto = malloc(*size);
+	char* texto;
 	int respuesta = o_read(pathCortado, *size, *offset, texto);
 
-	if(respuesta == -1) // tamaño es 0
+	if(respuesta == 0) // tamaño es 0
 	{
-		int res = 0;
-		char* buffer = malloc(3 * sizeof(int));
+		loguearInfo(" + Se hizo un read vacio en SacServer\n");
+
+		char* buffer = malloc(2 * sizeof(int));
 		int tamanioRespuesta = sizeof(int);
 		memcpy(buffer, &tamanioRespuesta, sizeof(int));
-		memcpy(buffer + sizeof(int), &res, sizeof(int));
+		memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
-		int tamanioLeido = 0;
-		memcpy(buffer + 2*sizeof(int), &tamanioLeido, sizeof(int));
-		send(cliente, buffer, 3*sizeof(int), 0);
+		send(cliente, buffer, 2 * sizeof(int), 0);
 	}
 
-	if (respuesta == 0){
+	if (respuesta == 1){
 		loguearInfo(" + Se hizo un read en SacServer\n");
+
+		/*
+		char* texto = malloc(5); //TODO
+		memcpy(texto, "jaja", strlen("jaja") +1);
+		 */
 
 		char* buffer = malloc(3 * sizeof(int) + strlen(texto));
 		int tamanioRespuesta = sizeof(int);
@@ -325,9 +329,9 @@ void tomarPeticionRead(int cliente){
 		memcpy(buffer + 2*sizeof(int), &tamanioLeido, sizeof(int));
 		memcpy(buffer + 3*sizeof(int), texto, tamanioLeido);
 
-		send(cliente, buffer, 2*sizeof(int) + tamanioLeido + strlen(texto), 0);
+		send(cliente, buffer, 3*sizeof(int) + strlen(texto), 0);
 	}
-	else {
+	if(respuesta == -1) {
 		loguearError(" - NO se pudo hacer el read en SacServer\n");
 
 		char* buffer = malloc(2 * sizeof(int));
@@ -454,7 +458,6 @@ void tomarPeticionWrite(int cliente){
 	read(cliente, tamanioPath, sizeof(int));
 	char *path = malloc(*tamanioPath);
 	read(cliente, path, *tamanioPath);
-
 	char *pathCortado = string_substring_until(path, *tamanioPath);
 
 	int* tamanioSize = malloc(sizeof(int));
@@ -471,7 +474,18 @@ void tomarPeticionWrite(int cliente){
 	read(cliente, tamanioBuf, sizeof(int));
 	char *buf = malloc(*tamanioBuf);
 	read(cliente, buf, *tamanioBuf);
+	char *bufC = string_substring_until(buf, *tamanioBuf);
 
-	o_write(pathCortado, *size, *offset, buf);
+
+	int bytes = o_write(pathCortado, *size, *offset, bufC);
+
+	//Serializo bytes
+	char* buffer = malloc(2 * sizeof(int));
+
+	int tamanioBytes = sizeof(int);
+	memcpy(buffer, &tamanioBytes, sizeof(int));
+	memcpy(buffer + sizeof(int), &bytes, sizeof(int));
+
+	send(cliente, buffer, 2*sizeof(int), 0);
 
 }

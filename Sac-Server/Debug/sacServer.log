@@ -946,3 +946,248 @@
 [ERROR] 17:44:57:237 SacServer/(13725:13725): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
 [INFO] 17:44:57:237 SacServer/(13725:13725):  + Se hizo un read en SacServer
 
+[INFO] 00:18:59:348 SacServer/(5984:5984):  + Se hizo un create en SacServer
+
+[INFO] 00:19:02:157 SacServer/(5984:5984):  + Se hizo un read vacio en SacServer
+
+[INFO] 00:19:02:728 SacServer/(5984:5984):  + Se hizo un read vacio en SacServer
+
+[INFO] 00:19:13:591 SacServer/(5984:5984):  + Se hizo un read vacio en SacServer
+
+[INFO] 00:19:13:753 SacServer/(5984:5984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 00:19:22:271 SacServer/(5984:5984): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:19:22:274 SacServer/(5984:5984):  + Se hizo un read en SacServer
+
+[ERROR] 00:19:25:700 SacServer/(5984:5984): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:19:25:702 SacServer/(5984:5984):  + Se hizo un read en SacServer
+
+[ERROR] 00:19:25:708 SacServer/(5984:5984): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:19:25:713 SacServer/(5984:5984):  + Se hizo un read en SacServer
+
+[ERROR] 00:19:25:873 SacServer/(5984:5984): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:19:25:873 SacServer/(5984:5984):  + Se hizo un read en SacServer
+
+[ERROR] 00:19:29:269 SacServer/(5984:5984): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:19:29:271 SacServer/(5984:5984):  + Se hizo un read en SacServer
+
+[ERROR] 00:19:29:277 SacServer/(5984:5984): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:19:29:282 SacServer/(5984:5984):  + Se hizo un read en SacServer
+
+[ERROR] 00:19:29:442 SacServer/(5984:5984): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:19:29:443 SacServer/(5984:5984):  + Se hizo un read en SacServer
+
+[ERROR] 00:20:27:782 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:20:27:782 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:20:29:914 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:20:29:914 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:20:29:918 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:20:29:918 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:20:30:79 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:20:30:79 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:20:34:503 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:20:34:503 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:20:34:506 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:20:34:506 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:20:34:669 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:20:34:669 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:20:40:152 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:20:40:152 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:20:54:311 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:20:54:311 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:20:54:315 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:20:54:315 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:20:54:477 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:20:54:477 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:21:02:308 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:21:02:308 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:21:07:558 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:21:07:558 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:21:07:562 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:21:07:562 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:21:07:727 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:21:07:727 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:22:14:522 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:22:14:522 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:22:14:524 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:22:14:524 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:22:14:715 SacServer/(6034:6034): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:22:14:715 SacServer/(6034:6034):  + Se hizo un read en SacServer
+
+[ERROR] 00:37:28:60 SacServer/(6433:6433): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:37:28:63 SacServer/(6433:6433):  + Se hizo un read en SacServer
+
+[ERROR] 00:37:30:205 SacServer/(6433:6433): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:37:30:205 SacServer/(6433:6433):  + Se hizo un read en SacServer
+
+[ERROR] 00:37:30:209 SacServer/(6433:6433): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:37:30:209 SacServer/(6433:6433):  + Se hizo un read en SacServer
+
+[ERROR] 00:37:30:378 SacServer/(6433:6433): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:37:30:378 SacServer/(6433:6433):  + Se hizo un read en SacServer
+
+[ERROR] 00:37:36:956 SacServer/(6433:6433): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:37:36:956 SacServer/(6433:6433):  + Se hizo un read en SacServer
+
+[ERROR] 00:37:38:883 SacServer/(6433:6433): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:37:38:883 SacServer/(6433:6433):  + Se hizo un read en SacServer
+
+[ERROR] 00:37:38:884 SacServer/(6433:6433): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:37:38:884 SacServer/(6433:6433):  + Se hizo un read en SacServer
+
+[ERROR] 00:37:39:64 SacServer/(6433:6433): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:37:39:64 SacServer/(6433:6433):  + Se hizo un read en SacServer
+
+[INFO] 00:38:24:957 SacServer/(6498:6498):  + Se hizo un create en SacServer
+
+[INFO] 00:38:26:103 SacServer/(6498:6498):  + Se hizo un read vacio en SacServer
+
+[INFO] 00:38:26:274 SacServer/(6498:6498):  + Se hizo un read vacio en SacServer
+
+[ERROR] 00:38:56:357 SacServer/(6498:6498): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:38:56:357 SacServer/(6498:6498):  + Se hizo un read en SacServer
+
+[ERROR] 00:38:56:361 SacServer/(6498:6498): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:38:56:361 SacServer/(6498:6498):  + Se hizo un read en SacServer
+
+[ERROR] 00:38:56:529 SacServer/(6498:6498): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:38:56:529 SacServer/(6498:6498):  + Se hizo un read en SacServer
+
+[INFO] 00:56:51:49 SacServer/(7022:7022):  + Se hizo un create en SacServer
+
+[INFO] 00:56:55:536 SacServer/(7022:7022):  + Se hizo un read vacio en SacServer
+
+[INFO] 00:56:55:701 SacServer/(7022:7022):  + Se hizo un read vacio en SacServer
+
+[ERROR] 00:57:03:987 SacServer/(7022:7022): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:57:03:987 SacServer/(7022:7022):  + Se hizo un read en SacServer
+
+[ERROR] 00:57:03:991 SacServer/(7022:7022): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:57:03:991 SacServer/(7022:7022):  + Se hizo un read en SacServer
+
+[ERROR] 00:57:36:201 SacServer/(7022:7022): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:57:36:201 SacServer/(7022:7022):  + Se hizo un read en SacServer
+
+[ERROR] 00:57:36:205 SacServer/(7022:7022): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:57:36:205 SacServer/(7022:7022):  + Se hizo un read en SacServer
+
+[ERROR] 00:57:36:369 SacServer/(7022:7022): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:57:36:369 SacServer/(7022:7022):  + Se hizo un read en SacServer
+
+[ERROR] 00:57:43:236 SacServer/(7022:7022): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:57:43:236 SacServer/(7022:7022):  + Se hizo un read en SacServer
+
+[ERROR] 00:57:43:240 SacServer/(7022:7022): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:57:43:240 SacServer/(7022:7022):  + Se hizo un read en SacServer
+
+[ERROR] 00:57:43:432 SacServer/(7022:7022): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:57:43:432 SacServer/(7022:7022):  + Se hizo un read en SacServer
+
+[ERROR] 00:57:52:577 SacServer/(7022:7022): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:57:52:577 SacServer/(7022:7022):  + Se hizo un read en SacServer
+
+[ERROR] 00:57:52:581 SacServer/(7022:7022): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:57:52:581 SacServer/(7022:7022):  + Se hizo un read en SacServer
+
+[INFO] 01:23:41:624 SacServer/(8815:8815):  + Se hizo un create en SacServer
+
+[INFO] 01:23:50:977 SacServer/(8815:8815):  + Se hizo un read vacio en SacServer
+
+[INFO] 01:23:51:135 SacServer/(8815:8815):  + Se hizo un read vacio en SacServer
+
+[ERROR] 01:24:07:531 SacServer/(8815:8815): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:24:07:536 SacServer/(8815:8815):  + Se hizo un read en SacServer
+
+[INFO] 01:26:37:975 SacServer/(8913:8913):  + Se hizo un create en SacServer
+
+[INFO] 01:26:40:990 SacServer/(8913:8913):  + Se hizo un read vacio en SacServer
+
+[INFO] 01:26:41:515 SacServer/(8913:8913):  + Se hizo un read vacio en SacServer
+
+[ERROR] 01:26:49:360 SacServer/(8913:8913): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:26:49:367 SacServer/(8913:8913):  + Se hizo un read en SacServer
+
+[ERROR] 01:27:17:889 SacServer/(8913:8913): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:27:17:892 SacServer/(8913:8913):  + Se hizo un read en SacServer
+
+[ERROR] 01:27:17:897 SacServer/(8913:8913): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:27:17:901 SacServer/(8913:8913):  + Se hizo un read en SacServer
+
+[ERROR] 01:27:18:62 SacServer/(8913:8913): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:27:18:63 SacServer/(8913:8913):  + Se hizo un read en SacServer
+
+[ERROR] 01:27:43:216 SacServer/(8913:8913): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:27:43:218 SacServer/(8913:8913):  + Se hizo un read en SacServer
+
+[ERROR] 01:27:43:224 SacServer/(8913:8913): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:27:43:229 SacServer/(8913:8913):  + Se hizo un read en SacServer
+
+[ERROR] 01:28:19:746 SacServer/(8913:8913): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:28:19:748 SacServer/(8913:8913):  + Se hizo un read en SacServer
+
+[ERROR] 01:28:19:753 SacServer/(8913:8913): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:28:19:759 SacServer/(8913:8913):  + Se hizo un read en SacServer
+
+[ERROR] 01:28:19:918 SacServer/(8913:8913): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:28:19:919 SacServer/(8913:8913):  + Se hizo un read en SacServer
+
+[ERROR] 01:28:28:343 SacServer/(8913:8913): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:28:28:344 SacServer/(8913:8913):  + Se hizo un read en SacServer
+
+[ERROR] 01:28:28:350 SacServer/(8913:8913): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:28:28:351 SacServer/(8913:8913):  + Se hizo un read en SacServer
+
+[INFO] 01:34:48:316 SacServer/(9097:9097):  + Se hizo un create en SacServer
+
+[INFO] 01:34:52:589 SacServer/(9097:9097):  + Se hizo un read vacio en SacServer
+
+[INFO] 01:34:52:752 SacServer/(9097:9097):  + Se hizo un read vacio en SacServer
+
+[ERROR] 01:34:58:650 SacServer/(9097:9097): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:34:58:654 SacServer/(9097:9097):  + Se hizo un read en SacServer
+
+[INFO] 01:35:07:937 SacServer/(9097:9097):  + Se hizo un read en SacServer
+
+[ERROR] 01:35:07:943 SacServer/(9097:9097): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:35:07:948 SacServer/(9097:9097):  + Se hizo un read en SacServer
+
+[ERROR] 01:35:08:120 SacServer/(9097:9097): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:35:08:121 SacServer/(9097:9097):  + Se hizo un read en SacServer
+
+[INFO] 01:36:35:548 SacServer/(9097:9097):  + Se hizo un read en SacServer
+
+[ERROR] 01:36:35:553 SacServer/(9097:9097): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:36:35:555 SacServer/(9097:9097):  + Se hizo un read en SacServer
+
+[ERROR] 01:36:35:718 SacServer/(9097:9097): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:36:35:719 SacServer/(9097:9097):  + Se hizo un read en SacServer
+
+[ERROR] 01:36:41:583 SacServer/(9097:9097): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:36:41:590 SacServer/(9097:9097):  + Se hizo un read en SacServer
+
+[ERROR] 01:36:41:595 SacServer/(9097:9097): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:36:41:596 SacServer/(9097:9097):  + Se hizo un read en SacServer
+
+[INFO] 01:38:55:86 SacServer/(9097:9097):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:38:55:97 SacServer/(9097:9097):  + Se hizo un rmdir en SacServer
+
+[INFO] 01:38:58:78 SacServer/(9097:9097):  + Se hizo un unlink en SacServer
+

@@ -116,22 +116,21 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 	int* respuesta = malloc(*tamanioRespuesta);
 	read(sacServer, respuesta, *tamanioRespuesta);
 	if (*respuesta == 0) {
+		return 0;
+	}
+	if(*respuesta == 1){
 		//Deserializo el texto del archivo que te manda SacServer y lo guardo en buf
 		int *tamanioTexto = malloc(sizeof(int));
 		read(sacServer, tamanioTexto, sizeof(int));
-
-		if (*tamanioTexto == 0) {
-			return 0;
-		}
 		char *texto = malloc(*tamanioTexto);
 		read(sacServer, texto, *tamanioTexto);
 
 		memcpy(buf + offset, texto, *tamanioTexto);
 
-		return *tamanioTexto;
+		return 0;
 	}
-	else{
-		return errno;
+	if(*respuesta == -1){
+		return -ENOENT;
 	}
 
 	// antes hacia return *tamanioTexto;
@@ -355,6 +354,18 @@ static int hello_write(const char *path, const char *buf, size_t size, off_t off
 	memcpy(buffer + 8 * sizeof(int) + strlen(path), buf, strlen(buf));
 
 	send(sacServer, buffer, 8 * sizeof(int) + strlen(path) + strlen(buf), 0);
+
+	// Deserializo respuesta
+	int* tamanioRespuesta = malloc(sizeof(int));
+	read(sacServer, tamanioRespuesta, sizeof(int));
+	int* resp = malloc(*tamanioRespuesta);
+	read(sacServer, resp, *tamanioRespuesta);
+	if (*resp == -1) {
+		return -ENOSPC;
+	} else {
+		return *resp;
+	}
+
 
 	return 0;
 }
