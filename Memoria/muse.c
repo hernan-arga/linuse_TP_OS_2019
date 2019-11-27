@@ -26,7 +26,7 @@ int main() {
 	tam_mem = pconfig->tamanio_memoria; //Ver de poner como define
 	tam_pagina = pconfig->tamanio_pag; //Ver de poner como define
 	tam_swap = pconfig->tamanio_swap;
-	punteroClock = 0;
+	punteroClock = 0; //Asi cuando se ejecute el algoritmo por primera vez, va a estar iniciado en 0
 	cantidadFrames = tam_mem / tam_pagina;
 	cantidadPaginasSwap = tam_swap / tam_pagina;
 
@@ -1258,7 +1258,11 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 	//Cargo la data swappeada en el frame de mm ppal asignado a la pagina
 	cargarDatosEnFrame(frameReemplazo, datosEnSwap);
 
+	//Modifico las estructuras
 	list_replace(bitmapFrames, frameReemplazo, nuevoFrame);
+	list_replace(segmentoQueContienePagina->tablaPaginas, indicePagina, paginaSwapeada);
+	list_replace(segmentosProceso, indiceSegmento, segmentoQueContienePagina);
+	dictionary_put(tablasSegmentos, (char*)idSocketCliente, segmentosProceso);
 
 	return frameReemplazo;
 }
@@ -1268,7 +1272,73 @@ void cargarDatosEnFrame(int indiceFrame, char *datos){
 	void *pos = retornarPosicionMemoriaFrame(indiceFrame);
 
 	//Se me esta copiando la data sin formato? - Consultar
-	pos = datos;
+	//pos = datos;
+	memcpy(pos, datos, tam_pagina);
 
 }
+
+/*Lleva a swap una pagina en particular de un segmento de un proceso
+ *liberando el frame donde se encontraba y retornando el indice de swap
+ *donde la ubico*/
+int llevarASwapUnaPagina(int indicePagina, int indiceSegmento, int idSocketCliente){
+	struct Pagina *paginaASwappear = malloc(sizeof(struct Pagina));
+	struct Segmento *segmentoQueContienePagina = malloc(sizeof(struct Segmento));
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	char *datosASwappear;
+
+	segmentoQueContienePagina = list_get(segmentosProceso, indiceSegmento);
+	paginaASwappear = list_get(segmentoQueContienePagina->tablaPaginas, indicePagina);
+
+	//Obtengo la data a swappear que se encuentra en el frame asignado a la pagina
+	int frameQueContieneData = paginaASwappear->numeroFrame;
+	void *pos = retornarPosicionMemoriaFrame(frameQueContieneData);
+
+	//Guardo en la variable los datos a swappear
+	memcpy(datosASwappear, pos, tam_pagina);
+
+	//Obtengo un lugar libre en swap y escribo los datos ahi
+	int indiceSwap = buscarIndiceSwapLibre();
+
+	swap = fopen("swap.txt","a+");
+	fseek(swap, indiceSwap * tam_pagina, SEEK_SET);
+	//CHEQUEAR que este escribiendo en el lugar correcto
+	fwrite(datosASwappear, sizeof(char), tam_pagina, swap);
+
+	//Debo liberar el frame que contenia la pagina que lleve a swap y tambien la pagina
+	paginaASwappear->indiceSwap = indiceSwap;
+	paginaASwappear->numeroFrame = -1;
+
+	struct Frame *frameModificado = malloc(sizeof(struct Frame));
+	frameModificado = list_get(bitmapFrames, frameQueContieneData);
+	frameModificado->modificado = 0;
+	frameModificado->presencia = 0;
+	frameModificado->uso = 0;
+
+	//Modifico todas las estructuras con lo nuevo
+	list_replace(bitmapFrames, frameQueContieneData, frameModificado);
+	list_replace(segmentoQueContienePagina->tablaPaginas, indicePagina, paginaASwappear);
+	list_replace(segmentosProceso, indiceSegmento, segmentoQueContienePagina);
+	dictionary_put(tablasSegmentos, (char*)idSocketCliente, segmentosProceso);
+
+	return indiceSwap;
+}
+
+int buscarIndiceSwapLibre(){
+
+	for (int i = 0; i < bitarray_get_max_bit(bitmapSwap); i++) {
+
+		if (bitarray_test_bit(bitmapSwap, i) == 0) {
+			return i;
+		}
+	}
+
+	//Nunca se me acaba swap?
+	return -1;
+}
+
+
+
+
+
+
 
