@@ -20,6 +20,7 @@ FILE *swap;
 
 int cantidadFrames;
 size_t cantidadPaginasSwap;
+int punteroClock;
 
 //t_bitarray *bitmapFrames;
 t_list *bitmapFrames; //Va a ser una t_list de struct Frame, el INDICE es el numero de frame
@@ -108,9 +109,11 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 
 //Memoria virtual
 int clockModificado();
+void incrementarPunteroClockModificado();
 void inicializarBitmapSwap();
 uint32_t musemap(char *path, size_t length/*, int flags*/);
 int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCliente);
+
 
 #endif /* MUSE_H_ */
 

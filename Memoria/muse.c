@@ -26,6 +26,7 @@ int main() {
 	tam_mem = pconfig->tamanio_memoria; //Ver de poner como define
 	tam_pagina = pconfig->tamanio_pag; //Ver de poner como define
 	tam_swap = pconfig->tamanio_swap;
+	punteroClock = 0;
 	cantidadFrames = tam_mem / tam_pagina;
 	cantidadPaginasSwap = tam_swap / tam_pagina;
 
@@ -1076,39 +1077,58 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 
 int clockModificado(){
 	struct Frame *frame = malloc(sizeof(struct Frame));
+	int framesRecorridos = 0;
 
 	//Paso 1
-	for(int i = 0; i < cantidadFrames; i++){
-
-		frame = list_get(bitmapFrames, i);
+	while(framesRecorridos < cantidadFrames) {
+		frame = list_get(bitmapFrames, punteroClock);
 
 		if(frame->uso == 0 && frame->modificado == 0) {
-			return i;
+
+			incrementarPunteroClockModificado();
+			return punteroClock;
+
 		}
+
+		framesRecorridos++;
+		incrementarPunteroClockModificado();
 
 	}
 
+	framesRecorridos = 0;
+
 	//Paso 2
-	for(int j = 0; j < cantidadFrames; j++){
+	while(framesRecorridos < cantidadFrames) {
+		frame = list_get(bitmapFrames, punteroClock);
 
-		frame = list_get(bitmapFrames, j);
+		if(frame->uso == 0 && frame->modificado == 1) {
 
-		if(frame->uso == 0 && frame->modificado == 1){
-			return j;
+			incrementarPunteroClockModificado();
+			return punteroClock;
+
 		}
 
 		//Si no se lo elige, se le pone u = 0 (se lo libera)
-		liberarFrame(j);
+		liberarFrame(punteroClock);
+
+		framesRecorridos++;
+		incrementarPunteroClockModificado();
+
 	}
 
 	//Paso 3
-	for(int k = 0; k < cantidadFrames; k++){
-
-		frame = list_get(bitmapFrames, k);
+	while(framesRecorridos < cantidadFrames) {
+		frame = list_get(bitmapFrames, punteroClock);
 
 		if(frame->uso == 0 && frame->modificado == 0) {
-			return k;
+
+			incrementarPunteroClockModificado();
+			return punteroClock;
+
 		}
+
+		framesRecorridos++;
+		incrementarPunteroClockModificado();
 
 	}
 
@@ -1120,6 +1140,20 @@ void inicializarBitmapSwap() {
 
 	for (int i = 0; i < bitarray_get_max_bit(bitmapSwap); i++) {
 		bitarray_clean_bit(bitmapSwap, i);
+	}
+
+}
+
+void incrementarPunteroClockModificado() {
+
+	if(punteroClock < (cantidadFrames - 1)) {
+
+		punteroClock++;
+
+	} else {
+
+		punteroClock = 0;
+
 	}
 
 }
