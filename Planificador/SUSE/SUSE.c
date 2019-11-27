@@ -312,9 +312,11 @@ void reiniciarTiempoDeEjecucionTotal(){
 }
 
 void reiniciarTiempoDeEjecucionDe1Programa(char *pid, void *unPrograma){
+	char *unPid = string_itoa(((programa*)unPrograma)->pid);
 	sem_wait(&sem_programas);
-	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(((programa*)unPrograma)->pid)))->tiempoDeEjecucionDeTodosLosHilos = 0;
+	((programa*)dictionary_get(diccionarioDeProgramas, unPid))->tiempoDeEjecucionDeTodosLosHilos = 0;
 	sem_post(&sem_programas);
+	free(unPid);
 }
 
 //Porcentaje tiempo de ejecucion
@@ -445,8 +447,10 @@ void tomarMetricasTiemposDeEjecucionPara1Hilo(void *unHilo){
 	int tiempoDeEjecucion = getMicrotime() - ((hilo*)unHilo)->timestampCreacion;
 	((hilo*) unHilo)->tiempoDeEjecucion = tiempoDeEjecucion;
 	log_info(logger,"Tiempo de ejecucion para el hilo %i del programa %i: %i", ((hilo*)unHilo)->tid, ((hilo*)unHilo)->pid, tiempoDeEjecucion);
+	char *unPid = string_itoa(((hilo*)unHilo)->pid);
 	//Acumulo en el programa el tiempo de ejecucion de cada hilo para calcuar el porcentaje
-	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(((hilo*)unHilo)->pid)))->tiempoDeEjecucionDeTodosLosHilos += tiempoDeEjecucion;
+	((programa*)dictionary_get(diccionarioDeProgramas, unPid))->tiempoDeEjecucionDeTodosLosHilos += tiempoDeEjecucion;
+	free(unPid);
 }
 
 void tomarMetricasTiemposDeEjecucionParaSem(char *semID, t_queue *cola){
@@ -575,10 +579,13 @@ void planificarReady(){
 		sem_post(&sem_new);
 		sem_wait(&MAXIMOPROCESAMIENTO);
 
+		char *unPid = string_itoa(unHilo->pid);
+
 		sem_wait(&sem_programas);
-		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(unHilo->pid)))->cantidadDeHilosEnNew--;
+		((programa*)dictionary_get(diccionarioDeProgramas, unPid))->cantidadDeHilosEnNew--;
 		sem_post(&sem_programas);
 
+		free(unPid);
 		pasarAReady(unHilo);
 
 	}
@@ -620,36 +627,41 @@ void crearHilo(int sd){
 	sem_post(&hayNuevos);
 	free(tid);
 
+	char *unPid = string_itoa(unHilo->pid);
 	sem_wait(&sem_programas);
-	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(unHilo->pid)))->cantidadDeHilosEnNew++;
+	((programa*)dictionary_get(diccionarioDeProgramas, unPid))->cantidadDeHilosEnNew++;
 	sem_post(&sem_programas);
+	free(unPid);
 }
 
 void pasarAReady(hilo *unHilo){
+	char *unPid = string_itoa(unHilo->pid);
 
 	sem_wait(&sem_diccionario_ready);
-	if(!dictionary_has_key(diccionarioDeListasDeReady, string_itoa(unHilo->pid))){
+	if(!dictionary_has_key(diccionarioDeListasDeReady, unPid)){
 		t_list *listaDeReady = list_create();
-		dictionary_put(diccionarioDeListasDeReady, string_itoa(unHilo->pid), listaDeReady);
+		dictionary_put(diccionarioDeListasDeReady, unPid, listaDeReady);
 
 		sem_wait(&sem_programas);
 		//Si es la primera vez que llega pongo en exec (es el hilo main)
-		((programa *)dictionary_get(diccionarioDeProgramas, string_itoa(unHilo->pid)))->exec = unHilo;
+		((programa *)dictionary_get(diccionarioDeProgramas, unPid))->exec = unHilo;
 		sem_post(&sem_programas);
 	}
 	else{
 
 		//Lo agrego a la lista de ready correspondiente
-		list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(unHilo->pid))), unHilo);
+		list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, unPid)), unHilo);
 		unHilo->timestampReady = getMicrotime();
 
 		sem_wait(&sem_programas);
 
-		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(unHilo->pid)))->cantidadDeHilosEnReady++;
+		((programa*)dictionary_get(diccionarioDeProgramas, unPid))->cantidadDeHilosEnReady++;
 		sem_post(&sem_programas);
 
 	}
 	sem_post(&sem_diccionario_ready);
+
+	free(unPid);
 }
 
 //Esta es la funcion que se invoca cuando se llama a schedule_next
@@ -673,21 +685,23 @@ int siguienteAEjecutar(int pid){
 
 int calcularSiguienteHilo(int pid){
 
-	hilo *candidatoAEjecutar = ((hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0) );
+	char *unPid = string_itoa(pid);
+
+	hilo *candidatoAEjecutar = ((hilo*)list_get((t_list*)(dictionary_get(diccionarioDeListasDeReady, unPid)), 0) );
 
 	//El programa existe cuando algun hilo paso a ready en algun momento
-	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, string_itoa(pid));
+	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, unPid);
 
-	hilo *elQueEstaEjecutando = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec;
+	hilo *elQueEstaEjecutando = ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec;
 
 	if(existeElPrograma && elQueEstaEjecutando != NULL){
 
 		//Si el que esta en ready tiene menos ejecucion ese sigue, sino el que estaba en exec
-		if(candidatoAEjecutar!=NULL && candidatoAEjecutar->estimacion < ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->estimacion){
+		if(candidatoAEjecutar!=NULL && candidatoAEjecutar->estimacion < ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec->estimacion){
 			//Paso a ready el que esta ejecutando y a exec el que estaba en ready (sacandolo de ready)
-			candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0) );
-			list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), elQueEstaEjecutando);
-			((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = candidatoAEjecutar;
+			candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, unPid)), 0) );
+			list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, unPid)), elQueEstaEjecutando);
+			((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec = candidatoAEjecutar;
 			inicioRafaga = getMicrotime();
 
 			elQueEstaEjecutando->sumaDeIntervalosEnExec += (int)(getMicrotime() - elQueEstaEjecutando->timestampExec);
@@ -695,61 +709,63 @@ int calcularSiguienteHilo(int pid){
 			candidatoAEjecutar->sumaDeIntervalosEnReady += (int)(getMicrotime() - candidatoAEjecutar->timestampReady);
 			candidatoAEjecutar->timestampExec = getMicrotime();
 
+			free(unPid);
 			return candidatoAEjecutar->tid;
 		}
 		else{
 			elQueEstaEjecutando->sumaDeIntervalosEnExec += (int)(getMicrotime() - elQueEstaEjecutando->timestampExec);
 			elQueEstaEjecutando->timestampExec = getMicrotime();
 
+			free(unPid);
 			return elQueEstaEjecutando->tid;
 		}
 	}
 
 	//Si no hay ninguno en exec paso el siguiente
-	candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))), 0) );
-	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = candidatoAEjecutar;
+	candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, unPid)), 0) );
+	((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec = candidatoAEjecutar;
 	inicioRafaga = getMicrotime();
 	//postSemaforoMultiprogramacion();
 
-	((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->cantidadDeHilosEnReady--;
+	((programa*)dictionary_get(diccionarioDeProgramas, unPid))->cantidadDeHilosEnReady--;
 
 	candidatoAEjecutar->sumaDeIntervalosEnReady += (int)(getMicrotime() - candidatoAEjecutar->timestampReady);
 	candidatoAEjecutar->timestampExec = getMicrotime();
 
+	free(unPid);
 	return candidatoAEjecutar->tid;
 }
 
 void replanificarHilos(int pid){
+	char *unPid = string_itoa(pid);
 	sem_wait(&sem_diccionario_ready);
 	//Ordeno la lista por el que tiene menor estimacion
-	list_sort((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))) , (void*)tieneMenorEstimacion);
+	list_sort((t_list*)(dictionary_get(diccionarioDeListasDeReady, unPid)) , (void*)tieneMenorEstimacion);
 	sem_post(&sem_diccionario_ready);
+	free(unPid);
 }
 
 void recalcularEstimacion(int pid){
 
 	sem_wait(&sem_programas);
+	char* unPid = string_itoa(pid);
 	//El programa existe cuando algun hilo paso a ready en algun momento
-	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, string_itoa(pid));
+	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, unPid);
 
 	//Si existe el programa y hay alguien en ejecucion
-	if(existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL){
+	if(existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec != NULL){
 		int loQueTardo = getMicrotime() - inicioRafaga;
 		//Actualizo la rafaga y la estimacion del que esta en ejecucion
 		//printf("Rafaga del tid %i :%i\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid, loQueTardo);
-		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga = loQueTardo;
-		actualizarEstimacion( ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec );
+		((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec->rafaga = loQueTardo;
+		actualizarEstimacion( ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec );
 		//printf("Estimacion del tid %i :%f\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid, ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->estimacion);
 
 	}
 		//printf("TID: %i - Rafaga: %f\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid,((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->rafaga);
 	sem_post(&sem_programas);
 
-	//No hace falta calcular la estimacion de los demas hilos
-	/*sem_wait(&sem_diccionario_ready);
-	//Actualizo la estimacion de todos los que estan en ready
-	list_iterate( (t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(pid))) , (void*)actualizarEstimacion);
-	sem_post(&sem_diccionario_ready);*/
+	free(unPid);
 
 }
 
@@ -802,27 +818,30 @@ void sem_suse_wait(int pid, int tid, char* semID){
 		}
 
 		else{
-
-			if( ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid == tid ){
+			char *unPid = string_itoa(pid);
+			if( ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec->tid == tid ){
 				sem_wait(&blockedPorSemaforo);
 
 				sem_wait(&sem_programas);
 				//Mandar el hilo a blocked por semaforo
-				queue_push((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID), ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec);
+				queue_push((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID), ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec);
 
-				((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->cantidadDeHilosEnBlocked++;
+				((programa*)dictionary_get(diccionarioDeProgramas, unPid))->cantidadDeHilosEnBlocked++;
 				sem_post(&sem_programas);
 
 				sem_post(&blockedPorSemaforo);
 				//Lo saco de ejecucion
-				((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
+				((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec = NULL;
 				//postSemaforoMultiprogramacion();
 				//sem_post(&hayQueActualizarUnExec);
 			}
 			else{
 				printf("El hilo en ejecucion no pidio el wait\n");
+				free(unPid);
 				exit(-1);
 			}
+
+			free(unPid);
 		}
 
 	}
@@ -835,9 +854,11 @@ void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, char *semID){
 	if( !queue_is_empty((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID)) ){
 		pasarAReady( queue_pop((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID)) );
 
+		char* unPid = string_itoa(pid);
 		sem_wait(&sem_programas);
-		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->cantidadDeHilosEnBlocked--;
+		((programa*)dictionary_get(diccionarioDeProgramas, unPid))->cantidadDeHilosEnBlocked--;
 		sem_post(&sem_programas);
+		free(unPid);
 	}
 }
 
@@ -850,8 +871,9 @@ void realizarJoin(int pid, int tidAEsperar){
 	 * y al querer ver si hay alguien en exec valgrind chilla, por eso primero me fijo si existe
 	 * el programa y despues si hay alguien en exec para hacer el cambio
 	 */
-	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, string_itoa(pid));
-	int hayAlguienEnExec = existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec != NULL;
+	char *unPid = string_itoa(pid);
+	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, unPid);
+	int hayAlguienEnExec = existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec != NULL;
 	printf("existeElPrograma %i - hayAlguienEnExec %i\n", existeElPrograma, hayAlguienEnExec);
 	if(hayAlguienEnExec){
 		//printf("tid en exec: %i - a esperar %i\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid, tidAEsperar);
@@ -862,22 +884,23 @@ void realizarJoin(int pid, int tidAEsperar){
 			//Creo un hilo solo para comparar si ya estaba bloqueado y cambiar el contador
 			hilo *hiloABloquear = malloc(sizeof(hilo));
 			hiloABloquear->pid = pid;
-			hiloABloquear->tid = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid;
+			hiloABloquear->tid = ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec->tid;
 			//Si no estaba ya bloqueado por otro hilo, sumo el contador
 			if(!bloqueadoPorAlgunHilo(hiloABloquear)){
-				((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->cantidadDeHilosEnBlocked++;
+				((programa*)dictionary_get(diccionarioDeProgramas, unPid))->cantidadDeHilosEnBlocked++;
 			}
 
 			free(hiloABloquear);
 
 			//Pongo el que esta ejecutando en blockeado
-			ponerEnBlockedPorHilo(pid, ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec, tidAEsperar);
+			ponerEnBlockedPorHilo(pid, ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec, tidAEsperar);
 			//Lo saco de exec
-			((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
+			((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec = NULL;
 			//postSemaforoMultiprogramacion();
 		}
 	}
 	sem_post(&sem_programas);
+	free(unPid);
 }
 
 int terminoElHilo(int pid, int tid){
@@ -896,12 +919,13 @@ int estaEnExit(char* key, t_list* listaDeExit, void* tidAEsperar){
 }
 
 void realizarClose(int pid, int tid){
-	if( ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid == tid ){
-		hilo *elQueEstaEjecutando = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec;
+	char *unPid = string_itoa(pid);
+	if( ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec->tid == tid ){
+		hilo *elQueEstaEjecutando = ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec;
 		//Pongo el que esta ejecutando en exit
 		pasarAExit(elQueEstaEjecutando);
 		//Lo saco de exec
-		((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec = NULL;
+		((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec = NULL;
 		//postSemaforoMultiprogramacion();
 		//sem_post(&hayQueActualizarUnExec);
 
@@ -911,21 +935,23 @@ void realizarClose(int pid, int tid){
 	else{
 		//XXX se fija en los de ready, bloqueados, etc?
 	}
-
+	free(unPid);
 }
 
 void pasarAExit(hilo *unHilo){
 	sem_wait(&sem_exit);
+	char *unPid = string_itoa(unHilo->pid);
 	//Si ya existe una entrada para el proceso en la lista de exit, lo agrego a su lista
-	if(!dictionary_has_key(diccionarioDeListasDeExit, string_itoa(unHilo->pid))){
+	if(!dictionary_has_key(diccionarioDeListasDeExit, unPid)){
 			t_list *listaDeExit = list_create();
 			list_add(listaDeExit, unHilo);
-			dictionary_put(diccionarioDeListasDeExit, string_itoa(unHilo->pid), listaDeExit);
+			dictionary_put(diccionarioDeListasDeExit, unPid, listaDeExit);
 	}
 	else{
 		//Lo agrego a la lista correspondiente
-		list_add((t_list*)(dictionary_get(diccionarioDeListasDeExit, string_itoa(unHilo->pid))), unHilo);
+		list_add((t_list*)(dictionary_get(diccionarioDeListasDeExit, unPid)), unHilo);
 	}
+	free(unPid);
 	sem_post(&sem_exit);
 
 	sem_wait(&sem_metricas);
@@ -936,20 +962,26 @@ void pasarAExit(hilo *unHilo){
 }
 
 void ponerEnBlockedPorHilo(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar){
-	t_dictionary *diccionarioDeBloqueados = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->blocked;
-	if( !dictionary_has_key(diccionarioDeBloqueados, string_itoa(tidAEsperar)) ){
+	char *unPid = string_itoa(pid);
+	char *tidHiloAEsperar = string_itoa(tidAEsperar);
+	t_dictionary *diccionarioDeBloqueados = ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->blocked;
+	if( !dictionary_has_key(diccionarioDeBloqueados, tidHiloAEsperar) ){
 		t_list *listaDeBloqueados = list_create();
-		dictionary_put(diccionarioDeBloqueados, string_itoa(tidAEsperar), listaDeBloqueados);
+		dictionary_put(diccionarioDeBloqueados, tidHiloAEsperar, listaDeBloqueados);
 	}
 	//printf("hiloAPonerEnBlocked %i - tidAEsperar %i\n", hiloAPonerEnBlocked->tid, tidAEsperar),
-	list_add((t_list*)dictionary_get(diccionarioDeBloqueados, string_itoa(tidAEsperar)), hiloAPonerEnBlocked);
+	list_add((t_list*)dictionary_get(diccionarioDeBloqueados, tidHiloAEsperar), hiloAPonerEnBlocked);
+	free(unPid);
+	free(tidHiloAEsperar);
 }
 
 //fixme estos semaforos estan raros
 void liberarBloqueadosPorElHilo(hilo *hiloBloqueante){
 	sem_wait(&sem_programas);
-	t_dictionary *diccionarioDeBloqueadosPorProceso = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(hiloBloqueante->pid)))->blocked;
-	t_list *listaDeBloqueados = (t_list *)dictionary_get(diccionarioDeBloqueadosPorProceso, string_itoa(hiloBloqueante->tid));
+	char *pidHiloBloqueante = string_itoa(hiloBloqueante->pid);
+	char *tidHiloBloqueante = string_itoa(hiloBloqueante->tid);
+	t_dictionary *diccionarioDeBloqueadosPorProceso = ((programa*)dictionary_get(diccionarioDeProgramas, pidHiloBloqueante))->blocked;
+	t_list *listaDeBloqueados = (t_list *)dictionary_get(diccionarioDeBloqueadosPorProceso, tidHiloBloqueante);
 
 	//Puede ser que no se haya bloqueado ningun hilo nunca todavia para ese proceso
 	if(listaDeBloqueados!=NULL){
@@ -962,10 +994,11 @@ void liberarBloqueadosPorElHilo(hilo *hiloBloqueante){
 			 * la lista de bloqueados por el hiloBloqueante
 			 */
 			if(!bloqueadoPorAlgunHilo(hiloBloqueado)){
+				char *pidHiloBloqueado = string_itoa(hiloBloqueado->pid);
 
 				sem_wait(&sem_diccionario_ready);
 				//Lo agrego a ready
-				list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, string_itoa(hiloBloqueado->pid))), hiloBloqueado);
+				list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, pidHiloBloqueado)), hiloBloqueado);
 				printf(" liberando tid bloqueado %i\n", hiloBloqueado->tid);
 
 				hiloBloqueado->timestampReady = getMicrotime();
@@ -973,30 +1006,37 @@ void liberarBloqueadosPorElHilo(hilo *hiloBloqueante){
 				sem_post(&sem_diccionario_ready);
 
 				//Disminuyo la cantidad de bloqueados
-				((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(hiloBloqueado->pid)))->cantidadDeHilosEnBlocked--;
+				((programa*)dictionary_get(diccionarioDeProgramas, pidHiloBloqueado))->cantidadDeHilosEnBlocked--;
 
 				//Aumento la cantidad en ready
-				((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(hiloBloqueado->pid)))->cantidadDeHilosEnReady++;
-
+				((programa*)dictionary_get(diccionarioDeProgramas, pidHiloBloqueado))->cantidadDeHilosEnReady++;
+				free(pidHiloBloqueado);
 			}
 
 			//sem_wait(&sem_programas);
 		}
 
 	}
-
+	free(pidHiloBloqueante);
+	free(tidHiloBloqueante);
 	sem_post(&sem_programas);
 }
 
 hilo *tomarHiloBloqueadoPor(hilo *hiloBloqueante){
-	t_dictionary *diccionarioDeBloqueadosPorProceso = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(hiloBloqueante->pid)))->blocked;
-	t_list *listaDeBloqueados = (t_list *)dictionary_get(diccionarioDeBloqueadosPorProceso, string_itoa(hiloBloqueante->tid));
+	char *pidHiloBloqueante = string_itoa(hiloBloqueante->pid);
+	char *tidHiloBloqueante = string_itoa(hiloBloqueante->tid);
+	t_dictionary *diccionarioDeBloqueadosPorProceso = ((programa*)dictionary_get(diccionarioDeProgramas, pidHiloBloqueante))->blocked;
+	t_list *listaDeBloqueados = (t_list *)dictionary_get(diccionarioDeBloqueadosPorProceso, tidHiloBloqueante);
+	free(pidHiloBloqueante);
+	free(tidHiloBloqueante);
 	return (hilo*)list_remove(listaDeBloqueados, 0);
 }
 
 int bloqueadoPorAlgunHilo(hilo *hiloBloqueado){
-	t_dictionary *diccionarioDeBloqueadosPorProceso = ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(hiloBloqueado->pid)))->blocked;
+	char *pidHiloBloqueado = string_itoa(hiloBloqueado->pid);
+	t_dictionary *diccionarioDeBloqueadosPorProceso = ((programa*)dictionary_get(diccionarioDeProgramas, pidHiloBloqueado))->blocked;
 	int algunoLoBloquea = dictionary_algunoCumple(diccionarioDeBloqueadosPorProceso, (void *) tieneBloqueadoAlHilo, (void *) hiloBloqueado);
+	free(pidHiloBloqueado);
 	return algunoLoBloquea;
 }
 
@@ -1083,15 +1123,17 @@ void limpiarEstructuras(int pid){
 		free(unPrograma);
 	}
 
+	char *unPid = string_itoa(pid);
 	sem_wait(&sem_exit);
-	dictionary_remove_and_destroy(diccionarioDeListasDeExit, string_itoa(pid), (void*)borrarLista);
+	dictionary_remove_and_destroy(diccionarioDeListasDeExit, unPid, (void*)borrarLista);
 	sem_post(&sem_exit);
 	sem_wait(&sem_diccionario_ready);
-	dictionary_remove_and_destroy(diccionarioDeListasDeReady, string_itoa(pid), (void*)borrarLista);
+	dictionary_remove_and_destroy(diccionarioDeListasDeReady, unPid, (void*)borrarLista);
 	sem_post(&sem_diccionario_ready);
 	sem_wait(&sem_programas);
-	dictionary_remove_and_destroy(diccionarioDeProgramas, string_itoa(pid), (void*)borrarPrograma);
+	dictionary_remove_and_destroy(diccionarioDeProgramas, unPid, (void*)borrarPrograma);
 	sem_post(&sem_programas);
+	free(unPid);
 }
 
 void crearPrograma(int pid){
@@ -1107,9 +1149,11 @@ void crearPrograma(int pid){
 	unPrograma->tiempoDeEjecucionDeTodosLosHilos = 0;
 	unPrograma->exec = NULL;
 
+	char *unPid = string_itoa(pid);
 	sem_wait(&sem_programas);
-	dictionary_put(diccionarioDeProgramas, string_itoa(pid), unPrograma);
+	dictionary_put(diccionarioDeProgramas, unPid, unPrograma);
 	sem_post(&sem_programas);
+	free(unPid);
 }
 
 int32_t iniciarConexion() {
