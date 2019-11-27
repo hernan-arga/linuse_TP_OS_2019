@@ -1187,6 +1187,7 @@ uint32_t musemap(char *path, size_t length/*, int flags*/){
 
 	segmentoMappeado->tablaPaginas = list_create();
 
+	//No se esta utilizando actualmente, pero necesito guardarlo para sync? - ver
 	FILE *archivoMap = fopen(path,"r");
 
 	int paginasNecesarias = ceil(length / tam_pagina);
@@ -1201,7 +1202,9 @@ uint32_t musemap(char *path, size_t length/*, int flags*/){
 	}
 
 	//Agrego el nuevo segmentoMap a la lista de segmentos del proceso
-	list_add(dictionary_get(tablasSegmentos, (char*)idSocketCliente), segmentoMappeado);
+	list_add(segmentosProceso, segmentoMappeado);
+	//Modifico el diccionario agregando el nuevo segmento
+	dictionary_put(tablasSegmentos, (char*)idSocketCliente, segmentosProceso);
 
 	return 0;
 }
@@ -1213,6 +1216,7 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 	struct Pagina *paginaSwapeada = malloc(sizeof(struct Pagina));
 	struct Segmento *segmentoQueContienePagina = malloc(sizeof(struct Segmento));
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	char *datosEnSwap;
 
 	segmentoQueContienePagina = list_get(segmentosProceso, indiceSegmento);
 	paginaSwapeada = list_get(segmentoQueContienePagina->tablaPaginas, indicePagina);
@@ -1223,6 +1227,10 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 	//Obtengo indice de swap donde se encuentra
 	int indiceSwap = paginaSwapeada->indiceSwap;
 
+	swap = fopen("swap.txt","a+");
+	fseek(swap, indiceSwap * tam_pagina, SEEK_SET);
+	fread(datosEnSwap, sizeof(char), tam_pagina, swap);
+
 	//Busco frame donde traer la pagina - ejecuta el algoritmo de reemplazo en caso de
 	//ser necesario
 	int frameReemplazo;
@@ -1231,6 +1239,7 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 		frameReemplazo = buscarFrameLibre();
 	} else{
 		frameReemplazo = clockModificado();
+		//llevarASwap(frameReemplazo);
 	}
 
 	struct Frame *nuevoFrame = malloc(sizeof(struct Frame));
@@ -1246,10 +1255,20 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 	nuevoFrame->presencia = 1; //P = 1, esta cargada en mm ppal
 	nuevoFrame->uso = 1;
 
+	//Cargo la data swappeada en el frame de mm ppal asignado a la pagina
+	cargarDatosEnFrame(frameReemplazo, datosEnSwap);
+
 	list_replace(bitmapFrames, frameReemplazo, nuevoFrame);
 
 	return frameReemplazo;
 }
 
+void cargarDatosEnFrame(int indiceFrame, char *datos){
 
+	void *pos = retornarPosicionMemoriaFrame(indiceFrame);
+
+	//Se me esta copiando la data sin formato? - Consultar
+	pos = datos;
+
+}
 
