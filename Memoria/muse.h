@@ -32,8 +32,9 @@ struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
 	bool isFree;
 };
 
-struct Segmento{ //Segmento NORMAL
+struct Segmento{
 	bool esComun;
+	char *filePath; //NULL si es un segmento normal
 	int id;
 	uint32_t baseLogica;
 	uint32_t tamanio;
@@ -116,6 +117,7 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 void cargarDatosEnFrame(int indiceFrame, char *datos);
 int llevarASwapUnaPagina(int indicePagina, int indiceSegmento, int idSocketCliente);
 int buscarIndiceSwapLibre();
+int musesync(uint32_t addr, size_t len);
 
 #endif /* MUSE_H_ */
 

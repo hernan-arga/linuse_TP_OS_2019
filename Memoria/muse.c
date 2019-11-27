@@ -1179,6 +1179,7 @@ uint32_t musemap(char *path, size_t length/*, int flags*/){
 	struct Segmento *segmentoMappeado = malloc(sizeof(struct Segmento));
 
 	segmentoMappeado->esComun = false; //Indica que es un segmento mmappeado
+	segmentoMappeado->filePath = path;
 	segmentoMappeado->id = list_size(segmentosProceso) + 1;
 
 	//Obtengo el tamaño del ultimo segmento
@@ -1337,6 +1338,25 @@ int buscarIndiceSwapLibre(){
 }
 
 
+//MUSE SYNC
+
+/**Descarga una cantidad `len` de bytes y lo escribe en el archivo en el FileSystem.
+  * @param addr Dirección a memoria mappeada.
+  * @param len Cantidad de bytes a escribir.
+  * @return Si pasa un error, retorna -1. Si la operación se realizó correctamente, retorna 0.
+  * @note Si `len` es menor que el tamaño de la página en la que se encuentre, se deberá escribir la página completa.
+  */
+int musesync(uint32_t addr, size_t len) {
+
+	//Errores posibles:
+	//-No es un segmento map
+	//-El len se pasa (segmentation fault)
+
+	//Calculo la direccion
+
+	return 0;
+
+}
 
 
 
