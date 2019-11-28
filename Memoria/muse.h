@@ -120,6 +120,7 @@ int buscarIndiceSwapLibre();
 int musesync(uint32_t addr, size_t len, int idSocketCliente);
 int obtenerIndicePagina(t_list *listaPaginas, struct Pagina *pagina);
 void *obtenerDatosActualizados(int frame, int desplazamiento, size_t len, struct Segmento *unSegmento, struct Pagina *unaPagina);
+int muse_unmap(uint32_t dir, int idSocketCliente);
 
 #endif /* MUSE_H_ */
 

@@ -1348,10 +1348,6 @@ int buscarIndiceSwapLibre(){
   */
 int musesync(uint32_t addr, size_t len, int idSocketCliente) {
 
-	//Errores posibles:
-	//-No es un segmento map
-	//-El len se pasa (segmentation fault)
-
 	t_list *listaSegmentos = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
 
 	//Obtencion segmento, pagina, frame, desplazamiento
@@ -1367,10 +1363,11 @@ int musesync(uint32_t addr, size_t len, int idSocketCliente) {
 	idSegmento = idSegmentoQueContieneDireccion(listaSegmentos, (void*)addr);
 	unSegmento = list_get(listaSegmentos, idSegmento);
 
-	//Obtencion pagina y frame
+	//Obtencion PRIMERA pagina y frame
 	struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
 	unaPagina = paginaQueContieneDireccion(unSegmento, (void*)addr); //Me retorna directamente la pagina
 	frame = unaPagina->numeroFrame;
+	int indicePrimeraPagina = obtenerIndicePagina(unSegmento->tablaPaginas, unaPagina);
 
 	void *datosAActualizar = malloc(sizeof(len));
 
@@ -1382,12 +1379,28 @@ int musesync(uint32_t addr, size_t len, int idSocketCliente) {
 
 	} else {
 
+		//Obtengo el archivo donde actualizar
+		char *path = unSegmento->filePath; //Si llegue aca, ya se que es un segmento mmap y que tiene un path (no es null)
+
+		//Obtengo los datos a actualizar (REVISAR que esten llegando bien los datos cuando se testee)
 		datosAActualizar = obtenerDatosActualizados(frame, desplazamiento, len, unSegmento, unaPagina);
-		//Chequeo size datos = len?
+		//Si len es menor debo llenar con /0/0/0/0/0
 
-		//Escribir en el archivo en el FS
+		//Abro el archivo y lo actualizo (CONSULTAR posicion comienzo modificacion)
+		FILE *archivoMap = fopen(path,"a+");
+		//posicion a escribir en el archivo: indice primera pagina + desplazamiento
+		fseek(archivoMap, indicePrimeraPagina * tam_pagina + desplazamiento, SEEK_SET);
+		int resultadoEscritura = fwrite(datosAActualizar, sizeof(char), len, archivoMap);
 
-		return 0;
+		if(resultadoEscritura != EOF) {
+
+			return 0;
+
+		} else {
+
+			return -1; //fwrite retorna EOF en caso de error en la escritura
+
+		}
 
 	}
 
@@ -1463,4 +1476,47 @@ void *obtenerDatosActualizados(int frame, int desplazamiento, size_t len, struct
 	//ver
 	return NULL;
 }
+
+
+//MUSE UNMAP
+/** Borra el mappeo a un archivo hecho por muse_map.
+  * @param dir Dirección a memoria mappeada.
+  * @param
+  * @note Esto implicará que todas las futuras utilizaciones de direcciones basadas
+  * en `dir` serán accesos inválidos.
+  * @note Solo se deberá cerrar el archivo mappeado una vez que todos los hilos hayan
+  * liberado la misma cantidad de muse_unmap que muse_map.
+  * @return Si pasa un error, retorna -1. Si la operación se realizó correctamente, retorna 0.
+  */
+int muse_unmap(uint32_t dir, int idSocketCliente) {
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
+
+	//Obtencion segmento
+	int idSegmento;
+
+	//Obtencion idSegmento y segmento
+	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+	idSegmento = idSegmentoQueContieneDireccion(listaSegmentos, (void*)dir);
+	unSegmento = list_get(listaSegmentos, idSegmento);
+
+	if(unSegmento->esComun == true) { //Error
+
+		return -1;
+
+	} else {
+
+		//Borro el segmento entero y actualizo el diccionario
+		list_remove(listaSegmentos, idSegmento);
+		dictionary_put(tablasSegmentos, (char*)idSocketCliente, listaSegmentos);
+		return 0;
+
+	}
+
+
+}
+
+
+
+
+
 
