@@ -196,7 +196,7 @@ int o_read(char* path, int size, int offset, char* buf){
 
 				if (tam < BLOCKSIZE){
 					//buf = malloc(4); //todo malloc de 4 para ejemplo de "jaja"
-					buf = malloc(strlen(data_block) +1);
+					//buf = malloc(strlen(data_block) +1);
 
 					memcpy(buf, data_block, tam);
 					buf = &(buf[tam]);
@@ -204,7 +204,7 @@ int o_read(char* path, int size, int offset, char* buf){
 					break;
 				} else {
 					//buf = malloc(4); //todo malloc de 4 para ejemplo de "jaja"
-					buf = malloc(strlen(data_block) +1);
+					//buf = malloc(strlen(data_block) +1);
 
 					memcpy(buf, data_block, BLOCKSIZE);
 					tam -= BLOCKSIZE;
@@ -223,7 +223,7 @@ int o_read(char* path, int size, int offset, char* buf){
 
 		//log_trace(logger, "Terminada lectura");
 	}
-	return 1;
+	return size;
 
 	/*
 	 * FUNCIONAMIENTO ANTERIOR
@@ -349,6 +349,7 @@ void o_getAttr(char* path, int cliente){
 		memcpy(buffer + sizeof(int), &res, sizeof(int));
 
 		send(cliente, buffer, 2 * sizeof(int), 0);
+		return;
 	}
 
 	if (strcmp(path, "/") == 0){

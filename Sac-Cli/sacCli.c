@@ -18,6 +18,15 @@
 //DEFAULT_FILE_NAME
 // gcc -DFUSE_USE_VERSION=27 -D_FILE_OFFSET_BITS=64 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF "sacCli.d" -MT "sacCli.d" -o "sacCli.o" "sacCli.c"
 
+void loguearInfo(char* texto) {
+	char* mensajeALogear = malloc( strlen(texto) + 1);
+	strcpy(mensajeALogear, texto);
+	t_log* g_logger;
+	g_logger = log_create("./sacCli.log", "SacCli", 1, LOG_LEVEL_INFO);
+	log_info(g_logger, mensajeALogear);
+	log_destroy(g_logger);
+	free(mensajeALogear);
+}
 
 
 static int hello_create (const char *path, mode_t mode, struct fuse_file_info *fi)
@@ -110,32 +119,26 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 
 	send(sacServer, buffer, 7 * sizeof(int) + strlen(path), 0);
 
-	// Deserializo respuesta
-	int* tamanioRespuesta = malloc(sizeof(int));
-	read(sacServer, tamanioRespuesta, sizeof(int));
-	int* respuesta = malloc(*tamanioRespuesta);
-	read(sacServer, respuesta, *tamanioRespuesta);
-	if (*respuesta == 0) {
-		return 0;
-	}
-	if(*respuesta == 1){
-		//Deserializo el texto del archivo que te manda SacServer y lo guardo en buf
+
 		int *tamanioTexto = malloc(sizeof(int));
 		read(sacServer, tamanioTexto, sizeof(int));
-		char *texto = malloc(*tamanioTexto);
-		read(sacServer, texto, *tamanioTexto);
+		if (*tamanioTexto == 0) {
+			return 0;
+		} else {
+			char *texto = malloc(*tamanioTexto);
+			read(sacServer, texto, *tamanioTexto);
 
-		memcpy(buf + offset, texto, *tamanioTexto);
+			memcpy(buf + offset, texto, *tamanioTexto);
+			free(texto);
+			return *tamanioTexto;
+		}
 
-		return 0;
 	}
-	if(*respuesta == -1){
-		return -ENOENT;
-	}
+
 
 	// antes hacia return *tamanioTexto;
 
-}
+
 
 static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){
 	//if(strcmp(path, "/")== 0){
