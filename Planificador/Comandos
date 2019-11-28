@@ -1,1 +1,7 @@
+Planificador:
+
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Escritorio/tp-2019-2c-Cbados/Planificador/Hilolay/Debug
+
+Memoria: 
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Escritorio/tp-2019-2c-Cbados/Libmuse/Debug

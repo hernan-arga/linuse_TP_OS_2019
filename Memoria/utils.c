@@ -241,6 +241,10 @@ void atenderMuseAlloc(int cliente) {
 
 	send(cliente, buffer, sizeof(int) + sizeof(uint32_t), 0);
 
+	free(tamanio);
+	free(bytesAReservar);
+	free(buffer);
+
 }
 
 void atenderMuseFree(int cliente) {
@@ -263,6 +267,8 @@ void atenderMuseFree(int cliente) {
 		loguearInfo("Error liberando memoria");
 	}
 
+	free(tamanioDireccion);
+	free(direccionDeMemoria);
 }
 
 void atenderMuseGet(int cliente) {
@@ -307,6 +313,13 @@ void atenderMuseGet(int cliente) {
 
 	send(cliente, buffer, 2 * sizeof(int), 0);
 
+	free(tamanioDst);
+	free(dst);
+	free(tamanioSrc);
+	free(src);
+	free(tamanioN);
+	free(N);
+	free(buffer);
 }
 
 void atenderMuseCopy(int cliente) {
@@ -351,6 +364,14 @@ void atenderMuseCopy(int cliente) {
 
 	send(cliente, buffer, 2 * sizeof(int), 0);
 
+	free(buffer);
+	free(tamanioDst);
+	free(tamanioSrc);
+	free(dst);
+	free(src);
+	free(tamanioN);
+	free(N);
+
 }
 
 void atenderMuseMap(int cliente) {
@@ -386,6 +407,14 @@ void atenderMuseMap(int cliente) {
 
 	send(cliente, buffer, sizeof(int) + sizeof(uint32_t), 0);
 
+	free(tamanioPath);
+	free(dst);
+	free(tamanioLength);
+	free(length);
+	free(tamanioFlags);
+	free(flags);
+	free(buffer);
+
 }
 
 void atenderMuseSync(int cliente) {
@@ -419,6 +448,11 @@ void atenderMuseSync(int cliente) {
 
 	send(cliente, buffer, 2 * sizeof(int), 0);
 
+	free(tamanioAddr);
+	free(addr);
+	free(tamanioLen);
+	free(len);
+	free(buffer);
 }
 
 void atenderMuseUnmap(int cliente) {
@@ -448,6 +482,10 @@ void atenderMuseUnmap(int cliente) {
 	memcpy(buffer + sizeof(int), &resultado, sizeof(int));
 
 	send(cliente, buffer, 2 * sizeof(int), 0);
+
+	free(tamanioDir);
+	free(dir);
+	free(buffer);
 
 }
 
