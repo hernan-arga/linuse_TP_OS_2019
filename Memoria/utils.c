@@ -190,7 +190,7 @@ int iniciar_conexion(int ip, int puerto) {
 }
 
 void levantarConfigFile(config* pconfig) {
-	t_config* configuracion = leer_config();
+	t_config* configuracion = config_create("muse_config");
 
 	pconfig->ip = config_get_int_value(configuracion, "IP");
 	pconfig->puerto = config_get_int_value(configuracion, "LISTEN_PORT");
@@ -198,6 +198,8 @@ void levantarConfigFile(config* pconfig) {
 			"MEMORY_SIZE");
 	pconfig->tamanio_pag = config_get_int_value(configuracion, "PAGE_SIZE");
 	pconfig->tamanio_swap = config_get_int_value(configuracion, "SWAP_SIZE");
+
+	config_destroy(configuracion);
 }
 
 t_config* leer_config() {

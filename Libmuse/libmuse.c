@@ -50,7 +50,11 @@ uint32_t muse_alloc(uint32_t tam) { //Case 3
 	uint32_t *direccionMemoriaReservada = malloc(*tamanio);
 	read(serverMUSE, direccionMemoriaReservada, *tamanio);
 
-	return *direccionMemoriaReservada;
+	uint32_t direccionMemoriaReservadaFinal = direccionMemoriaReservada;
+	free(buffer);
+	free(tamanio);
+	free(direccionMemoriaReservada);
+	return direccionMemoriaReservadaFinal;
 
 }
 
@@ -74,6 +78,7 @@ void muse_free(uint32_t dir) { //Case 4
 	//Falta conexion y se hace envio a MUSE
 	send(serverMUSE, buffer, 3 * sizeof(int) + sizeof(uint32_t), 0);
 
+	free(buffer);
 }
 
 int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
@@ -112,7 +117,12 @@ int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
 	int *resultado = malloc(*tamanioResp);
 	read(serverMUSE, resultado, *tamanioResp);
 
-	return *resultado;
+	int resultadoFinal = *resultado;
+
+	free(buffer);
+	free(tamanioResp);
+	free(resultado);
+	return resultadoFinal;
 }
 
 int muse_cpy(uint32_t dst, void* src, int n) { //Case 6
@@ -151,7 +161,12 @@ int muse_cpy(uint32_t dst, void* src, int n) { //Case 6
 	int *resultado = malloc(*tamanioResp);
 	read(serverMUSE, resultado, *tamanioResp);
 
-	return *resultado;
+	int resultadoFinal = *resultado;
+
+	free(buffer);
+	free(tamanioResp);
+	free(resultado);
+	return resultadoFinal;
 
 }
 
@@ -192,7 +207,12 @@ uint32_t muse_map(char *path, size_t length, int flags) { //Case 7
 	uint32_t *posicionMemoriaMapeada = malloc(*tamanio);
 	read(serverMUSE, posicionMemoriaMapeada, *tamanio);
 
-	return *posicionMemoriaMapeada;
+	uint32_t posicionMemoriaMapeadaFinal = *posicionMemoriaMapeada;
+
+	free(buffer);
+	free(tamanio);
+	free(posicionMemoriaMapeada);
+	return posicionMemoriaMapeadaFinal;
 }
 
 int muse_sync(uint32_t addr, size_t len) { //Case 8
@@ -223,7 +243,12 @@ int muse_sync(uint32_t addr, size_t len) { //Case 8
 	int *resultado = malloc(*tamanioResp);
 	read(serverMUSE, resultado, *tamanioResp);
 
-	return *resultado;
+	int resultadoFinal = *resultado;
+
+	free(buffer);
+	free(tamanioResp);
+	free(resultado);
+	return resultadoFinal;
 }
 
 int muse_unmap(uint32_t dir) { //Case 9
@@ -248,5 +273,10 @@ int muse_unmap(uint32_t dir) { //Case 9
 	int *resultado = malloc(*tamanioResp);
 	read(serverMUSE, resultado, *tamanioResp);
 
-	return *resultado;
+	int resultadoFinal = *resultado;
+
+	free(buffer);
+	free(tamanioResp);
+	free(resultado);
+	return resultadoFinal;
 }
