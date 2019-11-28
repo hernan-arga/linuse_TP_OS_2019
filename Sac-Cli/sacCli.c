@@ -157,24 +157,31 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 
 		send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
 
-		//Deserializo los directorios concatenados que te manda SacCli
-		int *tamanioTexto = malloc(sizeof(int));
-		read(sacServer, tamanioTexto, sizeof(int));
-		char *texto = malloc(*tamanioTexto);
-		read(sacServer, texto, *tamanioTexto);
-		char *textoCortado = string_substring_until(texto, *tamanioTexto);
+		// Deserializo 0 ok, ó -1 error
+		int* tamanioRespuesta = malloc(sizeof(int));
+		read(sacServer, tamanioRespuesta, sizeof(int));
+		int* res = malloc(*tamanioRespuesta);
+		read(sacServer, res, *tamanioRespuesta);
+		if (*res == 0) {
+				//Deserializo los directorios concatenados que te manda SacCli
+				int *tamanioTexto = malloc(sizeof(int));
+				read(sacServer, tamanioTexto, sizeof(int));
+				char *texto = malloc(*tamanioTexto);
+				read(sacServer, texto, *tamanioTexto);
+				char *textoCortado = string_substring_until(texto, *tamanioTexto);
 
-		//Hago un filler de cada uno de esos nombres, serparandolos por ;
-		char** arrayNombres = string_split(textoCortado, ";");
-		int i = 0;
-		while(arrayNombres[i] != NULL){
-			filler(buf, arrayNombres[i], NULL, 0);
-			i++;
+				//Hago un filler de cada uno de esos nombres, serparandolos por ;
+				char** arrayNombres = string_split(textoCortado, ";");
+				int i = 0;
+				while(arrayNombres[i] != NULL){
+					filler(buf, arrayNombres[i], NULL, 0);
+					i++;
+				}
+				return 0;
 		}
-		//filler(buf, "/hola/asd.txt", NULL, 0);
-		//filler(buf, "hola/asd.txt", NULL, 0);
-//	}
-	return 0;
+		else {
+			return -ENOENT;
+		}
 }
 
 static int hello_getattr(const char *path, struct stat *stbuf) {

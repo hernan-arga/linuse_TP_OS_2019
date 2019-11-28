@@ -244,14 +244,36 @@ int o_read(char* path, int size, int offset, char* buf){
 */
 }
 
-int o_readDir(char* path, int cliente){
+
+/*
+ * @DESC
+ *  Esta función va a ser llamada cuando a la biblioteca de FUSE le llege un pedido
+ * para obtener la lista de archivos o directorios que se encuentra dentro de un directorio
+ *
+ * @PARAMETROS
+ * 		path - El path es relativo al punto de montaje y es la forma mediante la cual debemos
+ * 		       encontrar el archivo o directorio que nos solicitan
+ * 		buf - Este es un buffer donde se colocaran los nombres de los archivos y directorios
+ * 		      que esten dentro del directorio indicado por el path
+ * 		filler - Este es un puntero a una función, la cual sabe como guardar una cadena dentro
+ * 		         del campo buf
+ *
+ * 	@RETURN
+ * 		O directorio fue encontrado. -1 directorio no encontrado
+ */
+void o_readDir(char* path, int cliente){
 
 //	//log_info(logger, "Readdir: Path: %s - Offset %d", path, offset);
 	int i, nodo = determinar_nodo(path);
 	struct sac_file_t *node;
 
 	if (nodo == -1){
-		return -ENOENT;
+		char* buffer = malloc(2 * sizeof(int));
+		int res = -1;
+		int tamanioRes = sizeof(int);
+		memcpy(buffer, &tamanioRes, sizeof(int));
+		memcpy(buffer + sizeof(int), &res, sizeof(int));
+		send(cliente, buffer, 2* sizeof(int), 0);
 	}
 
 	node = node_table_start;
@@ -280,15 +302,18 @@ int o_readDir(char* path, int cliente){
 	//log_lock_trace(logger, "Readdir: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
 
 	// serializo directoriosPegoteados y se los envio a saccli
-	char* buffer = malloc(sizeof(int) + strlen(directoriosPegoteados));
+	char* buffer = malloc(3*sizeof(int) + strlen(directoriosPegoteados));
+
+	int res = 0;
+	int tamanioRes = sizeof(int);
+	memcpy(buffer, &tamanioRes, sizeof(int));
+	memcpy(buffer + sizeof(int), &res, sizeof(int));
 
 	int tamanioDirectoriosPegoteados = strlen(directoriosPegoteados);
-	memcpy(buffer, &tamanioDirectoriosPegoteados, sizeof(int));
-	memcpy(buffer + sizeof(int), directoriosPegoteados, strlen(directoriosPegoteados));
+	memcpy(buffer + 2 * sizeof(int), &tamanioDirectoriosPegoteados, sizeof(int));
+	memcpy(buffer + 3* sizeof(int), directoriosPegoteados, strlen(directoriosPegoteados));
 
-	send(cliente, buffer, sizeof(int) + strlen(directoriosPegoteados), 0);
-
-	return 0;
+	send(cliente, buffer, 3 * sizeof(int) + strlen(directoriosPegoteados), 0);
 
 /*
  * FUNCIONAMIENTO ANTERIOR:
@@ -569,6 +594,18 @@ int o_mkdir(char* path){
 */
 }
 
+
+/*
+ *  @DESC
+ *  	Funcion que se llama cuando hay que borrar un archivo
+ *
+ *  @PARAM
+ *  	path - La ruta del archivo a borrar.
+ *
+ *  @RET
+ *  	0 si salio bien
+ *  	Numero negativo, si no
+ */
 int o_unlink(char* pathC){
 
 	struct sac_file_t* file_data;
@@ -628,37 +665,47 @@ int o_unlink(char* pathC){
 	*/
 }
 
+
+/*
+ *	@DESC
+ *		Funcion que borra directorios de fuse.
+ *
+ *	@PARAM
+ *		Path - El path donde tiene que borrar.
+ *
+ *	@RET
+ *		0 Si esta OK, -1 si no pudo.
+ *
+ */
 int o_rmdir(char* path){
 
 	//log_trace(logger, "Rmdir: Path: %s", path);
 	int nodo_padre = determinar_nodo(path), i, res = 0;
 	if (nodo_padre == -1){
-		return -ENOENT;
+		return -1;
 	}
 	struct sac_file_t *node;
 
-	// Toma un lock de escritura.
 	//log_lock_trace(logger, "Rmdir: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
 	pthread_rwlock_wrlock(&rwlock);
 	//log_lock_trace(logger, "Rmdir: Recibe lock escritura.");
+
 	// Abre conexiones y levanta la tabla de nodos en memoria.
 	node = &(node_table_start[-1]);
 
-//	node = &(node[nodo_padre]);
+	node = &(node[nodo_padre]);
 
 	// Chequea si el directorio esta vacio. En caso que eso suceda, FUSE se encarga de borrar lo que hay dentro.
-	for (i=0; i < 1024 ;i++){
+	for (i=0; i < 1024 ; i++){
 		if (((&node_table_start[i])->estado != BORRADO) & ((&node_table_start[i])->bloque_padre == nodo_padre)) {
-			res = -ENOTEMPTY;
+			res = -1;
 			goto finalizar;
 		}
 	}
 
-	//node->state = BORRADO; // Aca le dice que el estado queda "Borrado"
+	node->estado = BORRADO; // Aca le dice que el estado queda "Borrado"
 
-	// Cierra, ponele la alarma y se va para su casa. Mejor dicho, retorna 0 :D
 	finalizar:
-	// Devuelve el lock de escritura.
 	pthread_rwlock_unlock(&rwlock);
 	//log_lock_trace(logger, "Rmdir: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
 
