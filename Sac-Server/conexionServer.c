@@ -297,39 +297,33 @@ void tomarPeticionRead(int cliente){
 	int* offset = malloc(*tamanioOffset);
 	read(cliente, offset, *tamanioOffset);
 
-	char* texto;
+	char* texto = malloc(4096);
 	int respuesta = o_read(pathCortado, *size, *offset, texto);
 
 	if(respuesta == 0) // tamaño es 0
 	{
 		loguearInfo(" + Se hizo un read vacio en SacServer\n");
 
-		char* buffer = malloc(2 * sizeof(int));
-		int tamanioRespuesta = sizeof(int);
-		memcpy(buffer, &tamanioRespuesta, sizeof(int));
-		memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
+		char* buffer = malloc(sizeof(int));
+		memcpy(buffer, &respuesta, sizeof(int));
 
-		send(cliente, buffer, 2 * sizeof(int), 0);
+		send(cliente, buffer, sizeof(int), 0);
+		free(buffer);
+		free(texto);
+	} else {
+
+		char* buffer = malloc(sizeof(int) + respuesta);
+
+		memcpy(buffer , &respuesta, sizeof(int));
+		memcpy(buffer + sizeof(int), texto,  respuesta);
+
+		send(cliente, buffer, sizeof(int) + respuesta, 0);
+		free(texto);
 	}
 
 	if (respuesta == 1){
-		loguearInfo(" + Se hizo un read en SacServer\n");
 
-		/*
-		char* texto = malloc(5); //TODO
-		memcpy(texto, "jaja", strlen("jaja") +1);
-		 */
 
-		char* buffer = malloc(3 * sizeof(int) + strlen(texto));
-		int tamanioRespuesta = sizeof(int);
-		memcpy(buffer, &tamanioRespuesta, sizeof(int));
-		memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
-
-		int tamanioLeido = strlen(texto);
-		memcpy(buffer + 2*sizeof(int), &tamanioLeido, sizeof(int));
-		memcpy(buffer + 3*sizeof(int), texto, tamanioLeido);
-
-		send(cliente, buffer, 3*sizeof(int) + strlen(texto), 0);
 	}
 	if(respuesta == -1) {
 		loguearError(" - NO se pudo hacer el read en SacServer\n");
@@ -340,6 +334,8 @@ void tomarPeticionRead(int cliente){
 		memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
 		send(cliente, buffer, 2*sizeof(int), 0);
+		free(texto);
+
 	}
 }
 

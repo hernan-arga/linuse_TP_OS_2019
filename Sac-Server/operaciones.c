@@ -223,7 +223,7 @@ int o_read(char* path, int size, int offset, char* buf){
 
 		//log_trace(logger, "Terminada lectura");
 	}
-	return 1;
+	return size;
 
 	/*
 	 * FUNCIONAMIENTO ANTERIOR
