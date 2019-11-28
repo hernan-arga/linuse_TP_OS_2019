@@ -119,6 +119,7 @@ int llevarASwapUnaPagina(int indicePagina, int indiceSegmento, int idSocketClien
 int buscarIndiceSwapLibre();
 int musesync(uint32_t addr, size_t len, int idSocketCliente);
 int obtenerIndicePagina(t_list *listaPaginas, struct Pagina *pagina);
+void *obtenerDatosActualizados(int frame, int desplazamiento, size_t len, struct Segmento *unSegmento, struct Pagina *unaPagina);
 
 #endif /* MUSE_H_ */
 

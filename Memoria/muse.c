@@ -1376,48 +1376,20 @@ int musesync(uint32_t addr, size_t len, int idSocketCliente) {
 
 	//FIJARME SI ES UN SEGMENTO MAP
 
-	void *pos = retornarPosicionMemoriaFrame(frame);
-	pos = pos + desplazamiento;
+	if(unSegmento->esComun == true) {
 
-	int bytesACopiar = (int)len;
+		return -1; //Error, no se puede realizar un sync
 
-	if((tam_pagina - desplazamiento) > len){
+	} else {
 
-		memcpy(datosAActualizar, pos, len);
-		return 0; //se realizo correctamente
+		datosAActualizar = obtenerDatosActualizados(frame, desplazamiento, len, unSegmento, unaPagina);
+		//Chequeo size datos = len?
 
-	}
-	else{
-		int cantidadPaginasALeer = (ceil)(len / tam_pagina);
-		memcpy(datosAActualizar, pos, (tam_pagina - desplazamiento));
-		cantidadPaginasALeer--;
+		//Escribir en el archivo en el FS
 
-		bytesACopiar = bytesACopiar - (tam_pagina - desplazamiento);
-
-		//Me muevo a la proxima pagina (PRIMERO me tengo que fijar que haya pags para leer)
-		while(list_get(unSegmento->tablaPaginas, obtenerIndicePagina(unSegmento->tablaPaginas, unaPagina) + 1) != NULL && bytesACopiar > 0) {
-
-			unaPagina = list_get(unSegmento->tablaPaginas, obtenerIndicePagina(unSegmento->tablaPaginas, unaPagina) + 1);
-			pos = retornarPosicionMemoriaFrame(unaPagina->numeroFrame);
-
-			if(bytesACopiar >= tam_pagina){
-
-				memcpy(datosAActualizar, pos, tam_pagina);
-				bytesACopiar = bytesACopiar - tam_pagina;
-
-			} else {
-
-				memcpy(datosAActualizar, pos, bytesACopiar);
-				bytesACopiar = 0;
-				return 0;
-
-			}
-
-		}
+		return 0;
 
 	}
-
-	//NI SIQUIERA ESTA TERMINADO BRO
 
 	return -1;
 
@@ -1439,5 +1411,56 @@ int obtenerIndicePagina(t_list *listaPaginas, struct Pagina *pagina){
 	return -1;
 }
 
+/**Obtiene los datos a actualizar que se requieren en el sync. Parametros:
+ * --frame a copiar --desplazamiento --len --unSegmento --unaPagina */
 
+void *obtenerDatosActualizados(int frame, int desplazamiento, size_t len, struct Segmento *unSegmento, struct Pagina *unaPagina){
+
+	void *pos = retornarPosicionMemoriaFrame(frame);
+	pos = pos + desplazamiento;
+	void *datosAActualizar = malloc(sizeof(len));
+
+	int bytesACopiar = (int)len;
+
+	if((tam_pagina - desplazamiento) > len){
+
+		memcpy(datosAActualizar, pos, len);
+		return datosAActualizar;
+
+	}
+	else{
+
+		int cantidadPaginasALeer = (ceil)(len / tam_pagina);
+		memcpy(datosAActualizar, pos, (tam_pagina - desplazamiento));
+		cantidadPaginasALeer--;
+
+		bytesACopiar = bytesACopiar - (tam_pagina - desplazamiento);
+
+		//Me muevo a la proxima pagina (PRIMERO me tengo que fijar que haya pags para leer)
+		while(list_get(unSegmento->tablaPaginas, obtenerIndicePagina(unSegmento->tablaPaginas, unaPagina) + 1) != NULL && bytesACopiar > 0) {
+
+			unaPagina = list_get(unSegmento->tablaPaginas, obtenerIndicePagina(unSegmento->tablaPaginas, unaPagina) + 1);
+			pos = retornarPosicionMemoriaFrame(unaPagina->numeroFrame);
+
+			if(bytesACopiar >= tam_pagina){
+
+				memcpy(datosAActualizar, pos, tam_pagina);
+				bytesACopiar = bytesACopiar - tam_pagina;
+
+			} else {
+
+				memcpy(datosAActualizar, pos, bytesACopiar);
+				bytesACopiar = 0;
+
+				return datosAActualizar;
+
+			}
+
+		}
+
+	}
+
+	//ver
+	return NULL;
+}
 
