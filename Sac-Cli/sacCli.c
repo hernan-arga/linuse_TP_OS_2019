@@ -185,7 +185,6 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 }
 
 static int hello_getattr(const char *path, struct stat *stbuf) {
-	// Si es el directorio raiz, devuelve 0:
 
 	//Serializo peticion y path
 	char* buffer = malloc(3 * sizeof(int) + strlen(path));
@@ -206,7 +205,7 @@ static int hello_getattr(const char *path, struct stat *stbuf) {
 	read(sacServer, tamanioRespuesta, sizeof(int));
 	int* res = malloc(*tamanioRespuesta);
 	read(sacServer, res, *tamanioRespuesta);
-	if (*res == 0) {
+	if (*res == 1) {
 		//Deserializo mode, nlink y size
 		int* tamanioMode = malloc(sizeof(int));
 		read(sacServer, tamanioMode, sizeof(int));
@@ -229,10 +228,52 @@ static int hello_getattr(const char *path, struct stat *stbuf) {
 
 		return 0;
 	}
+	else {
+		if(*res == 0){
+			//Deserializo mode, nlink y size
+			int* tamanioMode = malloc(sizeof(int));
+			read(sacServer, tamanioMode, sizeof(int));
+			void* mode = malloc(*tamanioMode);
+			read(sacServer, mode, *tamanioMode);
 
-	// else
-	return -ENOENT;
+			int* tamanioNlink = malloc(sizeof(int));
+			read(sacServer, tamanioNlink, sizeof(int));
+			int* nlink = malloc(*tamanioNlink);
+			read(sacServer, nlink, *tamanioNlink);
 
+			int* tamanioEscrito = malloc(sizeof(int));
+			read(sacServer, tamanioEscrito, sizeof(int));
+			int* bytesEscritos = malloc(*tamanioEscrito);
+			read(sacServer, bytesEscritos, *tamanioEscrito);
+
+			int* tamanioModif = malloc(sizeof(int));
+			read(sacServer, tamanioModif, sizeof(int));
+			void* modificacion = malloc(*tamanioModif);
+			read(sacServer, modificacion, *tamanioModif);
+
+			int* tamanioCreacion = malloc(sizeof(int));
+			read(sacServer, tamanioCreacion, sizeof(int));
+			void* creacion = malloc(*tamanioCreacion);
+			read(sacServer, creacion, *tamanioCreacion);
+
+			int* tamanioAcceso = malloc(sizeof(int));
+			read(sacServer, tamanioAcceso, sizeof(int));
+			void* acceso = malloc(*tamanioAcceso);
+			read(sacServer, acceso, *tamanioAcceso);
+
+			memcpy(&stbuf->st_mode, mode, *tamanioMode);
+			memcpy(&stbuf->st_nlink, nlink, *tamanioNlink);
+			memcpy(&stbuf->st_size, bytesEscritos, *tamanioEscrito);
+			memcpy(&stbuf->st_mtime, modificacion, *tamanioModif);
+			memcpy(&stbuf->st_ctime, creacion, *tamanioCreacion);
+			memcpy(&stbuf->st_atime, acceso, *tamanioAcceso);
+
+			return 0;
+		}
+		else{
+			return -ENOENT;
+		}
+	}
 }
 
 static int hello_mkdir(const char *path, mode_t mode)
