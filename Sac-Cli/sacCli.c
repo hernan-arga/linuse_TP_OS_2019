@@ -120,20 +120,19 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 	send(sacServer, buffer, 7 * sizeof(int) + strlen(path), 0);
 
 
-		int *tamanioTexto = malloc(sizeof(int));
-		read(sacServer, tamanioTexto, sizeof(int));
-		if (*tamanioTexto == 0) {
-			return 0;
-		} else {
-			char *texto = malloc(*tamanioTexto);
-			read(sacServer, texto, *tamanioTexto);
+	int *tamanioTexto = malloc(sizeof(int));
+	read(sacServer, tamanioTexto, sizeof(int));
+	if (*tamanioTexto == 0) {
+		return 0;
+	} else {
+		char *texto = malloc(*tamanioTexto);
+		read(sacServer, texto, *tamanioTexto);
 
-			memcpy(buf + offset, texto, *tamanioTexto);
-			free(texto);
-			return *tamanioTexto;
-		}
-
+		memcpy(buf + offset, texto, *tamanioTexto);
+		free(texto);
+		return *tamanioTexto;
 	}
+}
 
 
 	// antes hacia return *tamanioTexto;
