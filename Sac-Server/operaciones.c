@@ -364,10 +364,10 @@ void o_getAttr(char* path, int cliente){
 	memset(stbuf, 0, sizeof(struct stat));
 
 	if (nodo == -1){
-		res = 1;
+		res = -1;
 	}
 
-	if(res == 1){
+	if(res == -1){
 		void* buffer = malloc( 2 * sizeof(int) );
 		int tamanioRes = sizeof(int);
 		memcpy(buffer, &tamanioRes, sizeof(int));
@@ -381,6 +381,8 @@ void o_getAttr(char* path, int cliente){
 		stbuf->st_mode = S_IFDIR | 0777;
 		stbuf->st_nlink = 2;
 		stbuf->st_size = 0; // ??????????
+
+		res = 1;
 
 		void* buffer = malloc( 7 * sizeof(int) + sizeof(stbuf->st_mode));
 
@@ -432,7 +434,7 @@ void o_getAttr(char* path, int cliente){
 		//log_lock_trace(logger, "Getattr:: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
 		if(res == 0){
 			//Serializo respuesta = 0, stbuf
-			void* buffer = malloc( 7 * sizeof(int) + sizeof(stbuf->st_mode));
+			void* buffer = malloc( 10 * sizeof(int) + sizeof(stbuf->st_mode) + sizeof(stbuf->st_mtime) + sizeof(stbuf->st_atime)+ sizeof(stbuf->st_ctime));
 
 			int tamanioResp = sizeof(int);
 			memcpy(buffer, &tamanioResp, sizeof(int));
@@ -450,7 +452,20 @@ void o_getAttr(char* path, int cliente){
 			memcpy(buffer + 5 * sizeof(int) + sizeof(stbuf->st_size), &tamanioEscrito, sizeof(int));
 			memcpy(buffer + 6 * sizeof(int) + sizeof(stbuf->st_size), &stbuf->st_size, sizeof(int));
 
-			send(cliente, buffer, 7 * sizeof(int) + sizeof(stbuf->st_mode), 0);
+			int tamanioModificacion = sizeof(int);
+			memcpy(buffer + 7 * sizeof(int) + sizeof(stbuf->st_size), &tamanioModificacion, sizeof(int));
+			memcpy(buffer + 8 * sizeof(int) + sizeof(stbuf->st_size), &stbuf->st_mtime, sizeof(stbuf->st_mtime));
+
+			int tamanioCreacion = sizeof(int);
+			memcpy(buffer + 8 * sizeof(int) + sizeof(stbuf->st_size) + sizeof(stbuf->st_mtime), &tamanioCreacion, sizeof(int));
+			memcpy(buffer + 9 * sizeof(int) + sizeof(stbuf->st_size) + sizeof(stbuf->st_mtime), &stbuf->st_ctime, sizeof(stbuf->st_ctime));
+
+			int tamanioAcceso = sizeof(int);
+			memcpy(buffer + 9 * sizeof(int) + sizeof(stbuf->st_size) + sizeof(stbuf->st_mtime) + sizeof(stbuf->st_ctime), &tamanioAcceso, sizeof(int));
+			memcpy(buffer + 10 * sizeof(int) + sizeof(stbuf->st_size) + sizeof(stbuf->st_mtime) + sizeof(stbuf->st_ctime), &stbuf->st_atime, sizeof(stbuf->st_atime));
+
+
+			send(cliente, buffer, 10 * sizeof(int) + sizeof(stbuf->st_mode) + sizeof(stbuf->st_mtime) + sizeof(stbuf->st_atime)+ sizeof(stbuf->st_ctime) , 0);
 		}
 	}
 
@@ -698,7 +713,8 @@ int o_rmdir(char* path){
 	// Chequea si el directorio esta vacio. En caso que eso suceda, FUSE se encarga de borrar lo que hay dentro.
 	for (i=0; i < 1024 ; i++){
 		if (((&node_table_start[i])->estado != BORRADO) & ((&node_table_start[i])->bloque_padre == nodo_padre)) {
-			res = -1;
+			// ????????? agregar recursividad
+
 			goto finalizar;
 		}
 	}

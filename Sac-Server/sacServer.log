@@ -385,3 +385,45 @@
 [ERROR] 01:10:58:739 SacServer/(10018:10018): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
 [ERROR] 01:11:05:645 SacServer/(10018:10018): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
 [ERROR] 01:11:11:358 SacServer/(10018:10018): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 18:53:49:975 SacServer/(23564:23564):  + Se hizo un create en SacServer
+
+[INFO] 18:53:56:703 SacServer/(23564:23564):  + Se hizo un mkdir en SacServer
+
+[INFO] 18:54:04:918 SacServer/(23564:23564):  + Se hizo un create en SacServer
+
+[INFO] 18:54:09:998 SacServer/(23564:23564):  + Se hizo un mkdir en SacServer
+
+[INFO] 18:54:41:9 SacServer/(23564:23564):  + Se hizo un rmdir en SacServer
+
+[ERROR] 18:56:42:37 SacServer/(23564:23564):  - NO se pudo hacer el rmdir en SacServer
+
+[INFO] 18:57:20:415 SacServer/(23564:23564):  + Se hizo un mkdir en SacServer
+
+[INFO] 18:57:26:666 SacServer/(23564:23564):  + Se hizo un create en SacServer
+
+[INFO] 18:57:35:608 SacServer/(23564:23564):  + Se hizo un mkdir en SacServer
+
+[INFO] 18:57:52:632 SacServer/(23564:23564):  + Se hizo un rmdir en SacServer
+
+[ERROR] 18:58:48:642 SacServer/(23564:23564):  - NO se pudo hacer el rmdir en SacServer
+
+[INFO] 19:12:22:832 SacServer/(24128:24128):  + Se hizo un mkdir en SacServer
+
+[INFO] 19:12:45:375 SacServer/(24128:24128):  + Se hizo un rmdir en SacServer
+
+[INFO] 19:13:17:260 SacServer/(24128:24128):  + Se hizo un rmdir en SacServer
+
+[INFO] 19:13:21:709 SacServer/(24128:24128):  + Se hizo un mkdir en SacServer
+
+[INFO] 19:13:26:129 SacServer/(24128:24128):  + Se hizo un mkdir en SacServer
+
+[INFO] 19:13:34:741 SacServer/(24128:24128):  + Se hizo un mkdir en SacServer
+
+[INFO] 19:13:43:0 SacServer/(24128:24128):  + Se hizo un rmdir en SacServer
+
+[ERROR] 19:13:52:416 SacServer/(24128:24128):  - NO se pudo hacer el rmdir en SacServer
+
+[INFO] 19:32:11:804 SacServer/(24713:24713):  + Se hizo un rmdir en SacServer
+
+[INFO] 19:32:51:653 SacServer/(24713:24713):  + Se hizo un rmdir en SacServer
+
