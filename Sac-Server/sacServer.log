@@ -427,3 +427,57 @@
 
 [INFO] 19:32:51:653 SacServer/(24713:24713):  + Se hizo un rmdir en SacServer
 
+[ERROR] 00:58:23:493 SacServer/(27824:27824): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 00:58:33:488 SacServer/(27824:27824):  + Se hizo un mkdir en SacServer
+
+[ERROR] 00:58:34:608 SacServer/(27824:27824): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 00:58:36:105 SacServer/(27824:27824): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 00:58:37:40 SacServer/(27824:27824): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 00:58:40:737 SacServer/(27824:27824): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 00:58:42:351 SacServer/(27824:27824): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:00:09:317 SacServer/(27940:27940):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:00:16:566 SacServer/(27940:27940):  + Se hizo un create en SacServer
+
+[INFO] 01:00:22:635 SacServer/(27940:27940):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:00:59:129 SacServer/(27940:27940):  + Se hizo un rmdir en SacServer
+
+[INFO] 01:02:59:141 SacServer/(28128:28128):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:03:13:108 SacServer/(28128:28128):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:03:18:208 SacServer/(28128:28128):  + Se hizo un rmdir en SacServer
+
+[INFO] 01:06:56:90 SacServer/(28643:28643):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:07:03:42 SacServer/(28643:28643):  + Se hizo un create en SacServer
+
+[INFO] 01:07:07:996 SacServer/(28643:28643):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:07:16:43 SacServer/(28643:28643):  + Se hizo un create en SacServer
+
+[INFO] 01:07:20:384 SacServer/(28643:28643):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:07:25:255 SacServer/(28643:28643):  + Se hizo un rmdir en SacServer
+
+[INFO] 01:08:20:796 SacServer/(28643:28643):  + Se hizo un rmdir en SacServer
+
+[INFO] 01:08:45:871 SacServer/(28643:28643):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:09:02:325 SacServer/(28643:28643):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:09:07:709 SacServer/(28643:28643):  + Se hizo un rmdir en SacServer
+
+[INFO] 01:19:17:522 SacServer/(29176:29176):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:19:23:836 SacServer/(29176:29176):  + Se hizo un create en SacServer
+
+[INFO] 01:19:29:75 SacServer/(29176:29176):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:19:32:441 SacServer/(29176:29176):  + Se hizo un mkdir en SacServer
+
+[INFO] 01:19:35:828 SacServer/(29176:29176):  + Se hizo un rmdir en SacServer
+
+[INFO] 01:20:01:490 SacServer/(29176:29176):  + Se hizo un rmdir en SacServer
+

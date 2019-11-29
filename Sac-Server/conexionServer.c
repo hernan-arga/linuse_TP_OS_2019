@@ -429,7 +429,7 @@ void tomarPeticionRmdir(int cliente){
 	read(cliente, path, *tamanioPath);
 	char *pathCortado = string_substring_until(path, *tamanioPath);
 
-	int respuesta = o_rmdir_2(pathCortado);
+	int respuesta = o_rmdir(pathCortado);
 
 	char* buffer = malloc(2 * sizeof(int));
 	//logueo respuesta unlink

@@ -624,26 +624,21 @@ int o_mkdir(char* path){
 int o_unlink(char* pathC){
 
 	struct sac_file_t* file_data;
+
 	int node = determinar_nodo(pathC);
 
 	ENABLE_DELETE_MODE;
 
 	file_data = &(node_table_start[node - 1]);
 
-	// Toma un lock de escritura.
-	//log_lock_trace(logger, "Ulink: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
+
 	pthread_rwlock_wrlock(&rwlock);
-	//log_lock_trace(logger, "Ulink: Recibe lock escritura.");
-
 	delete_nodes_upto(file_data, 0, 0);
-
-	// Devuelve el lock de escritura.
 	pthread_rwlock_unlock(&rwlock);
-	//Log_lock_trace(logger, "Ulink: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
 
-	//DISABLE_DELETE_MODE;
+	DISABLE_DELETE_MODE;
 
-	return o_rmdir(pathC);
+	return o_rmdir2(pathC);
 
 /*
 	 * FUNCIONAMIENTO ANTERIOR
@@ -681,22 +676,11 @@ int o_unlink(char* pathC){
 }
 
 
-/*
- *	@DESC
- *		Funcion que borra directorios de fuse.
- *
- *	@PARAM
- *		Path - El path donde tiene que borrar.
- *
- *	@RET
- *		0 Si esta OK, -1 si no pudo.
- *
- */
-int o_rmdir(char* path){
+int o_rmdir2(char* path){
 
 	//log_trace(logger, "Rmdir: Path: %s", path);
-	int nodo_padre = determinar_nodo(path), i, res = 0;
-	if (nodo_padre == -1){
+	int miNodo = determinar_nodo(path), i, res = 0;
+	if (miNodo == -1){
 		return -1;
 	}
 	struct sac_file_t *node;
@@ -708,13 +692,12 @@ int o_rmdir(char* path){
 	// Abre conexiones y levanta la tabla de nodos en memoria.
 	node = &(node_table_start[-1]);
 
-	node = &(node[nodo_padre]);
+	node = &(node[miNodo]);
 
 	// Chequea si el directorio esta vacio. En caso que eso suceda, FUSE se encarga de borrar lo que hay dentro.
 	for (i=0; i < 1024 ; i++){
-		if (((&node_table_start[i])->estado != BORRADO) & ((&node_table_start[i])->bloque_padre == nodo_padre)) {
-			// ????????? agregar recursividad
-
+		if (((&node_table_start[i])->estado != BORRADO) & ((&node_table_start[i])->bloque_padre == miNodo)) {
+			res = -1;
 			goto finalizar;
 		}
 	}
@@ -740,6 +723,72 @@ int o_rmdir(char* path){
 */
 }
 
+
+
+/*
+ *	@DESC
+ *		Funcion que borra directorios de fuse.
+ *
+ *	@PARAM
+ *		Path - El path donde tiene que borrar.
+ *
+ *	@RET
+ *		0 Si esta OK, -1 si no pudo.
+ *
+ */
+int o_rmdir(char* path){
+
+	//log_trace(logger, "Rmdir: Path: %s", path);
+	int miNodo = determinar_nodo(path), res = 0;
+	if (miNodo == -1){
+		return -1;
+	}
+	struct sac_file_t *node;
+	node = &(node_table_start[-1]);
+	node = &(node[miNodo]);
+
+	eliminarRecursivamente(miNodo);
+
+	pthread_rwlock_wrlock(&rwlock);
+	node->estado = BORRADO; // Aca le dice que el estado queda "Borrado"
+	pthread_rwlock_unlock(&rwlock);
+
+	return res;
+}
+
+void eliminarRecursivamente(int miNodo){
+	// Chequea si el directorio esta vacio.
+	for (int i=0; i < 1024 ; i++){
+		if (((&node_table_start[i])->estado != BORRADO) & ((&node_table_start[i])->bloque_padre == miNodo)) {
+			if( (&node_table_start[i])->estado == OCUPADO ){
+				//eliminas el archivo
+				struct sac_file_t* file_data, *nodoo;
+				ENABLE_DELETE_MODE;
+				file_data = &(node_table_start[i - 1]);
+				pthread_rwlock_wrlock(&rwlock);
+				delete_nodes_upto(file_data, 0, 0);
+				DISABLE_DELETE_MODE;
+				nodoo = &(node_table_start[-1]);
+				nodoo = &(nodoo[miNodo]);
+				nodoo->estado = BORRADO;
+				pthread_rwlock_unlock(&rwlock);
+			}
+			if( (&node_table_start[i])->estado == DIRECTORIO ){ // o sea, es directorio
+				struct sac_file_t *nodo;
+				nodo = &(node_table_start[-1]);
+				nodo = &(nodo[i]);
+				eliminarRecursivamente(i);
+				pthread_rwlock_wrlock(&rwlock);
+				nodo->estado = BORRADO; // Aca le dice que el estado queda "Borrado"
+				pthread_rwlock_unlock(&rwlock);
+
+			}
+		}
+	}
+}
+
+
+/*
 int o_rmdir_2(char* path){
 
 	DIR *d = opendir(path);
@@ -788,7 +837,7 @@ int o_rmdir_2(char* path){
 
 	return r;
 }
-
+*/
 
 int o_write(char* path, int size, int offset, char* buf){
 
