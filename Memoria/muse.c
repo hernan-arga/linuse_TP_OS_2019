@@ -499,7 +499,6 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 
 	struct Pagina *nuevaPagina = malloc(sizeof(struct Pagina));
 	nuevaPagina->numeroFrame = asignarUnFrame();
-	void *pos = retornarPosicionMemoriaFrame(nuevaPagina->numeroFrame);
 
 	//Ocupo frame y lo reemplazo - modifico - en el bitmap de frames
 	struct Frame *frame = malloc(sizeof(struct Frame));
@@ -515,17 +514,6 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 	segmento->tablaPaginas = paginas;
 
 	return segmento;
-
-}
-
-/*Crea la metadata en el frame indicado por el tamaño pedido*/
-void ocuparTamanioEnFrame(indiceFrame, tamanio){
-
-	void *pos = retornarPosicionMemoriaFrame(indiceFrame);
-	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
-
-	metadata->isFree = false;
-	metadata->size = tamanio;
 
 }
 
