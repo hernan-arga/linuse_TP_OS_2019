@@ -303,17 +303,22 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 		struct Pagina *primeraPagina = malloc(sizeof(struct Pagina));
 		primeraPagina = list_get(unSegmento->tablaPaginas, 0);
 
-		retornarPosicionMemoriaFrame(primeraPagina->numeroFrame);
+		int comienzoDatos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame) + 5;
 
-	} else {
-		//Sino, recorro segmentos buscando ultimo header free
+		return comienzoDatos;
+
+	} else { //Sino, recorro segmentos buscando ultimo header free
+
 		for (int i = 0; i < cantidadSegmentosARecorrer; i++) {
-			struct Segmento *unSegmento2 = malloc(sizeof(struct Segmento));
-			unSegmento2 = list_get(segmentosProceso, i);
 
-			if (poseeTamanioLibre(unSegmento2, tamanio)) {
-				//asignarEspacioLibre(unSegmento2, tamanio); //Se hace el return de la posicion asignada
-				//Comentado porque esta funcion volo a la mierda
+			struct Segmento *segmento = malloc(sizeof(struct Segmento));
+			segmento = list_get(segmentosProceso, i);
+
+			if (poseeTamanioLibre(segmento, tamanio + sizeof(struct HeapMetadata))) {
+
+				//
+				//
+
 			}
 
 		}
@@ -343,6 +348,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 	return posicionMemoriaUnSegmento(nuevoSegmento); //Funcion temporal - tengo que consultar
 }
 
+//Crea el nuevo segmento Y ACTUALIZA todas las estructuras (lista segmentos y diccionario)
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 
 	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
@@ -441,33 +447,17 @@ int asignarUnFrame(){
 		frame = clockModificado();
 	}
 
-	/*//Busco un frame para asignarle
-	int indiceFrame = buscarFrameLibre();
+	//FALTA
+	//HACER SWAPPEO
+	//DE PAGINA DESALOJADA
 
-	if (indiceFrame == -1) { //No hay frames libres en mm ppal
+	struct Frame *frameReemplazo = malloc(sizeof(struct Frame));
+	frameReemplazo = list_get(bitmapFrames, frame);
+	frameReemplazo->modificado = 0;
+	frameReemplazo->presencia = 1;
+	frameReemplazo->uso = 1;
 
-		indiceFrame = clockModificado();
-		//Asignar frame a pagina blabla
-
-	} else {
-
-		nuevaPagina->numeroFrame = indiceFrame;
-
-		struct Frame *frame = malloc(sizeof(struct Frame));
-		frame = list_get(bitmapFrames, indiceFrame);
-
-		frame->modificado = 0;
-		frame->presencia = 1;
-		frame->uso = 1;
-
-		list_replace(bitmapFrames, indiceFrame, frame);
-
-		//Gestion de metadata en el frame
-		ocuparTamanioEnFrame(indiceFrame, tamanio);
-
-	}*/
-
-	//Ver tema posible swappeo post clock
+	list_replace(bitmapFrames, frame, frameReemplazo);
 
 	return frame;
 }
@@ -517,20 +507,39 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 
 }
 
-
+//A TERMINAR, me esta volviendo lok
 /* Recorre el espacio del segmento buscando espacio libre. Debe encontrar un header
- * que isFree = true y size >= tamanio + 5 (5 para el proximo header) */
-
+ * que isFree = true y size >= tamanio (si se busca espacio tambien para metadata, pasar
+ * toda la suma en el parametro)*/
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
-	t_list *paginasSegmento = unSegmento->tablaPaginas;
 
-	for (int i = 0; i < list_size(paginasSegmento); i++) {
-		struct Pagina *pagina = list_get(paginasSegmento, i);
+	t_list *paginas = unSegmento->tablaPaginas;
+	int tamanioAMoverme;
 
-		if (frameEstaLibre(pagina->numeroFrame)
-			 /*espacioLibreFrame(pagina->numeroFrame) >= (tamanio + 5)*/) { //COmentado porque esta funcion volo, estaba mal
-			return true;
+	for (int i = 0; i < list_size(paginas); i++) {
+
+		struct Pagina *pagina = list_get(paginas, i);
+		void *pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
+
+		struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+
+		if(i == 0) {
+			memcpy(metadata, pos, sizeof(struct HeapMetadata));
+
+			if(metadata->isFree == true && metadata->size >= tamanio){
+				return true;
+			} else {
+				pos = pos + sizeof(struct HeapMetadata);
+				tamanioAMoverme = metadata->size;
+
+				//El prox metadata podria estar dentro del mismo frame
+			}
+
+		} else {
+			//recorrer tamanio libre, cambiar de marco
+
 		}
+
 	}
 
 	//Si sale del false sin retorno, no encontro ninguna pagina en el segmento que sirva
