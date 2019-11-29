@@ -58,7 +58,6 @@ struct Frame{
 ///////////////Funciones//////////////////
 void reservarMemoriaPrincipal(int tamanio);
 void crearTablaSegmentos();
-void *crearHeaderInicial(uint32_t tamanio);
 void *buscarEspacioLibre(uint32_t tamanio);
 void unificarHeaders(int idSocketCliente, int idSegmento);
 void *buscarPosicionSegmento(int idSocketCliente, int idSegmento);
@@ -89,7 +88,9 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
 int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 bool esExtendible(t_list *segmentosProceso, int unIndice);
-void asignarNuevaPagina(struct Segmento *unSegmento, uint32_t tamanio);
+struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *unSegmento, int tamanio);
+struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *unSegmento, int tamanio);
+struct Segmento *asignarNuevaPagina(struct Segmento *unSegmento, int tamanio);
 uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
 void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
 void asignarTamanioADireccion(uint32_t tamanio, void* src, int idSocketCliente); //A TERMINAR
