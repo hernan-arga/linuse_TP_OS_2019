@@ -9,18 +9,13 @@
 #include <math.h>
 
 int main() {
-
 	// Levanta archivo de configuracion - Se hace una unica vez
-	t_log *log = crear_log();
+	//t_log *log = crear_log();
 	config* pconfig = malloc(5 * sizeof(int));
 	levantarConfigFile(pconfig);
 
-	// Levanta conexion por socket
-	pthread_create(&hiloLevantarConexion, NULL,
-			(void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
-	log_info(log, "MUSE levantado correctamente\n");
+	//log_info(log, "MUSE levantado correctamente\n");
 
-	pthread_join(hiloLevantarConexion, NULL);
 
 	/////////////////////////
 	tam_mem = pconfig->tamanio_memoria; //Ver de poner como define
@@ -39,9 +34,15 @@ int main() {
 	//Abro archivo swap
 	swap = fopen("swap.txt","a+"); //Validar modo apertura y limite tamaño tam_swap
 
-	bitmapSwap = bitarray_create((char*)bitmapSwap, cantidadPaginasSwap);  //size - cantidad de bits del bitarray, expresado en bytes
+	char *bitmap = malloc(cantidadPaginasSwap);
+	bitmapSwap = bitarray_create(bitmap, cantidadPaginasSwap);  //size - cantidad de bits del bitarray, expresado en bytes
 	//verificar 1er parametro, swap?
 	inicializarBitmapSwap();
+
+	// Levanta conexion por socket
+	pthread_create(&hiloLevantarConexion, NULL,
+				(void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
+	pthread_join(hiloLevantarConexion, NULL);
 
 	return 0;
 }

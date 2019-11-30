@@ -51,6 +51,7 @@ int iniciar_conexion(int ip, int puerto) {
 		return 1;
 	}
 
+	loguearInfo("MUSE levantado correctamente");
 	printf("Escuchando en el puerto: %d \n", puerto);
 	listen(master_socket, 100);
 
@@ -214,7 +215,7 @@ void loguearInfo(char* texto) {
 	char* mensajeALogear = malloc(strlen(texto) + 1);
 	strcpy(mensajeALogear, texto);
 	t_log* g_logger;
-	g_logger = log_create("./Muse.log", "Muse", 1, LOG_LEVEL_INFO);
+	g_logger = log_create("Muse.log", "Muse", 1, LOG_LEVEL_INFO);
 	log_info(g_logger, mensajeALogear);
 	log_destroy(g_logger);
 	free(mensajeALogear);
