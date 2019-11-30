@@ -425,7 +425,6 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 
 }
 
-//PLANTEO LA IDEA, cambiar el vector porque no se cuantas metadatas puedo tener
 /* Recorre el espacio del segmento buscando espacio libre. Debe encontrar un header
  * que isFree = true y size >= tamanio (si se busca espacio tambien para metadata, pasar
  * toda la suma en el parametro)*/
@@ -749,7 +748,7 @@ void asignarTamanioADireccion(uint32_t tamanio, void* src, int idSocketCliente) 
 	desplazamiento = direccion % tam_pagina;
 
 	//Obtencion idSegmento y segmento
-	struct Segmento *unSegmento; //No se si necesito malloc aca o no, ayuda pika
+	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 	idSegmento = idSegmentoQueContieneDireccion(listaSegmentos, (void*) src);
 	unSegmento = list_get(listaSegmentos, idSegmento);
 
@@ -760,8 +759,9 @@ void asignarTamanioADireccion(uint32_t tamanio, void* src, int idSocketCliente) 
 
 	//Me paro en donde esta la metadata para averiguar el size que tengo (src - 5)
 	void *pos = retornarPosicionMemoriaFrame(frame) + desplazamiento - 5;
-	struct HeapMetadata *metadata;
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 	metadata = (void *) pos;
+	struct HeapMetadata *nuevaMetadata = malloc(sizeof(struct HeapMetadata));
 
 	//Size disponible en el frame actual
 	int sizePrimerFrame = tam_pagina
@@ -774,21 +774,15 @@ void asignarTamanioADireccion(uint32_t tamanio, void* src, int idSocketCliente) 
 	t_list *paginas = unSegmento->tablaPaginas;
 	int paginasARecorrer = list_size(paginas);
 
-	//
-	//
-	//No se como pararme desde la pagina en la que arranco.. (unaPagina)
-	int numeroPagina;
-	//numeroPagina = unaPagina indice ???????????????
+	int numeroPagina = obtenerIndicePagina(unSegmento->tablaPaginas, unaPagina);
 
 	while (numeroPagina <= paginasARecorrer) {
 
 		/*RECORRO PAGINAS Y ASIGNO TAMAÑO*/
 		if (sizePrimerFrame >= tamanio + sizeof(struct HeapMetadata)) { //Si el tamaño disponible en el primer frame me alcanza, lo asigno
 			src = src + tamanio;
-			struct HeapMetadata *nuevaMetadata;
 			nuevaMetadata->isFree = true;
-			nuevaMetadata->size = sizePrimerFrame - tamanio
-					- sizeof(struct HeapMetadata);
+			nuevaMetadata->size = sizePrimerFrame - tamanio - sizeof(struct HeapMetadata);
 
 			src = (struct HeapMetadata *) nuevaMetadata;
 		} else { //Si el tamaño del primer frame no me alcanza, me muevo hasta donde deba poner el proximo heapmetadata
@@ -811,12 +805,68 @@ void asignarTamanioADireccion(uint32_t tamanio, void* src, int idSocketCliente) 
 
 }
 
+//FALTA REVISAR que se esten guardando todos los cambios en el segmento antes de retornar
+/*Unificar headers con nueva implementacion, me retorna el segmento modificado*/
+struct Segmento *unificarHeaders2(int idSegmento, int idSocketCliente) {
+	t_list *segmentos = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+
+	//Segmento a unificar
+	struct Segmento *segmento = malloc(sizeof(struct Segmento));
+	segmento = list_get(segmentos, idSegmento);
+
+	//Obtengo las paginas a recorrer
+	t_list *paginas = segmento->tablaPaginas;
+	struct Pagina *pagina = malloc(sizeof(struct Pagina));
+	struct Frame *frame = malloc(sizeof(struct Frame));
+
+	//Metadatas
+	t_list *metadatas = list_create();
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+	struct HeapMetadata *siguienteMetadata = malloc(sizeof(struct HeapMetadata));
+	metadata = NULL;
+	int nuevoSize;
+	int desplazamiento = -1;
+
+	//Recorro solo las metadatas que esten en mm ppal?
+	for(int i = 0; i < list_size(paginas); i++){ //Recorro las paginas y me guardo todas las metadatas
+		pagina = list_get(paginas, i);
+		frame = list_get(bitmapFrames, pagina->numeroFrame);
+		metadatas = frame->listaMetadata;
+
+		for(int j = 0; j < list_size(metadatas); j++){
+			memcpy(siguienteMetadata, retornarPosicionMemoriaFrame(pagina->numeroFrame) + (int)list_get(metadatas, j), sizeof(struct HeapMetadata));
+
+			if(metadata != NULL && (metadata->isFree == true && siguienteMetadata->isFree == true)) {
+				//unifico en metadata
+				nuevoSize = metadata->size + siguienteMetadata->size;
+				metadata->size = nuevoSize;
+
+				list_remove(frame->listaMetadata, j); //elimina la metadata unificada
+
+				//Modifico la metadata en el frame en si
+				memcpy(retornarPosicionMemoriaFrame(pagina->numeroFrame) + desplazamiento, metadata, sizeof(struct HeapMetadata));
+
+			} else {
+
+				metadata = siguienteMetadata;
+
+			}
+
+			desplazamiento = (int)list_get(metadatas, j);
+		}
+
+
+
+	}
+
+	return segmento;
+}
+
 /**Funcion para unificar dos headers - se la llama despues de un free. Unifica desde el header 1
  * recorriendo todos los headers DEL SEGMENTO. Le envio como parametro el id del segmento que
  * tiene que recorrer*/
 void unificarHeaders(int idSocketCliente, int idSegmento) {
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 
 	struct Segmento *segmento = malloc(sizeof(struct Segmento));
 	segmento = list_get(segmentosProceso, idSegmento);
@@ -972,8 +1022,7 @@ int museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 	struct Pagina *unaPagina = malloc(sizeof(struct Pagina)); //PRIMERA Pagina, podrian ser mas
 
 	//int idSocketCliente /*= obtenerlo (?)*/;  //El socketCliente lo recibimos directo desde el utils.
-	t_list *listaSegmentos = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
 
 	//Obtencion segmento, pagina, frame, desplazamiento
 	int idSegmento;
@@ -998,21 +1047,17 @@ int museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 	//////////////////////////////////////////////////
 	int paginasARecorrer = (ceil)(n / tam_pagina);
 	int bytesALeer = n;
-	void *dataPedida;
+	void *dataPedida = malloc(n);
 
 	/*Ya se tienen todos los datos necesarios y se puede ir a mm ppal a buscar la data*/
 	/*PRIMERO se debe chequear si la data esta en mm ppal, en caso de que no este en mm ppal
 	 * page fault, clock modificado y se la trae a mm ppal*/
 	int paginasRecorridas = 0;
-	int indicePrimeraPagina = floor(
-			((unSegmento->baseLogica) - ((int) src)) / tam_pagina);
+	int indicePrimeraPagina = floor(((unSegmento->baseLogica) - ((int) src)) / tam_pagina);
 
 	//Primera pagina la recorro antes porque no se recorre entera
 	if (frame->presencia == 1) { //Frame de primera pag, obtenido mas arriba
-		memcpy(dataPedida,
-				retornarPosicionMemoriaFrame(unaPagina->numeroFrame)
-						+ desplazamiento, n);
-
+		memcpy(dataPedida, retornarPosicionMemoriaFrame(unaPagina->numeroFrame) + desplazamiento, n);
 		bytesALeer = bytesALeer - n;
 
 		paginasRecorridas++;
@@ -1100,17 +1145,14 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 	struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
 
-	//int idSocketCliente /*= obtenerlo (?)*/; //El socketCliente lo recibimos directo desde el utils.
-
-	t_list *listaSegmentos = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
 
 	//Obtencion segmento, pagina, frame, desplazamiento
 	int idSegmento;
 	int frame;
 	int desplazamiento;
 
-	int direccion = (int) dst; //Casteo a int la direccion recibida
+	int direccion = (int)dst;
 
 	//Obtencion desplazamiento
 	desplazamiento = direccion % tam_pagina;
@@ -1129,7 +1171,7 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 	//PRIMERO se debe chequear que no haya un segmentation fault
 	//para esto, leo heapmetadata de la posicion
 	void *pos;
-	struct HeapMetadata *metadata;
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 	pos = retornarPosicionMemoriaFrame(frame) + desplazamiento - 5;
 	pos = (struct HeapMetadata *) metadata; //REVISAR ESTE CASTEO
 
@@ -1369,19 +1411,15 @@ uint32_t musemap(char *path, size_t length/*, int flags*/) {
 
 /*Trae a memoria principal una pagina de un segmento de un proceso en particular
  *y retorna el numero de frame en el que la ubico*/
-int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento,
-		int idSocketCliente) {
+int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCliente) {
 	//Obtengo pagina swapeada
 	struct Pagina *paginaSwapeada = malloc(sizeof(struct Pagina));
-	struct Segmento *segmentoQueContienePagina = malloc(
-			sizeof(struct Segmento));
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
-	char *datosEnSwap;
+	struct Segmento *segmentoQueContienePagina = malloc(sizeof(struct Segmento));
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos,(char*)idSocketCliente);
+	char *datosEnSwap = malloc(sizeof(struct Pagina));
 
 	segmentoQueContienePagina = list_get(segmentosProceso, indiceSegmento);
-	paginaSwapeada = list_get(segmentoQueContienePagina->tablaPaginas,
-			indicePagina);
+	paginaSwapeada = list_get(segmentoQueContienePagina->tablaPaginas, indicePagina);
 
 	//Si se llamo a esta funcion, antes se chequeo que el frame tiene P = 0
 	//por lo que la pagina esta en swap
@@ -1443,18 +1481,14 @@ void cargarDatosEnFrame(int indiceFrame, char *datos) {
 /*Lleva a swap una pagina en particular de un segmento de un proceso
  *liberando el frame donde se encontraba y retornando el indice de swap
  *donde la ubico*/
-int llevarASwapUnaPagina(int indicePagina, int indiceSegmento,
-		int idSocketCliente) {
+int llevarASwapUnaPagina(int indicePagina, int indiceSegmento, int idSocketCliente) {
 	struct Pagina *paginaASwappear = malloc(sizeof(struct Pagina));
-	struct Segmento *segmentoQueContienePagina = malloc(
-			sizeof(struct Segmento));
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
-	char *datosASwappear;
+	struct Segmento *segmentoQueContienePagina = malloc(sizeof(struct Segmento));
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	char *datosASwappear = malloc(sizeof(struct Pagina));
 
 	segmentoQueContienePagina = list_get(segmentosProceso, indiceSegmento);
-	paginaASwappear = list_get(segmentoQueContienePagina->tablaPaginas,
-			indicePagina);
+	paginaASwappear = list_get(segmentoQueContienePagina->tablaPaginas, indicePagina);
 
 	//Obtengo la data a swappear que se encuentra en el frame asignado a la pagina
 	int frameQueContieneData = paginaASwappear->numeroFrame;
