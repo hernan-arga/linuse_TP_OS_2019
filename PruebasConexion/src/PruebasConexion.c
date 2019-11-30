@@ -1,7 +1,7 @@
 /*
  ============================================================================
  Name        : PruebasConexion.c
- Author      : 
+ Author      :
  Version     :
  Copyright   : Your copyright notice
  Description : Hello World in C, Ansi-style
@@ -14,7 +14,6 @@
 #include <inttypes.h>
 
 int main(void) {
-	puts("!!!Hello World!!!"); /* prints !!!Hello World!!! */
 	printf("%d", muse_init(1,"127.0.0.1",8003)); // ok
 	printf("\n");
 	//printf("%" PRIu32 "\n",muse_alloc(10)); //ok

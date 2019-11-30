@@ -22,10 +22,12 @@
 #include <pthread.h>
 #include "muse.h"
 
-int iniciar_conexion(int, int);
+int iniciar_conexion(char*, int);
 void levantarConfigFile();
+void arrancarMemoria();
 t_config* leer_config(void);
 t_log * crear_log();
+void loguearInfo(char* texto);
 void atenderMuseAlloc(int socket);
 void atenderMuseFree(int socket);
 void atenderMuseGet(int socket);
@@ -34,15 +36,16 @@ void atenderMuseMap(int socket);
 void atenderMuseSync(int socket);
 void atenderMuseUnmap(int socket);
 
-t_log* logger;
-pthread_t hiloLevantarConexion;
-
 typedef struct {
-	int ip;
+	char *ip;
 	int puerto;
 	int tamanio_memoria;
 	int tamanio_pag;
 	int tamanio_swap;
 } config;
+
+t_log* logger;
+pthread_t hiloLevantarConexion;
+config* pconfig;
 
 #endif /* UTILS_H_ */

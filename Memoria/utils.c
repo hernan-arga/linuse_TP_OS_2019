@@ -5,8 +5,10 @@
 #include <stdint.h>
 #include <sys/select.h>
 #include <inttypes.h>
+#include <stdio.h>
 
-int iniciar_conexion(int ip, int puerto) {
+
+int iniciar_conexion(char *ip, int puerto) {
 	int opt = 1;
 	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30,
 			activity, i, sd, valread;
@@ -41,7 +43,10 @@ int iniciar_conexion(int ip, int puerto) {
 	//type of socket created
 	address.sin_family = AF_INET;
 	//address.sin_addr.s_addr = ip;
-	address.sin_addr.s_addr = INADDR_ANY;
+	/*address.sin_addr.s_addr = INADDR_ANY;
+	address.sin_port = htons(puerto);*/
+
+	address.sin_addr.s_addr = inet_addr(ip);
 	address.sin_port = htons(puerto);
 
 	//bind the socket to localhost port 8888
@@ -190,10 +195,14 @@ int iniciar_conexion(int ip, int puerto) {
 	}
 }
 
+
 void levantarConfigFile(config* pconfig) {
 	t_config* configuracion = config_create("muse_config");
 
-	pconfig->ip = config_get_int_value(configuracion, "IP");
+	pconfig->ip = malloc(strlen(config_get_string_value(configuracion, "IP"))+1);
+	strcpy(pconfig->ip, config_get_string_value(configuracion, "IP"));
+
+	//pconfig->ip = config_get_int_value(configuracion, "IP");
 	pconfig->puerto = config_get_int_value(configuracion, "LISTEN_PORT");
 	pconfig->tamanio_memoria = config_get_int_value(configuracion,
 			"MEMORY_SIZE");
