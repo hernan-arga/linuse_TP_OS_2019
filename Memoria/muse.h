@@ -94,7 +94,7 @@ bool hayMemoriaDisponible();
 //Funciones malloc
 void *musemalloc(uint32_t tamanio, int idSocketCliente);
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
-int poseeTamanioLibreSegmento(struct Segmento *unSegmento, uint32_t tamanio);
+bool poseeTamanioLibreSegmento(struct Segmento *unSegmento, uint32_t tamanio);
 void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 bool esExtendible(t_list *segmentosProceso, int unIndice);
 struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *unSegmento, int tamanio);

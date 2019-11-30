@@ -162,10 +162,9 @@ void *retornarPosicionMemoriaFrame(int unFrame) {
 //La llamamos en muse init, le crea al proceso (id) la tabla de segmentos correspondiente
 
 int museinit(int idSocketCliente) {
-	//int idSocketCliente = getpeername();
 
-	if (hayMemoriaDisponible() == false) { /*Si no hay mas mm ppal ni mm virtual, error*/
-		crearTablaSegmentosProceso(idSocketCliente); //Se le crea la tabla de segmentos igual, complicara mas adelante
+	if (hayMemoriaDisponible() == false) {
+		crearTablaSegmentosProceso(idSocketCliente); //Se le crea la tabla de segmentos igual, pero no hay mm
 
 		return -1;
 	} else {
@@ -188,8 +187,7 @@ bool hayMemoriaDisponible() {
 
 void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 	int cantidadSegmentosARecorrer = list_size(segmentosProceso);
 
 	if (list_is_empty(segmentosProceso)) { //Si no tiene ningun segmento, se lo creo
@@ -253,15 +251,14 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 	//Creo segmento nuevo y retorno la posicion asignada
 	struct Segmento *nuevoSegmento = crearSegmento(tamanio, idSocketCliente);
 
-	return posicionMemoriaUnSegmento(nuevoSegmento)
-			+ sizeof(struct HeapMetadata);
+	return posicionMemoriaUnSegmento(nuevoSegmento) + sizeof(struct HeapMetadata);
+
 }
 
 //Crea el nuevo segmento Y ACTUALIZA todas las estructuras (lista segmentos y diccionario)
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 
-	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 	struct Segmento *nuevoSegmento = malloc(sizeof(struct Segmento));
 
 	//Identificar segmento
@@ -298,16 +295,12 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 
 			if (paginasNecesarias == (int) (ceil(paginas))) { //Si es la primera pagina
 
-				nuevoSegmento = asignarPrimeraPaginaSegmento(nuevoSegmento,
-						tamanio);
-				tamanioAlocado = tamanioAlocado - tam_pagina
-						- sizeof(struct HeapMetadata);
+				nuevoSegmento = asignarPrimeraPaginaSegmento(nuevoSegmento, tamanio);
+				tamanioAlocado = tamanioAlocado - tam_pagina - sizeof(struct HeapMetadata);
 
 			} else {
 
-				nuevoSegmento = asignarUltimaPaginaSegmento(nuevoSegmento,
-						(tam_pagina - (tamanio % tam_pagina)
-								- sizeof(struct HeapMetadata))); //tamanio prox metadata?
+				nuevoSegmento = asignarUltimaPaginaSegmento(nuevoSegmento, (tam_pagina - (tamanio % tam_pagina) - sizeof(struct HeapMetadata))); //tamanio prox metadata?
 				tamanioAlocado = 0;
 
 			}
@@ -326,8 +319,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	list_add(listaSegmentosProceso, nuevoSegmento);
 
 	//Actualizo la data en el diccionario
-	dictionary_put(tablasSegmentos, (char*) idSocketCliente,
-			listaSegmentosProceso);
+	dictionary_put(tablasSegmentos, (char*)idSocketCliente, listaSegmentosProceso);
 
 	return nuevoSegmento;
 }
@@ -340,8 +332,7 @@ struct Segmento *extenderSegmento(struct Segmento *unSegmento, uint32_t tamanio)
 }
 
 /*Le asigna la primera pagina que va a contener la metadata al segmento*/
-struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento,
-		int tamanioMetadata) {
+struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento, int tamanioMetadata) {
 
 	struct Pagina *primeraPagina = malloc(sizeof(struct Pagina));
 	primeraPagina->numeroFrame = asignarUnFrame();
@@ -389,13 +380,11 @@ int asignarUnFrame() {
 }
 
 /*Le asigna la ultima pagina a un segmento, poniendo la siguiente metadata en el frame*/
-struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *segmento,
-		int tamanioUltimaMetadata) {
+struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *segmento, int tamanioUltimaMetadata) {
 
 	struct Pagina *ultimaPagina = malloc(sizeof(struct Pagina));
 	ultimaPagina->numeroFrame = asignarUnFrame();
-	void *pos = retornarPosicionMemoriaFrame(ultimaPagina->numeroFrame)
-			- tamanioUltimaMetadata - sizeof(struct HeapMetadata);
+	void *pos = retornarPosicionMemoriaFrame(ultimaPagina->numeroFrame) - tamanioUltimaMetadata - sizeof(struct HeapMetadata);
 
 	struct HeapMetadata *ultimaMetadata = malloc(sizeof(struct HeapMetadata));
 	ultimaMetadata->isFree = true;
@@ -440,7 +429,7 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 /* Recorre el espacio del segmento buscando espacio libre. Debe encontrar un header
  * que isFree = true y size >= tamanio (si se busca espacio tambien para metadata, pasar
  * toda la suma en el parametro)*/
-int poseeTamanioLibreSegmento(struct Segmento *segmento, uint32_t tamanio) {
+bool poseeTamanioLibreSegmento(struct Segmento *segmento, uint32_t tamanio) {
 
 	t_list *paginas = segmento->tablaPaginas;
 	struct Pagina *pagina = malloc(sizeof(struct Pagina));
@@ -455,8 +444,6 @@ int poseeTamanioLibreSegmento(struct Segmento *segmento, uint32_t tamanio) {
 		frame = list_get(bitmapFrames, pagina->numeroFrame);
 		pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
 		int desplazamiento;
-
-<<<<<<< HEAD
 		metadatas = frame->listaMetadata;
 
 		for(int k = 0; k < list_size(metadatas); k++) {
@@ -464,40 +451,30 @@ int poseeTamanioLibreSegmento(struct Segmento *segmento, uint32_t tamanio) {
 			desplazamiento = (int)list_get(metadatas, k);
 			pos = pos + desplazamiento; //me posiciono donde esta la metadata a leer
 			memcpy(metadata, pos, sizeof(struct HeapMetadata));
-=======
-		for (int j = 0; j < 50; j++) { //Inicializa la lista de metadata con las metadatas del frame de la pagina
-			metadatas[i] = (frame->listaMetadata)[i];
-		}
+			int desplazamiento;
 
-		for (int k = 0; k < 50; k++) {
+			for (int k = 0; k < list_size(metadatas); k++) {
 
-			//Verificacion temporal hasta que se cambie el vector de 50
-			if (metadatas[k] != -1) { //Si el desplazamiento no es -1
-
-				pos = pos + metadatas[k]; //me posiciono donde esta la metadata a leer
+				desplazamiento = (int)list_get(metadatas, k);
+				pos = pos + desplazamiento; //me posiciono donde esta la metadata a leer
 				memcpy(metadata, pos, sizeof(struct HeapMetadata));
 
 				if (metadata->isFree == true && metadata->size <= tamanio) {
 					return true;
 				}
->>>>>>> 50bed4ec880b0079bd4dafa628710d9acdea89f0
 
-			if(metadata->isFree == true && metadata->size <= tamanio){
-				return true;
 			}
 
 		}
 
 	}
-
 	//free pagina, frame, metadata
 
 	return false; //si sale sin retornar true, no encontro metadata util
 
 }
 
-struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento,
-		uint32_t tamanio) {
+struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_t tamanio) {
 
 	t_list *paginas = segmento->tablaPaginas;
 	struct Pagina *pagina = malloc(sizeof(struct Pagina));
@@ -514,14 +491,7 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento,
 		pagina = list_get(paginas, i);
 		frame = list_get(bitmapFrames, pagina->numeroFrame);
 		pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
-<<<<<<< HEAD
 		metadatas = frame->listaMetadata;
-=======
-
-		for (int j = 0; j < 50; j++) { //Inicializa la lista de metadata con las metadatas del frame de la pagina
-			metadatas[i] = (frame->listaMetadata)[i];
-		}
->>>>>>> 50bed4ec880b0079bd4dafa628710d9acdea89f0
 
 		if (bytesAMoverme != -1) {
 
@@ -540,22 +510,14 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento,
 
 		}
 
-<<<<<<< HEAD
 		int desplazamiento;
 
 		for(int k = 0; k < list_size(metadatas); k++) {
-=======
-		for (int k = 0; k < 50; k++) {
-
-			//Verificacion temporal hasta que se cambie el vector de 50
-			if (metadatas[k] != -1) { //Si el desplazamiento no es -1
->>>>>>> 50bed4ec880b0079bd4dafa628710d9acdea89f0
 
 			desplazamiento = (int)list_get(metadatas, k);
 			pos = pos + desplazamiento; //me posiciono donde esta la metadata a leer
 			memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo la metadata
 
-<<<<<<< HEAD
 			if(metadata->isFree == true && metadata->size <= tamanio){
 
 				//Veo si me entra todo en el espacio libre de la pagina o si debo moverme entre paginas
@@ -572,43 +534,36 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento,
 
 					pos = pos + sizeof(struct HeapMetadata) + metadata->size;
 					memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
-=======
-				if (metadata->isFree == true && metadata->size <= tamanio) {
 
-					//Veo si me entra todo en el espacio libre de la pagina o si debo moverme entre paginas
-					espacioLibreEnPagina = tam_pagina - metadatas[k] /*desplazamiento hasta la metadata*/
-							- sizeof(struct HeapMetadata);
+					if (metadata->isFree == true && metadata->size <= tamanio) {
+						//Veo si me entra t odo en el espacio libre de la pagina o si debo moverme entre paginas
+						espacioLibreEnPagina = tam_pagina - desplazamiento /*desplazamiento hasta la metadata*/ - sizeof(struct HeapMetadata);
 
-					if (espacioLibreEnPagina >= tamanio) { //me entra en esta pagina, lo ubico
-						metadata->isFree = false;
-						metadata->size = metadata->size - tamanio;
+						if (espacioLibreEnPagina >= tamanio) { //me entra en esta pagina, lo ubico
+							metadata->isFree = false;
+							metadata->size = metadata->size - tamanio;
 
-						//Creo la nueva metadata (siguiente metadata) en el frame
-						nuevaMetadata->isFree = true;
-						nuevaMetadata->size = tam_pagina - metadatas[k]
-								- metadata->size
-								- (2 * sizeof(struct HeapMetadata));
-						//AGREGAR METADATA al frame y modificar estructuras
+							//Creo la nueva metadata (siguiente metadata) en el frame
+							nuevaMetadata->isFree = true;
+							nuevaMetadata->size = tam_pagina - desplazamiento - metadata->size - (2 * sizeof(struct HeapMetadata));
+							//AGREGAR METADATA al frame y modificar estructuras
 
-						pos = pos + sizeof(struct HeapMetadata)
-								+ metadata->size;
-						memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
->>>>>>> 50bed4ec880b0079bd4dafa628710d9acdea89f0
+							pos = pos + sizeof(struct HeapMetadata) + metadata->size;
+							memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
 
-				} else { //si no me entra en esta pagina, me muevo entre paginas hasta donde deba ubicar (primero ocupo la metadata)
-					bytesAMoverme = tamanio - sizeof(struct HeapMetadata);
+						} else { //si no me entra en esta pagina, me muevo entre paginas hasta donde deba ubicar (primero ocupo la metadata)
+							bytesAMoverme = tamanio - sizeof(struct HeapMetadata);
 
-					//No me entra en esta pagina, me muevo a las siguientes, descontando lo que me movi en esta pagina
-					bytesAMoverme = bytesAMoverme - espacioLibreEnPagina;
+							//No me entra en esta pagina, me muevo a las siguientes, descontando lo que me movi en esta pagina
+							bytesAMoverme = bytesAMoverme - espacioLibreEnPagina;
 
+						}
+
+					}
 				}
-
 			}
-
 		}
-
 	}
-
 	//free pagina, frame, metadata
 
 	return NULL; //nunca llegaria aca, porque siempre se llama a esta funcion chequeando antes que posea tamaño libre
@@ -1708,8 +1663,7 @@ void *obtenerDatosActualizados(int frame, int desplazamiento, size_t len,
  * @return Si pasa un error, retorna -1. Si la operación se realizó correctamente, retorna 0.
  */
 int muse_unmap(uint32_t dir, int idSocketCliente) {
-	t_list *listaSegmentos = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
 
 	//Obtencion segmento
 	int idSegmento;
@@ -1733,4 +1687,5 @@ int muse_unmap(uint32_t dir, int idSocketCliente) {
 
 	}
 
+	return -1;
 }
