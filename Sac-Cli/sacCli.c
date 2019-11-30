@@ -186,6 +186,12 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 
 static int hello_getattr(const char *path, struct stat *stbuf) {
 
+	if (strcmp(path, "/") == 0){
+			stbuf->st_mode = S_IFDIR | 0777;
+			stbuf->st_nlink = 2;
+			return 0;
+	}
+
 	//Serializo peticion y path
 	char* buffer = malloc(3 * sizeof(int) + strlen(path));
 
