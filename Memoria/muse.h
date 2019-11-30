@@ -27,6 +27,8 @@ t_list *bitmapFrames; //Va a ser una t_list de struct Frame, el INDICE es el num
 
 t_bitarray *bitmapSwap;
 
+//config* pconfig;
+
 struct HeapMetadata {
 
 	uint32_t size;
