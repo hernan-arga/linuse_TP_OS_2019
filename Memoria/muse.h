@@ -92,7 +92,7 @@ bool hayMemoriaDisponible();
 //Funciones malloc
 void *musemalloc(uint32_t tamanio, int idSocketCliente);
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
-int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio);
+int poseeTamanioLibreSegmento(struct Segmento *unSegmento, uint32_t tamanio);
 void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 bool esExtendible(t_list *segmentosProceso, int unIndice);
 struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *unSegmento, int tamanio);
@@ -100,7 +100,8 @@ struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *unSegmento, int ta
 struct Segmento *asignarNuevaPagina(struct Segmento *unSegmento, int tamanio);
 uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
 void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
-void asignarTamanioADireccion(uint32_t tamanio, void* src, int idSocketCliente); //A TERMINAR
+struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_t tamanio);
+struct Segmento *extenderSegmento(struct Segmento *unSegmento, uint32_t tamanio);
 
 //Funciones cpy
 int musecpy(uint32_t dst, void* src, int n, int idSocket);

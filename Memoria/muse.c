@@ -69,15 +69,6 @@ void crearTablaSegmentosProceso(int idSocketCliente) {
 
 ///////////////Bitmap de Frames///////////////
 
-/*void crearBitmapFrames() {
-	//Bitarray de cantidad frames posiciones - en bytes
-	double framesEnBytes = cantidadFrames / 8;
-	int bytesNecesarios = ceil(framesEnBytes);
-	void* bitsBitmap = malloc(bytesNecesarios);
-
-	bitmapFrames = bitarray_create(bitsBitmap, bytesNecesarios);
-}*/ //COMENTADA, BITMAP FRAMES ANTERIOR
-
 void crearBitmapFrames() {
 	//Creo una t_list y le agrego sus cantidadFrames elementos que van a quedar estaticos
 	bitmapFrames = list_create();
@@ -89,32 +80,13 @@ void crearBitmapFrames() {
 		nuevoFrame->modificado = 0;
 		nuevoFrame->presencia = 1;
 		nuevoFrame->uso = 0;
-		//nuevoFrame indiceswap
+		//Lista metadata
 
 		list_add(bitmapFrames, nuevoFrame);
 
 	}
 
 }
-
-/*Pone todos los bits del bitarray en 0*/
-/*void inicializarBitmapFrames() {
-
-	for (int i = 0; i < bitarray_get_max_bit(bitmapFrames); i++) {
-		bitarray_clean_bit(bitmapFrames, i);
-	}
-
-}*/ //COMENTADA - es de la estructura bitmap frames anterior, ahora se inicializan directo al crear la lista
-
-/*bool frameEstaLibre(int indiceFrame) {
-
-	if (bitarray_test_bit(bitmapFrames, indiceFrame) == 0) {
-		return true;
-	} else {
-		return false;
-	}
-
-}*/ //COMENTADA - es de la estructura bitmap frames anterior
 
 bool frameEstaLibre(int indiceFrame){
 	struct Frame *frame = malloc(sizeof(struct Frame));
@@ -127,67 +99,6 @@ bool frameEstaLibre(int indiceFrame){
 	}
 }
 
-/*int ocuparFrame(int indiceFrame, uint32_t tamanio) {
-
-	if (frameEstaLibre(indiceFrame)) { //Esta libre o tiene algo de espacio libre
-
-		void *pos = &memoriaPrincipal + (indiceFrame * tam_pagina); //Me posiciono en el frame
-		struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
-		memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo el primer header
-		void *end = pos + tam_pagina; //Calculo el final del frame para recorrer SOLO los headers del frame
-
-		while (pos < end) {
-
-			if (metadata->isFree == true) { //Si esta libre y tiene el tamaño, ocupo el header
-				if (metadata->size >= tamanio) {
-					metadata->isFree = false;
-					int espacioFrameDisponible = metadata->size - tamanio;
-					metadata->size = metadata->size - tamanio;
-
-					if (espacioFrameDisponible >= sizeof(struct HeapMetadata)) {
-						//Veo si me entra un header, me muevo a la pos del prox header y lo creo
-						int size = metadata->size;
-						pos = pos + sizeof(struct HeapMetadata) + size;
-
-						struct HeapMetadata *nuevoHeader = malloc(
-								sizeof(struct HeapMetadata));
-						nuevoHeader->isFree = true;
-						nuevoHeader->size = espacioFrameDisponible
-								- sizeof(struct HeapMetadata);
-
-						pos = nuevoHeader;
-
-						if (estaOcupadoCompleto(indiceFrame) == true) { //Chequeo si el espacio ACTUAL
-						 //restante es 0, de ser asi lo marco
-						 //como ocupado
-							//Ocupar posicion bitarray
-						}
-
-					}
-
-					return 0; //Exito - se pudo asignar la data
-				}
-			} else { //Como no esta libre, me muevo al proximo header
-				int size = metadata->size;
-				pos = pos + sizeof(struct HeapMetadata) + size; //Me muevo al siguiente header
-				memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo el siguiente header
-			}
-		}
-
-		return -1; //Error - no encontro el espacio necesario
-
-	} else {
-
-		return -1; //Error
-
-	}
-
-}*/
-
-/*void ocuparFrame(int unFrame) {
-	bitarray_set_bit(bitmapFrames, unFrame);
-}*/ //COMENTADA - estructura bitmap frames anterior
-
 void ocuparFrame(int unFrame) {
 	struct Frame *frame = malloc(sizeof(struct Frame));
 	frame = list_get(bitmapFrames, unFrame);
@@ -197,10 +108,6 @@ void ocuparFrame(int unFrame) {
 	list_replace(bitmapFrames, unFrame, frame); //Lo reemplazo modificado, unFrame es el indice del frame
 }
 
-/*void liberarFrame(int unFrame) {
-	bitarray_clean_bit(bitmapFrames, unFrame);
-}*/ //COMENTADA - estructura bitmap frames anterior
-
 void liberarFrame(int unFrame) {
 	struct Frame *frame = malloc(sizeof(struct Frame));
 	frame = list_get(bitmapFrames, unFrame);
@@ -209,20 +116,6 @@ void liberarFrame(int unFrame) {
 
 	list_replace(bitmapFrames, unFrame, frame); //Lo reemplazo modificado
 }
-
-/* Recorre los frames en orden buscando uno libre y retorna el indice
- * del primero libre, de no haber libres retorna -1 (memoria virtual)
- * */
-/*int buscarFrameLibre() {
-
-	for (int i = 0; i < bitarray_get_max_bit(bitmapFrames); i++) {
-		if (bitarray_test_bit(bitmapFrames, i) == 0) {
-			return i;
-		}
-	}
-
-	return -1;
-}*/ //COMENTADA - es de la estructura anterior de bitmap frames
 
 int buscarFrameLibre() {
 	struct Frame *frame = malloc(sizeof(struct Frame));
@@ -303,20 +196,23 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 		struct Pagina *primeraPagina = malloc(sizeof(struct Pagina));
 		primeraPagina = list_get(unSegmento->tablaPaginas, 0);
 
-		int comienzoDatos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame) + 5;
+		void *comienzoDatos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame) + sizeof(struct HeapMetadata);
 
 		return comienzoDatos;
 
 	} else { //Sino, recorro segmentos buscando ultimo header free
+		struct Segmento *segmento = malloc(sizeof(struct Segmento));
 
 		for (int i = 0; i < cantidadSegmentosARecorrer; i++) {
 
-			struct Segmento *segmento = malloc(sizeof(struct Segmento));
 			segmento = list_get(segmentosProceso, i);
 
-			if (poseeTamanioLibre(segmento, tamanio + sizeof(struct HeapMetadata))) {
+			if (poseeTamanioLibreSegmento(segmento, tamanio + sizeof(struct HeapMetadata))) {
 
-				//asignar tamanio libre (bastante analoga a la condicion del if)
+				segmento = asignarTamanioLibreASegmento(segmento, tamanio + sizeof(struct HeapMetadata));
+				list_replace(segmentosProceso, segmento->id, segmento);
+				//Dictionary put no libera la mm anterior
+				dictionary_put(tablasSegmentos, (char*)idSocketCliente, segmentosProceso);
 
 			}
 
@@ -333,6 +229,9 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 				//busco un frame libre en mi bitmap de frames
 				//asigno la data y retorno la posicion donde COMIENZA LA DATA
 
+				unSegmento = extenderSegmento(unSegmento, tamanio);
+				//Retorno pos primera metadata libre + 5
+
 				return respuesta; //Momentaneo para que no rompa
 			}
 		}
@@ -344,7 +243,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 	//Creo segmento nuevo y retorno la posicion asignada
 	struct Segmento *nuevoSegmento = crearSegmento(tamanio, idSocketCliente);
 
-	return posicionMemoriaUnSegmento(nuevoSegmento); //Funcion temporal - tengo que consultar
+	return posicionMemoriaUnSegmento(nuevoSegmento) + sizeof(struct HeapMetadata);
 }
 
 //Crea el nuevo segmento Y ACTUALIZA todas las estructuras (lista segmentos y diccionario)
@@ -412,6 +311,13 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	dictionary_put(tablasSegmentos, (char*)idSocketCliente, listaSegmentosProceso);
 
 	return nuevoSegmento;
+}
+
+struct Segmento *extenderSegmento(struct Segmento *unSegmento, uint32_t tamanio){
+	//Creacion paginas
+	//ultima metadata?
+
+	return NULL;
 }
 
 /*Le asigna la primera pagina que va a contener la metadata al segmento*/
@@ -510,7 +416,7 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 /* Recorre el espacio del segmento buscando espacio libre. Debe encontrar un header
  * que isFree = true y size >= tamanio (si se busca espacio tambien para metadata, pasar
  * toda la suma en el parametro)*/
-int poseeTamanioLibre(struct Segmento *segmento, uint32_t tamanio) {
+int poseeTamanioLibreSegmento(struct Segmento *segmento, uint32_t tamanio) {
 
 	t_list *paginas = segmento->tablaPaginas;
 	struct Pagina *pagina = malloc(sizeof(struct Pagina));
@@ -550,6 +456,93 @@ int poseeTamanioLibre(struct Segmento *segmento, uint32_t tamanio) {
 	//free pagina, frame, metadata
 
 	return false; //si sale sin retornar true, no encontro metadata util
+
+}
+
+struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_t tamanio) {
+
+	t_list *paginas = segmento->tablaPaginas;
+	struct Pagina *pagina = malloc(sizeof(struct Pagina));
+	struct Frame *frame = malloc(sizeof(struct Frame));
+	int metadatas[50]; //inicializar
+	void *pos;
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+	struct HeapMetadata *nuevaMetadata = malloc(sizeof(struct HeapMetadata));
+	int espacioLibreEnPagina;
+	int bytesAMoverme = -1;
+
+	for(int i = 0; i < list_size(paginas); i++){ //Recorro las paginas buscando metadata libre
+
+
+		pagina = list_get(paginas, i);
+		frame = list_get(bitmapFrames, pagina->numeroFrame);
+		pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
+
+		for(int j = 0; j < 50; j++) { //Inicializa la lista de metadata con las metadatas del frame de la pagina
+			metadatas[i] = (frame->listaMetadata)[i];
+		}
+
+		if(bytesAMoverme != -1) {
+
+			if(bytesAMoverme < tam_pagina){
+				pos = pos + bytesAMoverme;
+
+				int menorMetadata = metadatas[0]; //estando siempre ordenadas
+
+				//Agregar metadata a la lista del frame y modificar frame
+				nuevaMetadata->isFree = true;
+				nuevaMetadata->size = menorMetadata - bytesAMoverme - sizeof(struct HeapMetadata);
+				memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
+
+			}
+
+		}
+
+
+		for(int k = 0; k < 50; k++) {
+
+			//Verificacion temporal hasta que se cambie el vector de 50
+			if(metadatas[k] != -1){ //Si el desplazamiento no es -1
+
+				pos = pos + metadatas[k]; //me posiciono donde esta la metadata a leer
+				memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo la metadata
+
+				if(metadata->isFree == true && metadata->size <= tamanio){
+
+					//Veo si me entra todo en el espacio libre de la pagina o si debo moverme entre paginas
+					espacioLibreEnPagina = tam_pagina - metadatas[k] /*desplazamiento hasta la metadata*/ - sizeof(struct HeapMetadata);
+
+					if(espacioLibreEnPagina >= tamanio){ //me entra en esta pagina, lo ubico
+						metadata->isFree = false;
+						metadata->size = metadata->size - tamanio;
+
+						//Creo la nueva metadata (siguiente metadata) en el frame
+						nuevaMetadata->isFree = true;
+						nuevaMetadata->size = tam_pagina - metadatas[k] - metadata->size - (2*sizeof(struct HeapMetadata));
+						//AGREGAR METADATA al frame y modificar estructuras
+
+						pos = pos + sizeof(struct HeapMetadata) + metadata->size;
+						memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
+
+					} else { //si no me entra en esta pagina, me muevo entre paginas hasta donde deba ubicar (primero ocupo la metadata)
+						bytesAMoverme = tamanio - sizeof(struct HeapMetadata);
+
+						//No me entra en esta pagina, me muevo a las siguientes, descontando lo que me movi en esta pagina
+						bytesAMoverme = bytesAMoverme - espacioLibreEnPagina;
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	//free pagina, frame, metadata
+
+	return NULL; //nunca llegaria aca, porque siempre se llama a esta funcion chequeando antes que posea tamaño libre
 
 }
 
