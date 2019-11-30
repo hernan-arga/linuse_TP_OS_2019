@@ -769,15 +769,15 @@ void eliminarRecursivamente(int miNodo){
 				delete_nodes_upto(file_data, 0, 0);
 				DISABLE_DELETE_MODE;
 				nodoo = &(node_table_start[-1]);
-				nodoo = &(nodoo[miNodo]);
+				nodoo = &(nodoo[i+1]);
 				nodoo->estado = BORRADO;
 				pthread_rwlock_unlock(&rwlock);
 			}
 			if( (&node_table_start[i])->estado == DIRECTORIO ){ // o sea, es directorio
 				struct sac_file_t *nodo;
 				nodo = &(node_table_start[-1]);
-				nodo = &(nodo[i]);
-				eliminarRecursivamente(i);
+				nodo = &(nodo[i+1]);
+				eliminarRecursivamente(i + 1);
 				pthread_rwlock_wrlock(&rwlock);
 				nodo->estado = BORRADO; // Aca le dice que el estado queda "Borrado"
 				pthread_rwlock_unlock(&rwlock);
