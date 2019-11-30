@@ -81,7 +81,7 @@ void crearBitmapFrames() {
 		nuevoFrame->modificado = 0;
 		nuevoFrame->presencia = 1;
 		nuevoFrame->uso = 0;
-		//Lista metadata
+		nuevoFrame->listaMetadata = list_create();
 
 		list_add(bitmapFrames, nuevoFrame);
 
@@ -91,7 +91,7 @@ void crearBitmapFrames() {
 
 bool frameEstaLibre(int indiceFrame){
 	struct Frame *frame = malloc(sizeof(struct Frame));
-	frame = list_get(bitmapFrames, indiceFrame); //hace falta malloc? ? Creo que si, revisar
+	frame = list_get(bitmapFrames, indiceFrame);
 
 	if(frame->uso == 0){
 		return true;
@@ -145,7 +145,7 @@ bool hayFramesLibres() {
 
 /*Retorna la posicion de memoria donde comienza un frame en particular*/
 void *retornarPosicionMemoriaFrame(int unFrame) {
-	int offset = tam_pagina * unFrame; //Los frames estan en orden y se recorren de may a men
+	int offset = tam_pagina * unFrame; //Los frames estan en orden y se recorren de menor a mayor
 
 	return ((&memoriaPrincipal) + offset);
 }
@@ -181,8 +181,6 @@ bool hayMemoriaDisponible() {
 //MUSE ALLOC
 
 void *musemalloc(uint32_t tamanio, int idSocketCliente) {
-	//hago una respuesta fija para que ya tengamos bien los tipos que tengamos que devolver
-	void *respuesta = NULL;
 
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
 	int cantidadSegmentosARecorrer = list_size(segmentosProceso);
@@ -233,7 +231,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 				unSegmento = extenderSegmento(unSegmento, tamanio);
 				//Retorno pos primera metadata libre + 5
 
-				return respuesta; //Momentaneo para que no rompa
+				return NULL; //Momentaneo para que no rompa
 			}
 		}
 	}
@@ -362,6 +360,7 @@ int asignarUnFrame(){
 	frameReemplazo->modificado = 0;
 	frameReemplazo->presencia = 1;
 	frameReemplazo->uso = 1;
+	list_clean(frameReemplazo->listaMetadata); //limpia la lista para la prox pag
 
 	list_replace(bitmapFrames, frame, frameReemplazo);
 
@@ -402,6 +401,7 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 	frame->modificado = 0;
 	frame->presencia = 1;
 	frame->uso = 1;
+	frame->listaMetadata = list_create();
 	list_replace(bitmapFrames, nuevaPagina->numeroFrame, frame);
 
 	t_list *paginas = segmento->tablaPaginas;
@@ -422,7 +422,7 @@ int poseeTamanioLibreSegmento(struct Segmento *segmento, uint32_t tamanio) {
 	t_list *paginas = segmento->tablaPaginas;
 	struct Pagina *pagina = malloc(sizeof(struct Pagina));
 	struct Frame *frame = malloc(sizeof(struct Frame));
-	int metadatas[50]; //inicializar
+	t_list *metadatas = list_create();
 	void *pos;
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 
@@ -431,23 +431,18 @@ int poseeTamanioLibreSegmento(struct Segmento *segmento, uint32_t tamanio) {
 		pagina = list_get(paginas, i);
 		frame = list_get(bitmapFrames, pagina->numeroFrame);
 		pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
+		int desplazamiento;
 
-		for(int j = 0; j < 50; j++) { //Inicializa la lista de metadata con las metadatas del frame de la pagina
-			metadatas[i] = (frame->listaMetadata)[i];
-		}
+		metadatas = frame->listaMetadata;
 
-		for(int k = 0; k < 50; k++) {
+		for(int k = 0; k < list_size(metadatas); k++) {
 
-			//Verificacion temporal hasta que se cambie el vector de 50
-			if(metadatas[k] != -1){ //Si el desplazamiento no es -1
+			desplazamiento = (int)list_get(metadatas, k);
+			pos = pos + desplazamiento; //me posiciono donde esta la metadata a leer
+			memcpy(metadata, pos, sizeof(struct HeapMetadata));
 
-				pos = pos + metadatas[k]; //me posiciono donde esta la metadata a leer
-				memcpy(metadata, pos, sizeof(struct HeapMetadata));
-
-				if(metadata->isFree == true && metadata->size <= tamanio){
-					return true;
-				}
-
+			if(metadata->isFree == true && metadata->size <= tamanio){
+				return true;
 			}
 
 		}
@@ -465,7 +460,7 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_
 	t_list *paginas = segmento->tablaPaginas;
 	struct Pagina *pagina = malloc(sizeof(struct Pagina));
 	struct Frame *frame = malloc(sizeof(struct Frame));
-	int metadatas[50]; //inicializar
+	t_list *metadatas = list_create();
 	void *pos;
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 	struct HeapMetadata *nuevaMetadata = malloc(sizeof(struct HeapMetadata));
@@ -478,17 +473,14 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_
 		pagina = list_get(paginas, i);
 		frame = list_get(bitmapFrames, pagina->numeroFrame);
 		pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
-
-		for(int j = 0; j < 50; j++) { //Inicializa la lista de metadata con las metadatas del frame de la pagina
-			metadatas[i] = (frame->listaMetadata)[i];
-		}
+		metadatas = frame->listaMetadata;
 
 		if(bytesAMoverme != -1) {
 
 			if(bytesAMoverme < tam_pagina){
 				pos = pos + bytesAMoverme;
 
-				int menorMetadata = metadatas[0]; //estando siempre ordenadas
+				int menorMetadata = (int)list_get(metadatas, 0); //estando siempre ordenadas
 
 				//Agregar metadata a la lista del frame y modificar frame
 				nuevaMetadata->isFree = true;
@@ -499,39 +491,36 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_
 
 		}
 
+		int desplazamiento;
 
-		for(int k = 0; k < 50; k++) {
+		for(int k = 0; k < list_size(metadatas); k++) {
 
-			//Verificacion temporal hasta que se cambie el vector de 50
-			if(metadatas[k] != -1){ //Si el desplazamiento no es -1
+			desplazamiento = (int)list_get(metadatas, k);
+			pos = pos + desplazamiento; //me posiciono donde esta la metadata a leer
+			memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo la metadata
 
-				pos = pos + metadatas[k]; //me posiciono donde esta la metadata a leer
-				memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo la metadata
+			if(metadata->isFree == true && metadata->size <= tamanio){
 
-				if(metadata->isFree == true && metadata->size <= tamanio){
+				//Veo si me entra todo en el espacio libre de la pagina o si debo moverme entre paginas
+				espacioLibreEnPagina = tam_pagina - desplazamiento /*desplazamiento hasta la metadata*/ - sizeof(struct HeapMetadata);
 
-					//Veo si me entra todo en el espacio libre de la pagina o si debo moverme entre paginas
-					espacioLibreEnPagina = tam_pagina - metadatas[k] /*desplazamiento hasta la metadata*/ - sizeof(struct HeapMetadata);
+				if(espacioLibreEnPagina >= tamanio){ //me entra en esta pagina, lo ubico
+					metadata->isFree = false;
+					metadata->size = metadata->size - tamanio;
 
-					if(espacioLibreEnPagina >= tamanio){ //me entra en esta pagina, lo ubico
-						metadata->isFree = false;
-						metadata->size = metadata->size - tamanio;
+					//Creo la nueva metadata (siguiente metadata) en el frame
+					nuevaMetadata->isFree = true;
+					nuevaMetadata->size = tam_pagina - desplazamiento - metadata->size - (2*sizeof(struct HeapMetadata));
+					//AGREGAR METADATA al frame y modificar estructuras
 
-						//Creo la nueva metadata (siguiente metadata) en el frame
-						nuevaMetadata->isFree = true;
-						nuevaMetadata->size = tam_pagina - metadatas[k] - metadata->size - (2*sizeof(struct HeapMetadata));
-						//AGREGAR METADATA al frame y modificar estructuras
+					pos = pos + sizeof(struct HeapMetadata) + metadata->size;
+					memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
 
-						pos = pos + sizeof(struct HeapMetadata) + metadata->size;
-						memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
+				} else { //si no me entra en esta pagina, me muevo entre paginas hasta donde deba ubicar (primero ocupo la metadata)
+					bytesAMoverme = tamanio - sizeof(struct HeapMetadata);
 
-					} else { //si no me entra en esta pagina, me muevo entre paginas hasta donde deba ubicar (primero ocupo la metadata)
-						bytesAMoverme = tamanio - sizeof(struct HeapMetadata);
-
-						//No me entra en esta pagina, me muevo a las siguientes, descontando lo que me movi en esta pagina
-						bytesAMoverme = bytesAMoverme - espacioLibreEnPagina;
-
-					}
+					//No me entra en esta pagina, me muevo a las siguientes, descontando lo que me movi en esta pagina
+					bytesAMoverme = bytesAMoverme - espacioLibreEnPagina;
 
 				}
 

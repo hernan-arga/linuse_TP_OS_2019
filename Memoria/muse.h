@@ -54,7 +54,7 @@ struct Pagina{
 
 struct Frame{
 
-	int listaMetadata[50]; //ver de hacer lista int
+	t_list *listaMetadata;
 	int modificado;
 	int uso;
 	int presencia;
