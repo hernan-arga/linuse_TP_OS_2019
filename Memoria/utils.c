@@ -19,7 +19,7 @@ int iniciar_conexion(char *ip, int puerto) {
 	fd_set readfds;
 
 	//a message
-	char *message = "Este es el mensaje de MUSE \r\n";
+	//char *message = "Este es el mensaje de MUSE \r\n";
 
 	//initialise all client_socket[] to 0 so not checked
 	for (i = 0; i < max_clients; i++) {
@@ -154,7 +154,8 @@ int iniciar_conexion(char *ip, int puerto) {
 						//atenderMuseInit(sd);
 						break;
 					case 2: //close
-						//atenderMuseClose(sd);
+						printf("llego close");
+						atenderMuseClose(sd);
 						break;
 					case 3: //alloc
 						printf("llego alloc");
@@ -228,6 +229,10 @@ void loguearInfo(char* texto) {
 	log_info(g_logger, mensajeALogear);
 	log_destroy(g_logger);
 	free(mensajeALogear);
+}
+
+void atenderMuseClose(int cliente){
+	//todo: limpiar todas las estructuras de este cliente
 }
 
 void atenderMuseAlloc(int cliente) {

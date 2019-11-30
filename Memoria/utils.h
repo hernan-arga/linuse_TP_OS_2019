@@ -28,6 +28,7 @@ void arrancarMemoria();
 t_config* leer_config(void);
 t_log * crear_log();
 void loguearInfo(char* texto);
+void atenderMuseClose(int socket);
 void atenderMuseAlloc(int socket);
 void atenderMuseFree(int socket);
 void atenderMuseGet(int socket);

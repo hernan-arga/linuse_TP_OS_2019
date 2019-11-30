@@ -3,13 +3,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 int muse_init(int id, char* ip, int puerto) { //Case 1
 
 	serverMUSE = socket(AF_INET, SOCK_STREAM, 0);
 	serverAddressMUSE.sin_family = AF_INET;
 	serverAddressMUSE.sin_port = htons(puerto);
-	serverAddress.sin_addr.s_addr = INADDR_ANY;
+	//serverAddress.sin_addr.s_addr = INADDR_ANY;
+	serverAddress.sin_addr.s_addr = inet_addr(ip);
 
 	int resultado = connect(serverMUSE, (struct sockaddr *) &serverAddressMUSE,
 			sizeof(serverAddressMUSE));
@@ -23,7 +26,12 @@ int muse_init(int id, char* ip, int puerto) { //Case 1
 	return resultado;
 }
 
-void muse_close() { /* Does nothing :) */
+void muse_close() {
+	char *buffer = malloc(sizeof(int));
+	int peticion = 2;
+	memcpy(buffer, &peticion, sizeof(int));
+	send(serverMUSE, buffer, sizeof(int), 0);
+	free(buffer);
 } //Case 2
 
 uint32_t muse_alloc(uint32_t tam) { //Case 3
