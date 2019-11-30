@@ -1202,7 +1202,7 @@ int32_t iniciarConexion() {
 		return 1;
 	}
 	printf("Escuchando en el puerto: %d \n",
-			5005);
+			configuracion.PUERTO);
 
 	listen(master_socket, 100);
 
