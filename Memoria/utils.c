@@ -51,6 +51,7 @@ int iniciar_conexion(int ip, int puerto) {
 		return 1;
 	}
 
+	loguearInfo("MUSE levantado correctamente");
 	printf("Escuchando en el puerto: %d \n", puerto);
 	listen(master_socket, 100);
 
@@ -190,7 +191,7 @@ int iniciar_conexion(int ip, int puerto) {
 }
 
 void levantarConfigFile(config* pconfig) {
-	t_config* configuracion = leer_config();
+	t_config* configuracion = config_create("muse_config");
 
 	pconfig->ip = config_get_int_value(configuracion, "IP");
 	pconfig->puerto = config_get_int_value(configuracion, "LISTEN_PORT");
@@ -198,6 +199,8 @@ void levantarConfigFile(config* pconfig) {
 			"MEMORY_SIZE");
 	pconfig->tamanio_pag = config_get_int_value(configuracion, "PAGE_SIZE");
 	pconfig->tamanio_swap = config_get_int_value(configuracion, "SWAP_SIZE");
+
+	config_destroy(configuracion);
 }
 
 t_config* leer_config() {
@@ -212,7 +215,7 @@ void loguearInfo(char* texto) {
 	char* mensajeALogear = malloc(strlen(texto) + 1);
 	strcpy(mensajeALogear, texto);
 	t_log* g_logger;
-	g_logger = log_create("./Muse.log", "Muse", 1, LOG_LEVEL_INFO);
+	g_logger = log_create("Muse.log", "Muse", 1, LOG_LEVEL_INFO);
 	log_info(g_logger, mensajeALogear);
 	log_destroy(g_logger);
 	free(mensajeALogear);
@@ -241,6 +244,10 @@ void atenderMuseAlloc(int cliente) {
 
 	send(cliente, buffer, sizeof(int) + sizeof(uint32_t), 0);
 
+	free(tamanio);
+	free(bytesAReservar);
+	free(buffer);
+
 }
 
 void atenderMuseFree(int cliente) {
@@ -263,6 +270,8 @@ void atenderMuseFree(int cliente) {
 		loguearInfo("Error liberando memoria");
 	}
 
+	free(tamanioDireccion);
+	free(direccionDeMemoria);
 }
 
 void atenderMuseGet(int cliente) {
@@ -307,6 +316,13 @@ void atenderMuseGet(int cliente) {
 
 	send(cliente, buffer, 2 * sizeof(int), 0);
 
+	free(tamanioDst);
+	free(dst);
+	free(tamanioSrc);
+	free(src);
+	free(tamanioN);
+	free(N);
+	free(buffer);
 }
 
 void atenderMuseCopy(int cliente) {
@@ -351,6 +367,14 @@ void atenderMuseCopy(int cliente) {
 
 	send(cliente, buffer, 2 * sizeof(int), 0);
 
+	free(buffer);
+	free(tamanioDst);
+	free(tamanioSrc);
+	free(dst);
+	free(src);
+	free(tamanioN);
+	free(N);
+
 }
 
 void atenderMuseMap(int cliente) {
@@ -386,6 +410,14 @@ void atenderMuseMap(int cliente) {
 
 	send(cliente, buffer, sizeof(int) + sizeof(uint32_t), 0);
 
+	free(tamanioPath);
+	free(dst);
+	free(tamanioLength);
+	free(length);
+	free(tamanioFlags);
+	free(flags);
+	free(buffer);
+
 }
 
 void atenderMuseSync(int cliente) {
@@ -419,6 +451,11 @@ void atenderMuseSync(int cliente) {
 
 	send(cliente, buffer, 2 * sizeof(int), 0);
 
+	free(tamanioAddr);
+	free(addr);
+	free(tamanioLen);
+	free(len);
+	free(buffer);
 }
 
 void atenderMuseUnmap(int cliente) {
@@ -448,6 +485,10 @@ void atenderMuseUnmap(int cliente) {
 	memcpy(buffer + sizeof(int), &resultado, sizeof(int));
 
 	send(cliente, buffer, 2 * sizeof(int), 0);
+
+	free(tamanioDir);
+	free(dir);
+	free(buffer);
 
 }
 
