@@ -118,6 +118,7 @@ int min(int num1, int num2);
 //Funciones free
 int musefree(int idSocketCliente, uint32_t dir);
 struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
+struct Segmento *unificarHeaders2(int idSegmento, int idSocketCliente);
 
 //Memoria virtual
 int clockModificado();
