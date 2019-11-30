@@ -27,31 +27,38 @@ t_list *bitmapFrames; //Va a ser una t_list de struct Frame, el INDICE es el num
 
 t_bitarray *bitmapSwap;
 
-struct HeapMetadata { //Heapmetada es por MALLOC y no por segmento
+struct HeapMetadata {
+
 	uint32_t size;
 	bool isFree;
+
 };
 
 struct Segmento{
+
 	bool esComun;
 	char *filePath; //NULL si es un segmento normal
 	int id;
 	uint32_t baseLogica;
 	uint32_t tamanio;
 	t_list* tablaPaginas;
+
 };
 
 struct Pagina{
+
 	int numeroFrame;
 	int indiceSwap;
-	//struct Frame frame; ???
+
 };
 
 struct Frame{
+
+	int listaMetadata[50]; //ver de hacer lista int
 	int modificado;
 	int uso;
 	int presencia;
-	//int indiceSwap;
+
 };
 
 

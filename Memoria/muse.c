@@ -316,8 +316,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
 			if (poseeTamanioLibre(segmento, tamanio + sizeof(struct HeapMetadata))) {
 
-				//
-				//
+				//asignar tamanio libre (bastante analoga a la condicion del if)
 
 			}
 
@@ -507,43 +506,51 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 
 }
 
-//A TERMINAR, me esta volviendo lok
+//PLANTEO LA IDEA, cambiar el vector porque no se cuantas metadatas puedo tener
 /* Recorre el espacio del segmento buscando espacio libre. Debe encontrar un header
  * que isFree = true y size >= tamanio (si se busca espacio tambien para metadata, pasar
  * toda la suma en el parametro)*/
-int poseeTamanioLibre(struct Segmento *unSegmento, uint32_t tamanio) {
+int poseeTamanioLibre(struct Segmento *segmento, uint32_t tamanio) {
 
-	t_list *paginas = unSegmento->tablaPaginas;
-	int tamanioAMoverme;
+	t_list *paginas = segmento->tablaPaginas;
+	struct Pagina *pagina = malloc(sizeof(struct Pagina));
+	struct Frame *frame = malloc(sizeof(struct Frame));
+	int metadatas[50]; //inicializar
+	void *pos;
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 
-	for (int i = 0; i < list_size(paginas); i++) {
+	for(int i = 0; i < list_size(paginas); i++){
 
-		struct Pagina *pagina = list_get(paginas, i);
-		void *pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
+		pagina = list_get(paginas, i);
+		frame = list_get(bitmapFrames, pagina->numeroFrame);
+		pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
 
-		struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+		for(int j = 0; j < 50; j++) { //Inicializa la lista de metadata con las metadatas del frame de la pagina
+			metadatas[i] = (frame->listaMetadata)[i];
+		}
 
-		if(i == 0) {
-			memcpy(metadata, pos, sizeof(struct HeapMetadata));
+		for(int k = 0; k < 50; k++) {
 
-			if(metadata->isFree == true && metadata->size >= tamanio){
-				return true;
-			} else {
-				pos = pos + sizeof(struct HeapMetadata);
-				tamanioAMoverme = metadata->size;
+			//Verificacion temporal hasta que se cambie el vector de 50
+			if(metadatas[k] != -1){ //Si el desplazamiento no es -1
 
-				//El prox metadata podria estar dentro del mismo frame
+				pos = pos + metadatas[k]; //me posiciono donde esta la metadata a leer
+				memcpy(metadata, pos, sizeof(struct HeapMetadata));
+
+				if(metadata->isFree == true && metadata->size <= tamanio){
+					return true;
+				}
+
 			}
-
-		} else {
-			//recorrer tamanio libre, cambiar de marco
 
 		}
 
 	}
 
-	//Si sale del false sin retorno, no encontro ninguna pagina en el segmento que sirva
-	return false;
+	//free pagina, frame, metadata
+
+	return false; //si sale sin retornar true, no encontro metadata util
+
 }
 
 /*Un segmento es extendible si no tiene otro segmento a continuacion*/
@@ -1606,9 +1613,3 @@ int muse_unmap(uint32_t dir, int idSocketCliente) {
 	}
 
 }
-
-
-
-
-
-
