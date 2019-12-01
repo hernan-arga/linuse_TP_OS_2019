@@ -144,6 +144,8 @@ void logearValorActualSemaforo(char *semID, semaforo *unSemaforo);
 void tomarMetricasCantidadDeHilosEnCadaEstado();
 void tomarMetricasPorProceso(char *key, void *unPrograma);
 
+void loguearInfo(char* texto);
+void loguearTransicion(int pid, int tid, char *estadoATransicionar);
 
 pthread_t hiloLevantarConexion;
 pthread_t hiloPlanificadorReady;
@@ -166,6 +168,7 @@ sem_t sem_exit;
 sem_t hayQueActualizarUnExec;
 sem_t semaforoConfiguracion;
 sem_t sem_metricas;
+sem_t transicionesLog;
 t_queue *new;
 
 char* pathConfiguracion;
@@ -199,6 +202,34 @@ int main(int argc, char *argv[]){
 	pthread_join(hiloPlanificadorReady, NULL);
 	//pthread_join(hiloPlanficadorBlocked, NULL);
 	return 0;
+}
+
+void loguearTransicion(int pid, int tid, char *estadoATransicionar){
+	char *unPid = string_itoa(pid);
+	char *unTid = string_itoa(tid);
+	char *mensajeALoguear = string_new();
+	string_append(&mensajeALoguear, "El hilo ");
+	string_append(&mensajeALoguear, unTid);
+	string_append(&mensajeALoguear, " del programa ");
+	string_append(&mensajeALoguear, unPid);
+	string_append(&mensajeALoguear, " paso a ");
+	string_append(&mensajeALoguear, estadoATransicionar);
+	loguearInfo(mensajeALoguear);
+	free(unPid);
+	free(unTid);
+	free(mensajeALoguear);
+}
+
+void loguearInfo(char* texto) {
+	char* mensajeALogear = malloc(strlen(texto) + 1);
+	strcpy(mensajeALogear, texto);
+	t_log* g_logger;
+	sem_wait(&transicionesLog);
+	g_logger = log_create("Transiciones.log", "SUSE", 1, LOG_LEVEL_INFO);
+	log_info(g_logger, mensajeALogear);
+	sem_post(&transicionesLog);
+	log_destroy(g_logger);
+	free(mensajeALogear);
 }
 
 void iniciarSUSE(){
@@ -248,6 +279,7 @@ void iniciarSUSE(){
 	sem_init(&semaforoConfiguracion, 0, 1);
 	sem_init(&sem_new, 0, 1);
 	sem_init(&sem_metricas, 0, 1);
+	sem_init(&transicionesLog, 0, 1);
 	logger = log_create("Metricas.log", "SUSE", 0, LOG_LEVEL_INFO);
 }
 
@@ -609,7 +641,7 @@ void crearHilo(int sd){
 	read(sd, tid, sizeof(int));
 
 
-	printf("Llamaste a create con tid: %i\n", *tid);
+	//printf("Llamaste a create con tid: %i\n", *tid);
 
 	hilo *unHilo = malloc(sizeof(hilo));
 	unHilo->pid = pid;
@@ -622,13 +654,15 @@ void crearHilo(int sd){
 	unHilo->sumaDeIntervalosEnExec = 0;
 	unHilo->tiempoDeEjecucion = 0;
 
+	char *unPid = string_itoa(unHilo->pid);
+	loguearTransicion(unHilo->pid, unHilo->tid, "New");
+
 	sem_wait(&sem_new);
 	queue_push(new, unHilo);
 	sem_post(&sem_new);
 	sem_post(&hayNuevos);
 	free(tid);
 
-	char *unPid = string_itoa(unHilo->pid);
 	sem_wait(&sem_programas);
 	((programa*)dictionary_get(diccionarioDeProgramas, unPid))->cantidadDeHilosEnNew++;
 	sem_post(&sem_programas);
@@ -647,6 +681,8 @@ void pasarAReady(hilo *unHilo){
 		//Si es la primera vez que llega pongo en exec (es el hilo main)
 		((programa *)dictionary_get(diccionarioDeProgramas, unPid))->exec = unHilo;
 		sem_post(&sem_programas);
+
+		loguearTransicion(unHilo->pid, unHilo->tid, "Execute");
 	}
 	else{
 
@@ -658,6 +694,8 @@ void pasarAReady(hilo *unHilo){
 
 		((programa*)dictionary_get(diccionarioDeProgramas, unPid))->cantidadDeHilosEnReady++;
 		sem_post(&sem_programas);
+
+		loguearTransicion(unHilo->pid, unHilo->tid, "Ready");
 
 	}
 	sem_post(&sem_diccionario_ready);
@@ -710,6 +748,9 @@ int calcularSiguienteHilo(int pid){
 			candidatoAEjecutar->sumaDeIntervalosEnReady += (int)(getMicrotime() - candidatoAEjecutar->timestampReady);
 			candidatoAEjecutar->timestampExec = getMicrotime();
 
+			loguearTransicion(elQueEstaEjecutando->pid, elQueEstaEjecutando->tid, "Ready");
+			loguearTransicion(candidatoAEjecutar->pid, candidatoAEjecutar->tid, "Execute");
+
 			free(unPid);
 			return candidatoAEjecutar->tid;
 		}
@@ -733,6 +774,7 @@ int calcularSiguienteHilo(int pid){
 	candidatoAEjecutar->sumaDeIntervalosEnReady += (int)(getMicrotime() - candidatoAEjecutar->timestampReady);
 	candidatoAEjecutar->timestampExec = getMicrotime();
 
+	loguearTransicion(candidatoAEjecutar->pid, candidatoAEjecutar->tid, "Execute");
 	free(unPid);
 	return candidatoAEjecutar->tid;
 }
@@ -827,6 +869,8 @@ void sem_suse_wait(int pid, int tid, char* semID){
 				//Mandar el hilo a blocked por semaforo
 				queue_push((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID), ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec);
 
+				loguearTransicion(((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec->pid, ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec->tid, "Blocked");
+
 				((programa*)dictionary_get(diccionarioDeProgramas, unPid))->cantidadDeHilosEnBlocked++;
 				sem_post(&sem_programas);
 
@@ -875,7 +919,7 @@ void realizarJoin(int pid, int tidAEsperar){
 	char *unPid = string_itoa(pid);
 	int existeElPrograma = dictionary_has_key(diccionarioDeProgramas, unPid);
 	int hayAlguienEnExec = existeElPrograma && ((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec != NULL;
-	printf("existeElPrograma %i - hayAlguienEnExec %i\n", existeElPrograma, hayAlguienEnExec);
+	//printf("existeElPrograma %i - hayAlguienEnExec %i\n", existeElPrograma, hayAlguienEnExec);
 	if(hayAlguienEnExec){
 		//printf("tid en exec: %i - a esperar %i\n", ((programa*)dictionary_get(diccionarioDeProgramas, string_itoa(pid)))->exec->tid, tidAEsperar);
 
@@ -952,6 +996,9 @@ void pasarAExit(hilo *unHilo){
 		//Lo agrego a la lista correspondiente
 		list_add((t_list*)(dictionary_get(diccionarioDeListasDeExit, unPid)), unHilo);
 	}
+
+	loguearTransicion(unHilo->pid, unHilo->tid, "Exit");
+
 	free(unPid);
 	sem_post(&sem_exit);
 
@@ -972,6 +1019,7 @@ void ponerEnBlockedPorHilo(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar){
 	}
 	//printf("hiloAPonerEnBlocked %i - tidAEsperar %i\n", hiloAPonerEnBlocked->tid, tidAEsperar),
 	list_add((t_list*)dictionary_get(diccionarioDeBloqueados, tidHiloAEsperar), hiloAPonerEnBlocked);
+	loguearTransicion(hiloAPonerEnBlocked->pid, hiloAPonerEnBlocked->tid, "Blocked");
 	free(unPid);
 	free(tidHiloAEsperar);
 }
@@ -1000,7 +1048,8 @@ void liberarBloqueadosPorElHilo(hilo *hiloBloqueante){
 				sem_wait(&sem_diccionario_ready);
 				//Lo agrego a ready
 				list_add((t_list*)(dictionary_get(diccionarioDeListasDeReady, pidHiloBloqueado)), hiloBloqueado);
-				printf(" liberando tid bloqueado %i\n", hiloBloqueado->tid);
+				//printf(" liberando tid bloqueado %i\n", hiloBloqueado->tid);
+				loguearTransicion(hiloBloqueado->pid, hiloBloqueado->tid, "Ready");
 
 				hiloBloqueado->timestampReady = getMicrotime();
 
@@ -1260,7 +1309,15 @@ int32_t iniciarConexion() {
 				//if position is empty
 				if (client_socket[i] == 0) {
 					client_socket[i] = new_socket;
-					printf("Agregado a la lista de sockets como: %d\n", i);
+
+					char *mensajeALoguear = string_new();
+					string_append(&mensajeALoguear, "Se levanto un nuevo programa, pid: ");
+					char *pid = string_itoa(client_socket[i]);
+					string_append(&mensajeALoguear, pid);
+					//printf("Agregado a la lista de sockets como: %d\n", i);
+					loguearInfo(mensajeALoguear);
+					free(pid);
+					free(mensajeALoguear);
 
 					crearPrograma(client_socket[i]);
 
@@ -1281,9 +1338,18 @@ int32_t iniciarConexion() {
 					//printf("tamanio: %d", *tamanio);
 					getpeername(sd, (struct sockaddr *) &address,
 							(socklen_t *) &addrlen);
-					printf("Host disconected, ip: %s, port: %d\n",
+
+					/*printf("Host disconected, ip: %s, port: %d\n",
 							inet_ntoa(address.sin_addr),
-							ntohs(address.sin_port));
+							ntohs(address.sin_port));*/
+					char *mensajeALoguear = string_new();
+					string_append(&mensajeALoguear, "Se desconecto un programa, pid: ");
+					char *pid = string_itoa(client_socket[i]);
+					string_append(&mensajeALoguear, pid);
+					loguearInfo(mensajeALoguear);
+					free(pid);
+					free(mensajeALoguear);
+
 					close(sd);
 					client_socket[i] = 0;
 
