@@ -7,7 +7,6 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-
 int iniciar_conexion(char *ip, int puerto) {
 	int opt = 1;
 	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30,
@@ -17,9 +16,6 @@ int iniciar_conexion(char *ip, int puerto) {
 
 	//set of socket descriptors
 	fd_set readfds;
-
-	//a message
-	//char *message = "Este es el mensaje de MUSE \r\n";
 
 	//initialise all client_socket[] to 0 so not checked
 	for (i = 0; i < max_clients; i++) {
@@ -42,22 +38,19 @@ int iniciar_conexion(char *ip, int puerto) {
 
 	//type of socket created
 	address.sin_family = AF_INET;
-	//address.sin_addr.s_addr = ip;
-	/*address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons(puerto);*/
-
+	//address.sin_addr.s_addr = INADDR_ANY;
+	//address.sin_addr.s_addr = inet_addr("127.0.0.1");
 	address.sin_addr.s_addr = inet_addr(ip);
 	address.sin_port = htons(puerto);
 
 	//bind the socket to localhost port 8888
 	if (bind(master_socket, (struct sockaddr *) &address, sizeof(address))
 			< 0) {
-		perror("Bind fallo en MUSE");
+		perror("Bind fallo en el FS");
 		return 1;
 	}
-
-	loguearInfo("MUSE levantado correctamente");
 	printf("Escuchando en el puerto: %d \n", puerto);
+
 	listen(master_socket, 100);
 
 	//accept the incoming connection
@@ -86,56 +79,50 @@ int iniciar_conexion(char *ip, int puerto) {
 				max_sd = sd;
 		}
 
-		//wait for an activity on one of the sockets, timeout is NULL, so wait indefinitely
+		//wait for an activity on one of the sockets , timeout is NULL ,
+		//so wait indefinitely
 		activity = select(max_sd + 1, &readfds, NULL, NULL, NULL);
 
 		if ((activity < 0) && (errno != EINTR)) {
-			printf("Error en conexion por select");
+			printf("select error");
 		}
 
-		//If something happened on the master socket, then its an incoming connection
+		//If something happened on the master socket ,
+		//then its an incoming connection
 		if (FD_ISSET(master_socket, &readfds)) {
 			new_socket = accept(master_socket, (struct sockaddr *) &address,
 					(socklen_t*) &addrlen);
 			if (new_socket < 0) {
+
 				perror("accept");
 				exit(EXIT_FAILURE);
 			}
 
 			//inform user of socket number - used in send and receive commands
-			printf("Nueva Conexion , socket fd: %d , ip: %s , puerto: %d 	\n",
-					new_socket, inet_ntoa(address.sin_addr),
-					ntohs(address.sin_port));
+			//printf("Nueva Conexion , socket fd: %d , ip: %s , puerto: %d 	\n", new_socket, inet_ntoa(address.sin_addr), ntohs(address.sin_port));
 
-			// send new connection greeting message
-			// ACA SE LE ENVIA EL PRIMER MENSAJE AL SOCKET (si no necesita nada importante, mensaje de bienvenida)
-			/*
-			 if (send(new_socket, message, strlen(message), 0)
-			 != strlen(message)) {
-			 perror("error al enviar mensaje al cliente");
-			 }
-			 puts("Welcome message sent successfully");
-			 */
 			//add new socket to array of sockets
 			for (i = 0; i < max_clients; i++) {
 				//if position is empty
 				if (client_socket[i] == 0) {
 					client_socket[i] = new_socket;
 					printf("Agregado a la lista de sockets como: %d\n", i);
+
 					break;
 				}
 			}
-		} // cierro el if
+		}
 
 		//else its some IO operation on some other socket
 		for (i = 0; i < max_clients; i++) {
 			sd = client_socket[i];
 
 			if (FD_ISSET(sd, &readfds)) {
-
-				// Verifica por tamaño de la operacion, que no se haya desconectado el socket
-				int *tamanioOperacion = malloc(sizeof(int));
-				if ((valread = read(sd, tamanioOperacion, sizeof(int))) == 0) {
+				//Check if it was for closing , and also read the
+				//incoming message
+				int *operacion = malloc(sizeof(int));
+				if ((valread = read(sd, operacion, sizeof(int))) == 0) {
+					//printf("tamanio: %d", *tamanio);
 					getpeername(sd, (struct sockaddr *) &address,
 							(socklen_t *) &addrlen);
 					printf("Host disconected, ip: %s, port: %d\n",
@@ -143,64 +130,63 @@ int iniciar_conexion(char *ip, int puerto) {
 							ntohs(address.sin_port));
 					close(sd);
 					client_socket[i] = 0;
+
 				} else {
-					// lee el siguiente dato que le pasa el cliente
-					// con estos datos, hace la operacion correspondiente
-					int *operacion = malloc(4);
-					read(sd, operacion, sizeof(int));
 
 					switch (*operacion) {
 					case 1: //init
-						//atenderMuseInit(sd);
+						loguearInfo("llego init");
+						atenderMuseInit(sd);
 						break;
 					case 2: //close
-						printf("llego close");
+						loguearInfo("llego close");
 						atenderMuseClose(sd);
 						break;
 					case 3: //alloc
-						printf("llego alloc");
+						loguearInfo("llego alloc");
 						atenderMuseAlloc(sd);
 						break;
 					case 4: //free
-						printf("llego free");
+						loguearInfo("llego free");
 						atenderMuseFree(sd);
 						break;
 					case 5: //get
-						printf("llego get");
+						loguearInfo("llego get");
 						atenderMuseGet(sd);
 						break;
 					case 6: //copy
-						printf("llego copy");
+						loguearInfo("llego copy");
 						atenderMuseCopy(sd);
 						break;
 					case 7:	//map
-						printf("llego map");
+						loguearInfo("llego map");
 						atenderMuseMap(sd);
 						break;
 					case 8: //sync
-						printf("llego sync");
+						loguearInfo("llego sync");
 						atenderMuseSync(sd);
 						break;
 					case 9: //unmap
-						printf("llego unmap");
+						loguearInfo("llego unmap");
 						atenderMuseUnmap(sd);
 						break;
 					default:
-						;
+						break;
 					}
-					free(operacion);
+
 				}
-				free(tamanioOperacion);
+
+				free(operacion);
 			}
 		}
 	}
 }
 
-
 void levantarConfigFile(config* pconfig) {
 	t_config* configuracion = config_create("muse_config");
 
-	pconfig->ip = malloc(strlen(config_get_string_value(configuracion, "IP"))+1);
+	pconfig->ip = malloc(
+			strlen(config_get_string_value(configuracion, "IP")) + 1);
 	strcpy(pconfig->ip, config_get_string_value(configuracion, "IP"));
 
 	//pconfig->ip = config_get_int_value(configuracion, "IP");
@@ -231,8 +217,12 @@ void loguearInfo(char* texto) {
 	free(mensajeALogear);
 }
 
-void atenderMuseClose(int cliente){
+void atenderMuseClose(int cliente) {
 	//todo: limpiar todas las estructuras de este cliente
+}
+
+void atenderMuseInit(int cliente) {
+	museinit(cliente);
 }
 
 void atenderMuseAlloc(int cliente) {
@@ -246,13 +236,12 @@ void atenderMuseAlloc(int cliente) {
 
 	//loguearInfo(" + Se hizo un muse alloc\n");
 
-
 	//serializo esa direccion y se la mando al cliente
 
 	char* buffer = malloc(sizeof(int) + sizeof(uint32_t));
 
 	int tamanioDireccion = sizeof(int);
-	uint32_t direccion = musemalloc(10,cliente);  //aca hacemos el malloc en muse y devolves la direccion de memoria
+	uint32_t direccion = musemalloc(10, cliente); //aca hacemos el malloc en muse y devolves la direccion de memoria
 	memcpy(buffer, &tamanioDireccion, sizeof(int));
 	memcpy(buffer + sizeof(int), &direccion, sizeof(uint32_t));
 
@@ -267,10 +256,12 @@ void atenderMuseAlloc(int cliente) {
 void atenderMuseFree(int cliente) {
 	//deserializo lo que me manda el cliente
 
+	//Esto es al pedo pero no tengo ganas de modificar la serializacion
 	int *tamanioDireccion = malloc(sizeof(int));
 	read(cliente, tamanioDireccion, sizeof(int));
-	uint32_t *direccionDeMemoria = malloc(*tamanioDireccion);
-	read(cliente, direccionDeMemoria, *tamanioDireccion);
+
+	uint32_t *direccionDeMemoria = malloc(sizeof(uint32_t));
+	read(cliente, direccionDeMemoria, sizeof(uint32_t));
 
 	printf("%" PRIu32 "\n", *direccionDeMemoria);
 

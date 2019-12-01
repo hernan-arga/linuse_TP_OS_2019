@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <stdio.h>
 
 int muse_init(int id, char* ip, int puerto) { //Case 1
 
@@ -16,13 +17,18 @@ int muse_init(int id, char* ip, int puerto) { //Case 1
 
 	int resultado = connect(serverMUSE, (struct sockaddr *) &serverAddressMUSE,
 			sizeof(serverAddressMUSE));
-	/*
-	 int *tamanioValue = malloc(sizeof(int));
-	 recv(clienteMUSE, tamanioValue, sizeof(int), 0);
 
-	 memcpy(&tamanioValue, tamanioValue, sizeof(int));
-	 */
+	if(resultado==-1){
+		perror("Hubo un error en la conexion");
+		exit(-1);
+	}
 
+	char *buffer = malloc(sizeof(int));
+	int peticion = 1;
+	memcpy(buffer, &peticion, sizeof(int));
+	send(serverMUSE, buffer, sizeof(int), 0);
+	free(buffer);
+	printf("init\n");
 	return resultado;
 }
 
@@ -35,23 +41,23 @@ void muse_close() {
 } //Case 2
 
 uint32_t muse_alloc(uint32_t tam) { //Case 3
-
+	printf("alloc\n");
 	//Serializo peticion (3) y uint32_t tam tamaño a reservar
 
 	//2 size de tamanio, 1 size de peticion, 1 size de tam (parametro)
-	char *buffer = malloc(3 * sizeof(int) + sizeof(uint32_t));
+	char *buffer = malloc(2 * sizeof(int) + sizeof(uint32_t));
 
 	int peticion = 3;
-	int tamanioPeticion = sizeof(int);
-	memcpy(buffer, &tamanioPeticion, sizeof(int));
-	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+	//int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &peticion, sizeof(int));
+
 
 	int tamanioTam = sizeof(tam);
-	memcpy(buffer + 2 * sizeof(int), &tamanioTam, sizeof(int));
-	memcpy(buffer + 3 * sizeof(int), &tam, sizeof(uint32_t));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+	memcpy(buffer + 2 * sizeof(int), &tam, sizeof(uint32_t));
 
 	//Falta conexion y se hace envio a MUSE
-	send(serverMUSE, buffer, 3 * sizeof(int) + sizeof(uint32_t), 0);
+	send(serverMUSE, buffer, 2 * sizeof(int) + sizeof(uint32_t), 0);
 
 	int *tamanio = malloc(sizeof(int));
 	read(serverMUSE, tamanio, sizeof(int));
@@ -68,7 +74,7 @@ uint32_t muse_alloc(uint32_t tam) { //Case 3
 
 void muse_free(uint32_t dir) { //Case 4
 	//free((void*) dir);
-
+	printf("free\n");
 	//Serializo peticion (4) y uint32_t dir
 
 	//2 size de tamanio, 1 size de peticion, 1 size de dir (parametro)

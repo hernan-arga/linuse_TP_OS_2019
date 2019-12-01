@@ -64,13 +64,17 @@ void reservarMemoriaPrincipal(int tamanio) {
  * no la encuentra previamente en el diccionario (tema hilos) */
 void crearTablaSegmentosProceso(int idSocketCliente) {
 
-	if (dictionary_has_key(tablasSegmentos, (char*) idSocketCliente) == false) {
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+
+	if (!dictionary_has_key(tablasSegmentos, stringIdSocketCliente)) {
 		t_list *listaDeSegmentos = list_create();
 
 		//Creo la estructura, pero no tiene segmentos aun
-		dictionary_put(tablasSegmentos, (char*) idSocketCliente,
+		dictionary_put(tablasSegmentos, stringIdSocketCliente,
 				listaDeSegmentos);
 	}
+
+	free(stringIdSocketCliente);
 
 }
 
@@ -163,7 +167,7 @@ void *retornarPosicionMemoriaFrame(int unFrame) {
 
 int museinit(int idSocketCliente) {
 
-	if (hayMemoriaDisponible() == false) {
+	if (!hayMemoriaDisponible()) {
 		crearTablaSegmentosProceso(idSocketCliente); //Se le crea la tabla de segmentos igual, pero no hay mm
 
 		return -1;
@@ -187,7 +191,9 @@ bool hayMemoriaDisponible() {
 
 void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 	int cantidadSegmentosARecorrer = list_size(segmentosProceso);
 
 	if (list_is_empty(segmentosProceso)) { //Si no tiene ningun segmento, se lo creo
@@ -203,6 +209,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 		void *comienzoDatos = retornarPosicionMemoriaFrame(
 				primeraPagina->numeroFrame) + sizeof(struct HeapMetadata);
 
+		free(stringIdSocketCliente);
 		return comienzoDatos;
 
 	} else { //Sino, recorro segmentos buscando ultimo header free
@@ -219,7 +226,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 						tamanio + sizeof(struct HeapMetadata));
 				list_replace(segmentosProceso, segmento->id, segmento);
 				//Dictionary put no libera la mm anterior
-				dictionary_put(tablasSegmentos, (char*) idSocketCliente,
+				dictionary_put(tablasSegmentos, stringIdSocketCliente,
 						segmentosProceso);
 
 			}
@@ -240,6 +247,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 				unSegmento = extenderSegmento(unSegmento, tamanio);
 				//Retorno pos primera metadata libre + 5
 
+				free(stringIdSocketCliente);
 				return NULL; //Momentaneo para que no rompa
 			}
 		}
@@ -251,6 +259,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 	//Creo segmento nuevo y retorno la posicion asignada
 	struct Segmento *nuevoSegmento = crearSegmento(tamanio, idSocketCliente);
 
+	free(stringIdSocketCliente);
 	return posicionMemoriaUnSegmento(nuevoSegmento) + sizeof(struct HeapMetadata);
 
 }

@@ -13,21 +13,31 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
+void recursiva(int num);
+
 int main(void) {
-	printf("%d", muse_init(1,"127.0.0.1",8003)); // ok
-	printf("\n");
-	//printf("%" PRIu32 "\n",muse_alloc(10)); //ok
-	//uint32_t a = 40;
-	//printf("%p",&a);
-	//muse_free(a); //ok
-	//muse_close() //preguntar que onda, que hace
-	int x = 10;
-	void *puntero = &x;
-	printf("%d", muse_get(puntero,1,1));
-	printf("%d", muse_cpy(1,puntero,1));
+	muse_init(getpid(), "127.0.0.1", 3306);
+		recursiva(10);
+		muse_close();
 
 	//printf("%" PRIu32 "\n", muse_map("archivo.txt",1,1)); //falla
 	//printf("%d", muse_sync(1,1)); //ok
 	//printf("%d", muse_unmap(1)); //ok
 	return EXIT_SUCCESS;
+}
+
+void recursiva(int num)
+{
+	if(num == 0)
+		return;
+
+	uint32_t ptr = muse_alloc(4);
+	muse_cpy(ptr, &num, 4);
+	printf("%d\n", num);
+
+	recursiva(num - 1);
+	num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
+	muse_get(&num, ptr, 4);
+	printf("%d\n", num);
+	muse_free(ptr);
 }
