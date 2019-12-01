@@ -23,20 +23,24 @@ int muse_init(int id, char* ip, int puerto) { //Case 1
 		exit(-1);
 	}
 
-	char *buffer = malloc(sizeof(int));
+	char *buffer = malloc(2*sizeof(int));
 	int peticion = 1;
-	memcpy(buffer, &peticion, sizeof(int));
-	send(serverMUSE, buffer, sizeof(int), 0);
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+	send(serverMUSE, buffer, 2 * sizeof(int), 0);
 	free(buffer);
 	printf("init\n");
 	return resultado;
 }
 
 void muse_close() {
-	char *buffer = malloc(sizeof(int));
+	char *buffer = malloc(2*sizeof(int));
 	int peticion = 2;
-	memcpy(buffer, &peticion, sizeof(int));
-	send(serverMUSE, buffer, sizeof(int), 0);
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+	send(serverMUSE, buffer, 2 * sizeof(int), 0);
 	free(buffer);
 } //Case 2
 
@@ -45,19 +49,19 @@ uint32_t muse_alloc(uint32_t tam) { //Case 3
 	//Serializo peticion (3) y uint32_t tam tamaño a reservar
 
 	//2 size de tamanio, 1 size de peticion, 1 size de tam (parametro)
-	char *buffer = malloc(2 * sizeof(int) + sizeof(uint32_t));
+	char *buffer = malloc(3 * sizeof(int) + sizeof(uint32_t));
 
 	int peticion = 3;
-	//int tamanioPeticion = sizeof(int);
-	memcpy(buffer, &peticion, sizeof(int));
-
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
 
 	int tamanioTam = sizeof(tam);
-	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
-	memcpy(buffer + 2 * sizeof(int), &tam, sizeof(uint32_t));
+	memcpy(buffer + 2 * sizeof(int), &tamanioTam, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), &tam, sizeof(uint32_t));
 
 	//Falta conexion y se hace envio a MUSE
-	send(serverMUSE, buffer, 2 * sizeof(int) + sizeof(uint32_t), 0);
+	send(serverMUSE, buffer, 3 * sizeof(int) + sizeof(uint32_t), 0);
 
 	int *tamanio = malloc(sizeof(int));
 	read(serverMUSE, tamanio, sizeof(int));
@@ -96,7 +100,7 @@ void muse_free(uint32_t dir) { //Case 4
 }
 
 int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
-
+	printf("get\n");
 	//Serializo peticion (5), void* dst ,uint32_t src y size_t n
 
 	//4 size de tamanio, 1 size de peticion, 1 size de dst, 1 size de src y 1 size de n
@@ -141,7 +145,7 @@ int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
 
 int muse_cpy(uint32_t dst, void* src, int n) { //Case 6
 	//Serializo peticion (6) y parametros (uint32_t dst, void* src, int n)
-
+	printf("cpy\n");
 	char *buffer = malloc(6 * sizeof(int) + sizeof(uint32_t) + sizeof(src));
 
 	int peticion = 6;
@@ -294,3 +298,4 @@ int muse_unmap(uint32_t dir) { //Case 9
 	free(resultado);
 	return resultadoFinal;
 }
+

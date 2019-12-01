@@ -18,3 +18,7 @@
 [INFO] 21:15:53:571 Muse/(21182:21182): llego init
 [INFO] 21:18:03:658 Muse/(21182:21182): llego free
 [INFO] 21:18:03:664 Muse/(21182:21182): Memoria liberada exitosamente
+[INFO] 09:52:58:815 Muse/(5361:5361): llego init
+[INFO] 09:52:58:831 Muse/(5361:5361): llego alloc
+[INFO] 09:54:52:346 Muse/(5415:5415): llego init
+[INFO] 09:54:52:367 Muse/(5415:5415): llego alloc
