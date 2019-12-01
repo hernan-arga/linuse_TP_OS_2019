@@ -16,13 +16,26 @@ int main() {
 
 	//log_info(log, "MUSE levantado correctamente\n");
 
-	arrancarMemoria();
+	arrancarMemoria(pconfig);
+
+	printf("%d \n", (int) (&memoriaPrincipal));
+
+	printf("%d \n", sizeof(uint32_t));
+
+	printf("%d \n", sizeof(bool));
+
+	printf("%d \n", sizeof(struct HeapMetadata));
+
 
 	// Levanta conexion por socket
 	pthread_create(&hiloLevantarConexion, NULL,
 			(void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
 
+
+
 	pthread_join(hiloLevantarConexion, NULL);
+
+	//printf("%d", (int) (&memoriaPrincipal));
 
 	return 0;
 }
@@ -30,7 +43,7 @@ int main() {
 
 //////////////Funciones inicio recursos////////////////////
 
-void arrancarMemoria() {
+void arrancarMemoria(config* pconfig) {
 
 	tam_mem = pconfig->tamanio_memoria; //Ver de poner como define
 	tam_pagina = pconfig->tamanio_pag; //Ver de poner como define
@@ -157,7 +170,11 @@ bool hayFramesLibres() {
 void *retornarPosicionMemoriaFrame(int unFrame) {
 	int offset = tam_pagina * unFrame; //Los frames estan en orden y se recorren de menor a mayor
 
-	return ((&memoriaPrincipal) + offset);
+	int comienzoMemoria = (int) (&memoriaPrincipal);
+
+	//return ((&memoriaPrincipal) + offset);
+	return (void*)
+			(comienzoMemoria + offset);
 }
 
 ///////////////Funciones MUSE///////////////
@@ -198,15 +215,15 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
 	if (list_is_empty(segmentosProceso)) { //Si no tiene ningun segmento, se lo creo
 
-		struct Segmento *unSegmento; //= malloc(sizeof(struct Segmento));
+		struct Segmento *unSegmento;
 		unSegmento = crearSegmento(tamanio, idSocketCliente); /*Se crea un segmento con el minimo
 		 *de frames necesarios para alocar
 		 *tamanio*/
 
 		struct Pagina *primeraPagina; //= malloc(sizeof(struct Pagina));
 		primeraPagina = list_get(unSegmento->tablaPaginas, 0);
-		void *comienzoDatos = retornarPosicionMemoriaFrame(
-				primeraPagina->numeroFrame) + sizeof(struct HeapMetadata);
+		void *comienzoDatos = malloc(sizeof(int));
+		comienzoDatos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame) + sizeof(struct HeapMetadata);
 
 		free(stringIdSocketCliente);
 		return comienzoDatos;
@@ -305,7 +322,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 			if (paginasNecesarias == (int) (ceil(paginas))) { //Si es la primera pagina
 
 				nuevoSegmento = asignarPrimeraPaginaSegmento(nuevoSegmento, tamanio);
-				tamanioAlocado = tamanioAlocado - tam_pagina - sizeof(struct HeapMetadata);
+				tamanioAlocado -= ( tam_pagina - sizeof(struct HeapMetadata) );
 
 			} else {
 

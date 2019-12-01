@@ -96,3 +96,332 @@
 [INFO] 10:15:02:734 Muse/(5870:5870): llego free
 [INFO] 10:15:02:749 Muse/(5870:5870): Memoria liberada exitosamente
 [INFO] 10:15:02:755 Muse/(5870:5870): llego close
+[INFO] 14:53:15:746 Muse/(3391:3391): llego init
+[INFO] 14:53:15:746 Muse/(3391:3391): llego alloc
+[INFO] 14:53:15:746 Muse/(3391:3391): llego copy
+[INFO] 14:53:15:747 Muse/(3391:3391): Cpy realizado exitosamente
+[INFO] 14:53:15:747 Muse/(3391:3391): llego alloc
+[INFO] 14:53:15:747 Muse/(3391:3391): llego copy
+[INFO] 14:53:15:747 Muse/(3391:3391): Cpy realizado exitosamente
+[INFO] 14:53:15:747 Muse/(3391:3391): llego alloc
+[INFO] 14:53:15:747 Muse/(3391:3391): llego copy
+[INFO] 14:53:15:747 Muse/(3391:3391): Cpy realizado exitosamente
+[INFO] 14:53:15:747 Muse/(3391:3391): llego alloc
+[INFO] 14:53:15:747 Muse/(3391:3391): llego copy
+[INFO] 14:53:15:748 Muse/(3391:3391): Cpy realizado exitosamente
+[INFO] 14:53:15:748 Muse/(3391:3391): llego alloc
+[INFO] 14:53:15:748 Muse/(3391:3391): llego copy
+[INFO] 14:53:15:748 Muse/(3391:3391): Cpy realizado exitosamente
+[INFO] 14:53:15:748 Muse/(3391:3391): llego alloc
+[INFO] 14:53:15:748 Muse/(3391:3391): llego copy
+[INFO] 14:53:15:748 Muse/(3391:3391): Cpy realizado exitosamente
+[INFO] 14:53:15:748 Muse/(3391:3391): llego alloc
+[INFO] 14:53:15:748 Muse/(3391:3391): llego copy
+[INFO] 14:53:15:748 Muse/(3391:3391): Cpy realizado exitosamente
+[INFO] 14:53:15:748 Muse/(3391:3391): llego alloc
+[INFO] 14:53:15:749 Muse/(3391:3391): llego copy
+[INFO] 14:53:15:749 Muse/(3391:3391): Cpy realizado exitosamente
+[INFO] 14:53:15:749 Muse/(3391:3391): llego alloc
+[INFO] 14:53:15:749 Muse/(3391:3391): llego copy
+[INFO] 14:53:15:749 Muse/(3391:3391): Cpy realizado exitosamente
+[INFO] 14:53:15:749 Muse/(3391:3391): llego alloc
+[INFO] 14:53:15:749 Muse/(3391:3391): llego copy
+[INFO] 14:53:15:749 Muse/(3391:3391): Cpy realizado exitosamente
+[INFO] 14:53:15:749 Muse/(3391:3391): llego get
+[INFO] 14:53:15:749 Muse/(3391:3391): Get realizado correctamente
+[INFO] 14:53:15:749 Muse/(3391:3391): llego free
+[INFO] 14:53:15:749 Muse/(3391:3391): Memoria liberada exitosamente
+[INFO] 14:53:15:787 Muse/(3391:3391): llego get
+[INFO] 14:53:15:787 Muse/(3391:3391): Get realizado correctamente
+[INFO] 14:53:15:788 Muse/(3391:3391): llego free
+[INFO] 14:53:15:789 Muse/(3391:3391): Memoria liberada exitosamente
+[INFO] 14:53:15:827 Muse/(3391:3391): llego get
+[INFO] 14:53:15:828 Muse/(3391:3391): Get realizado correctamente
+[INFO] 14:53:15:828 Muse/(3391:3391): llego free
+[INFO] 14:53:15:828 Muse/(3391:3391): Memoria liberada exitosamente
+[INFO] 14:53:15:867 Muse/(3391:3391): llego get
+[INFO] 14:53:15:867 Muse/(3391:3391): Get realizado correctamente
+[INFO] 14:53:15:867 Muse/(3391:3391): llego free
+[INFO] 14:53:15:867 Muse/(3391:3391): Memoria liberada exitosamente
+[INFO] 14:53:15:908 Muse/(3391:3391): llego get
+[INFO] 14:53:15:908 Muse/(3391:3391): Get realizado correctamente
+[INFO] 14:53:15:909 Muse/(3391:3391): llego free
+[INFO] 14:53:15:909 Muse/(3391:3391): Memoria liberada exitosamente
+[INFO] 14:53:15:947 Muse/(3391:3391): llego get
+[INFO] 14:53:15:947 Muse/(3391:3391): Get realizado correctamente
+[INFO] 14:53:15:947 Muse/(3391:3391): llego free
+[INFO] 14:53:15:947 Muse/(3391:3391): Memoria liberada exitosamente
+[INFO] 14:53:15:987 Muse/(3391:3391): llego get
+[INFO] 14:53:15:987 Muse/(3391:3391): Get realizado correctamente
+[INFO] 14:53:15:987 Muse/(3391:3391): llego free
+[INFO] 14:53:15:987 Muse/(3391:3391): Memoria liberada exitosamente
+[INFO] 14:53:16:27 Muse/(3391:3391): llego get
+[INFO] 14:53:16:27 Muse/(3391:3391): Get realizado correctamente
+[INFO] 14:53:16:27 Muse/(3391:3391): llego free
+[INFO] 14:53:16:27 Muse/(3391:3391): Memoria liberada exitosamente
+[INFO] 14:53:16:67 Muse/(3391:3391): llego get
+[INFO] 14:53:16:67 Muse/(3391:3391): Get realizado correctamente
+[INFO] 14:53:16:67 Muse/(3391:3391): llego free
+[INFO] 14:53:16:67 Muse/(3391:3391): Memoria liberada exitosamente
+[INFO] 14:53:16:107 Muse/(3391:3391): llego get
+[INFO] 14:53:16:107 Muse/(3391:3391): Get realizado correctamente
+[INFO] 14:53:16:107 Muse/(3391:3391): llego free
+[INFO] 14:53:16:107 Muse/(3391:3391): Memoria liberada exitosamente
+[INFO] 14:53:16:107 Muse/(3391:3391): llego close
+[INFO] 14:56:06:715 Muse/(3512:3512): llego init
+[INFO] 14:56:06:715 Muse/(3512:3512): llego alloc
+[INFO] 14:56:06:715 Muse/(3512:3512): llego copy
+[INFO] 14:56:06:716 Muse/(3512:3512): Cpy realizado exitosamente
+[INFO] 14:56:06:716 Muse/(3512:3512): llego alloc
+[INFO] 14:56:06:716 Muse/(3512:3512): llego copy
+[INFO] 14:56:06:716 Muse/(3512:3512): Cpy realizado exitosamente
+[INFO] 14:56:06:716 Muse/(3512:3512): llego alloc
+[INFO] 14:56:06:717 Muse/(3512:3512): llego copy
+[INFO] 14:56:06:717 Muse/(3512:3512): Cpy realizado exitosamente
+[INFO] 14:56:06:719 Muse/(3512:3512): llego alloc
+[INFO] 14:56:06:719 Muse/(3512:3512): llego copy
+[INFO] 14:56:06:720 Muse/(3512:3512): Cpy realizado exitosamente
+[INFO] 14:56:06:720 Muse/(3512:3512): llego alloc
+[INFO] 14:56:06:720 Muse/(3512:3512): llego copy
+[INFO] 14:56:06:720 Muse/(3512:3512): Cpy realizado exitosamente
+[INFO] 14:56:06:720 Muse/(3512:3512): llego alloc
+[INFO] 14:56:06:720 Muse/(3512:3512): llego copy
+[INFO] 14:56:06:720 Muse/(3512:3512): Cpy realizado exitosamente
+[INFO] 14:56:06:720 Muse/(3512:3512): llego alloc
+[INFO] 14:56:06:721 Muse/(3512:3512): llego copy
+[INFO] 14:56:06:721 Muse/(3512:3512): Cpy realizado exitosamente
+[INFO] 14:56:06:721 Muse/(3512:3512): llego alloc
+[INFO] 14:56:06:721 Muse/(3512:3512): llego copy
+[INFO] 14:56:06:721 Muse/(3512:3512): Cpy realizado exitosamente
+[INFO] 14:56:06:722 Muse/(3512:3512): llego alloc
+[INFO] 14:56:06:722 Muse/(3512:3512): llego copy
+[INFO] 14:56:06:722 Muse/(3512:3512): Cpy realizado exitosamente
+[INFO] 14:56:06:722 Muse/(3512:3512): llego alloc
+[INFO] 14:56:06:722 Muse/(3512:3512): llego copy
+[INFO] 14:56:06:722 Muse/(3512:3512): Cpy realizado exitosamente
+[INFO] 14:56:06:724 Muse/(3512:3512): llego get
+[INFO] 14:56:06:724 Muse/(3512:3512): Get realizado correctamente
+[INFO] 14:56:06:724 Muse/(3512:3512): llego free
+[INFO] 14:56:06:724 Muse/(3512:3512): Memoria liberada exitosamente
+[INFO] 14:56:06:763 Muse/(3512:3512): llego get
+[INFO] 14:56:06:763 Muse/(3512:3512): Get realizado correctamente
+[INFO] 14:56:06:764 Muse/(3512:3512): llego free
+[INFO] 14:56:06:765 Muse/(3512:3512): Memoria liberada exitosamente
+[INFO] 14:56:06:803 Muse/(3512:3512): llego get
+[INFO] 14:56:06:803 Muse/(3512:3512): Get realizado correctamente
+[INFO] 14:56:06:803 Muse/(3512:3512): llego free
+[INFO] 14:56:06:803 Muse/(3512:3512): Memoria liberada exitosamente
+[INFO] 14:56:06:843 Muse/(3512:3512): llego get
+[INFO] 14:56:06:843 Muse/(3512:3512): Get realizado correctamente
+[INFO] 14:56:06:844 Muse/(3512:3512): llego free
+[INFO] 14:56:06:844 Muse/(3512:3512): Memoria liberada exitosamente
+[INFO] 14:56:06:883 Muse/(3512:3512): llego get
+[INFO] 14:56:06:883 Muse/(3512:3512): Get realizado correctamente
+[INFO] 14:56:06:883 Muse/(3512:3512): llego free
+[INFO] 14:56:06:883 Muse/(3512:3512): Memoria liberada exitosamente
+[INFO] 14:56:06:923 Muse/(3512:3512): llego get
+[INFO] 14:56:06:923 Muse/(3512:3512): Get realizado correctamente
+[INFO] 14:56:06:923 Muse/(3512:3512): llego free
+[INFO] 14:56:06:923 Muse/(3512:3512): Memoria liberada exitosamente
+[INFO] 14:56:06:964 Muse/(3512:3512): llego get
+[INFO] 14:56:06:964 Muse/(3512:3512): Get realizado correctamente
+[INFO] 14:56:06:964 Muse/(3512:3512): llego free
+[INFO] 14:56:06:964 Muse/(3512:3512): Memoria liberada exitosamente
+[INFO] 14:56:07:3 Muse/(3512:3512): llego get
+[INFO] 14:56:07:4 Muse/(3512:3512): Get realizado correctamente
+[INFO] 14:56:07:4 Muse/(3512:3512): llego free
+[INFO] 14:56:07:4 Muse/(3512:3512): Memoria liberada exitosamente
+[INFO] 14:56:07:43 Muse/(3512:3512): llego get
+[INFO] 14:56:07:43 Muse/(3512:3512): Get realizado correctamente
+[INFO] 14:56:07:43 Muse/(3512:3512): llego free
+[INFO] 14:56:07:43 Muse/(3512:3512): Memoria liberada exitosamente
+[INFO] 14:56:07:83 Muse/(3512:3512): llego get
+[INFO] 14:56:07:83 Muse/(3512:3512): Get realizado correctamente
+[INFO] 14:56:07:84 Muse/(3512:3512): llego free
+[INFO] 14:56:07:84 Muse/(3512:3512): Memoria liberada exitosamente
+[INFO] 15:55:52:11 Muse/(4731:4731): llego init
+[INFO] 15:55:53:12 Muse/(4731:4731): llego alloc
+[INFO] 15:55:53:12 Muse/(4731:4731): llego copy
+[INFO] 15:55:53:12 Muse/(4731:4731): Cpy realizado exitosamente
+[INFO] 15:55:53:13 Muse/(4731:4731): llego alloc
+[INFO] 15:55:53:13 Muse/(4731:4731): llego copy
+[INFO] 15:55:53:13 Muse/(4731:4731): Cpy realizado exitosamente
+[INFO] 15:55:53:13 Muse/(4731:4731): llego alloc
+[INFO] 15:55:53:13 Muse/(4731:4731): llego copy
+[INFO] 15:55:53:13 Muse/(4731:4731): Cpy realizado exitosamente
+[INFO] 15:55:53:13 Muse/(4731:4731): llego alloc
+[INFO] 15:55:53:13 Muse/(4731:4731): llego copy
+[INFO] 15:55:53:13 Muse/(4731:4731): Cpy realizado exitosamente
+[INFO] 15:55:53:13 Muse/(4731:4731): llego alloc
+[INFO] 15:55:53:14 Muse/(4731:4731): llego copy
+[INFO] 15:55:53:14 Muse/(4731:4731): Cpy realizado exitosamente
+[INFO] 15:55:53:14 Muse/(4731:4731): llego alloc
+[INFO] 15:55:53:14 Muse/(4731:4731): llego copy
+[INFO] 15:55:53:14 Muse/(4731:4731): Cpy realizado exitosamente
+[INFO] 15:55:53:14 Muse/(4731:4731): llego alloc
+[INFO] 15:55:53:14 Muse/(4731:4731): llego copy
+[INFO] 15:55:53:14 Muse/(4731:4731): Cpy realizado exitosamente
+[INFO] 15:55:53:14 Muse/(4731:4731): llego alloc
+[INFO] 15:55:53:14 Muse/(4731:4731): llego copy
+[INFO] 15:55:53:15 Muse/(4731:4731): Cpy realizado exitosamente
+[INFO] 15:55:53:15 Muse/(4731:4731): llego alloc
+[INFO] 15:55:53:15 Muse/(4731:4731): llego copy
+[INFO] 15:55:53:15 Muse/(4731:4731): Cpy realizado exitosamente
+[INFO] 15:55:53:15 Muse/(4731:4731): llego alloc
+[INFO] 15:55:53:15 Muse/(4731:4731): llego copy
+[INFO] 15:55:53:15 Muse/(4731:4731): Cpy realizado exitosamente
+[INFO] 15:55:53:15 Muse/(4731:4731): llego get
+[INFO] 15:55:53:15 Muse/(4731:4731): Get realizado correctamente
+[INFO] 15:55:53:15 Muse/(4731:4731): llego free
+[INFO] 15:55:53:15 Muse/(4731:4731): Memoria liberada exitosamente
+[INFO] 15:55:53:55 Muse/(4731:4731): llego get
+[INFO] 15:55:53:55 Muse/(4731:4731): Get realizado correctamente
+[INFO] 15:55:53:55 Muse/(4731:4731): llego free
+[INFO] 15:55:53:55 Muse/(4731:4731): Memoria liberada exitosamente
+[INFO] 15:55:53:95 Muse/(4731:4731): llego get
+[INFO] 15:55:53:95 Muse/(4731:4731): Get realizado correctamente
+[INFO] 15:55:53:95 Muse/(4731:4731): llego free
+[INFO] 15:55:53:95 Muse/(4731:4731): Memoria liberada exitosamente
+[INFO] 15:55:53:135 Muse/(4731:4731): llego get
+[INFO] 15:55:53:135 Muse/(4731:4731): Get realizado correctamente
+[INFO] 15:55:53:135 Muse/(4731:4731): llego free
+[INFO] 15:55:53:135 Muse/(4731:4731): Memoria liberada exitosamente
+[INFO] 15:55:53:175 Muse/(4731:4731): llego get
+[INFO] 15:55:53:175 Muse/(4731:4731): Get realizado correctamente
+[INFO] 15:55:53:175 Muse/(4731:4731): llego free
+[INFO] 15:55:53:175 Muse/(4731:4731): Memoria liberada exitosamente
+[INFO] 15:55:53:215 Muse/(4731:4731): llego get
+[INFO] 15:55:53:215 Muse/(4731:4731): Get realizado correctamente
+[INFO] 15:55:53:215 Muse/(4731:4731): llego free
+[INFO] 15:55:53:215 Muse/(4731:4731): Memoria liberada exitosamente
+[INFO] 15:55:53:260 Muse/(4731:4731): llego get
+[INFO] 15:55:53:260 Muse/(4731:4731): Get realizado correctamente
+[INFO] 15:55:53:260 Muse/(4731:4731): llego free
+[INFO] 15:55:53:260 Muse/(4731:4731): Memoria liberada exitosamente
+[INFO] 15:55:53:299 Muse/(4731:4731): llego get
+[INFO] 15:55:53:299 Muse/(4731:4731): Get realizado correctamente
+[INFO] 15:55:53:299 Muse/(4731:4731): llego free
+[INFO] 15:55:53:299 Muse/(4731:4731): Memoria liberada exitosamente
+[INFO] 15:55:53:340 Muse/(4731:4731): llego get
+[INFO] 15:55:53:340 Muse/(4731:4731): Get realizado correctamente
+[INFO] 15:55:53:340 Muse/(4731:4731): llego free
+[INFO] 15:55:53:340 Muse/(4731:4731): Memoria liberada exitosamente
+[INFO] 15:55:53:380 Muse/(4731:4731): llego get
+[INFO] 15:55:53:381 Muse/(4731:4731): Get realizado correctamente
+[INFO] 15:55:53:382 Muse/(4731:4731): llego free
+[INFO] 15:55:53:382 Muse/(4731:4731): Memoria liberada exitosamente
+[INFO] 15:55:53:382 Muse/(4731:4731): llego close
+[INFO] 16:05:12:725 Muse/(4929:4929): llego init
+[INFO] 16:05:12:725 Muse/(4929:4929): llego alloc
+[INFO] 16:05:12:725 Muse/(4929:4929): llego copy
+[INFO] 16:05:12:725 Muse/(4929:4929): Cpy realizado exitosamente
+[INFO] 16:05:12:729 Muse/(4929:4929): llego close
+[INFO] 16:08:04:759 Muse/(5097:5097): llego init
+[INFO] 16:08:04:759 Muse/(5097:5097): llego alloc
+[INFO] 16:08:04:759 Muse/(5097:5097): llego copy
+[INFO] 16:08:04:759 Muse/(5097:5097): Cpy realizado exitosamente
+[INFO] 16:08:04:759 Muse/(5097:5097): llego close
+[INFO] 16:12:44:418 Muse/(5232:5232): llego init
+[INFO] 16:12:44:419 Muse/(5232:5232): llego alloc
+[INFO] 16:12:44:419 Muse/(5232:5232): llego copy
+[INFO] 16:12:44:419 Muse/(5232:5232): Cpy realizado exitosamente
+[INFO] 16:12:44:419 Muse/(5232:5232): llego close
+[INFO] 16:13:12:315 Muse/(5292:5292): llego init
+[INFO] 16:13:12:318 Muse/(5292:5292): llego alloc
+[INFO] 16:13:12:318 Muse/(5292:5292): llego copy
+[INFO] 16:13:12:318 Muse/(5292:5292): Cpy realizado exitosamente
+[INFO] 16:13:12:318 Muse/(5292:5292): llego close
+[INFO] 16:14:59:414 Muse/(5411:5411): llego init
+[INFO] 16:14:59:415 Muse/(5411:5411): llego alloc
+[INFO] 16:14:59:415 Muse/(5411:5411): llego copy
+[INFO] 16:14:59:415 Muse/(5411:5411): Cpy realizado exitosamente
+[INFO] 16:14:59:415 Muse/(5411:5411): llego close
+[INFO] 16:19:50:661 Muse/(5496:5496): llego init
+[INFO] 16:19:51:802 Muse/(5496:5496): llego alloc
+[INFO] 16:36:45:676 Muse/(5805:5805): llego init
+[INFO] 16:36:56:20 Muse/(5805:5805): llego alloc
+[INFO] 16:38:38:67 Muse/(5909:5909): llego init
+[INFO] 16:38:39:125 Muse/(5909:5909): llego alloc
+[INFO] 16:40:59:987 Muse/(6095:6095): llego init
+[INFO] 16:41:00:813 Muse/(6095:6095): llego alloc
+[INFO] 16:48:30:999 Muse/(6575:6575): llego init
+[INFO] 16:48:30:0 Muse/(6575:6575): llego alloc
+[INFO] 16:48:30:0 Muse/(6575:6575): llego copy
+[INFO] 16:48:30:0 Muse/(6575:6575): Cpy realizado exitosamente
+[INFO] 16:48:30:0 Muse/(6575:6575): llego close
+[INFO] 16:49:19:702 Muse/(6617:6617): llego init
+[INFO] 16:49:20:656 Muse/(6617:6617): llego alloc
+[INFO] 16:57:34:445 Muse/(6928:6928): llego init
+[INFO] 16:57:34:446 Muse/(6928:6928): llego alloc
+[INFO] 16:57:34:446 Muse/(6928:6928): llego copy
+[INFO] 16:57:34:446 Muse/(6928:6928): Cpy realizado exitosamente
+[INFO] 16:57:34:447 Muse/(6928:6928): llego close
+[INFO] 16:58:14:949 Muse/(6970:6970): llego init
+[INFO] 16:58:15:702 Muse/(6970:6970): llego alloc
+[INFO] 17:02:12:581 Muse/(7135:7135): llego init
+[INFO] 17:02:12:582 Muse/(7135:7135): llego alloc
+[INFO] 17:02:12:583 Muse/(7135:7135): llego close
+[INFO] 17:03:28:75 Muse/(7223:7223): llego init
+[INFO] 17:03:28:534 Muse/(7223:7223): llego alloc
+[INFO] 17:06:56:994 Muse/(7366:7366): llego init
+[INFO] 17:06:57:646 Muse/(7366:7366): llego alloc
+[INFO] 17:14:20:187 Muse/(7584:7584): llego init
+[INFO] 17:14:21:319 Muse/(7584:7584): llego alloc
+[INFO] 17:17:22:207 Muse/(7584:7584): llego close
+[INFO] 17:18:26:553 Muse/(7743:7743): llego init
+[INFO] 17:18:27:191 Muse/(7743:7743): llego alloc
+[INFO] 17:24:59:880 Muse/(7908:7908): llego init
+[INFO] 17:24:59:881 Muse/(7908:7908): llego alloc
+[INFO] 17:24:59:881 Muse/(7908:7908): llego close
+[INFO] 17:25:44:827 Muse/(8002:8002): llego init
+[INFO] 17:25:44:828 Muse/(8002:8002): llego alloc
+[INFO] 17:25:44:828 Muse/(8002:8002): llego close
+[INFO] 17:26:32:931 Muse/(8066:8066): llego init
+[INFO] 17:26:32:933 Muse/(8066:8066): llego alloc
+[INFO] 17:26:32:935 Muse/(8066:8066): llego close
+[INFO] 17:27:14:645 Muse/(8131:8131): llego init
+[INFO] 17:27:14:646 Muse/(8131:8131): llego alloc
+[INFO] 17:27:14:646 Muse/(8131:8131): llego close
+[INFO] 17:27:35:192 Muse/(8161:8161): llego init
+[INFO] 17:27:35:192 Muse/(8161:8161): llego alloc
+[INFO] 17:27:35:192 Muse/(8161:8161): llego close
+[INFO] 17:28:19:353 Muse/(8228:8228): llego init
+[INFO] 17:28:19:353 Muse/(8228:8228): llego alloc
+[INFO] 17:29:47:82 Muse/(8306:8306): llego init
+[INFO] 17:29:47:83 Muse/(8306:8306): llego alloc
+[INFO] 17:29:47:83 Muse/(8306:8306): llego close
+[INFO] 17:30:32:58 Muse/(8381:8381): llego init
+[INFO] 17:30:32:62 Muse/(8381:8381): llego alloc
+[INFO] 17:30:32:63 Muse/(8381:8381): llego close
+[INFO] 17:31:11:719 Muse/(8477:8477): llego init
+[INFO] 17:31:11:726 Muse/(8477:8477): llego alloc
+[INFO] 17:31:11:726 Muse/(8477:8477): llego close
+[INFO] 17:33:21:859 Muse/(8582:8582): llego init
+[INFO] 17:33:22:413 Muse/(8582:8582): llego alloc
+[INFO] 17:33:24:561 Muse/(8582:8582): llego close
+[INFO] 17:34:54:671 Muse/(8806:8806): llego init
+[INFO] 17:34:55:46 Muse/(8806:8806): llego alloc
+[INFO] 17:42:08:474 Muse/(8985:8985): llego init
+[INFO] 17:42:08:859 Muse/(8985:8985): llego alloc
+[INFO] 17:45:49:532 Muse/(9152:9152): llego init
+[INFO] 17:45:57:738 Muse/(9152:9152): llego alloc
+[INFO] 17:47:06:211 Muse/(9237:9237): llego init
+[INFO] 17:47:07:282 Muse/(9237:9237): llego alloc
+[INFO] 17:49:31:656 Muse/(9376:9376): llego init
+[INFO] 17:49:32:715 Muse/(9376:9376): llego alloc
+[INFO] 17:56:36:851 Muse/(9551:9551): llego init
+[INFO] 17:56:36:852 Muse/(9551:9551): llego alloc
+[INFO] 18:00:08:78 Muse/(9674:9674): llego init
+[INFO] 18:00:08:79 Muse/(9674:9674): llego alloc
+[INFO] 18:01:37:833 Muse/(9774:9774): llego init
+[INFO] 18:01:38:293 Muse/(9774:9774): llego alloc
+[INFO] 18:06:49:321 Muse/(9974:9974): llego init
+[INFO] 18:06:49:716 Muse/(9974:9974): llego alloc
+[INFO] 18:07:21:639 Muse/(10053:10053): llego init
+[INFO] 18:07:24:105 Muse/(10053:10053): llego alloc
+[INFO] 18:09:18:671 Muse/(10202:10202): llego init
+[INFO] 18:09:19:201 Muse/(10202:10202): llego alloc
+[INFO] 18:09:45:151 Muse/(10285:10285): llego init
+[INFO] 18:09:45:601 Muse/(10285:10285): llego alloc
+[INFO] 18:17:45:663 Muse/(10585:10585): llego init
+[INFO] 18:17:50:723 Muse/(10585:10585): llego alloc

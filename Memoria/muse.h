@@ -34,7 +34,7 @@ struct HeapMetadata {
 	uint32_t size;
 	bool isFree;
 
-};
+}__attribute__((packed));
 
 struct Segmento{
 

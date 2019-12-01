@@ -245,7 +245,7 @@ void atenderMuseAlloc(int cliente) {
 	char* buffer = malloc(sizeof(int) + sizeof(uint32_t));
 
 	int tamanioDireccion = sizeof(int);
-	uint32_t direccion = musemalloc(10, cliente); //aca hacemos el malloc en muse y devolves la direccion de memoria
+	uint32_t direccion = musemalloc(*bytesAReservar, cliente); //aca hacemos el malloc en muse y devolves la direccion de memoria
 	memcpy(buffer, &tamanioDireccion, sizeof(int));
 	memcpy(buffer + sizeof(int), &direccion, sizeof(uint32_t));
 
