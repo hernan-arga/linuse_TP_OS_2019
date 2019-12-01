@@ -682,6 +682,7 @@ void pasarAReady(hilo *unHilo){
 		((programa *)dictionary_get(diccionarioDeProgramas, unPid))->exec = unHilo;
 		sem_post(&sem_programas);
 
+		loguearTransicion(unHilo->pid, unHilo->tid, "Ready");
 		loguearTransicion(unHilo->pid, unHilo->tid, "Execute");
 	}
 	else{
