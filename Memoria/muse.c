@@ -195,18 +195,18 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 	int cantidadSegmentosARecorrer = list_size(segmentosProceso);
+	int metadataLibre;
 
 	if (list_is_empty(segmentosProceso)) { //Si no tiene ningun segmento, se lo creo
 
-		struct Segmento *unSegmento; //= malloc(sizeof(struct Segmento));
+		struct Segmento *unSegmento;
 		unSegmento = crearSegmento(tamanio, idSocketCliente); /*Se crea un segmento con el minimo
 		 *de frames necesarios para alocar
 		 *tamanio*/
 
 		struct Pagina *primeraPagina; //= malloc(sizeof(struct Pagina));
 		primeraPagina = list_get(unSegmento->tablaPaginas, 0);
-		void *comienzoDatos = retornarPosicionMemoriaFrame(
-				primeraPagina->numeroFrame) + sizeof(struct HeapMetadata);
+		void *comienzoDatos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame) + sizeof(struct HeapMetadata);
 
 		free(stringIdSocketCliente);
 		return comienzoDatos;
@@ -218,15 +218,11 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
 			segmento = list_get(segmentosProceso, i);
 
-			if (poseeTamanioLibreSegmento(segmento,
-					tamanio + sizeof(struct HeapMetadata))) {
+			if (poseeTamanioLibreSegmento(segmento, tamanio + sizeof(struct HeapMetadata))) {
 
-				segmento = asignarTamanioLibreASegmento(segmento,
-						tamanio + sizeof(struct HeapMetadata));
-				list_replace(segmentosProceso, segmento->id, segmento);
-				//Dictionary put no libera la mm anterior
-				dictionary_put(tablasSegmentos, stringIdSocketCliente,
-						segmentosProceso);
+				metadataLibre = retornarMetadataTamanioLibre(segmento, tamanio + sizeof(struct HeapMetadata));
+
+				return (void *)(metadataLibre + sizeof(struct HeapMetadata));
 
 			}
 
@@ -395,6 +391,41 @@ struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 	free(nuevaUltimaMetadata);
 
 	return segmento;
+}
+
+int retornarMetadataTamanioLibre(struct Segmento *segmento, uint32_t tamanio){
+
+	t_list *paginas = segmento->tablaPaginas;
+	t_list *metadatas;
+	struct Pagina *pagina;
+	struct Frame *frame;
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+	int desplazamiento;
+	void *pos;
+
+	for(int i = 0; i < list_size(paginas); i++){
+		pagina = list_get(paginas, i);
+		frame = list_get(bitmapFrames, pagina->numeroFrame);
+		metadatas = frame->listaMetadata;
+
+		for(int j = 0; j < list_size(metadatas); j++){
+
+			desplazamiento = (int)list_get(metadatas, j);
+			memcpy(metadata, retornarPosicionMemoriaFrame(pagina->numeroFrame) + desplazamiento, sizeof(struct HeapMetadata));
+
+			if(metadata->isFree == true && metadata->size >= tamanio){
+				pos = retornarPosicionMemoriaFrame(pagina->numeroFrame) + desplazamiento + sizeof(struct HeapMetadata);
+
+				return (int)pos;
+			}
+
+		}
+
+	}
+
+	free(metadata);
+
+	return -1; //nunca llega, porque antes de llamar a esta funcion, chequee que exista metadata libre
 }
 
 /*Le asigna la primera pagina que va a contener la metadata al segmento*/

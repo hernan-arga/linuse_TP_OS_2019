@@ -104,6 +104,7 @@ uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
 void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
 struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_t tamanio);
 struct Segmento *extenderSegmento(struct Segmento *unSegmento, uint32_t tamanio);
+int retornarMetadataTamanioLibre(struct Segmento *segmento, uint32_t tamanio);
 
 //Funciones cpy
 int musecpy(uint32_t dst, void* src, int n, int idSocket);
