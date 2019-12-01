@@ -22,3 +22,77 @@
 [INFO] 09:52:58:831 Muse/(5361:5361): llego alloc
 [INFO] 09:54:52:346 Muse/(5415:5415): llego init
 [INFO] 09:54:52:367 Muse/(5415:5415): llego alloc
+[INFO] 10:10:11:650 Muse/(5705:5705): llego init
+[INFO] 10:10:11:661 Muse/(5705:5705): llego alloc
+[INFO] 10:14:41:639 Muse/(5870:5870): llego init
+[INFO] 10:14:41:647 Muse/(5870:5870): llego alloc
+[INFO] 10:15:01:807 Muse/(5870:5870): llego copy
+[INFO] 10:15:01:810 Muse/(5870:5870): Cpy realizado exitosamente
+[INFO] 10:15:01:814 Muse/(5870:5870): llego alloc
+[INFO] 10:15:01:842 Muse/(5870:5870): llego copy
+[INFO] 10:15:01:857 Muse/(5870:5870): Cpy realizado exitosamente
+[INFO] 10:15:01:869 Muse/(5870:5870): llego alloc
+[INFO] 10:15:01:879 Muse/(5870:5870): llego copy
+[INFO] 10:15:01:892 Muse/(5870:5870): Cpy realizado exitosamente
+[INFO] 10:15:01:906 Muse/(5870:5870): llego alloc
+[INFO] 10:15:01:910 Muse/(5870:5870): llego copy
+[INFO] 10:15:01:915 Muse/(5870:5870): Cpy realizado exitosamente
+[INFO] 10:15:01:931 Muse/(5870:5870): llego alloc
+[INFO] 10:15:01:941 Muse/(5870:5870): llego copy
+[INFO] 10:15:01:966 Muse/(5870:5870): Cpy realizado exitosamente
+[INFO] 10:15:01:977 Muse/(5870:5870): llego alloc
+[INFO] 10:15:01:988 Muse/(5870:5870): llego copy
+[INFO] 10:15:02:15 Muse/(5870:5870): Cpy realizado exitosamente
+[INFO] 10:15:02:30 Muse/(5870:5870): llego alloc
+[INFO] 10:15:02:43 Muse/(5870:5870): llego copy
+[INFO] 10:15:02:53 Muse/(5870:5870): Cpy realizado exitosamente
+[INFO] 10:15:02:64 Muse/(5870:5870): llego alloc
+[INFO] 10:15:02:75 Muse/(5870:5870): llego copy
+[INFO] 10:15:02:94 Muse/(5870:5870): Cpy realizado exitosamente
+[INFO] 10:15:02:100 Muse/(5870:5870): llego alloc
+[INFO] 10:15:02:118 Muse/(5870:5870): llego copy
+[INFO] 10:15:02:131 Muse/(5870:5870): Cpy realizado exitosamente
+[INFO] 10:15:02:136 Muse/(5870:5870): llego alloc
+[INFO] 10:15:02:143 Muse/(5870:5870): llego copy
+[INFO] 10:15:02:155 Muse/(5870:5870): Cpy realizado exitosamente
+[INFO] 10:15:02:173 Muse/(5870:5870): llego get
+[INFO] 10:15:02:181 Muse/(5870:5870): Get realizado correctamente
+[INFO] 10:15:02:201 Muse/(5870:5870): llego free
+[INFO] 10:15:02:211 Muse/(5870:5870): Memoria liberada exitosamente
+[INFO] 10:15:02:237 Muse/(5870:5870): llego get
+[INFO] 10:15:02:242 Muse/(5870:5870): Get realizado correctamente
+[INFO] 10:15:02:247 Muse/(5870:5870): llego free
+[INFO] 10:15:02:265 Muse/(5870:5870): Memoria liberada exitosamente
+[INFO] 10:15:02:286 Muse/(5870:5870): llego get
+[INFO] 10:15:02:292 Muse/(5870:5870): Get realizado correctamente
+[INFO] 10:15:02:304 Muse/(5870:5870): llego free
+[INFO] 10:15:02:319 Muse/(5870:5870): Memoria liberada exitosamente
+[INFO] 10:15:02:346 Muse/(5870:5870): llego get
+[INFO] 10:15:02:354 Muse/(5870:5870): Get realizado correctamente
+[INFO] 10:15:02:361 Muse/(5870:5870): llego free
+[INFO] 10:15:02:381 Muse/(5870:5870): Memoria liberada exitosamente
+[INFO] 10:15:02:397 Muse/(5870:5870): llego get
+[INFO] 10:15:02:407 Muse/(5870:5870): Get realizado correctamente
+[INFO] 10:15:02:420 Muse/(5870:5870): llego free
+[INFO] 10:15:02:428 Muse/(5870:5870): Memoria liberada exitosamente
+[INFO] 10:15:02:457 Muse/(5870:5870): llego get
+[INFO] 10:15:02:468 Muse/(5870:5870): Get realizado correctamente
+[INFO] 10:15:02:487 Muse/(5870:5870): llego free
+[INFO] 10:15:02:496 Muse/(5870:5870): Memoria liberada exitosamente
+[INFO] 10:15:02:525 Muse/(5870:5870): llego get
+[INFO] 10:15:02:535 Muse/(5870:5870): Get realizado correctamente
+[INFO] 10:15:02:546 Muse/(5870:5870): llego free
+[INFO] 10:15:02:570 Muse/(5870:5870): Memoria liberada exitosamente
+[INFO] 10:15:02:582 Muse/(5870:5870): llego get
+[INFO] 10:15:02:591 Muse/(5870:5870): Get realizado correctamente
+[INFO] 10:15:02:603 Muse/(5870:5870): llego free
+[INFO] 10:15:02:627 Muse/(5870:5870): Memoria liberada exitosamente
+[INFO] 10:15:02:638 Muse/(5870:5870): llego get
+[INFO] 10:15:02:660 Muse/(5870:5870): Get realizado correctamente
+[INFO] 10:15:02:680 Muse/(5870:5870): llego free
+[INFO] 10:15:02:687 Muse/(5870:5870): Memoria liberada exitosamente
+[INFO] 10:15:02:718 Muse/(5870:5870): llego get
+[INFO] 10:15:02:723 Muse/(5870:5870): Get realizado correctamente
+[INFO] 10:15:02:734 Muse/(5870:5870): llego free
+[INFO] 10:15:02:749 Muse/(5870:5870): Memoria liberada exitosamente
+[INFO] 10:15:02:755 Muse/(5870:5870): llego close

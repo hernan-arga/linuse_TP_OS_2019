@@ -293,7 +293,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	/*Asignar frames necesarios para *tamanio*, calculo paginas necesarias y le calculo
 	 *el techo, asigno paginas y sus correspondientes frames*/
 	int paginasNecesarias;
-	double paginas = tamanio / tam_pagina;
+	double paginas = (double)tamanio / (double)tam_pagina;
 	paginasNecesarias = (int) (ceil(paginas));
 	nuevoSegmento->tablaPaginas = list_create();
 	int tamanioAlocado = tamanio;
