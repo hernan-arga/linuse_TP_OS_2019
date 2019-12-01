@@ -212,6 +212,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 	int cantidadSegmentosARecorrer = list_size(segmentosProceso);
+	int metadataLibre;
 
 	if (list_is_empty(segmentosProceso)) { //Si no tiene ningun segmento, se lo creo
 
@@ -222,8 +223,11 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
 		struct Pagina *primeraPagina; //= malloc(sizeof(struct Pagina));
 		primeraPagina = list_get(unSegmento->tablaPaginas, 0);
+
 		void *comienzoDatos = malloc(sizeof(int));
 		comienzoDatos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame) + sizeof(struct HeapMetadata);
+
+
 
 		free(stringIdSocketCliente);
 		return comienzoDatos;
@@ -235,20 +239,21 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
 			segmento = list_get(segmentosProceso, i);
 
-			if (poseeTamanioLibreSegmento(segmento,
-					tamanio + sizeof(struct HeapMetadata))) {
+			if (poseeTamanioLibreSegmento(segmento, tamanio + sizeof(struct HeapMetadata))) {
 
-				segmento = asignarTamanioLibreASegmento(segmento,
-						tamanio + sizeof(struct HeapMetadata));
-				list_replace(segmentosProceso, segmento->id, segmento);
-				//Dictionary put no libera la mm anterior
-				dictionary_put(tablasSegmentos, stringIdSocketCliente,
-						segmentosProceso);
+				metadataLibre = retornarMetadataTamanioLibre(segmento, tamanio + sizeof(struct HeapMetadata));
+
+				return (void *)(metadataLibre + sizeof(struct HeapMetadata));
 
 			}
 
 		}
 
+
+		int ultimaMetadata;
+		struct Pagina *ultimaPagina = malloc(sizeof(struct Pagina));
+		struct Frame *ultimoFrame = malloc(sizeof(struct Frame));
+		void *pos;
 		//Si sale del for sin retorno, tengo que buscar algun segmento de heap
 		//que se pueda extender -siguiente for-
 
@@ -256,15 +261,19 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 			struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 			unSegmento = list_get(segmentosProceso, j);
 
-			if (esExtendible(segmentosProceso, j)) { //Chequeo si este segmento puede extenderse
-				//busco un frame libre en mi bitmap de frames
-				//asigno la data y retorno la posicion donde COMIENZA LA DATA
+			if (esExtendible(segmentosProceso, j)) {
 
 				unSegmento = extenderSegmento(unSegmento, tamanio);
-				//Retorno pos primera metadata libre + 5
 
 				free(stringIdSocketCliente);
-				return NULL; //Momentaneo para que no rompa
+
+				//Retorno posicion ultima metadata + 5
+				ultimaPagina = list_get(unSegmento->tablaPaginas, list_size(unSegmento->tablaPaginas));
+				ultimoFrame = list_get(bitmapFrames, ultimaPagina->numeroFrame);
+				ultimaMetadata = (int)list_get(ultimoFrame->listaMetadata, list_size(ultimoFrame->listaMetadata));
+				pos = retornarPosicionMemoriaFrame(ultimaPagina->numeroFrame) + ultimaMetadata;
+
+				return pos;
 			}
 		}
 	}
@@ -351,11 +360,93 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	return nuevoSegmento;
 }
 
-struct Segmento *extenderSegmento(struct Segmento *unSegmento, uint32_t tamanio) {
-	//Creacion paginas
-	//ultima metadata?
+struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 
-	return NULL;
+	//busco ultima metadata (que tiene que estar libre) y chequeo si hay que extender
+	//o si alcanza, en to do caso se creara la nueva metadata que separe
+
+	t_list *paginas = segmento->tablaPaginas;
+	struct Pagina *ultimaPagina = malloc(sizeof(struct Pagina));
+	ultimaPagina = list_get(paginas, list_size(paginas) - 1);
+	struct Frame *frame = list_get(bitmapFrames, ultimaPagina->numeroFrame); //y si la pag no esta en mm ppal?
+
+	int ultimaMetadata = (int)list_get(frame->listaMetadata, list_size(frame->listaMetadata));
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+	memcpy(metadata, retornarPosicionMemoriaFrame(ultimaPagina->numeroFrame) + ultimaMetadata, sizeof(struct HeapMetadata));
+
+	int paginasNecesarias;
+	int bytesAAgregar;
+
+	struct HeapMetadata *nuevaUltimaMetadata = malloc(sizeof(struct HeapMetadata));
+	nuevaUltimaMetadata->isFree = true;
+	nuevaUltimaMetadata->size = tamanio;
+
+	//Modifico la ultima metadata con el nuevo size que se esta pidiendo
+	memcpy(retornarPosicionMemoriaFrame(ultimaPagina->numeroFrame) + ultimaMetadata, nuevaUltimaMetadata, sizeof(struct HeapMetadata));
+
+	bytesAAgregar = tamanio + sizeof(struct HeapMetadata) - metadata->size;
+	paginasNecesarias = (int)(ceil((double)bytesAAgregar/(double)tam_pagina));
+
+	while(paginasNecesarias > 0){
+
+		if(bytesAAgregar >= tam_pagina){
+
+			segmento = asignarNuevaPagina(segmento, tam_pagina);
+			bytesAAgregar = bytesAAgregar - tam_pagina;
+
+		} else{
+
+			//asignar ultima pagina ya me crea la ultima metadata necesaria
+			segmento = asignarUltimaPaginaSegmento(segmento, bytesAAgregar);
+			bytesAAgregar = 0;
+
+		}
+
+		paginasNecesarias--;
+
+	}
+
+	free(ultimaPagina);
+	free(frame);
+	free(nuevaUltimaMetadata);
+	free(nuevaUltimaMetadata);
+
+	return segmento;
+}
+
+int retornarMetadataTamanioLibre(struct Segmento *segmento, uint32_t tamanio){
+
+	t_list *paginas = segmento->tablaPaginas;
+	t_list *metadatas;
+	struct Pagina *pagina;
+	struct Frame *frame;
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+	int desplazamiento;
+	void *pos;
+
+	for(int i = 0; i < list_size(paginas); i++){
+		pagina = list_get(paginas, i);
+		frame = list_get(bitmapFrames, pagina->numeroFrame);
+		metadatas = frame->listaMetadata;
+
+		for(int j = 0; j < list_size(metadatas); j++){
+
+			desplazamiento = (int)list_get(metadatas, j);
+			memcpy(metadata, retornarPosicionMemoriaFrame(pagina->numeroFrame) + desplazamiento, sizeof(struct HeapMetadata));
+
+			if(metadata->isFree == true && metadata->size >= tamanio){
+				pos = retornarPosicionMemoriaFrame(pagina->numeroFrame) + desplazamiento + sizeof(struct HeapMetadata);
+
+				return (int)pos;
+			}
+
+		}
+
+	}
+
+	free(metadata);
+
+	return -1; //nunca llega, porque antes de llamar a esta funcion, chequee que exista metadata libre
 }
 
 /*Le asigna la primera pagina que va a contener la metadata al segmento*/
@@ -596,7 +687,7 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_
 
 }
 
-/*Un segmento es extendible si no tiene otro segmento a continuacion*/
+/*Un segmento es extendible si no tiene otro segmento a continuacion y si es un segmento comun*/
 bool esExtendible(t_list *segmentosProceso, int unIndice) {
 	//Momentaneamente, es extendible si es el ultimo de la lista de segmentos
 	int indiceUltimoSegmento = list_size(segmentosProceso) - 1;
@@ -607,7 +698,7 @@ bool esExtendible(t_list *segmentosProceso, int unIndice) {
 	struct Segmento *segmento = malloc(sizeof(struct Segmento));
 	segmento = list_get(segmentosProceso, unIndice);
 
-	if (ultimoSegmento->id == segmento->id) {
+	if (ultimoSegmento->id == segmento->id && segmento->esComun == true) {
 		return true;
 	} else {
 		return false;
