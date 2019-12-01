@@ -15,5 +15,8 @@ int o_rmdir2(char*);
 int o_write(char*, int, int, char*);
 ptrGBloque buscarPadre(char*);
 void eliminarRecursivamente(int);
+int o_truncate(char*, int);
+int o_rename(char* , char* );
+
 
 #endif /* OPERACIONES_H_ */

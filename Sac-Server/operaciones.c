@@ -975,3 +975,78 @@ int o_write(char* path, int size, int offset, char* buf){
 	fclose(f);
 */
 }
+
+int o_truncate(char* path, int new_size){
+
+	//	log_info(logger, "Truncate: Path: %s - New size: %d", path, new_size);
+	if (new_size < 0) return -1; /* New File Size negativo */
+	int nodo_padre = determinar_nodo(path);
+	if (nodo_padre == -1) return -1;
+	struct sac_file_t *node;
+	int res = 0;
+
+	// Toma un lock de escritura.
+	//		log_lock_trace(logger, "Truncate: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
+	pthread_rwlock_wrlock(&rwlock);
+	//		log_lock_trace(logger, "Truncate: Recibe lock escritura.");
+	// Abre conexiones y levanta la tabla de nodos en memoria.
+	node = node_table_start;
+
+	node = &(node[nodo_padre-1]);
+
+	// Si el nuevo size es mayor, se deben reservar los nodos correspondientes:
+	if (new_size > node->tamanio_archivo){
+		res = get_new_space(node, (new_size - node->tamanio_archivo));
+		if (res != 0) goto finalizar;
+
+	} else {	// Si no, se deben borrar los nodos hasta ese punto.
+		int pointer_to_delete;
+		int data_to_delete;
+
+		set_position(&pointer_to_delete, &data_to_delete, 0, new_size);
+
+		res = delete_nodes_upto(node, pointer_to_delete, data_to_delete);
+		if(res != 0) goto finalizar;
+	}
+
+	node->tamanio_archivo = new_size; // Aca le dice su nuevo size.
+
+	finalizar:
+	// Cierra, ponele la alarma y se va para su casa. Mejor dicho, retorna 0 :D
+	// Devuelve el lock de escritura.
+	pthread_rwlock_wrlock(&rwlock);
+	//log_lock_trace(logger, "Truncate: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
+
+	return res;
+}
+
+
+int o_rename(char* oldpath, char* newpath){
+	if (determinar_nodo(oldpath) == -1) return -1;
+	//log_info(logger, "Rename: Moviendo archivo. From: %s - To: %s", oldpath, newpath);
+
+	char* newroute = malloc(strlen(newpath) + 1);
+	char* newname = malloc(GFILENAMELENGTH + 1);
+	char* tofree1 = newroute;
+	char* tofree2 = newname;
+	split_path(newpath, &newroute, &newname);
+	int old_node = determinar_nodo(oldpath), new_parent_node = determinar_nodo(newroute);
+
+	// Toma un lock de escritura.
+	//		log_lock_trace(logger, "Rename: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
+	pthread_rwlock_wrlock(&rwlock);
+	//		log_lock_trace(logger, "Rename: Recibe lock escritura.");
+
+	// Modifica los valores del file. Como el determinar_nodo devuelve el numero de nodo +1, lo reubica.
+	strcpy((char *) &(node_table_start[old_node - 1].nombre_archivo[0]), newname);
+	node_table_start[old_node -1].bloque_padre = new_parent_node;
+
+	// Devuelve el lock de escritura.
+	pthread_rwlock_unlock(&rwlock);
+	//		log_lock_trace(logger, "Rename: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
+
+	free(tofree1);
+	free(tofree2);
+
+	return 0;
+}

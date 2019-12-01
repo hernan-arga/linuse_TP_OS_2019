@@ -169,6 +169,14 @@ int iniciar_conexion(int ip, int puerto){
 						// Operacion WRITE
 						tomarPeticionWrite(cliente);
 						break;
+					case 10:
+						// Operacion TRUNCATE
+						tomarPeticionTruncate(cliente);
+						break;
+					case 11:
+						// Operacion RENAME
+						tomarPeticionRename(cliente);
+						break;
 					default:
 						;
 					}
@@ -472,7 +480,6 @@ void tomarPeticionWrite(int cliente){
 	read(cliente, buf, *tamanioBuf);
 	char *bufC = string_substring_until(buf, *tamanioBuf); //TODO revisar esto,
 
-
 	int bytes = o_write(pathCortado, *size, *offset, bufC);
 
 	//Serializo bytes
@@ -485,3 +492,73 @@ void tomarPeticionWrite(int cliente){
 	send(cliente, buffer, 2*sizeof(int), 0);
 
 }
+
+
+void tomarPeticionTruncate(int cliente){
+
+	//Deserializo path y offset
+	int *tamanioPath = malloc(sizeof(int));
+	read(cliente, tamanioPath, sizeof(int));
+	char *path = malloc(*tamanioPath);
+	read(cliente, path, *tamanioPath);
+	char *pathCortado = string_substring_until(path, *tamanioPath);
+
+	int* tamanioOffset = malloc(sizeof(int));
+	read(cliente, tamanioOffset, sizeof(int));
+	int* offset = malloc(*tamanioOffset);
+	read(cliente, offset, *tamanioOffset);
+
+	int respuesta = o_truncate(pathCortado, *offset);
+
+	char* buffer = malloc(2 * sizeof(int));
+	//logueo respuesta unlink
+	if (respuesta == 0){
+		loguearInfo(" + Se hizo un truncate en SacServer\n");
+	}
+	else {
+		loguearError(" - NO se pudo hacer el truncate en SacServer\n");
+	}
+
+	int tamanioOk = sizeof(int);
+	memcpy(buffer, &tamanioOk, sizeof(int));
+	memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
+
+	send(cliente, buffer, 2* sizeof(int), 0);
+}
+
+
+
+void tomarPeticionRename(int cliente){
+
+	//Deserializo path viejo y path nuevo
+	int *tamanioPath1 = malloc(sizeof(int));
+	read(cliente, tamanioPath1, sizeof(int));
+	char *path1 = malloc(*tamanioPath1);
+	read(cliente, path1, *tamanioPath1);
+	char *pathCortado1 = string_substring_until(path1, *tamanioPath1);
+
+	int *tamanioPath2 = malloc(sizeof(int));
+	read(cliente, tamanioPath2, sizeof(int));
+	char *path2 = malloc(*tamanioPath2);
+	read(cliente, path2, *tamanioPath2);
+	char *pathCortado2 = string_substring_until(path2, *tamanioPath2);
+
+	int respuesta = o_rename(pathCortado1, pathCortado2);
+
+	char* buffer = malloc(2 * sizeof(int));
+	//logueo respuesta unlink
+	if (respuesta == 0){
+		loguearInfo(" + Se hizo un rename en SacServer\n");
+	}
+	else {
+		loguearError(" - NO se pudo hacer el rename en SacServer\n");
+	}
+
+	int tamanioOk = sizeof(int);
+	memcpy(buffer, &tamanioOk, sizeof(int));
+	memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
+
+	send(cliente, buffer, 2* sizeof(int), 0);
+}
+
+

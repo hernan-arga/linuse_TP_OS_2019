@@ -26,6 +26,9 @@ void tomarPeticionMkdir(int);
 void tomarPeticionUnlink(int);
 void tomarPeticionRmdir(int);
 void tomarPeticionWrite(int);
+void tomarPeticionTruncate(int);
+void tomarPeticionRename(int);
+
 
 t_log* logger;
 pthread_t hiloLevantarConexion;

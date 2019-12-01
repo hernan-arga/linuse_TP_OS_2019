@@ -433,9 +433,69 @@ static int hello_getxattr(const char *path, const char *name, char *value, size_
 }
 
 
-static int hello_truncate(const char * path, off_t offset){
+static int hello_truncate(const char *path, off_t offset){
+	//Serializo peticion, path y offset
+	char* buffer = malloc(5 * sizeof(int) + strlen(path));
 
-	return 0;
+	int peticion = 10;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+	int tamanioPath = strlen(path);
+	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
+
+	int offsetInt = (int) offset;
+	int tamanioOffset = sizeof(int);
+	memcpy(buffer + 3 * sizeof(int) + strlen(path), &tamanioOffset, sizeof(int));
+	memcpy(buffer + 4 * sizeof(int) + strlen(path), &offsetInt, sizeof(int));
+
+	send(sacServer, buffer, 5 * sizeof(int) + strlen(path), 0);
+
+	// Deserializo respuesta
+	int* tamanioRespuesta = malloc(sizeof(int));
+	read(sacServer, tamanioRespuesta, sizeof(int));
+	int* resp = malloc(*tamanioRespuesta);
+	read(sacServer, resp, *tamanioRespuesta);
+	if (*resp == 0) {
+		return 0;
+	} else {
+		return errno;
+	}
+}
+
+
+
+int hello_rename (const char* oldpath, const char* newpath){
+
+	char* buffer = malloc(4 * sizeof(int) + strlen(oldpath) + strlen(newpath));
+
+	int peticion = 11;
+	int tamanioPeticion = sizeof(int);
+	memcpy(buffer, &tamanioPeticion, sizeof(int));
+	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
+
+	int tamanioPath1 = strlen(oldpath);
+	memcpy(buffer + 2 * sizeof(int), &tamanioPath1, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), oldpath, strlen(oldpath));
+
+	int tamanioPath2 = strlen(newpath);
+	memcpy(buffer + 3 * sizeof(int) + strlen(oldpath), &tamanioPath2, sizeof(int));
+	memcpy(buffer + 4 * sizeof(int) + strlen(oldpath), newpath, strlen(newpath));
+
+	send(sacServer, buffer, 4 * sizeof(int) + strlen(oldpath) + strlen(newpath), 0);
+
+	// Deserializo respuesta
+	int* tamanioRespuesta = malloc(sizeof(int));
+	read(sacServer, tamanioRespuesta, sizeof(int));
+	int* resp = malloc(*tamanioRespuesta);
+	read(sacServer, resp, *tamanioRespuesta);
+	if (*resp == 0) {
+		return 0;
+	} else {
+		return errno;
+	}
 }
 
 
@@ -451,8 +511,8 @@ static struct fuse_operations hello_oper = {
 		.write = hello_write,
 		.getxattr = hello_getxattr,
 		// chmod, chown, truncate y utime para escribir archivos
-		.truncate = hello_truncate
-
+		.truncate = hello_truncate,
+		.rename = hello_rename
 		/*
 		.flush = remote_flush,
 		.release = remote_release,

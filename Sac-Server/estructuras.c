@@ -413,3 +413,46 @@ int delete_nodes_upto (struct sac_file_t *file_data, int pointer_upto, int data_
 	return 0;
 }
 
+
+
+/*
+ *	@DESC
+ *		Obtiene espacio nuevo para un archivo, agregandole los nodos que sean necesarios.
+ *		Actualiza el FileSize al tamanio correspondiente.
+ *
+ *	@PARAM
+ *		file_data - El puntero al nodo donde se encuentra el archivo.
+ *		size - El tamanio que se le debe agregar.
+ *
+ *	@RET
+ *		0 - Se consiguio el espacio requerido
+ *		negativo - Error.
+ */
+int get_new_space (struct sac_file_t *file_data, int size){
+	size_t file_size = file_data->tamanio_archivo, space_in_block = file_size % BLOCKSIZE;
+	int new_node;
+	space_in_block = BLOCKSIZE - space_in_block; // Calcula cuanto tamanio le queda para ocupar en el bloque
+
+	// Si no hay suficiente espacio, retorna error.
+	if ((bitmap_free_blocks*BLOCKSIZE) < (size - space_in_block)) return -ENOSPC;
+
+	// Actualiza el file size al tamanio que le corresponde:
+	if (space_in_block >= size){
+		file_data->tamanio_archivo += size;
+		return 0;
+	} else {
+		file_data->tamanio_archivo += space_in_block;
+	}
+
+	while ( (space_in_block <= size) ){ // Siempre que lo que haya que escribir sea mas grande que el espacio que quedaba en el bloque
+		new_node = get_node();
+		add_node(file_data, new_node);
+		size -= BLOCKSIZE;
+		file_data->tamanio_archivo += BLOCKSIZE;
+	}
+
+	file_data->tamanio_archivo += size;
+
+	return 0;
+}
+
