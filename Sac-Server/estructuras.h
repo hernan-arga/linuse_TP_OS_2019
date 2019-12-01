@@ -125,6 +125,7 @@ int lastchar(const char*, char);
 int set_position (int *, int *, size_t, off_t);
 int delete_nodes_upto (struct sac_file_t *, int, int);
 int get_new_space (struct sac_file_t *file_data, int size);
+int obtain_free_blocks(void);
 
 t_bitarray* bitArray;
 char *mmapDeBitmap;

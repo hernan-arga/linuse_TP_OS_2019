@@ -456,3 +456,21 @@ int get_new_space (struct sac_file_t *file_data, int size){
 	return 0;
 }
 
+int obtain_free_blocks(void){
+	t_bitarray *bitarray;
+	int free_nodes=0, i;
+	int bitmap_size_in_bits = BITMAP_SIZE_BITS;
+
+	bitarray = bitarray_create_with_mode((char *)bitmap_start, BITMAP_SIZE_B, LSB_FIRST);
+
+	for (i = 0; i < bitmap_size_in_bits; i++){
+		if (bitarray_test_bit(bitarray, i) == 0) free_nodes++;
+	}
+
+	bitarray_destroy(bitarray);
+
+	bitmap_free_blocks = free_nodes;
+
+	return free_nodes;
+}
+

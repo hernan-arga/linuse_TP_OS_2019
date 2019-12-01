@@ -569,3 +569,29 @@
 
 [INFO] 00:16:00:214 SacServer/(13600:13600):  + Se hizo un rmdir en SacServer
 
+[INFO] 01:52:29:356 SacServer/(6872:6872):  + Se hizo un create en SacServer
+
+[ERROR] 01:53:17:51 SacServer/(6872:6872): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 01:53:21:39 SacServer/(6872:6872):  + Se hizo un create en SacServer
+
+[INFO] 01:54:48:894 SacServer/(6872:6872):  + Se hizo un create en SacServer
+
+[INFO] 01:54:51:58 SacServer/(6872:6872):  + Se hizo un create en SacServer
+
+[INFO] 01:54:52:74 SacServer/(6872:6872):  + Se hizo un create en SacServer
+
+[INFO] 01:56:36:466 SacServer/(6872:6872):  + Se hizo un create en SacServer
+
+[ERROR] 02:01:42:767 SacServer/(7374:7374): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 02:01:48:715 SacServer/(7374:7374):  + Se hizo un create en SacServer
+
+[ERROR] 02:05:22:736 SacServer/(7374:7374):  - NO se pudo hacer el WRITE en SacServer porque no hay espacio en el disco
+
+[INFO] 02:13:55:358 SacServer/(8158:8158):  + Se hizo un create en SacServer
+
+[ERROR] 02:14:12:408 SacServer/(8158:8158): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 02:14:12:410 SacServer/(8158:8158):  + Se hizo un create en SacServer
+
+[ERROR] 02:17:58:93 SacServer/(8590:8590): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 02:17:58:95 SacServer/(8590:8590):  + Se hizo un truncate en SacServer
+
