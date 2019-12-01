@@ -124,7 +124,7 @@ struct Segmento *unificarHeaders2(int idSegmento, int idSocketCliente);
 int clockModificado();
 void incrementarPunteroClockModificado();
 void inicializarBitmapSwap();
-uint32_t musemap(char *path, size_t length/*, int flags*/);
+uint32_t musemap(char *path, size_t length, int flags, int idSocketCliente);
 int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCliente);
 void cargarDatosEnFrame(int indiceFrame, char *datos);
 int llevarASwapUnaPagina(int indicePagina, int indiceSegmento, int idSocketCliente);

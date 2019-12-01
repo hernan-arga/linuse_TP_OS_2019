@@ -285,8 +285,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	} else { //Obtengo el tamaño del ultimo segmento
 
 		int idUltimoSegmento = list_size(listaSegmentosProceso) - 1; //Id ultimo segmento
-		nuevoSegmento->baseLogica = obtenerTamanioSegmento(idUltimoSegmento,
-				idSocketCliente) + 1;
+		nuevoSegmento->baseLogica = obtenerTamanioSegmento(idUltimoSegmento, idSocketCliente) + 1;
 
 	}
 
@@ -611,23 +610,26 @@ void *posicionMemoriaUnSegmento(struct Segmento *unSegmento) {
 void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio) {
 	/* Siempre tengo que buscar espacio libre para el tamaño que necesito
 	 * mas el tamaño que ocupa la nueva metadata (5 bytes)*/
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
+	struct Segmento *segmento = malloc(sizeof(struct Segmento));
+	struct Pagina *pagina = malloc(sizeof(struct Pagina));
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+	void *pos;
+	int numeroPagina;
+
 	int segmentosARecorrer = list_size(segmentosProceso);
 
 	for (int i = 0; i < segmentosARecorrer; i++) { //Recorro todos los segmentos del proceso
 
-		struct Segmento *segmento = malloc(sizeof(struct Segmento));
 		segmento = list_get(segmentosProceso, i);
 
 		t_list *paginas = segmento->tablaPaginas;
 		int paginasARecorrer = list_size(paginas);
 
-		struct Pagina *pagina = malloc(sizeof(struct Pagina));
 		int frame = pagina->numeroFrame;
-		void *pos = retornarPosicionMemoriaFrame(frame);
-		struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
-		int numeroPagina = 0;
+		pos = retornarPosicionMemoriaFrame(frame);
+		numeroPagina = 0;
 
 		//Antes de entrar a este while, estoy en la pagina 0, se que tengo metadata que leer
 		memcpy(metadata, pos, sizeof(struct HeapMetadata));
@@ -1039,8 +1041,8 @@ int museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 	struct Pagina *unaPagina = malloc(sizeof(struct Pagina)); //PRIMERA Pagina, podrian ser mas
 
-	//int idSocketCliente /*= obtenerlo (?)*/;  //El socketCliente lo recibimos directo desde el utils.
-	t_list *listaSegmentos = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos,stringIdSocketCliente);
 
 	//Obtencion segmento, pagina, frame, desplazamiento
 	int idSegmento;
@@ -1163,7 +1165,8 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 	struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
 
-	t_list *listaSegmentos = dictionary_get(tablasSegmentos, (char*) idSocketCliente);
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos,stringIdSocketCliente);
 
 	//Obtencion segmento, pagina, frame, desplazamiento
 	int idSegmento;
@@ -1216,8 +1219,8 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 int musefree(int idSocketCliente, uint32_t dir) {
 
 	//busco los segmentos del proceso que me pide el free
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 
 	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 
@@ -1386,11 +1389,9 @@ void incrementarPunteroClockModificado() {
  * @note: Si `length` sobrepasa el tamaño del archivo, toda extensión deberá estar llena de "\0".
  * @note: muse_free no libera la memoria mappeada. @see muse_unmap
  */
-uint32_t musemap(char *path, size_t length/*, int flags*/) {
-	//Obtener id del proceso que me esta llamando
-	int idSocketCliente = 1;
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+uint32_t musemap(char *path, size_t length, int flags, int idSocketCliente) {
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 
 	struct Segmento *segmentoMappeado = malloc(sizeof(struct Segmento));
 
@@ -1422,7 +1423,7 @@ uint32_t musemap(char *path, size_t length/*, int flags*/) {
 	//Agrego el nuevo segmentoMap a la lista de segmentos del proceso
 	list_add(segmentosProceso, segmentoMappeado);
 	//Modifico el diccionario agregando el nuevo segmento
-	dictionary_put(tablasSegmentos, (char*) idSocketCliente, segmentosProceso);
+	dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
 
 	return 0;
 }
@@ -1433,7 +1434,10 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 	//Obtengo pagina swapeada
 	struct Pagina *paginaSwapeada = malloc(sizeof(struct Pagina));
 	struct Segmento *segmentoQueContienePagina = malloc(sizeof(struct Segmento));
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos,(char*)idSocketCliente);
+
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
+
 	char *datosEnSwap = malloc(sizeof(struct Pagina));
 
 	segmentoQueContienePagina = list_get(segmentosProceso, indiceSegmento);
@@ -1481,7 +1485,7 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 	list_replace(segmentoQueContienePagina->tablaPaginas, indicePagina,
 			paginaSwapeada);
 	list_replace(segmentosProceso, indiceSegmento, segmentoQueContienePagina);
-	dictionary_put(tablasSegmentos, (char*) idSocketCliente, segmentosProceso);
+	dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
 
 	return frameReemplazo;
 }
@@ -1502,7 +1506,10 @@ void cargarDatosEnFrame(int indiceFrame, char *datos) {
 int llevarASwapUnaPagina(int indicePagina, int indiceSegmento, int idSocketCliente) {
 	struct Pagina *paginaASwappear = malloc(sizeof(struct Pagina));
 	struct Segmento *segmentoQueContienePagina = malloc(sizeof(struct Segmento));
-	t_list *segmentosProceso = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
+
 	char *datosASwappear = malloc(sizeof(struct Pagina));
 
 	segmentoQueContienePagina = list_get(segmentosProceso, indiceSegmento);
@@ -1538,7 +1545,7 @@ int llevarASwapUnaPagina(int indicePagina, int indiceSegmento, int idSocketClien
 	list_replace(segmentoQueContienePagina->tablaPaginas, indicePagina,
 			paginaASwappear);
 	list_replace(segmentosProceso, indiceSegmento, segmentoQueContienePagina);
-	dictionary_put(tablasSegmentos, (char*) idSocketCliente, segmentosProceso);
+	dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
 
 	return indiceSwap;
 }
@@ -1566,8 +1573,8 @@ int buscarIndiceSwapLibre() {
  */
 int musesync(uint32_t addr, size_t len, int idSocketCliente) {
 
-	t_list *listaSegmentos = dictionary_get(tablasSegmentos,
-			(char*) idSocketCliente);
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 
 	//Obtencion segmento, pagina, frame, desplazamiento
 	int idSegmento;
@@ -1715,7 +1722,8 @@ void *obtenerDatosActualizados(int frame, int desplazamiento, size_t len,
  * @return Si pasa un error, retorna -1. Si la operación se realizó correctamente, retorna 0.
  */
 int muse_unmap(uint32_t dir, int idSocketCliente) {
-	t_list *listaSegmentos = dictionary_get(tablasSegmentos, (char*)idSocketCliente);
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 
 	//Obtencion segmento
 	int idSegmento;
