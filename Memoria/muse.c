@@ -1242,8 +1242,7 @@ int idSegmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion) {
 	for (int i = 0; i < segmentosARecorrer; i++) {
 		unSegmento = list_get(listaSegmentos, i);
 
-		if (((int) direccion) > unSegmento->baseLogica
-				&& ((int) direccion) < unSegmento->tamanio) { //Chequear si en base logica tengo en cuenta heap o no
+		if (((int)direccion - unSegmento->baseLogica) < unSegmento->tamanio) {
 			return unSegmento->id;
 		}
 	}
@@ -1366,16 +1365,14 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	return 1;
 }
 
-struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos,
-		void *direccion) {
-	int segmentosARecorrer = list_size(listaSegmentos);
-	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
+struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion) {
 
-	for (int i = 0; i < segmentosARecorrer; i++) {
+	struct Segmento *unSegmento;
+
+	for (int i = 0; i < list_size(listaSegmentos); i++) {
 		unSegmento = list_get(listaSegmentos, i);
 
-		if (((int) direccion) > unSegmento->baseLogica
-				&& ((int) direccion) < unSegmento->tamanio) { //Chequear si en base logica tengo en cuenta heap o no
+		if (((int) direccion - unSegmento->baseLogica) < unSegmento->tamanio) {
 			return unSegmento;
 		}
 	}
