@@ -331,7 +331,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 			if (paginasNecesarias == (int) (ceil(paginas))) { //Si es la primera pagina
 
 				nuevoSegmento = asignarPrimeraPaginaSegmento(nuevoSegmento, tamanio);
-				tamanioAlocado -= ( tam_pagina - sizeof(struct HeapMetadata) );
+				tamanioAlocado -= ( pconfig->tamanio_pag - sizeof(struct HeapMetadata) );
 
 			} else {
 
@@ -343,7 +343,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 		} else {
 
 			nuevoSegmento = asignarNuevaPagina(nuevoSegmento, tam_pagina);
-			tamanioAlocado = tamanioAlocado - tam_pagina;
+			tamanioAlocado = tamanioAlocado - pconfig->tamanio_pag;
 
 		}
 
@@ -463,10 +463,9 @@ struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento, int tam
 	//Pone la metadata en el frame correspondiente
 	memcpy(pos, metadata, sizeof(struct HeapMetadata));
 
-	t_list *paginas = segmento->tablaPaginas;
-	list_add(paginas, primeraPagina);
+	list_add(segmento->tablaPaginas, primeraPagina);
 
-	//segmento->tablaPaginas = paginas;
+	segmento->tamanio += pconfig->tamanio_pag;
 
 	return segmento;
 }
