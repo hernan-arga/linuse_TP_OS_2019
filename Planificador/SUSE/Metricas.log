@@ -1,47 +1,237 @@
-[INFO] 18:00:22:352 SUSE/(15594:15598): Valor actual del semaforo afinado: 0
-[INFO] 18:00:22:354 SUSE/(15594:15598): Valor actual del semaforo solo_hiper_mega_piola: 1
-[INFO] 18:00:22:354 SUSE/(15594:15598): Grado actual de multiprogramacion: 15
-[INFO] 18:01:32:355 SUSE/(15594:15598): Tiempo de ejecucion para el hilo 0 del programa 5: 68940
-[INFO] 18:01:32:359 SUSE/(15594:15598): Tiempo de ejecucion para el hilo 1 del programa 5: 68938
-[INFO] 18:01:32:359 SUSE/(15594:15598): Tiempo de espera para el hilo 0 del programa 5: 0
-[INFO] 18:01:32:360 SUSE/(15594:15598): Tiempo de espera para el hilo 1 del programa 5: 4
-[INFO] 18:01:32:360 SUSE/(15594:15598): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
-[INFO] 18:01:32:360 SUSE/(15594:15598): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 49 %
-[INFO] 18:01:32:360 SUSE/(15594:15598): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
-[INFO] 18:01:32:361 SUSE/(15594:15598): Valor actual del semaforo afinado: 10
-[INFO] 18:01:32:361 SUSE/(15594:15598): Valor actual del semaforo solo_hiper_mega_piola: 0
-[INFO] 18:01:32:361 SUSE/(15594:15598): Grado actual de multiprogramacion: 15
-[INFO] 18:01:35:25 SUSE/(15594:15596): Tiempo de ejecucion para el hilo 0 del programa 5: 71609
-[INFO] 18:01:35:25 SUSE/(15594:15596): Tiempo de ejecucion para el hilo 1 del programa 5: 71605
-[INFO] 18:01:35:26 SUSE/(15594:15596): Tiempo de espera para el hilo 0 del programa 5: 0
-[INFO] 18:01:35:26 SUSE/(15594:15596): Tiempo de espera para el hilo 1 del programa 5: 4
-[INFO] 18:01:35:26 SUSE/(15594:15596): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
-[INFO] 18:01:35:26 SUSE/(15594:15596): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 49 %
-[INFO] 18:01:35:26 SUSE/(15594:15596): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
-[INFO] 18:01:35:27 SUSE/(15594:15596): Valor actual del semaforo afinado: 10
-[INFO] 18:01:35:27 SUSE/(15594:15596): Valor actual del semaforo solo_hiper_mega_piola: 1
-[INFO] 18:01:35:27 SUSE/(15594:15596): Grado actual de multiprogramacion: 15
-[INFO] 18:01:35:73 SUSE/(15594:15596): Tiempo de ejecucion para el hilo 0 del programa 5: 71658
-[INFO] 18:01:35:74 SUSE/(15594:15596): Tiempo de espera para el hilo 0 del programa 5: 37
-[INFO] 18:01:35:74 SUSE/(15594:15596): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 100 %
-[INFO] 18:01:35:74 SUSE/(15594:15596): Programa 5: 0 en new, 0 en ready, 0 en blocked, 1 en exec
-[INFO] 18:01:35:75 SUSE/(15594:15596): Valor actual del semaforo afinado: 10
-[INFO] 18:01:35:75 SUSE/(15594:15596): Valor actual del semaforo solo_hiper_mega_piola: 1
-[INFO] 18:01:35:75 SUSE/(15594:15596): Grado actual de multiprogramacion: 15
-[INFO] 20:47:17:249 SUSE/(20484:20494): Programa 5: 0 en new, 0 en ready, 0 en blocked, 0 en exec
-[INFO] 20:47:17:249 SUSE/(20484:20494): Valor actual del semaforo afinado: 0
-[INFO] 20:47:17:249 SUSE/(20484:20494): Valor actual del semaforo solo_hiper_mega_piola: 1
-[INFO] 20:47:17:249 SUSE/(20484:20494): Grado actual de multiprogramacion: 15
-[INFO] 20:48:32:679 SUSE/(20484:20494): Tiempo de ejecucion para el hilo 1 del programa 5: 40130
-[INFO] 20:48:32:680 SUSE/(20484:20494): Tiempo de ejecucion para el hilo 2 del programa 5: 11492
-[INFO] 20:48:32:680 SUSE/(20484:20494): Tiempo de ejecucion para el hilo 0 del programa 5: 74146
-[INFO] 20:48:32:680 SUSE/(20484:20494): Tiempo de espera para el hilo 1 del programa 5: 0
-[INFO] 20:48:32:680 SUSE/(20484:20494): Tiempo de espera para el hilo 2 del programa 5: 0
-[INFO] 20:48:32:680 SUSE/(20484:20494): Tiempo de espera para el hilo 0 del programa 5: 0
-[INFO] 20:48:32:680 SUSE/(20484:20494): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 31 %
-[INFO] 20:48:32:680 SUSE/(20484:20494): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 9 %
-[INFO] 20:48:32:681 SUSE/(20484:20494): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 58 %
-[INFO] 20:48:32:681 SUSE/(20484:20494): Programa 5: 0 en new, 2 en ready, 0 en blocked, 1 en exec
-[INFO] 20:48:32:681 SUSE/(20484:20494): Valor actual del semaforo afinado: 0
-[INFO] 20:48:32:681 SUSE/(20484:20494): Valor actual del semaforo solo_hiper_mega_piola: 1
-[INFO] 20:48:32:681 SUSE/(20484:20494): Grado actual de multiprogramacion: 15
+[INFO] 14:15:17:115 SUSE/(12499:12504): Tiempo de ejecucion para el hilo 0 del programa 5: 67916
+[INFO] 14:15:17:148 SUSE/(12499:12504): Tiempo de ejecucion para el hilo 1 del programa 5: 67876
+[INFO] 14:15:17:190 SUSE/(12499:12504): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 14:15:17:196 SUSE/(12499:12504): Tiempo de espera para el hilo 1 del programa 5: 141
+[INFO] 14:15:17:216 SUSE/(12499:12504): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 14:15:17:236 SUSE/(12499:12504): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 49 %
+[INFO] 14:15:17:256 SUSE/(12499:12504): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 14:15:17:262 SUSE/(12499:12504): Valor actual del semaforo afinado: 10
+[INFO] 14:15:17:263 SUSE/(12499:12504): Valor actual del semaforo solo_hiper_mega_piola: 0
+[INFO] 14:15:17:264 SUSE/(12499:12504): Grado actual de multiprogramacion: 15
+[INFO] 14:15:22:807 SUSE/(12499:12502): Tiempo de ejecucion para el hilo 0 del programa 5: 73608
+[INFO] 14:15:22:810 SUSE/(12499:12502): Tiempo de ejecucion para el hilo 1 del programa 5: 73538
+[INFO] 14:15:22:815 SUSE/(12499:12502): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 14:15:22:821 SUSE/(12499:12502): Tiempo de espera para el hilo 1 del programa 5: 141
+[INFO] 14:15:22:822 SUSE/(12499:12502): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 14:15:22:823 SUSE/(12499:12502): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 49 %
+[INFO] 14:15:22:824 SUSE/(12499:12502): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 14:15:22:824 SUSE/(12499:12502): Valor actual del semaforo afinado: 10
+[INFO] 14:15:22:825 SUSE/(12499:12502): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:15:22:830 SUSE/(12499:12502): Grado actual de multiprogramacion: 15
+[INFO] 14:15:22:902 SUSE/(12499:12502): Tiempo de ejecucion para el hilo 0 del programa 5: 73705
+[INFO] 14:15:22:903 SUSE/(12499:12502): Tiempo de espera para el hilo 0 del programa 5: 4
+[INFO] 14:15:22:904 SUSE/(12499:12502): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 100 %
+[INFO] 14:15:22:905 SUSE/(12499:12502): Programa 5: 0 en new, 0 en ready, 0 en blocked, 1 en exec
+[INFO] 14:15:22:905 SUSE/(12499:12502): Valor actual del semaforo afinado: 10
+[INFO] 14:15:22:905 SUSE/(12499:12502): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:15:22:906 SUSE/(12499:12502): Grado actual de multiprogramacion: 15
+[INFO] 14:22:33:756 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 0 del programa 5: 68875
+[INFO] 14:22:33:870 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 1 del programa 5: 68927
+[INFO] 14:22:33:891 SUSE/(12771:12774): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 14:22:33:927 SUSE/(12771:12774): Tiempo de espera para el hilo 1 del programa 5: 110
+[INFO] 14:22:33:975 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 49 %
+[INFO] 14:22:33:993 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: -2147483648 %
+[INFO] 14:22:34:5 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: -2147483648 %
+[INFO] 14:22:34:27 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 50 %
+[INFO] 14:22:34:157 SUSE/(12771:12774): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 14:22:34:172 SUSE/(12771:12774): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 14:22:34:188 SUSE/(12771:12774): Valor actual del semaforo afinado: 10
+[INFO] 14:22:34:188 SUSE/(12771:12774): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:22:34:211 SUSE/(12771:12774): Grado actual de multiprogramacion: 15
+[INFO] 14:22:38:471 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 5: 73591
+[INFO] 14:22:38:497 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 7: 4563
+[INFO] 14:22:38:513 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 7: 4534
+[INFO] 14:22:38:514 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 7: 4535
+[INFO] 14:22:38:514 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 5: 73571
+[INFO] 14:22:38:515 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 2 del programa 7: 4522
+[INFO] 14:22:38:516 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 14:22:38:516 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 14:22:38:526 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 7: 2181
+[INFO] 14:22:38:526 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 7: 2181
+[INFO] 14:22:38:527 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 5: 110
+[INFO] 14:22:38:528 SUSE/(12771:12772): Tiempo de espera para el hilo 2 del programa 7: 2241
+[INFO] 14:22:38:528 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 14:22:38:534 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 25 %
+[INFO] 14:22:38:534 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 24 %
+[INFO] 14:22:38:535 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 24 %
+[INFO] 14:22:38:536 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 49 %
+[INFO] 14:22:38:536 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 14:22:38:542 SUSE/(12771:12772): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 14:22:38:542 SUSE/(12771:12772): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 14:22:38:543 SUSE/(12771:12772): Valor actual del semaforo afinado: 10
+[INFO] 14:22:38:543 SUSE/(12771:12772): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:22:38:544 SUSE/(12771:12772): Grado actual de multiprogramacion: 15
+[INFO] 14:22:38:685 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 7: 4751
+[INFO] 14:22:38:693 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 2 del programa 7: 4700
+[INFO] 14:22:38:703 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 2 del programa 7: 4710
+[INFO] 14:22:38:704 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 5: 73824
+[INFO] 14:22:38:705 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 7: 4726
+[INFO] 14:22:38:705 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 14:22:38:706 SUSE/(12771:12772): Tiempo de espera para el hilo 2 del programa 7: 2241
+[INFO] 14:22:38:707 SUSE/(12771:12772): Tiempo de espera para el hilo 2 del programa 7: 2241
+[INFO] 14:22:38:707 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 5: 24
+[INFO] 14:22:38:708 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 7: 2440
+[INFO] 14:22:38:709 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 25 %
+[INFO] 14:22:38:716 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 14:22:38:716 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 14:22:38:721 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 100 %
+[INFO] 14:22:38:722 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 25 %
+[INFO] 14:22:38:741 SUSE/(12771:12772): Programa 5: 0 en new, 0 en ready, 0 en blocked, 1 en exec
+[INFO] 14:22:38:746 SUSE/(12771:12772): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 14:22:38:747 SUSE/(12771:12772): Valor actual del semaforo afinado: 10
+[INFO] 14:22:38:747 SUSE/(12771:12772): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:22:38:748 SUSE/(12771:12772): Grado actual de multiprogramacion: 15
+[INFO] 14:23:44:221 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 0 del programa 5: 46923
+[INFO] 14:23:44:222 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 0 del programa 7: 70288
+[INFO] 14:23:44:223 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 2 del programa 5: 46852
+[INFO] 14:23:44:224 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 1 del programa 7: 70245
+[INFO] 14:23:44:224 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 2 del programa 5: 46854
+[INFO] 14:23:44:230 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 1 del programa 7: 70246
+[INFO] 14:23:44:240 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 1 del programa 5: 46904
+[INFO] 14:23:44:246 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 2 del programa 7: 70252
+[INFO] 14:23:44:261 SUSE/(12771:12774): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 14:23:44:262 SUSE/(12771:12774): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 14:23:44:263 SUSE/(12771:12774): Tiempo de espera para el hilo 2 del programa 5: 23014
+[INFO] 14:23:44:263 SUSE/(12771:12774): Tiempo de espera para el hilo 1 del programa 7: 41660
+[INFO] 14:23:44:264 SUSE/(12771:12774): Tiempo de espera para el hilo 2 del programa 5: 23014
+[INFO] 14:23:44:264 SUSE/(12771:12774): Tiempo de espera para el hilo 1 del programa 7: 41660
+[INFO] 14:23:44:280 SUSE/(12771:12774): Tiempo de espera para el hilo 1 del programa 5: 23505
+[INFO] 14:23:44:281 SUSE/(12771:12774): Tiempo de espera para el hilo 2 del programa 7: 27770
+[INFO] 14:23:44:282 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 25 %
+[INFO] 14:23:44:283 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 25 %
+[INFO] 14:23:44:283 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 14:23:44:284 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 24 %
+[INFO] 14:23:44:284 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 14:23:44:296 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 24 %
+[INFO] 14:23:44:319 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 25 %
+[INFO] 14:23:44:320 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 24 %
+[INFO] 14:23:44:328 SUSE/(12771:12774): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 14:23:44:341 SUSE/(12771:12774): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 14:23:44:352 SUSE/(12771:12774): Valor actual del semaforo afinado: 10
+[INFO] 14:23:44:361 SUSE/(12771:12774): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:23:44:362 SUSE/(12771:12774): Grado actual de multiprogramacion: 15
+[INFO] 14:24:52:386 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 5: 115087
+[INFO] 14:24:52:393 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 7: 138460
+[INFO] 14:24:52:401 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 2 del programa 5: 115031
+[INFO] 14:24:52:403 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 7: 138424
+[INFO] 14:24:52:409 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 2 del programa 5: 115039
+[INFO] 14:24:52:410 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 7: 138431
+[INFO] 14:24:52:411 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 5: 115075
+[INFO] 14:24:52:412 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 2 del programa 7: 138418
+[INFO] 14:24:52:418 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 14:24:52:418 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 7: 0
+[INFO] 14:24:52:419 SUSE/(12771:12772): Tiempo de espera para el hilo 2 del programa 5: 56361
+[INFO] 14:24:52:420 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 7: 73419
+[INFO] 14:24:52:420 SUSE/(12771:12772): Tiempo de espera para el hilo 2 del programa 5: 56361
+[INFO] 14:24:52:425 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 7: 73419
+[INFO] 14:24:52:426 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 5: 58339
+[INFO] 14:24:52:426 SUSE/(12771:12772): Tiempo de espera para el hilo 2 del programa 7: 63991
+[INFO] 14:24:52:427 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 25 %
+[INFO] 14:24:52:428 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 25 %
+[INFO] 14:24:52:433 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 14:24:52:434 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 24 %
+[INFO] 14:24:52:435 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 14:24:52:437 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 24 %
+[INFO] 14:24:52:442 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 25 %
+[INFO] 14:24:52:442 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 7: 24 %
+[INFO] 14:24:52:443 SUSE/(12771:12772): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 14:24:52:443 SUSE/(12771:12772): Programa 7: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 14:24:52:444 SUSE/(12771:12772): Valor actual del semaforo afinado: 10
+[INFO] 14:24:52:444 SUSE/(12771:12772): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:24:52:449 SUSE/(12771:12772): Grado actual de multiprogramacion: 15
+[INFO] 14:24:54:364 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 0 del programa 5: 117065
+[INFO] 14:24:54:366 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 0 del programa 7: 140432
+[INFO] 14:24:54:367 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 2 del programa 5: 116996
+[INFO] 14:24:54:368 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 2 del programa 5: 116997
+[INFO] 14:24:54:368 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 1 del programa 5: 117033
+[INFO] 14:24:54:373 SUSE/(12771:12774): Tiempo de ejecucion para el hilo 1 del programa 7: 140390
+[INFO] 14:24:54:385 SUSE/(12771:12774): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 14:24:54:386 SUSE/(12771:12774): Tiempo de espera para el hilo 0 del programa 7: 4
+[INFO] 14:24:54:386 SUSE/(12771:12774): Tiempo de espera para el hilo 2 del programa 5: 57535
+[INFO] 14:24:54:387 SUSE/(12771:12774): Tiempo de espera para el hilo 2 del programa 5: 57535
+[INFO] 14:24:54:387 SUSE/(12771:12774): Tiempo de espera para el hilo 1 del programa 5: 58999
+[INFO] 14:24:54:388 SUSE/(12771:12774): Tiempo de espera para el hilo 1 del programa 7: 74598
+[INFO] 14:24:54:388 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 25 %
+[INFO] 14:24:54:394 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 50 %
+[INFO] 14:24:54:415 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 14:24:54:416 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 14:24:54:416 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 25 %
+[INFO] 14:24:54:417 SUSE/(12771:12774): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 49 %
+[INFO] 14:24:54:434 SUSE/(12771:12774): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 14:24:54:435 SUSE/(12771:12774): Programa 7: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 14:24:54:436 SUSE/(12771:12774): Valor actual del semaforo afinado: 10
+[INFO] 14:24:54:437 SUSE/(12771:12774): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:24:54:450 SUSE/(12771:12774): Grado actual de multiprogramacion: 15
+[INFO] 14:25:02:280 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 5: 124982
+[INFO] 14:25:02:289 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 7: 148352
+[INFO] 14:25:02:294 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 2 del programa 5: 124923
+[INFO] 14:25:02:296 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 2 del programa 5: 124925
+[INFO] 14:25:02:296 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 5: 124961
+[INFO] 14:25:02:301 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 7: 148323
+[INFO] 14:25:02:302 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 14:25:02:303 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 7: 4
+[INFO] 14:25:02:303 SUSE/(12771:12772): Tiempo de espera para el hilo 2 del programa 5: 61613
+[INFO] 14:25:02:314 SUSE/(12771:12772): Tiempo de espera para el hilo 2 del programa 5: 61613
+[INFO] 14:25:02:314 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 5: 63095
+[INFO] 14:25:02:315 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 7: 74598
+[INFO] 14:25:02:316 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 25 %
+[INFO] 14:25:02:317 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 50 %
+[INFO] 14:25:02:322 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 14:25:02:322 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 14:25:02:323 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 25 %
+[INFO] 14:25:02:324 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 7: 49 %
+[INFO] 14:25:02:324 SUSE/(12771:12772): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 14:25:02:329 SUSE/(12771:12772): Programa 7: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 14:25:02:330 SUSE/(12771:12772): Valor actual del semaforo afinado: 10
+[INFO] 14:25:02:331 SUSE/(12771:12772): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:25:02:331 SUSE/(12771:12772): Grado actual de multiprogramacion: 15
+[INFO] 14:25:02:415 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 5: 125117
+[INFO] 14:25:02:416 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 2 del programa 5: 125046
+[INFO] 14:25:02:418 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 2 del programa 5: 125047
+[INFO] 14:25:02:418 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 5: 125083
+[INFO] 14:25:02:419 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 7: 148485
+[INFO] 14:25:02:422 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 14:25:02:423 SUSE/(12771:12772): Tiempo de espera para el hilo 2 del programa 5: 61613
+[INFO] 14:25:02:424 SUSE/(12771:12772): Tiempo de espera para el hilo 2 del programa 5: 61613
+[INFO] 14:25:02:424 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 5: 63095
+[INFO] 14:25:02:433 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 7: 12
+[INFO] 14:25:02:434 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 25 %
+[INFO] 14:25:02:435 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 14:25:02:435 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 24 %
+[INFO] 14:25:02:436 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 25 %
+[INFO] 14:25:02:437 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 7: 100 %
+[INFO] 14:25:02:450 SUSE/(12771:12772): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 14:25:02:451 SUSE/(12771:12772): Programa 7: 0 en new, 0 en ready, 0 en blocked, 1 en exec
+[INFO] 14:25:02:451 SUSE/(12771:12772): Valor actual del semaforo afinado: 10
+[INFO] 14:25:02:452 SUSE/(12771:12772): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:25:02:452 SUSE/(12771:12772): Grado actual de multiprogramacion: 15
+[INFO] 14:25:19:323 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 5: 142024
+[INFO] 14:25:19:330 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 5: 141994
+[INFO] 14:25:19:365 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 2 del programa 5: 141960
+[INFO] 14:25:19:371 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 5: 0
+[INFO] 14:25:19:377 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 5: 71064
+[INFO] 14:25:19:378 SUSE/(12771:12772): Tiempo de espera para el hilo 2 del programa 5: 70639
+[INFO] 14:25:19:379 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 33 %
+[INFO] 14:25:19:379 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 33 %
+[INFO] 14:25:19:380 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 2 del programa 5: 33 %
+[INFO] 14:25:19:381 SUSE/(12771:12772): Programa 5: 0 en new, 1 en ready, 1 en blocked, 1 en exec
+[INFO] 14:25:19:386 SUSE/(12771:12772): Valor actual del semaforo afinado: 10
+[INFO] 14:25:19:387 SUSE/(12771:12772): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:25:19:387 SUSE/(12771:12772): Grado actual de multiprogramacion: 15
+[INFO] 14:25:20:256 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 5: 142957
+[INFO] 14:25:20:256 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 1 del programa 5: 142921
+[INFO] 14:25:20:258 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 5: 1
+[INFO] 14:25:20:258 SUSE/(12771:12772): Tiempo de espera para el hilo 1 del programa 5: 71523
+[INFO] 14:25:20:259 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 50 %
+[INFO] 14:25:20:260 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 1 del programa 5: 49 %
+[INFO] 14:25:20:277 SUSE/(12771:12772): Programa 5: 0 en new, 0 en ready, 1 en blocked, 1 en exec
+[INFO] 14:25:20:278 SUSE/(12771:12772): Valor actual del semaforo afinado: 10
+[INFO] 14:25:20:278 SUSE/(12771:12772): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:25:20:279 SUSE/(12771:12772): Grado actual de multiprogramacion: 15
+[INFO] 14:25:20:338 SUSE/(12771:12772): Tiempo de ejecucion para el hilo 0 del programa 5: 143039
+[INFO] 14:25:20:339 SUSE/(12771:12772): Tiempo de espera para el hilo 0 del programa 5: 2
+[INFO] 14:25:20:340 SUSE/(12771:12772): Porcentaje del tiempo de ejecucion para el hilo 0 del programa 5: 100 %
+[INFO] 14:25:20:340 SUSE/(12771:12772): Programa 5: 0 en new, 0 en ready, 0 en blocked, 1 en exec
+[INFO] 14:25:20:345 SUSE/(12771:12772): Valor actual del semaforo afinado: 10
+[INFO] 14:25:20:353 SUSE/(12771:12772): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 14:25:20:354 SUSE/(12771:12772): Grado actual de multiprogramacion: 15

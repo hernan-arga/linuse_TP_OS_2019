@@ -34,7 +34,7 @@ struct HeapMetadata {
 	uint32_t size;
 	bool isFree;
 
-};
+}__attribute__((packed));
 
 struct Segmento{
 
@@ -104,6 +104,7 @@ uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
 void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
 struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_t tamanio);
 struct Segmento *extenderSegmento(struct Segmento *unSegmento, uint32_t tamanio);
+int retornarMetadataTamanioLibre(struct Segmento *segmento, uint32_t tamanio);
 
 //Funciones cpy
 int musecpy(uint32_t dst, void* src, int n, int idSocket);
@@ -124,7 +125,7 @@ struct Segmento *unificarHeaders2(int idSegmento, int idSocketCliente);
 int clockModificado();
 void incrementarPunteroClockModificado();
 void inicializarBitmapSwap();
-uint32_t musemap(char *path, size_t length/*, int flags*/);
+uint32_t musemap(char *path, size_t length, int flags, int idSocketCliente);
 int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCliente);
 void cargarDatosEnFrame(int indiceFrame, char *datos);
 int llevarASwapUnaPagina(int indicePagina, int indiceSegmento, int idSocketCliente);

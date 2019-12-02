@@ -120,8 +120,9 @@ int iniciar_conexion(char *ip, int puerto) {
 			if (FD_ISSET(sd, &readfds)) {
 				//Check if it was for closing , and also read the
 				//incoming message
-				int *operacion = malloc(sizeof(int));
-				if ((valread = read(sd, operacion, sizeof(int))) == 0) {
+				int *tamanioOperacion = malloc(sizeof(int));
+
+				if ((valread = read(sd, tamanioOperacion, sizeof(int))) == 0) {
 					//printf("tamanio: %d", *tamanio);
 					getpeername(sd, (struct sockaddr *) &address,
 							(socklen_t *) &addrlen);
@@ -132,6 +133,9 @@ int iniciar_conexion(char *ip, int puerto) {
 					client_socket[i] = 0;
 
 				} else {
+
+					int *operacion = malloc(sizeof(*tamanioOperacion));
+					read(sd, operacion, sizeof(int));
 
 					switch (*operacion) {
 					case 1: //init
@@ -173,10 +177,10 @@ int iniciar_conexion(char *ip, int puerto) {
 					default:
 						break;
 					}
-
+					free(operacion);
 				}
 
-				free(operacion);
+				free(tamanioOperacion);
 			}
 		}
 	}
@@ -241,7 +245,7 @@ void atenderMuseAlloc(int cliente) {
 	char* buffer = malloc(sizeof(int) + sizeof(uint32_t));
 
 	int tamanioDireccion = sizeof(int);
-	uint32_t direccion = musemalloc(10, cliente); //aca hacemos el malloc en muse y devolves la direccion de memoria
+	uint32_t direccion = musemalloc(*bytesAReservar, cliente); //aca hacemos el malloc en muse y devolves la direccion de memoria
 	memcpy(buffer, &tamanioDireccion, sizeof(int));
 	memcpy(buffer + sizeof(int), &direccion, sizeof(uint32_t));
 
