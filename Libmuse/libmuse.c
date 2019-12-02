@@ -65,14 +65,16 @@ uint32_t muse_alloc(uint32_t tam) { //Case 3
 
 	int *tamanio = malloc(sizeof(int));
 	read(serverMUSE, tamanio, sizeof(int));
-	uint32_t *direccionMemoriaReservada = malloc(*tamanio);
-	read(serverMUSE, direccionMemoriaReservada, *tamanio);
+	//uint32_t *direccionMemoriaReservada = malloc(*tamanio);
+	//read(serverMUSE, direccionMemoriaReservada, *tamanio);
+	uint32_t direccionMemoriaReservada;
+	read(serverMUSE,&direccionMemoriaReservada,4);
 
-	uint32_t direccionMemoriaReservadaFinal = direccionMemoriaReservada;
+
 	free(buffer);
 	free(tamanio);
-	free(direccionMemoriaReservada);
-	return direccionMemoriaReservadaFinal;
+
+	return direccionMemoriaReservada;
 
 }
 
