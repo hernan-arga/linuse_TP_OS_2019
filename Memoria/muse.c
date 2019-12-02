@@ -1492,11 +1492,11 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 
 	for (int i = 0; i < list_size(listaSegmentos); i++) {
 		unSegmento = list_get(listaSegmentos, i);
-		/*
+
 		if (((int) direccion - unSegmento->baseLogica) < unSegmento->tamanio) {
 			return unSegmento;
 		}
-		*/
+
 		return unSegmento;
 	}
 
