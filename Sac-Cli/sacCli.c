@@ -384,7 +384,7 @@ static int hello_rmdir(const char *path)
 static int hello_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
 	//Serializo peticion, path, size, offset y buf
-	char* buffer = malloc(8 * sizeof(int) + strlen(path) + strlen(buf));
+	char* buffer = malloc(8 * sizeof(int) + strlen(path) + size);
 
 	int peticion = 9;
 	int tamanioPeticion = sizeof(int);
@@ -407,9 +407,9 @@ static int hello_write(const char *path, const char *buf, size_t size, off_t off
 
 	int tamanioBuf = strlen(buf);
 	memcpy(buffer + 7 * sizeof(int) + strlen(path), &tamanioBuf, sizeof(int));
-	memcpy(buffer + 8 * sizeof(int) + strlen(path), buf, strlen(buf));
+	memcpy(buffer + 8 * sizeof(int) + strlen(path), buf, size);
 
-	send(sacServer, buffer, 8 * sizeof(int) + strlen(path) + strlen(buf), 0);
+	send(sacServer, buffer, 8 * sizeof(int) + strlen(path) + size, 0);
 
 	// Deserializo respuesta
 	int* tamanioRespuesta = malloc(sizeof(int));

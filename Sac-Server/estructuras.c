@@ -366,7 +366,7 @@ int delete_nodes_upto (struct sac_file_t *file_data, int pointer_upto, int data_
 	else if (file_size%BLOCKSIZE == 0) data_pos--;
 
 	// Crea el bitmap
-	bitarray = bitarray_create_with_mode((char *)bitmap_start, BITMAP_SIZE_B, LSB_FIRST);
+	bitarray = bitarray_create_with_mode((char *)bitmap_start, BITMAP_SIZE_BITS, LSB_FIRST);
 
 	// Activa el DELETE_MODE. Este modo NO debe activarse cuando se hacen operaciones que
 	// dejen al archivo con un solo nodo. Por ejemplo, truncate -s 0.
