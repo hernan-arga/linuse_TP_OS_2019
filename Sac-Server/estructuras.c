@@ -230,7 +230,7 @@ int get_node(void){
 	t_bitarray *bitarray;
 	int res;
 
-	bitarray = bitarray_create_with_mode((char *)bitmap_start, BITMAP_SIZE_B, LSB_FIRST);
+	bitarray = bitarray_create_with_mode((char *)bitmap_start, BITMAP_SIZE_BITS, LSB_FIRST);
 
 	int encontrado = 0;
 

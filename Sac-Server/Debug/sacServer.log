@@ -3082,3 +3082,183 @@
 [INFO] 02:15:10:562 SacServer/(2821:2823):  + Se hizo un create en SacServer
 
 [ERROR] 02:15:54:944 SacServer/(2821:2823): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 02:18:17:31 SacServer/(2982:2984):  + Se hizo un create en SacServer
+
+[ERROR] 02:18:21:663 SacServer/(2982:2984): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 02:18:21:680 SacServer/(2982:2984):  + Se hizo un create en SacServer
+
+[INFO] 02:18:21:704 SacServer/(2982:2984):  + Se hizo un create en SacServer
+
+[INFO] 02:18:21:740 SacServer/(2982:2984):  + Se hizo un create en SacServer
+
+[INFO] 02:18:21:758 SacServer/(2982:2984):  + Se hizo un create en SacServer
+
+[INFO] 02:18:21:776 SacServer/(2982:2984):  + Se hizo un create en SacServer
+
+[INFO] 02:18:21:852 SacServer/(2982:2984):  + Se hizo un create en SacServer
+
+[INFO] 02:18:21:861 SacServer/(2982:2984):  + Se hizo un create en SacServer
+
+[INFO] 02:18:21:868 SacServer/(2982:2984):  + Se hizo un create en SacServer
+
+[ERROR] 02:18:24:971 SacServer/(2982:2984):  - NO se pudo hacer el create en SacServer
+
+[INFO] 02:18:24:977 SacServer/(2982:2984):  + Se hizo un truncate en SacServer
+
+[INFO] 02:18:24:993 SacServer/(2982:2984):  + Se hizo un create en SacServer
+
+[INFO] 02:18:24:0 SacServer/(2982:2984):  + Se hizo un truncate en SacServer
+
+[INFO] 02:18:29:538 SacServer/(2982:2984):  + Se hizo un mkdir en SacServer
+
+[INFO] 02:18:48:152 SacServer/(2982:2984):  + Se hizo un create en SacServer
+
+[ERROR] 02:18:50:163 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:166 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:196 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:201 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:201 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:203 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:203 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:205 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:206 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:206 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:207 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:207 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:208 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:208 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:209 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:209 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:210 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:210 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:211 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:211 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:211 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:212 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:212 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:213 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:213 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:214 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:214 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:215 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:215 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:215 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:216 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:216 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:217 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:217 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:218 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:218 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:219 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:219 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:220 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:220 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:221 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:221 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:221 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:222 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:222 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:223 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:223 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:224 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:224 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:225 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:225 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:226 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:226 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:227 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:227 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:254 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:254 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:255 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:255 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:256 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:256 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:257 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:257 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:258 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:259 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:259 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:260 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:260 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:260 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:261 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:261 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:262 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:262 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:263 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:263 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:264 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:264 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:265 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:265 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:266 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[ERROR] 02:18:50:266 SacServer/(2982:2984): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 02:18:50:266 SacServer/(2982:2984):  + Se hizo un read vacio en SacServer
+
+[INFO] 02:19:29:23 SacServer/(3086:3089):  + Se hizo un create en SacServer
+
+[INFO] 02:20:24:530 SacServer/(3086:3089):  + Se hizo un mkdir en SacServer
+
+[INFO] 02:20:28:344 SacServer/(3086:3089):  + Se hizo un create en SacServer
+
+[INFO] 02:20:29:319 SacServer/(3086:3089):  + Se hizo un read vacio en SacServer
+
+[INFO] 02:20:29:452 SacServer/(3086:3089):  + Se hizo un read vacio en SacServer
+
+[INFO] 02:20:31:103 SacServer/(3086:3089):  + Se hizo un truncate en SacServer
+
+[ERROR] 02:20:31:124 SacServer/(3086:3089): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 02:20:36:526 SacServer/(3086:3089): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 02:20:37:324 SacServer/(3086:3089): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 02:20:37:440 SacServer/(3086:3089): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 02:20:42:367 SacServer/(3086:3089):  + Se hizo un mkdir en SacServer
+
+[INFO] 02:20:42:377 SacServer/(3086:3089):  + Se hizo un rmdir en SacServer
+
+[INFO] 02:22:23:594 SacServer/(3211:3214):  + Se hizo un create en SacServer
+
+[INFO] 02:22:42:263 SacServer/(3211:3214):  + Se hizo un create en SacServer
+
+[INFO] 02:24:02:7 SacServer/(3310:3315):  + Se hizo un create en SacServer
+
