@@ -50,71 +50,71 @@ void* socketThread(void* newSocket)
 	  int valread;
 
 	  while(1){
-	  // Verifica por tamaño de la operacion, que no se haya desconectado el socket
-	  int *tamanioOperacion = malloc(sizeof(int));
-	  if ((valread = read(cliente, tamanioOperacion, sizeof(int))) == 0)
-	  {
-		  printf("Host disconected \n");
-		  close(cliente);
-		  pthread_exit(NULL);
+		  // Verifica por tamaño de la operacion, que no se haya desconectado el socket
+		  int *tamanioOperacion = malloc(sizeof(int));
+		  if ((valread = read(cliente, tamanioOperacion, sizeof(int))) == 0)
+		  {
+			  printf("Host disconected \n");
+			  close(cliente);
+			  pthread_exit(NULL);
 
-	  }  else  {
-		  // lee el siguiente dato que le pasa el cliente, con estos datos, hace la operacion correspondiente
-		  int *operacion = malloc(4);
-		  read(cliente, operacion, sizeof(int));
+		  }  else  {
+			  // lee el siguiente dato que le pasa el cliente, con estos datos, hace la operacion correspondiente
+			  int *operacion = malloc(4);
+			  read(cliente, operacion, sizeof(int));
 
-		  switch (*operacion) {
-		      case 1:
-			  	  	// Operacion CREATE
-			  	  	tomarPeticionCreate(cliente);
-			  	  	break;
-			  case 2:
-				  	// Operacion OPEN
-				    tomarPeticionOpen(cliente);
-				    break;
-			  case 3:
-			  		// Operacion READ
-			  		tomarPeticionRead(cliente);
-			  		break;
-			  case 4:
-			  		// Operacion READDIR
-			  		tomarPeticionReadDir(cliente);
-			  		break;
-			  case 5:
-			  		// Operacion GETATTR
-			  		tomarPeticionGetAttr(cliente);
-			  		break;
-			  case 6:
-			  		// Operacion MKNOD
-			  		tomarPeticionMkdir(cliente);
-			  		break;
-			  case 7:
-			  		// Operacion UNLINK
-			  		tomarPeticionUnlink(cliente);
-			  		break;
-			  case 8:
-				     // Operacion RMDIR
-				  	 tomarPeticionRmdir(cliente);
-			  		break;
-			  case 9:
-			  		// Operacion WRITE
-			  		tomarPeticionWrite(cliente);
-			  		break;
-			  case 10:
-			  		// Operacion TRUNCATE
-			  		tomarPeticionTruncate(cliente);
-			  		break;
-			  case 11:
-			  		// Operacion RENAME
-			  		tomarPeticionRename(cliente);
-			  		break;
-			  default:
-				  	  ;
-			  }
-			free(operacion);
-		}
-	free(tamanioOperacion);
-	 }
+			  switch (*operacion) {
+				  case 1:
+						// Operacion CREATE
+						tomarPeticionCreate(cliente);
+						break;
+				  case 2:
+						// Operacion OPEN
+						tomarPeticionOpen(cliente);
+						break;
+				  case 3:
+						// Operacion READ
+						tomarPeticionRead(cliente);
+						break;
+				  case 4:
+						// Operacion READDIR
+						tomarPeticionReadDir(cliente);
+						break;
+				  case 5:
+						// Operacion GETATTR
+						tomarPeticionGetAttr(cliente);
+						break;
+				  case 6:
+						// Operacion MKNOD
+						tomarPeticionMkdir(cliente);
+						break;
+				  case 7:
+						// Operacion UNLINK
+						tomarPeticionUnlink(cliente);
+						break;
+				  case 8:
+						 // Operacion RMDIR
+						 tomarPeticionRmdir(cliente);
+						break;
+				  case 9:
+						// Operacion WRITE
+						tomarPeticionWrite(cliente);
+						break;
+				  case 10:
+						// Operacion TRUNCATE
+						tomarPeticionTruncate(cliente);
+						break;
+				  case 11:
+						// Operacion RENAME
+						tomarPeticionRename(cliente);
+						break;
+				  default:
+						  ;
+				  }
+				free(operacion);
+			}
+		free(tamanioOperacion);
+	}
 	return NULL;
 }
 

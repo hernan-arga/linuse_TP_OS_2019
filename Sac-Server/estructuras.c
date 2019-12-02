@@ -230,7 +230,7 @@ int get_node(void){
 	t_bitarray *bitarray;
 	int res;
 
-	bitarray = bitarray_create_with_mode((char *)bitmap_start, BITMAP_SIZE_BITS, LSB_FIRST);
+	bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B);;
 
 	int encontrado = 0;
 
@@ -363,10 +363,12 @@ int delete_nodes_upto (struct sac_file_t *file_data, int pointer_upto, int data_
 		pointer_pos--;
 		data_pos = PTRGBLOQUE_SIZE-1;
 	}
-	else if (file_size%BLOCKSIZE == 0) data_pos--;
+	else if (file_size%BLOCKSIZE == 0){
+		data_pos--;
+	};
 
 	// Crea el bitmap
-	bitarray = bitarray_create_with_mode((char *)bitmap_start, BITMAP_SIZE_BITS, LSB_FIRST);
+	bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B);
 
 	// Activa el DELETE_MODE. Este modo NO debe activarse cuando se hacen operaciones que
 	// dejen al archivo con un solo nodo. Por ejemplo, truncate -s 0.
@@ -461,7 +463,7 @@ int obtain_free_blocks(void){
 	int free_nodes=0, i;
 	int bitmap_size_in_bits = BITMAP_SIZE_BITS;
 
-	bitarray = bitarray_create_with_mode((char *)bitmap_start, bitmap_size_in_bits, LSB_FIRST);
+	bitarray = bitarray_create((char *)bitmap_start, BITMAP_SIZE_B);
 
 	for (i = 0; i < bitmap_size_in_bits; i++){
 		if (bitarray_test_bit(bitarray, i) == 0) free_nodes++;

@@ -611,3 +611,233 @@
 
 [INFO] 19:06:55:785 SacServer/(18784:18784):  + Se hizo un create en SacServer
 
+[INFO] 18:39:53:438 SacServer/(4244:4261):  + Se hizo un create en SacServer
+
+[ERROR] 18:40:07:475 SacServer/(4244:4261): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 18:40:07:477 SacServer/(4244:4261):  + Se hizo un create en SacServer
+
+[INFO] 18:40:07:484 SacServer/(4244:4261):  + Se hizo un create en SacServer
+
+[INFO] 18:40:07:490 SacServer/(4244:4261):  + Se hizo un create en SacServer
+
+[INFO] 18:40:07:496 SacServer/(4244:4261):  + Se hizo un create en SacServer
+
+[INFO] 18:40:07:503 SacServer/(4244:4261):  + Se hizo un create en SacServer
+
+[INFO] 18:40:07:509 SacServer/(4244:4261):  + Se hizo un create en SacServer
+
+[INFO] 18:40:07:515 SacServer/(4244:4261):  + Se hizo un create en SacServer
+
+[INFO] 18:40:07:521 SacServer/(4244:4261):  + Se hizo un create en SacServer
+
+[INFO] 18:40:07:534 SacServer/(4244:4261):  + Se hizo un create en SacServer
+
+[INFO] 18:40:07:539 SacServer/(4244:4261):  + Se hizo un create en SacServer
+
+[INFO] 18:43:48:727 SacServer/(4503:4516):  + Se hizo un create en SacServer
+
+[ERROR] 18:44:07:294 SacServer/(4503:4516): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 18:44:07:296 SacServer/(4503:4516):  + Se hizo un create en SacServer
+
+[INFO] 18:44:07:302 SacServer/(4503:4516):  + Se hizo un create en SacServer
+
+[INFO] 18:44:07:309 SacServer/(4503:4516):  + Se hizo un create en SacServer
+
+[INFO] 18:44:07:315 SacServer/(4503:4516):  + Se hizo un create en SacServer
+
+[INFO] 18:44:07:323 SacServer/(4503:4516):  + Se hizo un create en SacServer
+
+[INFO] 18:44:07:329 SacServer/(4503:4516):  + Se hizo un create en SacServer
+
+[INFO] 18:44:07:335 SacServer/(4503:4516):  + Se hizo un create en SacServer
+
+[INFO] 18:44:07:341 SacServer/(4503:4516):  + Se hizo un create en SacServer
+
+[INFO] 18:44:07:351 SacServer/(4503:4516):  + Se hizo un create en SacServer
+
+[INFO] 18:44:07:360 SacServer/(4503:4516):  + Se hizo un create en SacServer
+
+[INFO] 18:57:56:686 SacServer/(5040:5052):  + Se hizo un create en SacServer
+
+[ERROR] 18:58:05:92 SacServer/(5040:5052): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 18:58:05:94 SacServer/(5040:5052):  + Se hizo un create en SacServer
+
+[INFO] 18:58:05:100 SacServer/(5040:5052):  + Se hizo un create en SacServer
+
+[INFO] 18:58:05:106 SacServer/(5040:5052):  + Se hizo un create en SacServer
+
+[INFO] 18:58:05:112 SacServer/(5040:5052):  + Se hizo un create en SacServer
+
+[INFO] 18:58:05:121 SacServer/(5040:5052):  + Se hizo un create en SacServer
+
+[INFO] 18:58:05:127 SacServer/(5040:5052):  + Se hizo un create en SacServer
+
+[INFO] 18:58:05:133 SacServer/(5040:5052):  + Se hizo un create en SacServer
+
+[INFO] 18:58:05:146 SacServer/(5040:5052):  + Se hizo un create en SacServer
+
+[INFO] 18:58:05:155 SacServer/(5040:5052):  + Se hizo un create en SacServer
+
+[INFO] 18:58:05:164 SacServer/(5040:5052):  + Se hizo un create en SacServer
+
+[INFO] 19:00:49:191 SacServer/(5306:5317):  + Se hizo un create en SacServer
+
+[ERROR] 19:00:55:468 SacServer/(5306:5317): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 19:00:55:471 SacServer/(5306:5317):  + Se hizo un create en SacServer
+
+[INFO] 19:00:55:477 SacServer/(5306:5317):  + Se hizo un create en SacServer
+
+[INFO] 19:00:55:483 SacServer/(5306:5317):  + Se hizo un create en SacServer
+
+[INFO] 19:00:55:489 SacServer/(5306:5317):  + Se hizo un create en SacServer
+
+[INFO] 19:00:55:498 SacServer/(5306:5317):  + Se hizo un create en SacServer
+
+[INFO] 19:00:55:503 SacServer/(5306:5317):  + Se hizo un create en SacServer
+
+[INFO] 19:00:55:509 SacServer/(5306:5317):  + Se hizo un create en SacServer
+
+[INFO] 19:00:55:515 SacServer/(5306:5317):  + Se hizo un create en SacServer
+
+[INFO] 19:00:55:524 SacServer/(5306:5317):  + Se hizo un create en SacServer
+
+[INFO] 19:00:55:536 SacServer/(5306:5317):  + Se hizo un create en SacServer
+
+[INFO] 19:03:16:258 SacServer/(5623:5637):  + Se hizo un create en SacServer
+
+[ERROR] 19:03:27:191 SacServer/(5623:5637): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 19:03:27:192 SacServer/(5623:5637):  + Se hizo un create en SacServer
+
+[INFO] 19:03:27:198 SacServer/(5623:5637):  + Se hizo un create en SacServer
+
+[INFO] 19:03:27:205 SacServer/(5623:5637):  + Se hizo un create en SacServer
+
+[INFO] 19:03:27:211 SacServer/(5623:5637):  + Se hizo un create en SacServer
+
+[INFO] 19:03:27:219 SacServer/(5623:5637):  + Se hizo un create en SacServer
+
+[INFO] 19:03:27:226 SacServer/(5623:5637):  + Se hizo un create en SacServer
+
+[INFO] 19:03:27:232 SacServer/(5623:5637):  + Se hizo un create en SacServer
+
+[INFO] 19:03:27:237 SacServer/(5623:5637):  + Se hizo un create en SacServer
+
+[INFO] 19:03:27:253 SacServer/(5623:5637):  + Se hizo un create en SacServer
+
+[INFO] 19:03:27:263 SacServer/(5623:5637):  + Se hizo un create en SacServer
+
+[INFO] 19:28:58:192 SacServer/(6525:6538):  + Se hizo un create en SacServer
+
+[ERROR] 19:29:06:229 SacServer/(6525:6538): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 19:29:06:231 SacServer/(6525:6538):  + Se hizo un create en SacServer
+
+[INFO] 19:29:06:244 SacServer/(6525:6538):  + Se hizo un create en SacServer
+
+[INFO] 19:29:06:252 SacServer/(6525:6538):  + Se hizo un create en SacServer
+
+[INFO] 19:29:06:263 SacServer/(6525:6538):  + Se hizo un create en SacServer
+
+[INFO] 19:29:06:269 SacServer/(6525:6538):  + Se hizo un create en SacServer
+
+[INFO] 19:29:06:275 SacServer/(6525:6538):  + Se hizo un create en SacServer
+
+[INFO] 19:29:06:280 SacServer/(6525:6538):  + Se hizo un create en SacServer
+
+[INFO] 19:29:06:286 SacServer/(6525:6538):  + Se hizo un create en SacServer
+
+[INFO] 19:29:06:299 SacServer/(6525:6538):  + Se hizo un create en SacServer
+
+[INFO] 19:29:06:305 SacServer/(6525:6538):  + Se hizo un create en SacServer
+
+[INFO] 19:45:45:91 SacServer/(7010:7046):  + Se hizo un create en SacServer
+
+[ERROR] 19:45:56:532 SacServer/(7010:7046): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 19:45:56:630 SacServer/(7010:7046):  + Se hizo un create en SacServer
+
+[INFO] 19:45:56:647 SacServer/(7010:7046):  + Se hizo un create en SacServer
+
+[INFO] 19:45:56:659 SacServer/(7010:7046):  + Se hizo un create en SacServer
+
+[INFO] 19:45:56:666 SacServer/(7010:7046):  + Se hizo un create en SacServer
+
+[INFO] 19:45:56:672 SacServer/(7010:7046):  + Se hizo un create en SacServer
+
+[INFO] 19:45:56:678 SacServer/(7010:7046):  + Se hizo un create en SacServer
+
+[INFO] 19:45:56:690 SacServer/(7010:7046):  + Se hizo un create en SacServer
+
+[INFO] 19:45:56:698 SacServer/(7010:7046):  + Se hizo un create en SacServer
+
+[INFO] 19:45:56:704 SacServer/(7010:7046):  + Se hizo un create en SacServer
+
+[INFO] 19:45:56:712 SacServer/(7010:7046):  + Se hizo un create en SacServer
+
+[INFO] 19:48:37:867 SacServer/(7308:7322):  + Se hizo un create en SacServer
+
+[ERROR] 19:48:45:720 SacServer/(7308:7322): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 19:48:45:721 SacServer/(7308:7322):  + Se hizo un create en SacServer
+
+[INFO] 19:48:45:728 SacServer/(7308:7322):  + Se hizo un create en SacServer
+
+[INFO] 19:48:45:735 SacServer/(7308:7322):  + Se hizo un create en SacServer
+
+[INFO] 19:48:45:741 SacServer/(7308:7322):  + Se hizo un create en SacServer
+
+[INFO] 19:48:45:749 SacServer/(7308:7322):  + Se hizo un create en SacServer
+
+[INFO] 19:48:45:755 SacServer/(7308:7322):  + Se hizo un create en SacServer
+
+[INFO] 19:48:45:761 SacServer/(7308:7322):  + Se hizo un create en SacServer
+
+[INFO] 19:48:45:767 SacServer/(7308:7322):  + Se hizo un create en SacServer
+
+[INFO] 19:48:45:773 SacServer/(7308:7322):  + Se hizo un create en SacServer
+
+[INFO] 19:48:45:782 SacServer/(7308:7322):  + Se hizo un create en SacServer
+
+[INFO] 19:55:41:82 SacServer/(7594:7617):  + Se hizo un create en SacServer
+
+[ERROR] 19:56:40:597 SacServer/(7594:7617): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 19:56:40:599 SacServer/(7594:7617):  + Se hizo un create en SacServer
+
+[INFO] 19:56:40:605 SacServer/(7594:7617):  + Se hizo un create en SacServer
+
+[INFO] 19:56:40:612 SacServer/(7594:7617):  + Se hizo un create en SacServer
+
+[INFO] 19:56:40:618 SacServer/(7594:7617):  + Se hizo un create en SacServer
+
+[INFO] 19:56:40:627 SacServer/(7594:7617):  + Se hizo un create en SacServer
+
+[INFO] 19:56:40:632 SacServer/(7594:7617):  + Se hizo un create en SacServer
+
+[INFO] 19:56:40:638 SacServer/(7594:7617):  + Se hizo un create en SacServer
+
+[INFO] 19:56:40:644 SacServer/(7594:7617):  + Se hizo un create en SacServer
+
+[INFO] 19:56:40:650 SacServer/(7594:7617):  + Se hizo un create en SacServer
+
+[INFO] 19:56:40:660 SacServer/(7594:7617):  + Se hizo un create en SacServer
+
+[INFO] 20:10:51:222 SacServer/(8222:8240):  + Se hizo un create en SacServer
+
+[ERROR] 20:12:02:541 SacServer/(8222:8240): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 20:12:02:543 SacServer/(8222:8240):  + Se hizo un create en SacServer
+
+[INFO] 20:12:02:549 SacServer/(8222:8240):  + Se hizo un create en SacServer
+
+[INFO] 20:12:02:556 SacServer/(8222:8240):  + Se hizo un create en SacServer
+
+[INFO] 20:12:02:562 SacServer/(8222:8240):  + Se hizo un create en SacServer
+
+[INFO] 20:12:02:570 SacServer/(8222:8240):  + Se hizo un create en SacServer
+
+[INFO] 20:12:02:576 SacServer/(8222:8240):  + Se hizo un create en SacServer
+
+[INFO] 20:12:02:582 SacServer/(8222:8240):  + Se hizo un create en SacServer
+
+[INFO] 20:12:02:588 SacServer/(8222:8240):  + Se hizo un create en SacServer
+
+[INFO] 20:12:02:594 SacServer/(8222:8240):  + Se hizo un create en SacServer
+
+[INFO] 20:12:02:617 SacServer/(8222:8240):  + Se hizo un create en SacServer
+

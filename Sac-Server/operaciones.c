@@ -1014,8 +1014,6 @@ int o_truncate(char* path, int new_size){
 	node->tamanio_archivo = new_size; // Aca le dice su nuevo size.
 
 	finalizar:
-
-
 	// Cierra, ponele la alarma y se va para su casa. Mejor dicho, retorna 0 :D
 	// Devuelve el lock de escritura.
 	pthread_rwlock_wrlock(&rwlock);
