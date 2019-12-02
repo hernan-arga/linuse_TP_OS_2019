@@ -44,6 +44,7 @@ struct Segmento{
 	uint32_t baseLogica;
 	uint32_t tamanio;
 	t_list* tablaPaginas;
+	int paginasLiberadas;
 
 };
 
@@ -96,7 +97,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente);
 struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
 bool poseeTamanioLibreSegmento(struct Segmento *unSegmento, uint32_t tamanio);
 void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
-bool esExtendible(t_list *segmentosProceso, int unIndice);
+bool esExtendible(t_list *segmentosProceso, int unIndice, int paginasNecesarias);
 struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *unSegmento, int tamanio);
 struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *unSegmento, int tamanio);
 struct Segmento *asignarNuevaPagina(struct Segmento *unSegmento, int tamanio);
@@ -105,6 +106,7 @@ void *buscarEspacioLibreProceso(int idSocketCliente, uint32_t tamanio);
 struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_t tamanio);
 struct Segmento *extenderSegmento(struct Segmento *unSegmento, uint32_t tamanio);
 int retornarMetadataTamanioLibre(struct Segmento *segmento, uint32_t tamanio);
+struct Segmento *buscarSegmentoConTamanioDisponible(t_list *segmentos, int tamanio);
 
 //Funciones cpy
 int musecpy(uint32_t dst, void* src, int n, int idSocket);

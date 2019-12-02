@@ -204,7 +204,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 
 	if(segmentosProceso == NULL){ //No tiene tabla de segmentos creada, el proceso no se inicio
-		return -1;
+		return NULL;
 	}
 
 	if(list_is_empty(segmentosProceso)){ //Si no tiene ningun segmento se lo creo
@@ -221,36 +221,42 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 		free(stringIdSocketCliente);
 		return comienzoDatos;
 
-	} else { //Sino, recorro segmentos buscando ultimo header free
-		struct Segmento *segmento = malloc(sizeof(struct Segmento));
-		struct HeapMetadata *metadataLibre;
+	} else { //busco si entra en algun segmento existente (metadata libre y con size disponible)
 
-		for (int i = 0; i < list_size(segmentosProceso); i++) {
+		struct Segmento *segmento = buscarSegmentoConTamanioDisponible(segmentosProceso, tamanio + sizeof(struct HeapMetadata));
 
-			segmento = list_get(segmentosProceso, i);
+		if(segmento != NULL){
 
-			if (poseeTamanioLibreSegmento(segmento, tamanio + sizeof(struct HeapMetadata))) {
+			for(int i = 0; i < list_size(segmento->tablaPaginas); i++){ //Recorro las pags del segmento
+				struct Pagina *pagina = list_get(segmento->tablaPaginas, i);
+				void *pos = obtenerPosicionMemoriaPagina(pagina);
+				struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 
-				metadataLibre = retornarMetadataTamanioLibre(segmento, tamanio + sizeof(struct HeapMetadata));
+				for(int j = 0; j < list_size(pagina->listaMetadata); j++){ //Recorro las metadatas de cada pagina
+					memcpy(metadata, pos + (int)list_get(pagina->listaMetadata, j), sizeof(struct HeapMetadata));
 
-				return (void *)(metadataLibre + sizeof(struct HeapMetadata));
+					if(metadata->isFree == true && metadata->size >= tamanio + sizeof(struct HeapMetadata)){
+						return pos + (int)list_get(pagina->listaMetadata, j);
+					}
+				}
 
 			}
 
 		}
 
 
+
 		int ultimaMetadata;
 		struct Pagina *ultimaPagina = malloc(sizeof(struct Pagina));
 		void *pos;
+		int paginasNecesarias = (double)ceil((tamanio + sizeof(struct HeapMetadata)) / tam_pagina);
 		//Si sale del for sin retorno, tengo que buscar algun segmento de heap
 		//que se pueda extender -siguiente for-
 
 		for (int j = 0; j < list_size(segmentosProceso); j++) {
-			struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
-			unSegmento = list_get(segmentosProceso, j);
+			struct Segmento *unSegmento = list_get(segmentosProceso, j);
 
-			if (esExtendible(segmentosProceso, j)) {
+			if (esExtendible(segmentosProceso, j, paginasNecesarias)) {
 
 				unSegmento = extenderSegmento(unSegmento, tamanio);
 
@@ -349,6 +355,40 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	free(stringIdSocketCliente);
 	return nuevoSegmento;
 }
+
+struct Segmento *buscarSegmentoConTamanioDisponible(t_list *segmentos, int tamanio){
+	struct Segmento *segmento;
+	t_list *paginas = list_create();
+	t_list *metadatas = list_create();
+	struct Pagina *pagina;
+	void *pos;
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+
+	for(int i = 0; i < list_size(segmentos); i++){
+		segmento = list_get(segmentos, i);
+		paginas = segmento->tablaPaginas;
+
+		for(int j = 0; j < list_size(paginas); j++){
+			pagina = list_get(paginas, j);
+			metadatas = pagina->listaMetadata;
+
+			if(pagina->presencia == 1){
+				pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
+
+				for(int k = 0; k < list_size(metadatas); k++){
+					memcpy(metadata, pos + (int)list_get(metadatas, k), sizeof(struct HeapMetadata));
+
+					if(metadata->isFree == true && metadata->size >= tamanio){
+						return segmento;
+					}
+				}
+			}
+		}
+	}
+
+	return NULL;
+}
+
 
 struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 
@@ -676,23 +716,23 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_
 
 }
 
-/*Un segmento es extendible si no tiene otro segmento a continuacion y si es un segmento comun*/
-bool esExtendible(t_list *segmentosProceso, int unIndice) {
-	//Momentaneamente, es extendible si es el ultimo de la lista de segmentos
+/*Un segmento es extendible si: es comun y es el ultimo en la lista O tiene x paginas liberadas*/
+bool esExtendible(t_list *segmentosProceso, int unIndice, int paginasNecesarias) {
 	int indiceUltimoSegmento = list_size(segmentosProceso) - 1;
 
-	struct Segmento *ultimoSegmento = malloc(sizeof(struct Segmento));
-	ultimoSegmento = list_get(segmentosProceso, indiceUltimoSegmento);
+	struct Segmento *ultimoSegmento = list_get(segmentosProceso, indiceUltimoSegmento);
 
-	struct Segmento *segmento = malloc(sizeof(struct Segmento));
-	segmento = list_get(segmentosProceso, unIndice);
+	struct Segmento *segmento = list_get(segmentosProceso, unIndice);
 
-	if (ultimoSegmento->id == segmento->id && segmento->esComun == true) {
+	if (segmento->esComun == true && ultimoSegmento->id == segmento->id) {
 		return true;
 	} else {
-		return false;
+		if (segmento->esComun == true && segmento->paginasLiberadas >= paginasNecesarias){
+			return true;
+		}
 	}
 
+	return false;
 }
 
 /*Retorna la posicion de memoria donde comienza la primera pagina de un segmento*/
