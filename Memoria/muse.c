@@ -437,7 +437,6 @@ struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 	free(ultimaPagina);
 	free(frame);
 	free(nuevaUltimaMetadata);
-	free(nuevaUltimaMetadata);
 
 	return segmento;
 }
@@ -482,12 +481,13 @@ struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento, int tam
 	primeraPagina->numeroFrame = asignarUnFrame();
 	primeraPagina->presencia = 1;
 	primeraPagina->indiceSwap = -1;
+	primeraPagina->listaMetadata = list_create();
 	void *pos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame);
 
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 	metadata->isFree = false;
 	metadata->size = tamanioMetadata;
-	list_add(primeraPagina->listaMetadata, 0);
+	list_add(primeraPagina->listaMetadata, (void*) 0);
 
 	//Pone la metadata en el frame correspondiente
 	memcpy(pos, metadata, sizeof(struct HeapMetadata));
@@ -530,6 +530,7 @@ struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *segmento, int tama
 	ultimaPagina->numeroFrame = asignarUnFrame();
 	ultimaPagina->presencia = 1;
 	ultimaPagina->indiceSwap = -1;
+	ultimaPagina->listaMetadata = list_create();
 	void *pos = retornarPosicionMemoriaFrame(ultimaPagina->numeroFrame) - tamanioUltimaMetadata - sizeof(struct HeapMetadata);
 
 	struct HeapMetadata *ultimaMetadata = malloc(sizeof(struct HeapMetadata));
@@ -556,7 +557,7 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 	nuevaPagina->presencia = 1;
 	nuevaPagina->indiceSwap = -1;
 	nuevaPagina->listaMetadata = list_create();
-
+	nuevaPagina->listaMetadata = list_create();
 	//Ocupo frame y lo reemplazo - modifico - en el bitmap de frames
 	struct Frame *frame = malloc(sizeof(struct Frame));
 	frame = list_get(bitmapFrames, nuevaPagina->numeroFrame);
