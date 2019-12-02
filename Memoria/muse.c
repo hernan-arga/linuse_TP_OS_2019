@@ -195,38 +195,37 @@ bool hayMemoriaDisponible() {
 	return true;
 }
 
+
 //MUSE ALLOC
 
 void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
 	char *stringIdSocketCliente = string_itoa(idSocketCliente);
-
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
-	int cantidadSegmentosARecorrer = list_size(segmentosProceso);
-	int metadataLibre;
 
-	if (list_is_empty(segmentosProceso)) { //Si no tiene ningun segmento, se lo creo
+	if(segmentosProceso == NULL){ //No tiene tabla de segmentos creada, el proceso no se inicio
+		return -1;
+	}
 
-		struct Segmento *unSegmento;
-		unSegmento = crearSegmento(tamanio, idSocketCliente); /*Se crea un segmento con el minimo
-		 *de frames necesarios para alocar
-		 *tamanio*/
+	if(list_is_empty(segmentosProceso)){ //Si no tiene ningun segmento se lo creo
 
-		struct Pagina *primeraPagina; //= malloc(sizeof(struct Pagina));
-		primeraPagina = list_get(unSegmento->tablaPaginas, 0);
+		struct Segmento *segmento;
+		segmento = crearSegmento(tamanio, idSocketCliente); //Se crea segmento para tamanio
+
+		struct Pagina *primeraPagina;
+		primeraPagina = list_get(segmento->tablaPaginas, 0);
 
 		void *comienzoDatos = malloc(sizeof(int));
 		comienzoDatos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame) + sizeof(struct HeapMetadata);
-
-
 
 		free(stringIdSocketCliente);
 		return comienzoDatos;
 
 	} else { //Sino, recorro segmentos buscando ultimo header free
 		struct Segmento *segmento = malloc(sizeof(struct Segmento));
+		struct HeapMetadata *metadataLibre;
 
-		for (int i = 0; i < cantidadSegmentosARecorrer; i++) {
+		for (int i = 0; i < list_size(segmentosProceso); i++) {
 
 			segmento = list_get(segmentosProceso, i);
 
@@ -247,7 +246,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 		//Si sale del for sin retorno, tengo que buscar algun segmento de heap
 		//que se pueda extender -siguiente for-
 
-		for (int j = 0; j < cantidadSegmentosARecorrer; j++) {
+		for (int j = 0; j < list_size(segmentosProceso); j++) {
 			struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
 			unSegmento = list_get(segmentosProceso, j);
 
@@ -441,11 +440,14 @@ struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento, int tam
 
 	struct Pagina *primeraPagina = malloc(sizeof(struct Pagina));
 	primeraPagina->numeroFrame = asignarUnFrame();
+	primeraPagina->presencia = 1;
+	primeraPagina->indiceSwap = -1;
 	void *pos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame);
 
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 	metadata->isFree = false;
 	metadata->size = tamanioMetadata;
+	list_add(primeraPagina->listaMetadata, 0);
 
 	//Pone la metadata en el frame correspondiente
 	memcpy(pos, metadata, sizeof(struct HeapMetadata));
@@ -486,11 +488,14 @@ struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *segmento, int tama
 
 	struct Pagina *ultimaPagina = malloc(sizeof(struct Pagina));
 	ultimaPagina->numeroFrame = asignarUnFrame();
+	ultimaPagina->presencia = 1;
+	ultimaPagina->indiceSwap = -1;
 	void *pos = retornarPosicionMemoriaFrame(ultimaPagina->numeroFrame) - tamanioUltimaMetadata - sizeof(struct HeapMetadata);
 
 	struct HeapMetadata *ultimaMetadata = malloc(sizeof(struct HeapMetadata));
 	ultimaMetadata->isFree = true;
 	ultimaMetadata->size = tamanioUltimaMetadata;
+	list_add(ultimaPagina->listaMetadata, tam_pagina - sizeof(struct HeapMetadata) - tamanioUltimaMetadata);
 
 	//Pone la metadata en el frame correspondiente
 	memcpy(pos, ultimaMetadata, sizeof(struct HeapMetadata));
@@ -509,6 +514,7 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 	struct Pagina *nuevaPagina = malloc(sizeof(struct Pagina));
 	nuevaPagina->numeroFrame = asignarUnFrame();
 	nuevaPagina->presencia = 1;
+	nuevaPagina->indiceSwap = -1;
 	nuevaPagina->listaMetadata = list_create();
 
 	//Ocupo frame y lo reemplazo - modifico - en el bitmap de frames
