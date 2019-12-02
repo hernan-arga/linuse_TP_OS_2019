@@ -839,7 +839,9 @@ int o_rmdir_2(char* path){
 }
 */
 
-int o_write(char* path, int size, int offset, char* buf){
+int o_write(char* path, int offset, int tamanioBuf, char* bufC){
+
+	char *buf = string_substring_until(bufC, tamanioBuf); //TODO revisar esto, en principio aca no es
 
 	//log_trace(logger, "Writing: Path: %s - Size: %d - Offset %d", path, size, offset);
 
@@ -847,6 +849,7 @@ int o_write(char* path, int size, int offset, char* buf){
 	if (nodo == -1){
 		loguearError(" - NO se pudo hacer el WRITE en SacServer\n");
 	}
+	int size = tamanioBuf;
 	int new_free_node;
 	struct sac_file_t *node;
 	char *data_block;
@@ -952,6 +955,8 @@ int o_write(char* path, int size, int offset, char* buf){
 		res = size;
 
 		finalizar:
+		free(n_pointer_block);
+		free(n_data_block);
 		// Devuelve el lock de escritura.
 		pthread_rwlock_unlock(&rwlock);
 		//log_lock_trace(logger, "Write: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
@@ -1012,6 +1017,8 @@ int o_truncate(char* path, int new_size){
 	node->tamanio_archivo = new_size; // Aca le dice su nuevo size.
 
 	finalizar:
+
+
 	// Cierra, ponele la alarma y se va para su casa. Mejor dicho, retorna 0 :D
 	// Devuelve el lock de escritura.
 	pthread_rwlock_wrlock(&rwlock);

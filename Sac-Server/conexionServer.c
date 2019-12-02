@@ -478,9 +478,8 @@ void tomarPeticionWrite(int cliente){
 	read(cliente, tamanioBuf, sizeof(int));
 	char *buf = malloc(*tamanioBuf);
 	read(cliente, buf, *tamanioBuf);
-	char *bufC = string_substring_until(buf, *tamanioBuf); //TODO revisar esto,
 
-	int bytes = o_write(pathCortado, *size, *offset, bufC);
+	int bytes = o_write(pathCortado, *offset, *tamanioBuf, buf);
 
 	//Serializo bytes
 	char* buffer = malloc(2 * sizeof(int));
@@ -490,6 +489,12 @@ void tomarPeticionWrite(int cliente){
 	memcpy(buffer + sizeof(int), &bytes, sizeof(int));
 
 	send(cliente, buffer, 2*sizeof(int), 0);
+	free(buf);
+	free(offset);
+	free(buffer);
+	free(tamanioBuf);
+	free(path);
+	free(tamanioPath);
 
 }
 

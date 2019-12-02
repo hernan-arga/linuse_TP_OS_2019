@@ -50,11 +50,10 @@ int main(){
 	mlock(node_table_start, NODE_TABLE_SIZE*BLOCKSIZE);
 	/* El codigo es tan, pero tan egocentrico, que le dice al SO como tratar la memoria */
 	madvise(header_start, ACTUAL_DISC_SIZE_B ,MADV_RANDOM);
+
 	obtain_free_blocks();
 	//iniciarMmap();
 	//bitArray = bitarray_create(mmapDeBitmap, tamanioEnBytesDelBitarray());
-
-
 
 	// Levanta conexion por socket
 	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);

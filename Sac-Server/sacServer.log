@@ -595,3 +595,19 @@
 [ERROR] 02:17:58:93 SacServer/(8590:8590): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
 [INFO] 02:17:58:95 SacServer/(8590:8590):  + Se hizo un truncate en SacServer
 
+[INFO] 14:36:04:680 SacServer/(10343:10343):  + Se hizo un create en SacServer
+
+[INFO] 14:39:18:418 SacServer/(10669:10669):  + Se hizo un create en SacServer
+
+[INFO] 15:31:48:644 SacServer/(13054:13054):  + Se hizo un create en SacServer
+
+[INFO] 15:52:20:710 SacServer/(13747:13747):  + Se hizo un create en SacServer
+
+[INFO] 17:56:53:7 SacServer/(16786:16786):  + Se hizo un create en SacServer
+
+[INFO] 18:29:34:141 SacServer/(17474:17474):  + Se hizo un create en SacServer
+
+[INFO] 18:31:02:869 SacServer/(17541:17541):  + Se hizo un create en SacServer
+
+[INFO] 19:06:55:785 SacServer/(18784:18784):  + Se hizo un create en SacServer
+
