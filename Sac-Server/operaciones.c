@@ -839,9 +839,7 @@ int o_rmdir_2(char* path){
 }
 */
 
-int o_write(char* path, int offset, int tamanioBuf, char* bufC){
-
-	char *buf = string_substring_until(bufC, tamanioBuf); //TODO revisar esto, en principio aca no es
+int o_write(char* path, int size, int offset, char* buf){
 
 	//log_trace(logger, "Writing: Path: %s - Size: %d - Offset %d", path, size, offset);
 
@@ -849,7 +847,6 @@ int o_write(char* path, int offset, int tamanioBuf, char* bufC){
 	if (nodo == -1){
 		loguearError(" - NO se pudo hacer el WRITE en SacServer\n");
 	}
-	int size = tamanioBuf;
 	int new_free_node;
 	struct sac_file_t *node;
 	char *data_block;
