@@ -482,3 +482,14 @@
 [INFO] 17:24:53:307 Muse/(4814:4814): llego init
 [INFO] 17:24:53:308 Muse/(4814:4814): llego alloc
 [INFO] 17:24:53:308 Muse/(4814:4814): llego close
+[INFO] 17:26:41:242 Muse/(4931:4931): llego init
+[INFO] 17:26:41:244 Muse/(4931:4931): llego alloc
+[INFO] 17:26:41:244 Muse/(4931:4931): llego alloc
+[INFO] 17:27:15:959 Muse/(4977:4977): llego init
+[INFO] 17:27:16:351 Muse/(4977:4977): llego alloc
+[INFO] 17:30:14:657 Muse/(5135:5135): llego init
+[INFO] 17:30:15:79 Muse/(5135:5135): llego alloc
+[INFO] 17:30:15:79 Muse/(5135:5135): llego alloc
+[INFO] 17:31:18:69 Muse/(5233:5233): llego init
+[INFO] 17:31:18:591 Muse/(5233:5233): llego alloc
+[INFO] 17:31:18:592 Muse/(5233:5233): llego alloc

@@ -397,7 +397,6 @@ struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 	free(ultimaPagina);
 	free(frame);
 	free(nuevaUltimaMetadata);
-	free(nuevaUltimaMetadata);
 
 	return segmento;
 }

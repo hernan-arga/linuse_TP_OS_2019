@@ -37,6 +37,10 @@ void recursiva(int num)
 
 	printf("%" PRIu32 "\n",ptr);
 
+	uint32_t ptr2 = muse_alloc(5);
+
+	printf("%" PRIu32 "\n",ptr2);
+
 	/*
 	recursiva(num - 1);
 	num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
