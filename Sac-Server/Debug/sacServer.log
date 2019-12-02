@@ -2667,3 +2667,13 @@
 [ERROR] 19:20:18:227 SacServer/(19108:19108): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
 [INFO] 19:24:13:664 SacServer/(19181:19181):  + Se hizo un create en SacServer
 
+[INFO] 22:37:30:501 SacServer/(32494:32494):  + Se hizo un create en SacServer
+
+[INFO] 22:40:07:927 SacServer/(32647:32647):  + Se hizo un create en SacServer
+
+[INFO] 22:42:08:576 SacServer/(32741:32741):  + Se hizo un create en SacServer
+
+[INFO] 22:43:38:870 SacServer/(310:310):  + Se hizo un create en SacServer
+
+[INFO] 22:48:57:305 SacServer/(459:459):  + Se hizo un create en SacServer
+

@@ -461,7 +461,7 @@ int obtain_free_blocks(void){
 	int free_nodes=0, i;
 	int bitmap_size_in_bits = BITMAP_SIZE_BITS;
 
-	bitarray = bitarray_create_with_mode((char *)bitmap_start, BITMAP_SIZE_B, LSB_FIRST);
+	bitarray = bitarray_create_with_mode((char *)bitmap_start, bitmap_size_in_bits, LSB_FIRST);
 
 	for (i = 0; i < bitmap_size_in_bits; i++){
 		if (bitarray_test_bit(bitarray, i) == 0) free_nodes++;
