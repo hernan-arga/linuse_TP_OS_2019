@@ -49,6 +49,7 @@ struct Segmento{
 
 struct Pagina{
 
+	t_list *listaMetadata;
 	int presencia;
 	int numeroFrame;
 	int indiceSwap;
@@ -57,7 +58,6 @@ struct Pagina{
 
 struct Frame{
 
-	t_list *listaMetadata;
 	int modificado;
 	int uso;
 
@@ -124,6 +124,7 @@ void *obtenerRellenoPagina(int tamanio);
 int musefree(int idSocketCliente, uint32_t dir);
 struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
 struct Segmento *unificarHeaders2(int idSegmento, int idSocketCliente);
+struct Segmento *eliminarPaginasLibresSegmento(int idSocketCliente, int idSegmento);
 
 //Memoria virtual
 int clockModificado();
