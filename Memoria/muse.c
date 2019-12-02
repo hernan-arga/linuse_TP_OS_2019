@@ -1173,7 +1173,9 @@ void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 
 		if(segmento->esComun == false){
 
-			//traer paginas necesarias a mm
+			//me traigo las paginas necesarias a memoria en caso de que no esten (cuando se mmapea no se las trae, podrian no estar ni
+			//en mm ppal ni en swap)
+			traerPaginasSegmentoMmapAMemoria(direccionSeg, n, segmento);
 
 		}
 
@@ -1233,6 +1235,113 @@ void *obtenerPosicionMemoriaPagina(struct Pagina *pagina){
 
 	return retornarPosicionMemoriaFrame(pagina->numeroFrame);
 }
+
+/*Trae las paginas de un segmento de mmap a mm ppal en caso de no estar*/
+
+//Si me pide un length mayor a lo que tiene el segmento mmap, relleno con /0 (???)
+void traerPaginasSegmentoMmapAMemoria(int direccion, int tamanio, struct Segmento *segmento){
+
+	t_list *paginas = segmento->tablaPaginas;
+	int primeraPagina = direccion / tam_pagina;
+	int ultimaPagina = (int)ceil(((double)(direccion + tamanio) / tam_pagina) - 1);
+	int desplazamiento = direccion % tam_pagina;
+
+	if(paginasNecesariasCargadas(primeraPagina, ultimaPagina, paginas) == false){ //Si hay que traerse alguna pagina del archivo
+
+		int cantidadPaginas = ultimaPagina - primeraPagina + 1;
+		int bytesALeer = cantidadPaginas * tam_pagina;
+		void *datos = malloc(bytesALeer);
+
+		//Abro el archivo asociado al segmento mmap
+		FILE *archivoMmap = fopen(segmento->filePath, "rb");
+		//Leo los bytes necesarios
+		fread(datos, tam_pagina, cantidadPaginas, archivoMmap);
+		//Cierro el archivo
+		fclose(archivoMmap);
+
+		//Traigo las paginas necesarias a frames de mm ppal
+		int punteroPagina = primeraPagina * tam_pagina;
+
+		for(int i = primeraPagina; i <= ultimaPagina; i++, bytesALeer -= tam_pagina, punteroPagina += tam_pagina){
+			struct Pagina *pagina = list_get(paginas, i);
+
+			if(pagina->indiceSwap == -1 && pagina->numeroFrame == -1){ //Si no esta en swap ni en mm ppal, se la trae a mm
+
+				int indicePagina = obtenerIndicePagina(paginas, pagina);
+				pagina->numeroFrame = asignarUnFrame();
+				pagina->presencia = 1; //paso a mm ppal
+				pagina->indiceSwap = -1;
+
+				struct Frame *frame = list_get(bitmapFrames, pagina->numeroFrame);
+				frame->uso = 1;
+				frame->modificado = 0;
+
+				void *pos = obtenerPosicionMemoriaPagina(pagina);
+
+				if(indicePagina == list_size(paginas) - 1){ //Si es la ultima pagina del segmento tengo que rellenar con /0
+
+					int relleno = bytesALeer - desplazamiento - tamanio;
+					void *rellenoPagina = obtenerRellenoPagina(relleno);
+
+					memcpy(pos, datos + punteroPagina, tam_pagina - relleno);
+					memcpy(pos + (tam_pagina - relleno), rellenoPagina, relleno);
+
+				} else { //Sino, copio la pagina entera
+
+					memcpy(pos, datos + punteroPagina, tam_pagina);
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+/*Se fija si TODAS las paginas necesarias del segmento mmap estan cargadas en mm ppal, si alguna
+ *NO esta cargada en mm ppal, retorna false*/
+bool paginasNecesariasCargadas(int primeraPagina, int ultimaPagina, t_list *paginas){
+
+	for(int i = 0; i < list_size(paginas); i++){
+		struct Pagina *pagina = list_get(paginas, i);
+		int indicePagina = obtenerIndicePagina(paginas, list_get(paginas, i));
+
+		//Si es una de las paginas necesarias
+		if(indicePagina >= primeraPagina && indicePagina <= ultimaPagina){
+
+			//Si esta en mm ppal O esta en swap, retorno false
+			if(pagina->numeroFrame != -1 || pagina->indiceSwap != -1){
+				return false;
+			}
+
+		}
+
+	}
+
+	return true;
+}
+
+/*Genera el relleno de /0 para segmento mmap*/
+void *obtenerRellenoPagina(int tamanio){
+
+	void* relleno = malloc(tamanio);
+	char* caracterRelleno = malloc(1);
+	char caracter = '\0';
+	memcpy(caracterRelleno, &caracter, 1);
+	int puntero = 0;
+
+	for(int i = 0; i < tamanio; i++, puntero++){
+
+		memcpy(relleno + puntero, (void*)caracterRelleno, 1);
+
+	}
+
+	free(caracterRelleno);
+	return relleno;
+}
+
 
 int idSegmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion) {
 	int segmentosARecorrer = list_size(listaSegmentos);

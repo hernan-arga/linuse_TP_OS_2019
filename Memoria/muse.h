@@ -116,6 +116,9 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 void *museget(void* dst, uint32_t src, size_t n, int idSocket);
 int min(int num1, int num2);
 void *obtenerPosicionMemoriaPagina(struct Pagina *pagina);
+void traerPaginasSegmentoMmapAMemoria(int direccion, int tamanio, struct Segmento *segmento);
+bool paginasNecesariasCargadas(int primeraPagina, int ultimaPagina, t_list *paginas);
+void *obtenerRellenoPagina(int tamanio);
 
 //Funciones free
 int musefree(int idSocketCliente, uint32_t dir);
