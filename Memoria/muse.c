@@ -1425,45 +1425,68 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 
 int musefree(int idSocketCliente, uint32_t dir) {
 
-	//busco los segmentos del proceso que me pide el free
 	char *stringIdSocketCliente = string_itoa(idSocketCliente);
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 
-	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
-
-	struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
+	if(segmentosProceso == NULL){
+		return -1;
+	}
 
 	//busco el segmento especifico que contiene la direccion
-	unSegmento = segmentoQueContieneDireccion(segmentosProceso, (void*) dir);
+	struct Segmento *segmento = malloc(sizeof(struct Segmento));
+	segmento = segmentoQueContieneDireccion(segmentosProceso, (void*) dir);
 
-	//voy a la pagina de ese segmento donde esta la direccion
-	unaPagina = paginaQueContieneDireccion(unSegmento, (void*) dir);
+	if(segmento == NULL){ //No existe el segmento buscado
+		return -1;
+	}
 
-	int desplazamiento = (int) dir % tam_pagina;
+	if(segmento->esComun == false){ //Existe el segmento pero es un segmento mmap, no se libera con free
+		return -1;
+	}
+
+	//voy a la pagina de ese segmento donde esta la direccion y recorro metadatas
+	struct Pagina *pagina = malloc(sizeof(struct Pagina));
+	pagina = paginaQueContieneDireccion(segmento, (void*) dir);
+	t_list *metadatas = list_create();
+	struct Frame *frame = list_get(bitmapFrames, pagina->numeroFrame);
+	metadatas = frame->listaMetadata;
+
+	int direccionSeg = dir - segmento->baseLogica;
 
 	//retorno la posicion memoria dentro del frame
-	void *pos = retornarPosicionMemoriaFrame(unaPagina->numeroFrame)
-			+ desplazamiento;
+	void *pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
 
-	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
-	memcpy(metadata, pos, sizeof(struct HeapMetadata));
+	struct HeapMetadata *metadataBuscada = malloc(sizeof(struct HeapMetadata));
+	metadataBuscada = NULL;
 
-	//almaceno cuanta memoria esta liberando - representa cuanto tendra que achicarse el segmento
-	int tamanio_liberado = metadata->size;
+	for(int i = 0; i < list_size(metadatas); i++){
+		int desplazamientoMetadata = (int)list_get(metadatas, i);
 
-	//se cambia la metadata para indicar que esta parte esta libre
-	metadata->isFree = true;
+		if(desplazamientoMetadata + sizeof(struct HeapMetadata) == direccionSeg){ //Es la metadata que busco liberar
+			pos = pos + desplazamientoMetadata;
 
-	//modifico el tamanio del segmento en el que se hizo free
-	unSegmento->tamanio = unSegmento->tamanio - tamanio_liberado; //Consulta, tamanio liberado siempre multiplo de tam pag?
+			//Me copio la metadata, la modifico (libero) y la reemplazo
+			memcpy(metadataBuscada, pos, sizeof(struct HeapMetadata));
+			metadataBuscada->isFree = true;
 
-	//ACTUALIZAR tabla segmentos de idproceso con el nuevo segmento modificado (unSegmento)
+			memcpy(pos, metadataBuscada, sizeof(struct HeapMetadata));
+		}
+	}
 
-	//una vez que realizo el free tengo que verifico que si la porcion anterior a la direccion o la siguiente se encuentran libres
-	//si lo estan unifico
-	unificarHeaders(idSocketCliente, unSegmento->id);
+	if(metadataBuscada == NULL){ //No se encontro la metadata requerida
+		return -1;
+	}
 
-	return 1;
+	//modificar el tamanio del segmento en el que se hizo free ??????
+
+	//una vez que realizo el free unifico headers
+	segmento = unificarHeaders2(idSocketCliente, segmento->id);
+
+	//Actualizo el diccionario con las modificaciones en segmentos
+	list_replace(segmentosProceso, segmento->id, segmento);
+	dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
+
+	return 0;
 }
 
 struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion) {
