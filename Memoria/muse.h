@@ -49,6 +49,7 @@ struct Segmento{
 
 struct Pagina{
 
+	int presencia;
 	int numeroFrame;
 	int indiceSwap;
 
@@ -59,7 +60,6 @@ struct Frame{
 	t_list *listaMetadata;
 	int modificado;
 	int uso;
-	int presencia;
 
 };
 
@@ -113,8 +113,9 @@ struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento, void *dir
 struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
 
 //Funciones get
-int museget(void* dst, uint32_t src, size_t n, int idSocket);
+void *museget(void* dst, uint32_t src, size_t n, int idSocket);
 int min(int num1, int num2);
+void *obtenerPosicionMemoriaPagina(struct Pagina *pagina);
 
 //Funciones free
 int musefree(int idSocketCliente, uint32_t dir);

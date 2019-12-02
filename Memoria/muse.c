@@ -102,7 +102,6 @@ void crearBitmapFrames() {
 		struct Frame *nuevoFrame = malloc(sizeof(struct Frame));
 
 		nuevoFrame->modificado = 0;
-		nuevoFrame->presencia = 1;
 		nuevoFrame->uso = 0;
 		nuevoFrame->listaMetadata = list_create();
 
@@ -487,7 +486,6 @@ int asignarUnFrame() {
 	struct Frame *frameReemplazo = malloc(sizeof(struct Frame));
 	frameReemplazo = list_get(bitmapFrames, frame);
 	frameReemplazo->modificado = 0;
-	frameReemplazo->presencia = 1;
 	frameReemplazo->uso = 1;
 	list_clean(frameReemplazo->listaMetadata); //limpia la lista para la prox pag
 
@@ -523,12 +521,12 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 
 	struct Pagina *nuevaPagina = malloc(sizeof(struct Pagina));
 	nuevaPagina->numeroFrame = asignarUnFrame();
+	nuevaPagina->presencia = 1;
 
 	//Ocupo frame y lo reemplazo - modifico - en el bitmap de frames
 	struct Frame *frame = malloc(sizeof(struct Frame));
 	frame = list_get(bitmapFrames, nuevaPagina->numeroFrame);
 	frame->modificado = 0;
-	frame->presencia = 1;
 	frame->uso = 1;
 	frame->listaMetadata = list_create();
 	list_replace(bitmapFrames, nuevaPagina->numeroFrame, frame);
@@ -1144,95 +1142,96 @@ int min(int num1, int num2) {
  * @return Si pasa un error, retorna -1. Si la operación se realizó correctamente, retorna 0.
  */
 
-int museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
-	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
-	struct Pagina *unaPagina = malloc(sizeof(struct Pagina)); //PRIMERA Pagina, podrian ser mas
-
+void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 	char *stringIdSocketCliente = string_itoa(idSocketCliente);
-	t_list *listaSegmentos = dictionary_get(tablasSegmentos,stringIdSocketCliente);
+	t_list *listaSegmentos = dictionary_get(tablasSegmentos, stringIdSocketCliente);
+	void *resultado = NULL;
 
-	//Obtencion segmento, pagina, frame, desplazamiento
-	int idSegmento;
-	struct Frame *frame;
-	int desplazamiento;
-
-	int direccion = (int) src; //Casteo a int la direccion recibida
-
-	//Obtencion desplazamiento
-	desplazamiento = direccion % tam_pagina;
-
-	//Obtencion idSegmento y segmento
-	idSegmento = idSegmentoQueContieneDireccion(listaSegmentos, (void*) src);
-	unSegmento = list_get(listaSegmentos, idSegmento);
-
-	//Obtencion pagina y frame (PRIMERA pagina y PRIMER frame, podrian ser más)
-	unaPagina = paginaQueContieneDireccion(unSegmento, (void*) src); //Me retorna directamente la pagina
-	frame = list_get(bitmapFrames, unaPagina->numeroFrame);
-
-	int bytesPrimeraPagina = tam_pagina - desplazamiento; //heapmetadata estan incluidos en desplazamiento ???
-
-	//////////////////////////////////////////////////
-	int paginasARecorrer = (ceil)(n / tam_pagina);
-	int bytesALeer = n;
-	void *dataPedida = malloc(n);
-
-	/*Ya se tienen todos los datos necesarios y se puede ir a mm ppal a buscar la data*/
-	/*PRIMERO se debe chequear si la data esta en mm ppal, en caso de que no este en mm ppal
-	 * page fault, clock modificado y se la trae a mm ppal*/
-	int paginasRecorridas = 0;
-	int indicePrimeraPagina = floor(((unSegmento->baseLogica) - ((int) src)) / tam_pagina);
-
-	//Primera pagina la recorro antes porque no se recorre entera
-	if (frame->presencia == 1) { //Frame de primera pag, obtenido mas arriba
-		memcpy(dataPedida, retornarPosicionMemoriaFrame(unaPagina->numeroFrame) + desplazamiento, n);
-		bytesALeer = bytesALeer - n;
-
-		paginasRecorridas++;
+	if(listaSegmentos == NULL){
+		//Hacer log
+		return NULL;
 	}
 
-	while (paginasRecorridas < paginasARecorrer) {
-		//Obtengo la pagina a recorrer (pagina siguiente a la ultima recorrida)
-		struct Pagina *pagina = malloc(sizeof(struct Pagina));
-		pagina = list_get(unSegmento->tablaPaginas,
-				indicePrimeraPagina + paginasRecorridas);
+	int idSegmento = idSegmentoQueContieneDireccion(listaSegmentos, (void*)src);;
+	struct Segmento *segmento = list_get(listaSegmentos, idSegmento);
 
-		struct Frame *framePagina = malloc(sizeof(struct Frame));
-		framePagina = list_get(bitmapFrames, pagina->numeroFrame);
-
-		//Me fijo si la pagina esta en mm ppal o debo ir a swap
-		if (framePagina->presencia == 1) {
-			memcpy(dataPedida,
-					retornarPosicionMemoriaFrame(pagina->numeroFrame),
-					min(bytesALeer, tam_pagina)); //Lo esta copiando al final? Necesito concatenarlo a lo anterior
-			//Lee min para nunca pasarse de un frame
-
-			bytesALeer = bytesALeer - min(bytesALeer, tam_pagina);
-		}
-		//Si la pagina no esta en mm ppal, voy a swap y luego leo
-		else {
-			//PAGE FAULT
-			//Busco frame a desalojar con clock modificado
-			//Swappeo frame a desalojar
-			//Traigo al frame desalojado y copio desde ahi
-
-			//Una vez que la traje a mm ppal
-			memcpy(dataPedida,
-					retornarPosicionMemoriaFrame(pagina->numeroFrame),
-					min(bytesALeer, tam_pagina));
-
-			bytesALeer = bytesALeer - min(bytesALeer, tam_pagina);
-		}
-
-		paginasRecorridas++;
+	if(segmento == NULL){
+		//Hacer log
+		return NULL;
 	}
 
-	dst = dataPedida; //return 0, return -1 caso error
+	int direccionSeg = src - segmento->baseLogica;
+	int primeraPagina = direccionSeg / tam_pagina;
+	int ultimaPagina = (int)ceil((double)(direccionSeg + n) / tam_pagina) - 1;
+	int desplazamiento = direccionSeg % tam_pagina;
 
-	//Codigo anterior corregido
-	//void *pos = retornarPosicionMemoriaFrame(unaPagina->numeroFrame) + desplazamiento; //VER CASO desplazamiento se pasa de frame
-	//memcpy((void*) dst, pos, n);
+	if(segmento->tamanio - direccionSeg >= n && primeraPagina * tam_pagina + desplazamiento + n <= segmento->tamanio){
+		int cantidadPaginas = ultimaPagina - primeraPagina + 1;
+		resultado = malloc(n);
+		void *recorridoPaginas = malloc(cantidadPaginas * tam_pagina);
+		int puntero = 0;
 
-	return 0;
+		if(segmento->esComun == false){
+
+			//traer paginas necesarias a mm
+
+		}
+
+		for(int i = 0; i < cantidadPaginas; i++, puntero += tam_pagina){
+			struct Pagina *pagina = list_get(segmento->tablaPaginas, primeraPagina + i);
+			struct Frame *frame = list_get(bitmapFrames, pagina->numeroFrame);
+			pagina->presencia = 1;
+
+			void *pos = obtenerPosicionMemoriaPagina(pagina);
+
+			frame->uso = 1;
+
+			list_replace(bitmapFrames, pagina->numeroFrame, frame);
+			list_replace(segmento->tablaPaginas, primeraPagina + i, pagina);
+
+			memcpy(recorridoPaginas + puntero, pos, tam_pagina);
+		}
+
+		memcpy(resultado, recorridoPaginas + desplazamiento, n);
+		free(recorridoPaginas);
+	}
+
+	return resultado;
+}
+
+/*Retorna la posicion de memoria del frame en caso de estar en mm ppal y en caso de no estar en mm ppal, la trae de swap*/
+void *obtenerPosicionMemoriaPagina(struct Pagina *pagina){
+
+	if(pagina->presencia == 0){
+
+		if(pagina->indiceSwap != -1){
+
+			void* paginaReemplazo = malloc(tam_pagina);
+			memcpy(paginaReemplazo, swap + pagina->indiceSwap * tam_pagina, tam_pagina);
+
+			bitarray_clean_bit(bitmapSwap, pagina->indiceSwap); //libero el indice en swap
+			pagina->indiceSwap = -1;
+
+			int frame = buscarFrameLibre();
+			pagina->numeroFrame = frame;
+			pagina->presencia = 1;
+
+			//Paso la pagina a memoria
+			memcpy(retornarPosicionMemoriaFrame(frame), paginaReemplazo, tam_pagina);
+
+		} else{
+
+			//No deberia llegar aca (?)
+
+		}
+	}
+
+	struct Frame *frame = list_get(bitmapFrames, pagina->numeroFrame);
+	frame->uso = 1;
+
+	list_replace(bitmapFrames, pagina->numeroFrame, frame);
+
+	return retornarPosicionMemoriaFrame(pagina->numeroFrame);
 }
 
 int idSegmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion) {
@@ -1572,13 +1571,13 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCli
 
 	paginaSwapeada->indiceSwap = -1; //ya no esta en swap
 	paginaSwapeada->numeroFrame = frameReemplazo;
+	paginaSwapeada->presencia = 1;
 
 	//"Libero" la posicion de swap en el bitarray de swap
 	bitarray_clean_bit(bitmapSwap, indiceSwap);
 
 	nuevoFrame = list_get(bitmapFrames, frameReemplazo);
 	nuevoFrame->modificado = 0; //No esta modificado, recien se carga
-	nuevoFrame->presencia = 1; //P = 1, esta cargada en mm ppal
 	nuevoFrame->uso = 1;
 
 	//Cargo la data swappeada en el frame de mm ppal asignado a la pagina
@@ -1637,11 +1636,11 @@ int llevarASwapUnaPagina(int indicePagina, int indiceSegmento, int idSocketClien
 	//Debo liberar el frame que contenia la pagina que lleve a swap y tambien la pagina
 	paginaASwappear->indiceSwap = indiceSwap;
 	paginaASwappear->numeroFrame = -1;
+	paginaASwappear->presencia = 0;
 
 	struct Frame *frameModificado = malloc(sizeof(struct Frame));
 	frameModificado = list_get(bitmapFrames, frameQueContieneData);
 	frameModificado->modificado = 0;
-	frameModificado->presencia = 0;
 	frameModificado->uso = 0;
 
 	//Modifico todas las estructuras con lo nuevo
