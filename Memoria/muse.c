@@ -538,7 +538,7 @@ struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *segmento, int tama
 	struct HeapMetadata *ultimaMetadata = malloc(sizeof(struct HeapMetadata));
 	ultimaMetadata->isFree = true;
 	ultimaMetadata->size = tamanioUltimaMetadata;
-	list_add(ultimaPagina->listaMetadata, tam_pagina - sizeof(struct HeapMetadata) - tamanioUltimaMetadata);
+	list_add(ultimaPagina->listaMetadata, (void*)(tam_pagina - sizeof(struct HeapMetadata) - tamanioUltimaMetadata));
 
 	//Pone la metadata en el frame correspondiente
 	memcpy(pos, ultimaMetadata, sizeof(struct HeapMetadata));
@@ -1548,8 +1548,95 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
  *enteras vacias (con t odo free), eliminarlas y modificar el tamaño del segmento*/
 
 struct Segmento *eliminarPaginasLibresSegmento(int idSocketCliente, int idSegmento){
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 
-	return NULL;
+	if(segmentosProceso == NULL){ //No deberia pasar porque ya se chequeo en la funcion de donde viene
+		return NULL;
+	}
+
+	struct Segmento *segmento = list_get(segmentosProceso, idSegmento);
+
+	if(segmento == NULL){ //No deberia pasar
+		return NULL;
+	}
+
+	int paginasEliminadas = 0;
+	int pag = list_size(segmento->tablaPaginas) - 1;
+	struct Pagina *pagina;
+	t_list *metadatas = list_create();
+	struct Frame *frame = malloc(sizeof(struct Frame));
+	int indiceFrame;
+
+	while(pag >= 0){
+		pagina = list_get(segmento->tablaPaginas, pag);
+		metadatas = pagina->listaMetadata;
+
+		if(tieneTodasLasMetadatasLibres(pagina)){
+			//caso que tenga espacio ocupado por metadata de pagina anterior
+
+			if((int)list_get(metadatas, 0) == 0){
+				indiceFrame = pagina->numeroFrame;
+				frame = list_get(bitmapFrames, pagina->numeroFrame);
+				list_remove(segmento->tablaPaginas, obtenerIndicePagina(segmento->tablaPaginas, pagina));
+				frame->modificado = 0;
+				frame->uso = 0;
+				list_replace(bitmapFrames, indiceFrame, frame);
+				paginasEliminadas++;
+			} else{
+				if(ultimaMetadataLibre(list_get(segmento->tablaPaginas, pag - 1)) == true){
+					indiceFrame = pagina->numeroFrame;
+					frame = list_get(bitmapFrames, pagina->numeroFrame);
+					list_remove(segmento->tablaPaginas, obtenerIndicePagina(segmento->tablaPaginas, pagina));
+					frame->modificado = 0;
+					frame->uso = 0;
+					list_replace(bitmapFrames, indiceFrame, frame);
+					paginasEliminadas++;
+				}
+			}
+		}
+	}
+
+	segmento->paginasLiberadas += paginasEliminadas;
+	segmento->tamanio -= paginasEliminadas * pconfig->tamanio_pag;
+	list_replace(segmentosProceso, segmento->id, segmento);
+	dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
+
+	return segmento;
+}
+
+bool tieneTodasLasMetadatasLibres(struct Pagina *pagina){
+	t_list *metadatas = list_create();
+	metadatas = pagina->listaMetadata;
+	void *pos = obtenerPosicionMemoriaPagina(pagina);
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+
+	for(int i = 0; i < list_size(metadatas); i++){
+		memcpy(metadata, pos + (int)list_get(metadatas, i), sizeof(struct HeapMetadata));
+
+		if(metadata->isFree == false){
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool ultimaMetadataLibre(struct Pagina *pagina){
+	t_list *metadatas = list_create();
+	metadatas = pagina->listaMetadata;
+	int ultimaMetadata = (int)list_get(metadatas, list_size(metadatas) - 1);
+	void *pos = obtenerPosicionMemoriaPagina(pagina);
+	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+
+	memcpy(metadata, pos + ultimaMetadata, sizeof(struct HeapMetadata));
+
+	if(metadata->isFree == true){
+		return true;
+	} else{
+		return false;
+	}
+
 }
 
 
