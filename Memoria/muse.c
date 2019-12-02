@@ -284,7 +284,9 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 
 	t_list *listaSegmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 	struct Segmento *nuevoSegmento = malloc(sizeof(struct Segmento));
-
+	nuevoSegmento->esComun = true;
+	nuevoSegmento->filePath = NULL;
+	//nuevoSegmento->paginasLiberadas = 0;
 	//Identificar segmento
 	if (list_is_empty(listaSegmentosProceso)) { //Si es el primer segmento le pongo id 0, sino el id incremental que le corresponda
 		nuevoSegmento->id = 0;
@@ -1354,7 +1356,7 @@ struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento,
 
 	/*Obtencion Pagina: (base logica segmento - direccion) / tam_pagina (pag es el resultado piso)*/
 	indicePagina = floor(
-			((unSegmento->baseLogica) - ((int) direccion)) / tam_pagina);
+			(( ((int) direccion) - unSegmento->baseLogica)) / pconfig->tamanio_pag);
 
 	struct Pagina *pagina = list_get(listaPaginas, indicePagina);
 
@@ -1490,10 +1492,12 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 
 	for (int i = 0; i < list_size(listaSegmentos); i++) {
 		unSegmento = list_get(listaSegmentos, i);
-
+		/*
 		if (((int) direccion - unSegmento->baseLogica) < unSegmento->tamanio) {
 			return unSegmento;
 		}
+		*/
+		return unSegmento;
 	}
 
 	//Si sale del for sin retorno, no hay ningun segmento que contenga esa direc

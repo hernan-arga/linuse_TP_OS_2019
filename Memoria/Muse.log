@@ -493,3 +493,42 @@
 [INFO] 17:31:18:69 Muse/(5233:5233): llego init
 [INFO] 17:31:18:591 Muse/(5233:5233): llego alloc
 [INFO] 17:31:18:592 Muse/(5233:5233): llego alloc
+[INFO] 18:23:24:856 Muse/(7099:7099): llego init
+[INFO] 18:23:24:857 Muse/(7099:7099): llego alloc
+[INFO] 18:23:24:863 Muse/(7099:7099): llego free
+[INFO] 18:23:24:864 Muse/(7099:7099): Error liberando memoria
+[INFO] 18:23:24:864 Muse/(7099:7099): llego close
+[INFO] 18:24:58:309 Muse/(7200:7200): llego init
+[INFO] 18:24:58:969 Muse/(7200:7200): llego alloc
+[INFO] 18:24:58:969 Muse/(7200:7200): llego free
+[INFO] 18:24:58:969 Muse/(7200:7200): Error liberando memoria
+[INFO] 18:25:04:105 Muse/(7200:7200): llego close
+[INFO] 18:25:43:121 Muse/(7278:7278): llego init
+[INFO] 18:25:43:912 Muse/(7278:7278): llego alloc
+[INFO] 18:25:43:912 Muse/(7278:7278): llego free
+[INFO] 18:26:32:592 Muse/(7361:7361): llego init
+[INFO] 18:26:36:528 Muse/(7361:7361): llego alloc
+[INFO] 18:26:52:56 Muse/(7361:7361): llego free
+[INFO] 18:30:40:524 Muse/(7681:7681): llego init
+[INFO] 18:30:40:529 Muse/(7681:7681): llego alloc
+[INFO] 18:30:40:529 Muse/(7681:7681): llego free
+[INFO] 18:30:40:530 Muse/(7681:7681): Error liberando memoria
+[INFO] 18:30:40:530 Muse/(7681:7681): llego close
+[INFO] 18:31:04:631 Muse/(7736:7736): llego init
+[INFO] 18:31:08:55 Muse/(7736:7736): llego alloc
+[INFO] 18:31:08:55 Muse/(7736:7736): llego free
+[INFO] 18:42:06:682 Muse/(7903:7903): llego init
+[INFO] 18:42:07:112 Muse/(7903:7903): llego alloc
+[INFO] 18:42:07:112 Muse/(7903:7903): llego free
+[INFO] 18:52:03:304 Muse/(8101:8101): llego init
+[INFO] 18:52:04:606 Muse/(8101:8101): llego alloc
+[INFO] 18:52:04:606 Muse/(8101:8101): llego free
+[INFO] 18:55:05:650 Muse/(8286:8286): llego init
+[INFO] 18:55:06:47 Muse/(8286:8286): llego alloc
+[INFO] 18:55:06:47 Muse/(8286:8286): llego free
+[INFO] 19:04:01:795 Muse/(8641:8641): llego init
+[INFO] 19:04:02:184 Muse/(8641:8641): llego alloc
+[INFO] 19:04:02:185 Muse/(8641:8641): llego free
+[INFO] 19:05:17:793 Muse/(8813:8813): llego init
+[INFO] 19:05:18:232 Muse/(8813:8813): llego alloc
+[INFO] 19:05:18:232 Muse/(8813:8813): llego free
