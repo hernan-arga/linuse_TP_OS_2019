@@ -20,13 +20,6 @@ int main() {
 
 	printf("%d \n", (int) (&memoriaPrincipal));
 
-	printf("%d \n", sizeof(uint32_t));
-
-	printf("%d \n", sizeof(bool));
-
-	printf("%d \n", sizeof(struct HeapMetadata));
-
-
 	// Levanta conexion por socket
 	pthread_create(&hiloLevantarConexion, NULL,
 			(void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
