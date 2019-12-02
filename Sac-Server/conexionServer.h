@@ -9,13 +9,14 @@ typedef struct {
 	int puerto;
 } config;
 
-int iniciar_conexion(int, int);
+void iniciar_conexion(int, int);
 void levantarConfigFile();
 t_config* leer_config(void);
 void loguearInfo(char *);
 void loguearError();
 t_bitarray * crearBitmap();
 void borrarBitmap(t_bitarray*);
+void* socketThread(void *arg);
 
 void tomarPeticionCreate(int);
 void tomarPeticionOpen(int);

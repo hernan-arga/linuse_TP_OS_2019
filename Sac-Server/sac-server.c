@@ -19,8 +19,8 @@ int path_size_in_bytes(const char* path){
 int main(){
 	// Levanta archivo de configuracion
 	config* pconfig = malloc(2 * sizeof(int));
-	levantarConfigFile(pconfig);
 
+	levantarConfigFile(pconfig);
 
 	// Obiene el tamanio del disco
 	fuse_disc_size = path_size_in_bytes(DISC_PATH);
@@ -56,7 +56,7 @@ int main(){
 	//bitArray = bitarray_create(mmapDeBitmap, tamanioEnBytesDelBitarray());
 
 	// Levanta conexion por socket
-	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
+	iniciar_conexion(pconfig->ip, pconfig->puerto);
 
 	// Logueo
 	loguearInfo(" + Levantado Sac-Server correctamente");

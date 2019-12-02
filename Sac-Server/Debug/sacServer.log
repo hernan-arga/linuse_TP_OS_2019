@@ -2667,6 +2667,42 @@
 [ERROR] 19:20:18:227 SacServer/(19108:19108): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
 [INFO] 19:24:13:664 SacServer/(19181:19181):  + Se hizo un create en SacServer
 
+<<<<<<< HEAD
+[INFO] 23:01:38:207 SacServer/(7725:7739):  + Se hizo un create en SacServer
+
+[INFO] 23:01:39:698 SacServer/(7725:7739):  + Se hizo un read vacio en SacServer
+
+[INFO] 23:01:40:308 SacServer/(7725:7739):  + Se hizo un read vacio en SacServer
+
+[INFO] 23:01:45:328 SacServer/(7725:7739):  + Se hizo un mkdir en SacServer
+
+[INFO] 23:01:50:166 SacServer/(7725:7739):  + Se hizo un create en SacServer
+
+[INFO] 23:01:56:843 SacServer/(7725:7739):  + Se hizo un create en SacServer
+
+[INFO] 23:02:00:721 SacServer/(7725:7739):  + Se hizo un read vacio en SacServer
+
+[INFO] 23:02:00:904 SacServer/(7725:7739):  + Se hizo un read vacio en SacServer
+
+[INFO] 23:02:03:292 SacServer/(7725:7739):  + Se hizo un truncate en SacServer
+
+[ERROR] 23:02:03:341 SacServer/(7725:7739): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 23:02:06:748 SacServer/(7725:7739): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 23:02:08:856 SacServer/(7725:7739): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 23:02:08:860 SacServer/(7725:7739): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 23:02:09:37 SacServer/(7725:7739): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 23:03:31:199 SacServer/(7725:7822):  + Se hizo un mkdir en SacServer
+
+[INFO] 23:03:36:87 SacServer/(7725:7822):  + Se hizo un create en SacServer
+
+[INFO] 23:09:06:119 SacServer/(7940:7953):  + Se hizo un mkdir en SacServer
+
+[INFO] 23:09:12:53 SacServer/(7940:7953):  + Se hizo un create en SacServer
+
+[INFO] 23:09:22:303 SacServer/(7940:7949):  + Se hizo un create en SacServer
+
+[INFO] 23:09:27:897 SacServer/(7940:7949):  + Se hizo un create en SacServer
+=======
 [INFO] 22:37:30:501 SacServer/(32494:32494):  + Se hizo un create en SacServer
 
 [INFO] 22:40:07:927 SacServer/(32647:32647):  + Se hizo un create en SacServer
@@ -2676,6 +2712,7 @@
 [INFO] 22:43:38:870 SacServer/(310:310):  + Se hizo un create en SacServer
 
 [INFO] 22:48:57:305 SacServer/(459:459):  + Se hizo un create en SacServer
+>>>>>>> 40b223b0516e25096852b68bd00951ffe8409ee4
 
 [INFO] 22:56:56:86 SacServer/(760:760):  + Se hizo un create en SacServer
 
