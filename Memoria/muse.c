@@ -163,7 +163,7 @@ bool hayFramesLibres() {
 void *retornarPosicionMemoriaFrame(int unFrame) {
 	int offset = tam_pagina * unFrame; //Los frames estan en orden y se recorren de menor a mayor
 
-	int comienzoMemoria = (int) (&memoriaPrincipal);
+	int comienzoMemoria = (int) (&memoriaPrincipal); //Revisar esto todo
 
 	//return ((&memoriaPrincipal) + offset);
 	return (void*)
@@ -249,7 +249,8 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 		int ultimaMetadata;
 		struct Pagina *ultimaPagina;
 		void *pos;
-		int paginasNecesarias = (double)ceil((tamanio + sizeof(struct HeapMetadata)) / tam_pagina);
+		printf("%i\n", tam_pagina);
+		int paginasNecesarias = (int)ceil((tamanio + sizeof(struct HeapMetadata)) / tam_pagina);
 		//Si sale del for sin retorno, tengo que buscar algun segmento de heap
 		//que se pueda extender -siguiente for-
 
@@ -491,10 +492,11 @@ struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento, int tam
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 	metadata->isFree = false;
 	metadata->size = tamanioMetadata;
+
 	list_add(primeraPagina->listaMetadata, (void*) 0);
 
 	//Pone la metadata en el frame correspondiente
-	memcpy(pos, metadata, sizeof(struct HeapMetadata));
+	memcpy(pos, metadata, sizeof(struct HeapMetadata)); //todo ACA se reinicia el tam pag
 
 	list_add(segmento->tablaPaginas, primeraPagina);
 
@@ -1487,7 +1489,6 @@ int musefree(int idSocketCliente, uint32_t dir) {
 
 	char *stringIdSocketCliente = string_itoa(idSocketCliente);
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
-
 	if(segmentosProceso == NULL){
 		return -1;
 	}
