@@ -18,7 +18,7 @@ int main() {
 
 	arrancarMemoria(pconfig);
 
-	printf("%d \n", (int) (&memoriaPrincipal));
+	printf("%d \n", (int) (memoriaPrincipal));
 
 	// Levanta conexion por socket
 	pthread_create(&hiloLevantarConexion, NULL,
@@ -305,12 +305,12 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 
 	if (list_is_empty(listaSegmentosProceso)) { //Si es el primer segmento, su base logica es 0
 
-		nuevoSegmento->baseLogica = 0;
+		nuevoSegmento->baseLogica = 0 + memoriaPrincipal;
 
 	} else { //Obtengo el tamaño del ultimo segmento
 
 		int idUltimoSegmento = list_size(listaSegmentosProceso) - 1; //Id ultimo segmento
-		nuevoSegmento->baseLogica = obtenerTamanioSegmento(idUltimoSegmento, idSocketCliente) + 1;
+		nuevoSegmento->baseLogica = obtenerTamanioSegmento(idUltimoSegmento, idSocketCliente) + 1 + memoriaPrincipal;
 
 	}
 
@@ -1545,7 +1545,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	void *pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
 
 	struct HeapMetadata *metadataBuscada = malloc(sizeof(struct HeapMetadata));
-	metadataBuscada = NULL;
+	metadataBuscada->size = -1;
 
 	for(int i = 0; i < list_size(metadatas); i++){
 		int desplazamientoMetadata = (int)list_get(metadatas, i);
@@ -1561,15 +1561,15 @@ int musefree(int idSocketCliente, uint32_t dir) {
 		}
 	}
 
-	if(metadataBuscada == NULL){ //No se encontro la metadata requerida
+	if(metadataBuscada->size == -1){ //No se encontro la metadata requerida
 		return -1;
 	}
 
 	//modificar el tamanio del segmento en el que se hizo free ??????
 
 	//una vez que realizo el free unifico headers
-	segmento = unificarHeaders2(idSocketCliente, segmento->id);
-	segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
+	segmento = unificarHeaders2(segmento->id,idSocketCliente);
+	//segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
 
 	//Actualizo el diccionario con las modificaciones en segmentos
 	//list_replace(segmentosProceso, segmento->id, segmento);
