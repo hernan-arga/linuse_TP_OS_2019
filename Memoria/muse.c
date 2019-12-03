@@ -267,7 +267,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 				//Retorno posicion ultima metadata + 5
 				ultimaPagina = list_get(unSegmento->tablaPaginas, list_size(unSegmento->tablaPaginas)-1);
 				ultimaMetadata = (int)list_get(ultimaPagina->listaMetadata, list_size(ultimaPagina->listaMetadata) - 1);
-				pos = retornarPosicionMemoriaFrame(ultimaPagina->numeroFrame) + ultimaMetadata;
+				pos = obtenerPosicionMemoriaPagina(ultimaPagina) + ultimaMetadata;
 
 				return pos;
 			}
@@ -447,6 +447,28 @@ struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 
 	return segmento;
 }
+
+struct HeapMetadata *ultimaMetadataSegmento(struct Segmento *segmento){
+	t_list *paginas = segmento->tablaPaginas;
+	t_list *metadatas = NULL;
+	struct Pagina *pagina;
+	struct HeapMetadata *ultimaMetadata;
+	struct HeapMetadata *metadataResultado;
+
+	for(int i = 0; i < list_size(paginas); i++){
+		pagina = list_get(paginas, i);
+		metadatas = pagina->listaMetadata;
+		memcpy(ultimaMetadata, obtenerPosicionMemoriaPagina(pagina) + (int)list_get(metadatas, list_size(metadatas) - 1), sizeof(struct HeapMetadata));
+
+		if(ultimaMetadata != NULL){
+			metadataResultado = ultimaMetadata;
+		}
+
+	}
+
+	return metadataResultado;
+}
+
 
 int retornarMetadataTamanioLibre(struct Segmento *segmento, uint32_t tamanio){
 
