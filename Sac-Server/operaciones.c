@@ -907,7 +907,7 @@ int o_write(char* path, int size, int offset, char* buf){
 		pthread_rwlock_unlock(&rwlock);
 		//log_lock_trace(logger, "Write: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
 		//log_trace(logger, "Terminada escritura.");
-		return size;
+		return res;
 
 /*
  * FUNCIONAMIENTO ANTERIOR:
