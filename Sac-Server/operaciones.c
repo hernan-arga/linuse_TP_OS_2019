@@ -429,20 +429,20 @@ void o_getAttr(char* path, int cliente){
 			memcpy(buffer + 4 * sizeof(int) + sizeof(stbuf->st_mode), &stbuf->st_nlink, sizeof(int));
 
 			int tamanioEscrito = sizeof(int);
-			memcpy(buffer + 5 * sizeof(int) + sizeof(stbuf->st_size), &tamanioEscrito, sizeof(int));
-			memcpy(buffer + 6 * sizeof(int) + sizeof(stbuf->st_size), &size, sizeof(int));
+			memcpy(buffer + 5 * sizeof(int) + sizeof(stbuf->st_mode), &tamanioEscrito, sizeof(int));
+			memcpy(buffer + 6 * sizeof(int) + sizeof(stbuf->st_mode), &size, sizeof(int));
 
 			int tamanioModificacion = sizeof(int);
-			memcpy(buffer + 7 * sizeof(int) + sizeof(stbuf->st_size), &tamanioModificacion, sizeof(int));
-			memcpy(buffer + 8 * sizeof(int) + sizeof(stbuf->st_size), &stbuf->st_mtime, sizeof(stbuf->st_mtime));
+			memcpy(buffer + 7 * sizeof(int) + sizeof(stbuf->st_mode), &tamanioModificacion, sizeof(int));
+			memcpy(buffer + 8 * sizeof(int) + sizeof(stbuf->st_mode), &stbuf->st_mtime, sizeof(stbuf->st_mtime));
 
 			int tamanioCreacion = sizeof(int);
-			memcpy(buffer + 8 * sizeof(int) + sizeof(stbuf->st_size) + sizeof(stbuf->st_mtime), &tamanioCreacion, sizeof(int));
-			memcpy(buffer + 9 * sizeof(int) + sizeof(stbuf->st_size) + sizeof(stbuf->st_mtime), &stbuf->st_ctime, sizeof(stbuf->st_ctime));
+			memcpy(buffer + 8 * sizeof(int) + sizeof(stbuf->st_mode) + sizeof(stbuf->st_mtime), &tamanioCreacion, sizeof(int));
+			memcpy(buffer + 9 * sizeof(int) + sizeof(stbuf->st_mode) + sizeof(stbuf->st_mtime), &stbuf->st_ctime, sizeof(stbuf->st_ctime));
 
 			int tamanioAcceso = sizeof(int);
-			memcpy(buffer + 9 * sizeof(int) + sizeof(stbuf->st_size) + sizeof(stbuf->st_mtime) + sizeof(stbuf->st_ctime), &tamanioAcceso, sizeof(int));
-			memcpy(buffer + 10 * sizeof(int) + sizeof(stbuf->st_size) + sizeof(stbuf->st_mtime) + sizeof(stbuf->st_ctime), &stbuf->st_atime, sizeof(stbuf->st_atime));
+			memcpy(buffer + 9 * sizeof(int) + sizeof(stbuf->st_mode) + sizeof(stbuf->st_mtime) + sizeof(stbuf->st_ctime), &tamanioAcceso, sizeof(int));
+			memcpy(buffer + 10 * sizeof(int) + sizeof(stbuf->st_mode) + sizeof(stbuf->st_mtime) + sizeof(stbuf->st_ctime), &stbuf->st_atime, sizeof(stbuf->st_atime));
 
 
 			send(cliente, buffer, 10 * sizeof(int) + sizeof(stbuf->st_mode) + sizeof(stbuf->st_mtime) + sizeof(stbuf->st_atime)+ sizeof(stbuf->st_ctime) , 0);
