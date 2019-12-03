@@ -127,6 +127,8 @@ int musefree(int idSocketCliente, uint32_t dir);
 struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
 struct Segmento *unificarHeaders2(int idSegmento, int idSocketCliente);
 struct Segmento *eliminarPaginasLibresSegmento(int idSocketCliente, int idSegmento);
+bool tieneTodasLasMetadatasLibres(struct Pagina *pagina);
+bool ultimaMetadataLibre(struct Pagina *pagina);
 
 //Memoria virtual
 int clockModificado();
