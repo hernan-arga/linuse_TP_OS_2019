@@ -350,7 +350,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	list_add(listaSegmentosProceso, nuevoSegmento);
 
 	//Actualizo la data en el diccionario
-	dictionary_put(tablasSegmentos, stringIdSocketCliente, listaSegmentosProceso);
+	//dictionary_put(tablasSegmentos, stringIdSocketCliente, listaSegmentosProceso);
 
 	free(stringIdSocketCliente);
 	return nuevoSegmento;
@@ -1470,7 +1470,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	}
 
 	//busco el segmento especifico que contiene la direccion
-	struct Segmento *segmento = malloc(sizeof(struct Segmento));
+	struct Segmento *segmento; //= malloc(sizeof(struct Segmento));
 	segmento = segmentoQueContieneDireccion(segmentosProceso, (void*) dir);
 
 	if(segmento == NULL){ //No existe el segmento buscado
@@ -1482,7 +1482,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	}
 
 	//voy a la pagina de ese segmento donde esta la direccion y recorro metadatas
-	struct Pagina *pagina = malloc(sizeof(struct Pagina));
+	struct Pagina *pagina; //= malloc(sizeof(struct Pagina));
 	pagina = paginaQueContieneDireccion(segmento, (void*) dir);
 	t_list *metadatas = list_create();
 	metadatas = pagina->listaMetadata;
@@ -1520,8 +1520,8 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
 
 	//Actualizo el diccionario con las modificaciones en segmentos
-	list_replace(segmentosProceso, segmento->id, segmento);
-	dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
+	//list_replace(segmentosProceso, segmento->id, segmento);
+	//dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
 
 	return 0;
 }
@@ -1533,11 +1533,11 @@ struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *dire
 	for (int i = 0; i < list_size(listaSegmentos); i++) {
 		unSegmento = list_get(listaSegmentos, i);
 
-		if (((int) direccion - unSegmento->baseLogica) < unSegmento->tamanio) {
+		if (((uint32_t) direccion - unSegmento->baseLogica) < unSegmento->tamanio) {
 			return unSegmento;
 		}
 
-		return unSegmento;
+		//return unSegmento;
 	}
 
 	//Si sale del for sin retorno, no hay ningun segmento que contenga esa direc
@@ -1599,8 +1599,8 @@ struct Segmento *eliminarPaginasLibresSegmento(int idSocketCliente, int idSegmen
 
 	segmento->paginasLiberadas += paginasEliminadas;
 	segmento->tamanio -= paginasEliminadas * pconfig->tamanio_pag;
-	list_replace(segmentosProceso, segmento->id, segmento);
-	dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
+	//list_replace(segmentosProceso, segmento->id, segmento);
+	//dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
 
 	return segmento;
 }
@@ -1787,7 +1787,7 @@ uint32_t musemap(char *path, size_t length, int flags, int idSocketCliente) {
 	//Agrego el nuevo segmentoMap a la lista de segmentos del proceso
 	list_add(segmentosProceso, segmentoMappeado);
 	//Modifico el diccionario agregando el nuevo segmento
-	dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
+	//dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
 
 	return 0;
 }
