@@ -390,11 +390,12 @@ void o_getAttr(char* path, int cliente){
 		node = node_table_start;
 
 		node = &(node[nodo-1]);
+		int size = 0;
 
 		if (node->estado == 2){
 			stbuf->st_mode = S_IFDIR | 0777;
 			stbuf->st_nlink = 2;
-			stbuf->st_size = 4096; // Default para los directorios, es una "convencion".
+			size = 4096; // Default para los directorios, es una "convencion".
 			stbuf->st_mtime = node->fecha_modificacion;
 			stbuf->st_ctime = node->fecha_creacion;
 			stbuf->st_atime = time(NULL); /* Le decimos que el access time es la hora actual */
@@ -402,7 +403,7 @@ void o_getAttr(char* path, int cliente){
 		} else if(node->estado == 1){
 			stbuf->st_mode = S_IFREG | 0777;
 			stbuf->st_nlink = 1;
-			stbuf->st_size = node->tamanio_archivo;
+			size = node->tamanio_archivo;
 			stbuf->st_mtime = node->fecha_modificacion;
 			stbuf->st_ctime = node->fecha_creacion;
 			stbuf->st_atime = time(NULL); /* Le decimos que el access time es la hora actual */
@@ -429,7 +430,7 @@ void o_getAttr(char* path, int cliente){
 
 			int tamanioEscrito = sizeof(int);
 			memcpy(buffer + 5 * sizeof(int) + sizeof(stbuf->st_size), &tamanioEscrito, sizeof(int));
-			memcpy(buffer + 6 * sizeof(int) + sizeof(stbuf->st_size), &stbuf->st_size, sizeof(int));
+			memcpy(buffer + 6 * sizeof(int) + sizeof(stbuf->st_size), &size, sizeof(int));
 
 			int tamanioModificacion = sizeof(int);
 			memcpy(buffer + 7 * sizeof(int) + sizeof(stbuf->st_size), &tamanioModificacion, sizeof(int));

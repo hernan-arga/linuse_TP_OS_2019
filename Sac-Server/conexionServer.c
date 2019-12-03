@@ -305,7 +305,7 @@ void tomarPeticionRead(int cliente){
 	int* offset = malloc(*tamanioOffset);
 	read(cliente, offset, *tamanioOffset);
 
-	char* texto = malloc(4096); //TODO revisar esto!!
+	char* texto = malloc(*size); //TODO revisar esto!!
 	int respuesta = o_read(pathCortado, *size, *offset, texto);
 
 	if(respuesta == 0) // tamaño es 0
@@ -320,12 +320,12 @@ void tomarPeticionRead(int cliente){
 		free(texto);
 	} else {
 
-		char* buffer = malloc(sizeof(int) + respuesta);
+		char* buffer = malloc(sizeof(int) + *size);
 
 		memcpy(buffer , &respuesta, sizeof(int));
-		memcpy(buffer + sizeof(int), texto,  respuesta);
+		memcpy(buffer + sizeof(int), texto,  *size);
 
-		send(cliente, buffer, sizeof(int) + respuesta, 0);
+		send(cliente, buffer, sizeof(int) + *size, 0);
 		free(texto);
 	}
 
@@ -489,6 +489,8 @@ void tomarPeticionWrite(int cliente){
 	memcpy(buffer + sizeof(int), &bytes, sizeof(int));
 
 	send(cliente, buffer, 2*sizeof(int), 0);
+	free(buffer);
+	free(buf);
 }
 
 
