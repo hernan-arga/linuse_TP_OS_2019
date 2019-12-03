@@ -36,7 +36,7 @@ t_bitarray* crearBitmap(){
 
 	void * bmap = mmap(NULL, mystat.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, bitmap, 0);
 
-    int tamanioBitmap = mystat.st_size / BLOCKSIZE / 8;
+    int tamanioBitmap = mystat.st_size / TAMANIO_BLOQUE / 8;
     memset(bmap,0,tamanioBitmap);
 
     printf("El tamaño del archivo es %li \n",mystat.st_size);
@@ -62,7 +62,7 @@ t_bitarray* crearBitmap(){
 
 	printf("El tamano del bitarray creado es de: %i\n\n\n",(int)bitarray_get_max_bit(bitarray));
 	printf("Bloques ocupados %i\n",tope2);
-	printf("Bloques libres %li\n",(mystat.st_size / BLOCKSIZE) - tope2);
+	printf("Bloques libres %li\n",(mystat.st_size / TAMANIO_BLOQUE) - tope2);
 	munmap(bmap,mystat.st_size);
 	close(bitmap);
 
@@ -138,7 +138,7 @@ int tamanioEnBytesDelBitarray(){
  * 		0... SIEMPRE!
  *
  */
-int split_path(const char* path, char** super_path, char** name){
+int dividirRuta(const char* path, char** super_path, char** name){
 
 	int aux;
 	strcpy(*super_path, path);
@@ -173,7 +173,7 @@ int split_path(const char* path, char** super_path, char** name){
  * 		Si el nombre no se encuentra, devuelve -1.
  *
  */
-ptrGBloque determinar_nodo(const char* path){
+ptrGBloque dameNodoDe(const char* path){
 
 	// Si es el directorio raiz, devuelve 0:
 	if(!strcmp(path,"/")){
@@ -187,14 +187,14 @@ ptrGBloque determinar_nodo(const char* path){
 	struct sac_file_t *node;
 	unsigned char *node_name;
 
-	split_path(path, &super_path, &nombre);
+	dividirRuta(path, &super_path, &nombre);
 
-	nodo_anterior = determinar_nodo(super_path);
+	nodo_anterior = dameNodoDe(super_path);
 
-	pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
+	pthread_rwlock_rdlock(&superLockeador); //Toma un lock de lectura.
 	//log_lock_trace(logger, "Determinar_nodo: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
 
-	node = node_table_start;
+	node = inicioTablaDeNodos;
 
 	// Busca el nodo sobre el cual se encuentre el nombre.
 	node_name = &(node->nombre_archivo[0]);
@@ -204,7 +204,7 @@ ptrGBloque determinar_nodo(const char* path){
 	}
 
 	// Cierra conexiones y libera memoria. Contempla casos de error.
-	pthread_rwlock_unlock(&rwlock);
+	pthread_rwlock_unlock(&superLockeador);
 	//log_lock_trace(logger, "Determinar_nodo: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
 
 	free(start);
@@ -226,7 +226,7 @@ ptrGBloque determinar_nodo(const char* path){
  *  @RETURN
  *  	Devuelve el numero de un bloque listo para escribir. Si hay error, un numero negativo, correspondiente al error.
  */
-int get_node(void){
+int obtenerBloqueLibre(void){
 	t_bitarray *bitarray;
 	int res;
 
@@ -234,7 +234,7 @@ int get_node(void){
 
 	int encontrado = 0;
 
-	for (int i =GHEADERBLOCKS+BITMAP_BLOCK_SIZE+GFILEBYTABLE; i < bitarray_get_max_bit(bitarray); i++) {
+	for (int i =HEADER+TAMANIO_BITMAP+GFILEBYTABLE; i < bitarray_get_max_bit(bitarray); i++) {
 		if(bitarray_test_bit(bitarray, i) == 0) {
 			bitarray_set_bit(bitarray, i);
 			encontrado = 1;
@@ -263,7 +263,7 @@ int get_node(void){
  *  @RET
  *  	Devuelve 0 si salio bien, negativo si hubo problemas.
  */
-int add_node(struct sac_file_t *file_data, int node_number){
+int agregarBloqueLibre(struct sac_file_t *file_data, int node_number){
 	int node_pointer_number, position;
 	size_t tam = file_data->tamanio_archivo;
 	int new_pointer_block;
@@ -272,7 +272,7 @@ int add_node(struct sac_file_t *file_data, int node_number){
 	// Ubica el ultimo nodo escrito y se posiciona en el mismo.
 	set_position(&node_pointer_number, &position, 0, tam);
 
-	if((node_pointer_number == BLKINDIRECT-1) & (position == PTRGBLOQUE_SIZE-1)){
+	if((node_pointer_number == BLOQUESINDIRECTOS-1) & (position == PTRGBLOQUE_SIZE-1)){
 		return -ENOSPC;
 	}
 
@@ -288,12 +288,12 @@ int add_node(struct sac_file_t *file_data, int node_number){
 	}
 	// Si es el ultimo nodo en el bloque de punteros, pasa al siguiente
 	if (position == 0){
-		new_pointer_block = get_node();
+		new_pointer_block = obtenerBloqueLibre();
 		if(new_pointer_block < 0) {
 			return new_pointer_block;
 			/* Si sucede que sea menor a 0, contendra el codigo de error */
 		}
-		memset((char*)&(header_start[new_pointer_block]), 0, BLOCKSIZE);
+		memset((char*)&(header_start[new_pointer_block]), 0, TAMANIO_BLOQUE);
 		file_data->bloques_indirectos[node_pointer_number] = new_pointer_block;
 		// Cuando crea un bloque, settea al siguente como 0, dejando una marca.
 		file_data->bloques_indirectos[node_pointer_number +1] = 0;
@@ -303,7 +303,7 @@ int add_node(struct sac_file_t *file_data, int node_number){
 	}
 
 	// Ubica el nodo de punteros, relativo al bloque de datos.
-	nodo_punteros = (ptrGBloque*) &data_block_start[new_pointer_block - (GHEADERBLOCKS + NODE_TABLE_SIZE + BITMAP_BLOCK_SIZE)];
+	nodo_punteros = (ptrGBloque*) &inicioBloquesDeDatos[new_pointer_block - (HEADER + TAMANIO_TABLA_DE_NODOS + TAMANIO_BITMAP)];
 
 	// Hace que dicho puntero, en la posicion ya obtenida, apunte al nodo indicado.
 	nodo_punteros[position] = node_number;
@@ -322,7 +322,7 @@ int add_node(struct sac_file_t *file_data, int node_number){
  */
 
 int get_size(void){
-	return ((int) (ACTUAL_DISC_SIZE_B / BLOCKSIZE));
+	return ((int) (ACTUAL_DISC_SIZE_B / TAMANIO_BLOQUE));
 }
 
 int lastchar(const char* str, char chr){
@@ -334,9 +334,9 @@ int lastchar(const char* str, char chr){
 
 int set_position (int *pointer_block, int *data_block, size_t size, off_t offset){
 	div_t divi;
-	divi = div(offset, (BLOCKSIZE*PTRGBLOQUE_SIZE));
+	divi = div(offset, (TAMANIO_BLOQUE*PTRGBLOQUE_SIZE));
 	*pointer_block = divi.quot;
-	*data_block = divi.rem / BLOCKSIZE;
+	*data_block = divi.rem / TAMANIO_BLOQUE;
 	return 0;
 }
 
@@ -359,11 +359,11 @@ int delete_nodes_upto (struct sac_file_t *file_data, int pointer_upto, int data_
 
 	// Ubica cual es el ultimo nodo del archivo
 	set_position(&pointer_pos, &data_pos, 0, file_size);
-	if (file_size%(BLOCKSIZE*PTRGBLOQUE_SIZE) == 0) {
+	if (file_size%(TAMANIO_BLOQUE*PTRGBLOQUE_SIZE) == 0) {
 		pointer_pos--;
 		data_pos = PTRGBLOQUE_SIZE-1;
 	}
-	else if (file_size%BLOCKSIZE == 0) data_pos--;
+	else if (file_size%TAMANIO_BLOQUE == 0) data_pos--;
 
 	// Crea el bitmap
 	//bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B);
@@ -430,12 +430,12 @@ int delete_nodes_upto (struct sac_file_t *file_data, int pointer_upto, int data_
  *		negativo - Error.
  */
 int get_new_space (struct sac_file_t *file_data, int size){
-	size_t file_size = file_data->tamanio_archivo, space_in_block = file_size % BLOCKSIZE;
+	size_t file_size = file_data->tamanio_archivo, space_in_block = file_size % TAMANIO_BLOQUE;
 	int new_node;
-	space_in_block = BLOCKSIZE - space_in_block; // Calcula cuanto tamanio le queda para ocupar en el bloque
+	space_in_block = TAMANIO_BLOQUE - space_in_block; // Calcula cuanto tamanio le queda para ocupar en el bloque
 
 	// Si no hay suficiente espacio, retorna error.
-	if ((bitmap_free_blocks*BLOCKSIZE) < (size - space_in_block)) return -ENOSPC;
+	if ((bitmap_free_blocks*TAMANIO_BLOQUE) < (size - space_in_block)) return -ENOSPC;
 
 	// Actualiza el file size al tamanio que le corresponde:
 	if (space_in_block >= size){
@@ -446,10 +446,10 @@ int get_new_space (struct sac_file_t *file_data, int size){
 	}
 
 	while ( (space_in_block <= size) ){ // Siempre que lo que haya que escribir sea mas grande que el espacio que quedaba en el bloque
-		new_node = get_node();
-		add_node(file_data, new_node);
-		size -= BLOCKSIZE;
-		file_data->tamanio_archivo += BLOCKSIZE;
+		new_node = obtenerBloqueLibre();
+		agregarBloqueLibre(file_data, new_node);
+		size -= TAMANIO_BLOQUE;
+		file_data->tamanio_archivo += TAMANIO_BLOQUE;
 	}
 
 	file_data->tamanio_archivo += size;

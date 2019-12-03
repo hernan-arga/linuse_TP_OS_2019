@@ -119,7 +119,8 @@ void* socketThread(void* newSocket)
 	return NULL;
 }
 
-/*
+/*    FUNCIONAMIENTO CON SELECT :
+
 int iniciar_conexion(int ip, int puerto){
 	int opt = 1;
 	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30, activity, i, cliente, valread;
@@ -344,7 +345,6 @@ void loguearError(char* texto) {
 
 
 void borrarBitmap(t_bitarray* bitArray){
-
 	bitarray_destroy(bitArray);
 	printf("Se ha borrado el Bitmap\n");
 }

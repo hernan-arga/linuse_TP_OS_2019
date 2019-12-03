@@ -42,12 +42,12 @@ int main(){
 	// Abrir conexion y traer directorios, guarda el bloque de inicio para luego liberar memoria
 	header_start = (struct sac_header_t*) mmap(NULL, mystat.st_size , PROT_WRITE | PROT_READ | PROT_EXEC, MAP_SHARED, fd, 0);
 	Header_Data = *header_start;
-	bitmap_start = (struct sac_file_t*) &header_start[GHEADERBLOCKS];
-	node_table_start = (struct sac_file_t*) &header_start[GHEADERBLOCKS + BITMAP_BLOCK_SIZE];
-	data_block_start = (struct sac_file_t*) &header_start[GHEADERBLOCKS + BITMAP_BLOCK_SIZE + NODE_TABLE_SIZE];
+	bitmap_start = (struct sac_file_t*) &header_start[HEADER];
+	inicioTablaDeNodos = (struct sac_file_t*) &header_start[HEADER + TAMANIO_BITMAP];
+	inicioBloquesDeDatos = (struct sac_file_t*) &header_start[HEADER + TAMANIO_BITMAP + TAMANIO_TABLA_DE_NODOS];
 	/* Obliga a que se mantenga la tabla de nodos y el bitmap en memoria */
-	mlock(bitmap_start, BITMAP_BLOCK_SIZE*BLOCKSIZE);
-	mlock(node_table_start, NODE_TABLE_SIZE*BLOCKSIZE);
+	mlock(bitmap_start, TAMANIO_BITMAP*TAMANIO_BLOQUE);
+	mlock(inicioTablaDeNodos, TAMANIO_TABLA_DE_NODOS*TAMANIO_BLOQUE);
 	/* El codigo es tan, pero tan egocentrico, que le dice al SO como tratar la memoria */
 	madvise(header_start, ACTUAL_DISC_SIZE_B ,MADV_RANDOM);
 	obtain_free_blocks();

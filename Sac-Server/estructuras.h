@@ -31,13 +31,13 @@
 #define GFILEBYTABLE 1024
 #define GFILEBYBLOCK 1
 #define GFILENAMELENGTH 71
-#define GHEADERBLOCKS 1
-#define BLKINDIRECT 1000
-#define BLOCKSIZE 4096
-#define NODE_TABLE_SIZE 1024
+#define HEADER 1
+#define BLOQUESINDIRECTOS 1000
+#define TAMANIO_BLOQUE 4096
+#define TAMANIO_TABLA_DE_NODOS 1024
 #define PTRGBLOQUE_SIZE 1024
 #define GFILENAMELENGTH 71
-#define BLKINDIRECT 1000
+#define BLOQUESINDIRECTOS 1000
 
 typedef uint32_t ptrGBloque;
 typedef ptrGBloque pointer_data_block [PTRGBLOQUE_SIZE];
@@ -72,22 +72,22 @@ typedef struct sac_file_t{
 	uint32_t tamanio_archivo;
 	uint64_t fecha_creacion;
 	uint64_t fecha_modificacion;
-	ptrGBloque bloques_indirectos[BLKINDIRECT];
+	ptrGBloque bloques_indirectos[BLOQUESINDIRECTOS];
 } gfile;
 
 struct sac_header_t *header_start;
-struct sac_file_t *node_table_start, *data_block_start, *bitmap_start;
+struct sac_file_t *inicioTablaDeNodos, *inicioBloquesDeDatos, *bitmap_start;
 struct sac_header_t Header_Data;
 
 int fuse_disc_size;
 // Macros que definen los tamanios de los bloques.
-#define NODE_TABLE_SIZE 1024
-#define NODE_TABLE_SIZE_B ((int) NODE_TABLE_SIZE * BLOCKSIZE)
+#define TAMANIO_TABLA_DE_NODOS 1024
+#define NODE_TABLE_SIZE_B ((int) TAMANIO_TABLA_DE_NODOS * TAMANIO_BLOQUE)
 
 #define BITMAP_SIZE_B (int) (get_size() / CHAR_BIT)
 #define BITMAP_SIZE_BITS get_size()
-#define HEADER_SIZE_B ((int) GHEADERBLOCKS * BLOCKSIZE)
-#define BITMAP_BLOCK_SIZE Header_Data.tamanio_bitmap
+#define HEADER_SIZE_B ((int) HEADER * TAMANIO_BLOQUE)
+#define TAMANIO_BITMAP Header_Data.tamanio_bitmap
 
 #define DISC_PATH "/home/utnso/miFS/sac-tools/disco.bin"
 #define ARRAY64SIZE _bitarray_64
@@ -107,8 +107,8 @@ int fuse_disc_size;
 
 #define INT64MAX _max
 
-pthread_rwlock_t rwlock;
-#define THELARGESTFILE (uint32_t) (BLKINDIRECT*PTRGBLOQUE_SIZE*BLOCKSIZE)
+pthread_rwlock_t superLockeador;
+#define THELARGESTFILE (uint32_t) (BLOQUESINDIRECTOS*PTRGBLOQUE_SIZE*TAMANIO_BLOQUE)
 
 t_bitarray * crearBitmap();
 unsigned long long getMicrotime();
@@ -116,10 +116,10 @@ char* obtenerNombreArchivo(char*);
 int asignarBloqueLibre();
 void loguearBloqueQueCambio(int);
 int tamanioEnBytesDelBitarray();
-int split_path(const char*, char**, char**);
-int add_node(struct sac_file_t*, int);
-int get_node(void);
-ptrGBloque determinar_nodo(const char*);
+int dividirRuta(const char*, char**, char**);
+int agregarBloqueLibre(struct sac_file_t*, int);
+int obtenerBloqueLibre(void);
+ptrGBloque dameNodoDe(const char*);
 int get_size(void);
 int lastchar(const char*, char);
 int set_position (int *, int *, size_t, off_t);
