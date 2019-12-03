@@ -121,13 +121,14 @@ static int hello_read(const char *path, char *buf, size_t size, off_t offset, st
 	if (*tamanioTexto == 0) {
 		return 0;
 	} else {
-		char *texto = malloc(*tamanioTexto);
-		read(sacServer, texto, *tamanioTexto);
+		char *texto = malloc(size);
+		read(sacServer, texto, size);
 
-		memcpy(buf + offset, texto, *tamanioTexto);
+		memcpy(buf, texto, size);
 		free(texto);
-		return *tamanioTexto;
+		return size;
 	}
+	free(buffer);
 }
 
 
