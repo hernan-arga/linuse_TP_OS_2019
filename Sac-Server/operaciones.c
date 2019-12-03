@@ -877,7 +877,10 @@ int o_write(char* path, int size, int offset, char* buf){
 
 		// Escribe en ese bloque de datos.
 		if (tam >= BLOCKSIZE){
-			memcpy(data_block, buf, BLOCKSIZE);
+			for(int m = 0; m < BLOCKSIZE; m++){
+				data_block[m] = buf[m];
+			}
+			//memcpy(data_block, buf, BLOCKSIZE);
 			if ((node->tamanio_archivo) <= (off)) file_size = node->tamanio_archivo += BLOCKSIZE;
 			buf += BLOCKSIZE;
 			off += BLOCKSIZE;

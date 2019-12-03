@@ -3854,3 +3854,65 @@
 [ERROR] 23:03:56:373 SacServer/(12483:12483): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
 [INFO] 23:03:56:373 SacServer/(12483:12483):  + Se hizo un read vacio en SacServer
 
+[INFO] 23:16:33:464 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[ERROR] 23:16:35:692 SacServer/(12872:12872): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 23:16:35:790 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[INFO] 23:16:35:807 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[INFO] 23:16:35:824 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[INFO] 23:16:35:838 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[INFO] 23:16:35:856 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[INFO] 23:16:35:870 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[INFO] 23:16:35:889 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[INFO] 23:16:35:912 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[INFO] 23:16:35:924 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[INFO] 23:16:35:943 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[INFO] 23:16:39:64 SacServer/(12872:12872):  + Se hizo un truncate en SacServer
+
+[INFO] 23:16:39:77 SacServer/(12872:12872):  + Se hizo un truncate en SacServer
+
+[INFO] 23:16:39:81 SacServer/(12872:12872):  + Se hizo un truncate en SacServer
+
+[INFO] 23:16:39:86 SacServer/(12872:12872):  + Se hizo un truncate en SacServer
+
+[INFO] 23:16:39:91 SacServer/(12872:12872):  + Se hizo un truncate en SacServer
+
+[INFO] 23:16:43:118 SacServer/(12872:12872):  + Se hizo un mkdir en SacServer
+
+[INFO] 23:16:43:626 SacServer/(12872:12872):  + Se hizo un mkdir en SacServer
+
+[INFO] 23:16:47:162 SacServer/(12872:12872):  + Se hizo un rename en SacServer
+
+[INFO] 23:16:47:173 SacServer/(12872:12872):  + Se hizo un rename en SacServer
+
+[INFO] 23:16:47:180 SacServer/(12872:12872):  + Se hizo un rename en SacServer
+
+[INFO] 23:16:47:192 SacServer/(12872:12872):  + Se hizo un rename en SacServer
+
+[INFO] 23:16:47:198 SacServer/(12872:12872):  + Se hizo un rename en SacServer
+
+[INFO] 23:16:47:205 SacServer/(12872:12872):  + Se hizo un rename en SacServer
+
+[INFO] 23:16:53:330 SacServer/(12872:12872):  + Se hizo un rename en SacServer
+
+[INFO] 23:17:02:366 SacServer/(12872:12872):  + Se hizo un create en SacServer
+
+[ERROR] 23:17:04:373 SacServer/(12872:12872): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[ERROR] 23:17:04:373 SacServer/(12872:12872): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 23:17:04:373 SacServer/(12872:12872):  + Se hizo un read vacio en SacServer
+
+[ERROR] 23:17:07:376 SacServer/(12872:12872): Fuse intenta leer un offset mayor o igual que el tamanio de archivo
+[INFO] 23:17:07:376 SacServer/(12872:12872):  + Se hizo un read vacio en SacServer
+
+[INFO] 23:17:47:165 SacServer/(12956:12956):  + Se hizo un create en SacServer
+
