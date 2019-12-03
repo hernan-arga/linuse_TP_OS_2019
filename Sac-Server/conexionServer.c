@@ -2,6 +2,124 @@
 
 
 
+void iniciar_conexion(int ip, int puerto){
+	  int serverSocket, newSocket;
+	  struct sockaddr_in serverAddr;
+	  struct sockaddr_storage serverStorage;
+	  socklen_t addr_size;
+
+	  //Create the socket.
+	  serverSocket = socket(PF_INET, SOCK_STREAM, 0);
+
+	  serverAddr.sin_family = AF_INET;
+	  serverAddr.sin_port = htons(puerto);
+	  serverAddr.sin_addr.s_addr = INADDR_ANY; //ip
+
+	  memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
+	  bind(serverSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
+
+	  if(listen(serverSocket,50) == 0)
+	    printf("Listening\n");
+	  else
+	    printf("Error\n");
+	    pthread_t tid[60];
+	    int i = 0;
+	    while(1){
+	    	//Accept call creates a new socket for the incoming connection
+	    	 addr_size = sizeof serverStorage;
+	    	 newSocket = accept(serverSocket, (struct sockaddr *) &serverStorage, &addr_size);
+
+	    	 //for each client request creates a thread and assign the client request to it to process
+	    	 //so the main thread can entertain next request
+	    	 if( pthread_create(&tid[i], NULL, socketThread, (void*)newSocket) != 0 )
+	    	        printf("Failed to create thread\n");
+	    	        if( i >= 50) {
+	    	        	i = 0;
+	    	        	while(i < 50) {
+	    	                pthread_join(tid[i++],NULL);
+	    	            }
+	    	            i = 0;
+	    	        }
+	     }
+
+}
+
+
+void* socketThread(void* newSocket)
+{
+	  int cliente =  (int) newSocket;
+	  int valread;
+
+	  while(1){
+	  // Verifica por tamaño de la operacion, que no se haya desconectado el socket
+	  int *tamanioOperacion = malloc(sizeof(int));
+	  if ((valread = read(cliente, tamanioOperacion, sizeof(int))) == 0)
+	  {
+		  printf("Host disconected \n");
+		  close(cliente);
+		  pthread_exit(NULL);
+
+	  }  else  {
+		  // lee el siguiente dato que le pasa el cliente, con estos datos, hace la operacion correspondiente
+		  int *operacion = malloc(4);
+		  read(cliente, operacion, sizeof(int));
+
+		  switch (*operacion) {
+		      case 1:
+			  	  	// Operacion CREATE
+			  	  	tomarPeticionCreate(cliente);
+			  	  	break;
+			  case 2:
+				  	// Operacion OPEN
+				    tomarPeticionOpen(cliente);
+				    break;
+			  case 3:
+			  		// Operacion READ
+			  		tomarPeticionRead(cliente);
+			  		break;
+			  case 4:
+			  		// Operacion READDIR
+			  		tomarPeticionReadDir(cliente);
+			  		break;
+			  case 5:
+			  		// Operacion GETATTR
+			  		tomarPeticionGetAttr(cliente);
+			  		break;
+			  case 6:
+			  		// Operacion MKNOD
+			  		tomarPeticionMkdir(cliente);
+			  		break;
+			  case 7:
+			  		// Operacion UNLINK
+			  		tomarPeticionUnlink(cliente);
+			  		break;
+			  case 8:
+				     // Operacion RMDIR
+				  	 tomarPeticionRmdir(cliente);
+			  		break;
+			  case 9:
+			  		// Operacion WRITE
+			  		tomarPeticionWrite(cliente);
+			  		break;
+			  case 10:
+			  		// Operacion TRUNCATE
+			  		tomarPeticionTruncate(cliente);
+			  		break;
+			  case 11:
+			  		// Operacion RENAME
+			  		tomarPeticionRename(cliente);
+			  		break;
+			  default:
+				  	  ;
+			  }
+			free(operacion);
+		}
+	free(tamanioOperacion);
+	 }
+	return NULL;
+}
+
+/*
 int iniciar_conexion(int ip, int puerto){
 	int opt = 1;
 	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30, activity, i, cliente, valread;
@@ -99,7 +217,7 @@ int iniciar_conexion(int ip, int puerto){
 				perror("error al enviar mensaje al cliente");
 			}
 			puts("Welcome message sent successfully");
-			*/
+
 			//add new socket to array of sockets
 			for (i = 0; i < max_clients; i++) {
 				//if position is empty
@@ -188,6 +306,9 @@ int iniciar_conexion(int ip, int puerto){
 		}
 	}
 }
+*/
+
+
 
 void levantarConfigFile(config* pconfig){
 	t_config* configuracion = leer_config();
@@ -256,6 +377,10 @@ void tomarPeticionCreate(int cliente){
 	memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
+
+	free(tamanioPath);
+	free(path);
+	free(buffer);
 }
 
 
@@ -283,6 +408,10 @@ void tomarPeticionOpen(int cliente){
 	memcpy(buffer + sizeof(int), &ok, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
+
+	free(tamanioPath);
+	free(path);
+	free(buffer);
 }
 
 
@@ -318,7 +447,7 @@ void tomarPeticionRead(int cliente){
 
 		send(cliente, buffer, sizeof(int), 0);
 		free(buffer);
-		free(texto);
+
 	} else {
 
 		char* buffer = malloc(sizeof(int) + *size);
@@ -327,7 +456,7 @@ void tomarPeticionRead(int cliente){
 		memcpy(buffer + sizeof(int), texto,  *size);
 
 		send(cliente, buffer, sizeof(int) + *size, 0);
-		free(texto);
+		free(buffer);
 	}
 
 	if (respuesta == 1){
@@ -343,9 +472,15 @@ void tomarPeticionRead(int cliente){
 		memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
 		send(cliente, buffer, 2*sizeof(int), 0);
-		free(texto);
-
+		free(buffer);
 	}
+	free(texto);
+	free(tamanioOffset);
+	free(offset);
+	free(tamanioSize);
+	free(size);
+	free(path);
+	free(tamanioPath);
 }
 
 void tomarPeticionReadDir(int cliente){
@@ -359,6 +494,8 @@ void tomarPeticionReadDir(int cliente){
 
 	o_readDir(pathCortado, cliente);
 
+	free(tamanioPath);
+	free(path);
 }
 
 void tomarPeticionGetAttr(int cliente){
@@ -372,6 +509,8 @@ void tomarPeticionGetAttr(int cliente){
 
 	o_getAttr(pathCortado, cliente);
 
+	free(tamanioPath);
+	free(path);
 }
 
 void tomarPeticionMkdir(int cliente){
@@ -399,6 +538,10 @@ void tomarPeticionMkdir(int cliente){
 	memcpy(buffer + sizeof(int), &res, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
+
+	free(tamanioPath);
+	free(path);
+	free(buffer);
 }
 
 
@@ -427,6 +570,10 @@ void tomarPeticionUnlink(int cliente){
 	memcpy(buffer + sizeof(int), &res, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
+
+	free(tamanioPath);
+	free(path);
+	free(buffer);
 }
 
 void tomarPeticionRmdir(int cliente){
@@ -454,6 +601,10 @@ void tomarPeticionRmdir(int cliente){
 	memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
+
+	free(tamanioPath);
+	free(path);
+	free(buffer);
 }
 
 void tomarPeticionWrite(int cliente){
@@ -490,8 +641,16 @@ void tomarPeticionWrite(int cliente){
 	memcpy(buffer + sizeof(int), &bytes, sizeof(int));
 
 	send(cliente, buffer, 2*sizeof(int), 0);
-	free(buffer);
+
 	free(buf);
+	free(tamanioBuf);
+	free(offset);
+	free(tamanioOffset);
+	free(tamanioPath);
+	free(path);
+	free(size);
+	free(tamanioSize);
+	free(buffer);
 }
 
 
@@ -525,6 +684,12 @@ void tomarPeticionTruncate(int cliente){
 	memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
+
+	free(tamanioPath);
+	free(path);
+	free(buffer);
+	free(tamanioOffset);
+	free(offset);
 }
 
 
@@ -560,5 +725,11 @@ void tomarPeticionRename(int cliente){
 	memcpy(buffer + sizeof(int), &respuesta, sizeof(int));
 
 	send(cliente, buffer, 2* sizeof(int), 0);
+
+	free(tamanioPath1);
+	free(path1);
+	free(tamanioPath2);
+	free(path2);
+	free(buffer);
 }
 

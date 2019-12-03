@@ -57,7 +57,7 @@ int main(){
 
 
 	// Levanta conexion por socket
-	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
+	iniciar_conexion(pconfig->ip, pconfig->puerto);
 
 	// Logueo
 	loguearInfo(" + Levantado Sac-Server correctamente");

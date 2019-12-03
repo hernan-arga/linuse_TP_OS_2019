@@ -4154,3 +4154,201 @@
 
 [INFO] 15:27:08:317 SacServer/(8397:8397):  + Se hizo un read vacio en SacServer
 
+[INFO] 15:35:41:201 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:36:57:626 SacServer/(9327:9466):  + Se hizo un read vacio en SacServer
+
+[INFO] 15:38:11:125 SacServer/(9327:9329):  + Se hizo un read vacio en SacServer
+
+[INFO] 15:38:44:365 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:38:44:376 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:38:44:385 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:38:44:393 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:38:44:399 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:38:44:406 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:38:44:414 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:38:44:436 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:38:44:447 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:38:44:463 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:38:47:507 SacServer/(9327:9329):  + Se hizo un truncate en SacServer
+
+[INFO] 15:38:47:510 SacServer/(9327:9329):  + Se hizo un truncate en SacServer
+
+[INFO] 15:38:47:513 SacServer/(9327:9329):  + Se hizo un truncate en SacServer
+
+[INFO] 15:38:47:525 SacServer/(9327:9329):  + Se hizo un truncate en SacServer
+
+[INFO] 15:38:47:527 SacServer/(9327:9329):  + Se hizo un truncate en SacServer
+
+[INFO] 15:38:51:542 SacServer/(9327:9329):  + Se hizo un mkdir en SacServer
+
+[INFO] 15:38:52:49 SacServer/(9327:9329):  + Se hizo un mkdir en SacServer
+
+[INFO] 15:38:55:585 SacServer/(9327:9329):  + Se hizo un rename en SacServer
+
+[INFO] 15:38:55:594 SacServer/(9327:9329):  + Se hizo un rename en SacServer
+
+[INFO] 15:38:55:612 SacServer/(9327:9329):  + Se hizo un rename en SacServer
+
+[INFO] 15:38:55:624 SacServer/(9327:9329):  + Se hizo un rename en SacServer
+
+[INFO] 15:38:55:630 SacServer/(9327:9329):  + Se hizo un rename en SacServer
+
+[INFO] 15:38:55:637 SacServer/(9327:9329):  + Se hizo un rename en SacServer
+
+[INFO] 15:39:01:759 SacServer/(9327:9329):  + Se hizo un rename en SacServer
+
+[INFO] 15:39:10:790 SacServer/(9327:9329):  + Se hizo un create en SacServer
+
+[INFO] 15:39:12:822 SacServer/(9327:9329):  + Se hizo un read vacio en SacServer
+
+[INFO] 15:45:24:417 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:46:55:840 SacServer/(9898:10025):  + Se hizo un read vacio en SacServer
+
+[INFO] 15:48:15:347 SacServer/(9898:9900):  + Se hizo un read vacio en SacServer
+
+[INFO] 15:49:00:71 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:49:00:82 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:49:00:88 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:49:00:104 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:49:00:110 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:49:00:117 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:49:00:124 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:49:00:139 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:49:00:147 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:49:00:154 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:49:03:188 SacServer/(9898:9900):  + Se hizo un truncate en SacServer
+
+[INFO] 15:49:03:189 SacServer/(9898:9900):  + Se hizo un truncate en SacServer
+
+[INFO] 15:49:03:190 SacServer/(9898:9900):  + Se hizo un truncate en SacServer
+
+[INFO] 15:49:03:192 SacServer/(9898:9900):  + Se hizo un truncate en SacServer
+
+[INFO] 15:49:03:193 SacServer/(9898:9900):  + Se hizo un truncate en SacServer
+
+[INFO] 15:49:07:214 SacServer/(9898:9900):  + Se hizo un mkdir en SacServer
+
+[INFO] 15:49:07:722 SacServer/(9898:9900):  + Se hizo un mkdir en SacServer
+
+[INFO] 15:49:11:257 SacServer/(9898:9900):  + Se hizo un rename en SacServer
+
+[INFO] 15:49:11:270 SacServer/(9898:9900):  + Se hizo un rename en SacServer
+
+[INFO] 15:49:11:275 SacServer/(9898:9900):  + Se hizo un rename en SacServer
+
+[INFO] 15:49:11:286 SacServer/(9898:9900):  + Se hizo un rename en SacServer
+
+[INFO] 15:49:11:288 SacServer/(9898:9900):  + Se hizo un rename en SacServer
+
+[INFO] 15:49:11:290 SacServer/(9898:9900):  + Se hizo un rename en SacServer
+
+[INFO] 15:49:17:327 SacServer/(9898:9900):  + Se hizo un rename en SacServer
+
+[INFO] 15:49:26:358 SacServer/(9898:9900):  + Se hizo un create en SacServer
+
+[INFO] 15:49:28:751 SacServer/(9898:9900):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:07:49:964 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:08:38:586 SacServer/(10941:11001):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:09:04:659 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:10:00:35 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:10:00:43 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:10:00:49 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:10:00:58 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:10:00:64 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:10:00:71 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:10:00:77 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:10:00:83 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:10:00:93 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:10:00:100 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:10:03:136 SacServer/(10941:10957):  + Se hizo un truncate en SacServer
+
+[INFO] 16:10:03:146 SacServer/(10941:10957):  + Se hizo un truncate en SacServer
+
+[INFO] 16:10:03:148 SacServer/(10941:10957):  + Se hizo un truncate en SacServer
+
+[INFO] 16:10:03:149 SacServer/(10941:10957):  + Se hizo un truncate en SacServer
+
+[INFO] 16:10:03:151 SacServer/(10941:10957):  + Se hizo un truncate en SacServer
+
+[INFO] 16:10:07:165 SacServer/(10941:10957):  + Se hizo un mkdir en SacServer
+
+[INFO] 16:10:07:674 SacServer/(10941:10957):  + Se hizo un mkdir en SacServer
+
+[INFO] 16:10:11:222 SacServer/(10941:10957):  + Se hizo un rename en SacServer
+
+[INFO] 16:10:11:230 SacServer/(10941:10957):  + Se hizo un rename en SacServer
+
+[INFO] 16:10:11:236 SacServer/(10941:10957):  + Se hizo un rename en SacServer
+
+[INFO] 16:10:11:238 SacServer/(10941:10957):  + Se hizo un rename en SacServer
+
+[INFO] 16:10:11:242 SacServer/(10941:10957):  + Se hizo un rename en SacServer
+
+[INFO] 16:10:11:244 SacServer/(10941:10957):  + Se hizo un rename en SacServer
+
+[INFO] 16:10:17:271 SacServer/(10941:10957):  + Se hizo un rename en SacServer
+
+[INFO] 16:10:26:306 SacServer/(10941:10957):  + Se hizo un create en SacServer
+
+[INFO] 16:10:28:329 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:46:128 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:46:300 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:49:753 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:49:753 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:49:754 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:49:754 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:49:755 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:50:554 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:50:587 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:50:615 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:50:676 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+
+[INFO] 16:11:50:686 SacServer/(10941:10957):  + Se hizo un read vacio en SacServer
+

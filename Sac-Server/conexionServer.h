@@ -9,7 +9,7 @@ typedef struct {
 	int puerto;
 } config;
 
-int iniciar_conexion(int, int);
+void iniciar_conexion(int, int);
 void levantarConfigFile();
 t_config* leer_config(void);
 void loguearInfo(char *);
