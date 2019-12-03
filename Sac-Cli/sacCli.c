@@ -68,18 +68,14 @@ static int hello_open(const char *path, struct fuse_file_info *fi) {
  *
 	//Serializo peticion y path
 	char* buffer = malloc(3 * sizeof(int) + strlen(path));
-
 	int peticion = 2;
 	int tamanioPeticion = sizeof(int);
 	memcpy(buffer, &tamanioPeticion, sizeof(int));
 	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
-
 	int tamanioPath = strlen(path);
 	memcpy(buffer + 2 * sizeof(int), &tamanioPath, sizeof(int));
 	memcpy(buffer + 3 * sizeof(int), path, strlen(path));
-
 	send(sacServer, buffer, 3 * sizeof(int) + strlen(path), 0);
-
 	// Deserializo respuesta
 	int* tamanioRespuesta = malloc(sizeof(int));
 	read(sacServer, tamanioRespuesta, sizeof(int));
@@ -384,7 +380,7 @@ static int hello_rmdir(const char *path)
 static int hello_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
 	//Serializo peticion, path, size, offset y buf
-	char* buffer = malloc(8 * sizeof(int) + strlen(path) + size);
+	char* buffer = malloc(8 * sizeof(int) + strlen(path) + strlen(buf));
 
 	int peticion = 9;
 	int tamanioPeticion = sizeof(int);
@@ -407,9 +403,9 @@ static int hello_write(const char *path, const char *buf, size_t size, off_t off
 
 	int tamanioBuf = strlen(buf);
 	memcpy(buffer + 7 * sizeof(int) + strlen(path), &tamanioBuf, sizeof(int));
-	memcpy(buffer + 8 * sizeof(int) + strlen(path), buf, size);
+	memcpy(buffer + 8 * sizeof(int) + strlen(path), buf, strlen(buf));
 
-	send(sacServer, buffer, 8 * sizeof(int) + strlen(path) + size, 0);
+	send(sacServer, buffer, 8 * sizeof(int) + strlen(path) + strlen(buf), 0);
 
 	// Deserializo respuesta
 	int* tamanioRespuesta = malloc(sizeof(int));

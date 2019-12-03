@@ -230,7 +230,7 @@ int get_node(void){
 	t_bitarray *bitarray;
 	int res;
 
-	bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B);;
+	bitarray = bitarray_create_with_mode((char *)bitmap_start, BITMAP_SIZE_BITS, LSB_FIRST);
 
 	int encontrado = 0;
 
@@ -293,7 +293,7 @@ int add_node(struct sac_file_t *file_data, int node_number){
 			return new_pointer_block;
 			/* Si sucede que sea menor a 0, contendra el codigo de error */
 		}
-		memset((char*)&(header_start[new_pointer_block]), 0, BLOCKSIZE); //TODO esta linea tambien hay que revisarla
+		memset((char*)&(header_start[new_pointer_block]), 0, BLOCKSIZE);
 		file_data->bloques_indirectos[node_pointer_number] = new_pointer_block;
 		// Cuando crea un bloque, settea al siguente como 0, dejando una marca.
 		file_data->bloques_indirectos[node_pointer_number +1] = 0;
@@ -363,12 +363,11 @@ int delete_nodes_upto (struct sac_file_t *file_data, int pointer_upto, int data_
 		pointer_pos--;
 		data_pos = PTRGBLOQUE_SIZE-1;
 	}
-	else if (file_size%BLOCKSIZE == 0){
-		data_pos--;
-	};
+	else if (file_size%BLOCKSIZE == 0) data_pos--;
 
 	// Crea el bitmap
-	bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B);
+	//bitarray = bitarray_create((char*) bitmap_start, BITMAP_SIZE_B);
+	bitarray = bitarray_create_with_mode((char *)bitmap_start, BITMAP_SIZE_BITS, LSB_FIRST);
 
 	// Activa el DELETE_MODE. Este modo NO debe activarse cuando se hacen operaciones que
 	// dejen al archivo con un solo nodo. Por ejemplo, truncate -s 0.
@@ -463,7 +462,7 @@ int obtain_free_blocks(void){
 	int free_nodes=0, i;
 	int bitmap_size_in_bits = BITMAP_SIZE_BITS;
 
-	bitarray = bitarray_create((char *)bitmap_start, BITMAP_SIZE_B);
+	bitarray = bitarray_create_with_mode((char *)bitmap_start, BITMAP_SIZE_B, LSB_FIRST);
 
 	for (i = 0; i < bitmap_size_in_bits; i++){
 		if (bitarray_test_bit(bitarray, i) == 0) free_nodes++;
@@ -475,4 +474,3 @@ int obtain_free_blocks(void){
 
 	return free_nodes;
 }
-

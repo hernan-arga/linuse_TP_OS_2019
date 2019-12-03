@@ -19,8 +19,8 @@ int path_size_in_bytes(const char* path){
 int main(){
 	// Levanta archivo de configuracion
 	config* pconfig = malloc(2 * sizeof(int));
-
 	levantarConfigFile(pconfig);
+
 
 	// Obiene el tamanio del disco
 	fuse_disc_size = path_size_in_bytes(DISC_PATH);
@@ -50,13 +50,14 @@ int main(){
 	mlock(node_table_start, NODE_TABLE_SIZE*BLOCKSIZE);
 	/* El codigo es tan, pero tan egocentrico, que le dice al SO como tratar la memoria */
 	madvise(header_start, ACTUAL_DISC_SIZE_B ,MADV_RANDOM);
-
 	obtain_free_blocks();
 	//iniciarMmap();
 	//bitArray = bitarray_create(mmapDeBitmap, tamanioEnBytesDelBitarray());
 
+
+
 	// Levanta conexion por socket
-	iniciar_conexion(pconfig->ip, pconfig->puerto);
+	pthread_create(&hiloLevantarConexion, NULL, (void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
 
 	// Logueo
 	loguearInfo(" + Levantado Sac-Server correctamente");

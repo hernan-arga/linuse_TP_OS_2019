@@ -1,141 +1,7 @@
 #include "conexionServer.h"
 
 
-void iniciar_conexion(int ip, int puerto){
-	  int serverSocket, newSocket;
-	  struct sockaddr_in serverAddr;
-	  struct sockaddr_storage serverStorage;
-	  socklen_t addr_size;
-
-	  //Create the socket.
-	  serverSocket = socket(PF_INET, SOCK_STREAM, 0);
-
-	  serverAddr.sin_family = AF_INET;
-	  serverAddr.sin_port = htons(puerto);
-	  serverAddr.sin_addr.s_addr = INADDR_ANY; //ip
-
-	  memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
-	  bind(serverSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
-
-	  if(listen(serverSocket,50) == 0)
-	    printf("Listening\n");
-	  else
-	    printf("Error\n");
-	    pthread_t tid[60];
-	    int i = 0;
-	    while(1){
-	    	//Accept call creates a new socket for the incoming connection
-	    	 addr_size = sizeof serverStorage;
-	    	 newSocket = accept(serverSocket, (struct sockaddr *) &serverStorage, &addr_size);
-
-	    	 //for each client request creates a thread and assign the client request to it to process
-	    	 //so the main thread can entertain next request
-	    	 if( pthread_create(&tid[i], NULL, socketThread, (void*)newSocket) != 0 )
-	    	        printf("Failed to create thread\n");
-	    	        if( i >= 50) {
-	    	        	i = 0;
-	    	        	while(i < 50) {
-	    	                pthread_join(tid[i++],NULL);
-	    	            }
-	    	            i = 0;
-	    	        }
-	     }
-
-}
-
-
-void* socketThread(void* newSocket)
-{
-	  int cliente =  (int) newSocket;
-	  int valread;
-
-	  while(1){
-		  // Verifica por tamaño de la operacion, que no se haya desconectado el socket
-		  int *tamanioOperacion = malloc(sizeof(int));
-		  if ((valread = read(cliente, tamanioOperacion, sizeof(int))) == 0)
-		  {
-			  printf("Host disconected \n");
-			  close(cliente);
-			  pthread_exit(NULL);
-
-		  }  else  {
-			  // lee el siguiente dato que le pasa el cliente, con estos datos, hace la operacion correspondiente
-			  int *operacion = malloc(4);
-			  read(cliente, operacion, sizeof(int));
-
-			  switch (*operacion) {
-				  case 1:
-						// Operacion CREATE
-						tomarPeticionCreate(cliente);
-						break;
-				  case 2:
-						// Operacion OPEN
-						tomarPeticionOpen(cliente);
-						break;
-				  case 3:
-						// Operacion READ
-						tomarPeticionRead(cliente);
-						break;
-				  case 4:
-						// Operacion READDIR
-						tomarPeticionReadDir(cliente);
-						break;
-				  case 5:
-						// Operacion GETATTR
-						tomarPeticionGetAttr(cliente);
-						break;
-				  case 6:
-						// Operacion MKNOD
-						tomarPeticionMkdir(cliente);
-						break;
-				  case 7:
-						// Operacion UNLINK
-						tomarPeticionUnlink(cliente);
-						break;
-				  case 8:
-						 // Operacion RMDIR
-						 tomarPeticionRmdir(cliente);
-						break;
-				  case 9:
-						// Operacion WRITE
-						tomarPeticionWrite(cliente);
-						break;
-				  case 10:
-						// Operacion TRUNCATE
-						tomarPeticionTruncate(cliente);
-						break;
-				  case 11:
-						// Operacion RENAME
-						tomarPeticionRename(cliente);
-						break;
-				  default:
-						  ;
-				  }
-				free(operacion);
-			}
-		free(tamanioOperacion);
-	}
-	return NULL;
-}
-
-	  /* Send message to the client socket
-	  pthread_mutex_lock(&lock);
-	  char *message = malloc(sizeof(client_message)+20);
-	  strcpy(message,"Hello Client : ");
-	  strcat(message,client_message);
-	  strcat(message,"\n");
-	  strcpy(buffer,message);
-	  free(message);
-	  pthread_mutex_unlock(&lock);
-	  sleep(1);
-	  send(newSocket,buffer,13,0);
-	  printf("Exit socketThread \n");
-	  close(newSocket);
-	  pthread_exit(NULL);
-	  */
-
-
-/*
+int iniciar_conexion(int ip, int puerto){
 	int opt = 1;
 	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30, activity, i, cliente, valread;
 	int max_cliente;
@@ -224,6 +90,9 @@ void* socketThread(void* newSocket)
 			//inform user of socket number - used in send and receive commands
 			printf("Nueva Conexion , socket fd: %d , ip: %s , puerto: %d 	\n", new_socket, inet_ntoa(address.sin_addr), ntohs(address.sin_port));
 
+			// send new connection greeting message
+			// ACA SE LE ENVIA EL PRIMER MENSAJE AL SOCKET (si no necesita nada importante, mensaje de bienvenida)
+			/*
 			if( send(new_socket, message, strlen(message), 0) != strlen(message) )
 			{
 				perror("error al enviar mensaje al cliente");
@@ -231,7 +100,6 @@ void* socketThread(void* newSocket)
 			puts("Welcome message sent successfully");
 			*/
 			//add new socket to array of sockets
-/*
 			for (i = 0; i < max_clients; i++) {
 				//if position is empty
 				if (client_socket[i] == 0) {
@@ -319,9 +187,6 @@ void* socketThread(void* newSocket)
 		}
 	}
 }
-*/
-
-
 
 void levantarConfigFile(config* pconfig){
 	t_config* configuracion = leer_config();
@@ -611,10 +476,11 @@ void tomarPeticionWrite(int cliente){
 
 	int *tamanioBuf = malloc(sizeof(int));
 	read(cliente, tamanioBuf, sizeof(int));
-	char *buf = malloc(*size);
-	read(cliente, buf, *size);
+	char *buf = malloc(*tamanioBuf);
+	read(cliente, buf, *tamanioBuf);
+	char *bufC = string_substring_until(buf, *tamanioBuf); //TODO revisar esto,
 
-	int bytes = o_write(pathCortado, *size, *offset, buf);
+	int bytes = o_write(pathCortado, *size, *offset, bufC);
 
 	//Serializo bytes
 	char* buffer = malloc(2 * sizeof(int));
@@ -624,13 +490,6 @@ void tomarPeticionWrite(int cliente){
 	memcpy(buffer + sizeof(int), &bytes, sizeof(int));
 
 	send(cliente, buffer, 2*sizeof(int), 0);
-	free(buf);
-	free(offset);
-	free(buffer);
-	free(tamanioBuf);
-	free(path);
-	free(tamanioPath);
-
 }
 
 
@@ -700,5 +559,4 @@ void tomarPeticionRename(int cliente){
 
 	send(cliente, buffer, 2* sizeof(int), 0);
 }
-
 
