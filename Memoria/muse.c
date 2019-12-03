@@ -218,7 +218,8 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 		primeraPagina = list_get(segmento->tablaPaginas, 0);
 
 		void *comienzoDatos = malloc(sizeof(int));
-		comienzoDatos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame) + sizeof(struct HeapMetadata);
+		//comienzoDatos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame) + sizeof(struct HeapMetadata);
+		comienzoDatos = obtenerPosicionMemoriaPagina(primeraPagina) + sizeof(struct HeapMetadata);
 
 		free(stringIdSocketCliente);
 		return comienzoDatos;
@@ -1267,7 +1268,7 @@ void *obtenerPosicionMemoriaPagina(struct Pagina *pagina){
 
 	list_replace(bitmapFrames, pagina->numeroFrame, frame);
 
-	return retornarPosicionMemoriaFrame(pagina->numeroFrame);
+	return memoriaPrincipal + pagina->numeroFrame * pconfig->tamanio_pag;;
 }
 
 /*Trae las paginas de un segmento de mmap a mm ppal en caso de no estar*/

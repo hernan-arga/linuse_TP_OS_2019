@@ -131,6 +131,7 @@ int o_read(char* path, int size, int offset, char* buf){
 	ptrGBloque *pointer_block;
 	char *data_block;
 	size_t tam = size;
+	int res;
 
 	if (nodo == -1){
 		return -1;
@@ -144,20 +145,12 @@ int o_read(char* path, int size, int offset, char* buf){
 	pthread_rwlock_rdlock(&rwlock); //Toma un lock de lectura.
 	//log_lock_trace(logger, "Read: Toma lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
 
-	if(node->tamanio_archivo == 0){
-		pthread_rwlock_unlock(&rwlock); //Devuelve el lock de lectura.
-		return 0;
-	} else{
-
-		if(node->tamanio_archivo <= offset){
-			loguearError("Fuse intenta leer un offset mayor o igual que el tamanio de archivo");
-			pthread_rwlock_unlock(&rwlock); //Devuelve el lock de lectura.
-			return 0;
-		}
-		else if (node->tamanio_archivo <= (offset+size)){
-			tam = size = ((node->tamanio_archivo)-(offset));
-			loguearError("Fuse intenta leer una posicion mayor o igual que el tamanio de archivo");
-		}
+	if(node->tamanio_archivo <= offset){
+		res = 0;
+		goto finalizar;
+	} else if (node->tamanio_archivo <= (offset+size)){
+		tam = size = ((node->tamanio_archivo)-(offset));
+	}
 		// Recorre todos los punteros en el bloque de la tabla de nodos
 		for (bloque_punteros = 0; bloque_punteros < BLKINDIRECT; bloque_punteros++){
 
@@ -212,14 +205,15 @@ int o_read(char* path, int size, int offset, char* buf){
 
 			if (tam == 0) break;
 		}
+		res = size;
 
 		finalizar:
 		pthread_rwlock_unlock(&rwlock); //Devuelve el lock de lectura.
 		//log_lock_trace(logger, "Read: Libera lock lectura. Cantidad de lectores: %d", rwlock.__data.__nr_readers);
 
 		//log_trace(logger, "Terminada lectura");
-	}
-	return size;
+
+	return res;
 
 	/*
 	 * FUNCIONAMIENTO ANTERIOR
