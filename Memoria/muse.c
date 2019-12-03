@@ -453,6 +453,7 @@ struct HeapMetadata *ultimaMetadataSegmento(struct Segmento *segmento){
 	t_list *metadatas = NULL;
 	struct Pagina *pagina;
 	struct HeapMetadata *ultimaMetadata;
+	ultimaMetadata->size = -1;
 	struct HeapMetadata *metadataResultado;
 
 	for(int i = 0; i < list_size(paginas); i++){
@@ -460,7 +461,7 @@ struct HeapMetadata *ultimaMetadataSegmento(struct Segmento *segmento){
 		metadatas = pagina->listaMetadata;
 		memcpy(ultimaMetadata, obtenerPosicionMemoriaPagina(pagina) + (int)list_get(metadatas, list_size(metadatas) - 1), sizeof(struct HeapMetadata));
 
-		if(ultimaMetadata != NULL){
+		if(ultimaMetadata->size != -1){
 			metadataResultado = ultimaMetadata;
 		}
 

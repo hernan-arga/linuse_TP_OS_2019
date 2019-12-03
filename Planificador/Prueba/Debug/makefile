@@ -25,13 +25,13 @@ endif
 all: Prueba
 
 dependents:
-	-cd /home/utnso/Escritorio/tp-2019-2c-Cbados/Planificador/Hilolay/Debug && $(MAKE) all
+	-cd /home/utnso/tp-2019-2c-Cbados/Planificador/Hilolay/Debug && $(MAKE) all
 
 # Tool invocations
-Prueba: $(OBJS) $(USER_OBJS) /home/utnso/Escritorio/tp-2019-2c-Cbados/Planificador/Hilolay/Debug/libHilolay.so
+Prueba: $(OBJS) $(USER_OBJS) /home/utnso/tp-2019-2c-Cbados/Planificador/Hilolay/Debug/libHilolay.so
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -L"/home/utnso/Escritorio/tp-2019-2c-Cbados/Planificador/Hilolay/Debug" -o "Prueba" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -L"/home/utnso/tp-2019-2c-Cbados/Planificador/Hilolay/Debug" -o "Prueba" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -41,6 +41,6 @@ clean:
 	-@echo ' '
 
 .PHONY: all clean dependents
-/home/utnso/Escritorio/tp-2019-2c-Cbados/Planificador/Hilolay/Debug/libHilolay.so:
+/home/utnso/tp-2019-2c-Cbados/Planificador/Hilolay/Debug/libHilolay.so:
 
 -include ../makefile.targets
