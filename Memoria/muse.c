@@ -1497,7 +1497,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 
 	//busco el segmento especifico que contiene la direccion
 	struct Segmento *segmento; //= malloc(sizeof(struct Segmento));
-	segmento = segmentoQueContieneDireccion(segmentosProceso, (void*) dir);
+	segmento = segmentoQueContieneDireccion(segmentosProceso, dir);
 
 	if(segmento == NULL){ //No existe el segmento buscado
 		return -1;
@@ -1510,7 +1510,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	//voy a la pagina de ese segmento donde esta la direccion y recorro metadatas
 	struct Pagina *pagina; //= malloc(sizeof(struct Pagina));
 	pagina = paginaQueContieneDireccion(segmento, (void*) dir);
-	t_list *metadatas = list_create();
+	t_list *metadatas; //= list_create();
 	if(pagina == NULL)
 	{
 		return -1;
@@ -1560,14 +1560,14 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	return 0;
 }
 
-struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion) {
+struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, uint32_t direccion) {
 
 	struct Segmento *unSegmento;
 
 	for (int i = 0; i < list_size(listaSegmentos); i++) {
 		unSegmento = list_get(listaSegmentos, i);
 
-		if (((uint32_t) direccion - unSegmento->baseLogica) < unSegmento->tamanio) {
+		if ((direccion - unSegmento->baseLogica) < unSegmento->tamanio) {
 			return unSegmento;
 		}
 

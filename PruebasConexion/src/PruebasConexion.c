@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
+#include <unistd.h>
+
 
 void recursiva(int num);
 
@@ -23,19 +25,19 @@ int main(void) {
 	//printf("%" PRIu32 "\n", muse_map("archivo.txt",1,1)); //falla
 	//printf("%d", muse_sync(1,1)); //ok
 	//printf("%d", muse_unmap(1)); //ok
-	return EXIT_SUCCESS;
+	return 0;
 }
 
 void recursiva(int num)
 {
-	if(num == 0)
-		return;
+	/*if(num == 0)
+		return;*/
 
 	uint32_t ptr = muse_alloc(10);
 	//muse_cpy(ptr, &num, 4);
-	printf("%d\n", num);
-
-	printf("%" PRIu32 "\n",ptr);
+	printf("num %d\n", num);
+	printf("ptr %u\n", ptr);
+	//printf("%" PRIu32 "\n",ptr);
 
 	muse_free(ptr);
 

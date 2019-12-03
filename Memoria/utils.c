@@ -267,7 +267,8 @@ void atenderMuseFree(int cliente) {
 	uint32_t *direccionDeMemoria = malloc(sizeof(uint32_t));
 	read(cliente, direccionDeMemoria, sizeof(uint32_t));
 
-	printf("%" PRIu32 "\n", *direccionDeMemoria);
+	printf("free direccionDeMemoria %lu\n", *direccionDeMemoria);
+	//printf("%" PRIu32 "\n", *direccionDeMemoria);
 
 	//int resultado = museFree(direccionDeMemoria);
 
