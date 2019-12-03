@@ -234,7 +234,7 @@ int get_node(void){
 
 	int encontrado = 0;
 
-	for (int i =0; i < bitarray_get_max_bit(bitarray); i++) {
+	for (int i =GHEADERBLOCKS+BITMAP_BLOCK_SIZE+GFILEBYTABLE; i < bitarray_get_max_bit(bitarray); i++) {
 		if(bitarray_test_bit(bitarray, i) == 0) {
 			bitarray_set_bit(bitarray, i);
 			encontrado = 1;

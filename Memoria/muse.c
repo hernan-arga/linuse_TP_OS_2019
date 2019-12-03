@@ -143,6 +143,8 @@ int buscarFrameLibre() {
 		}
 	}
 
+	free(frame);
+
 	return -1;
 }
 
@@ -1506,6 +1508,10 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	struct Pagina *pagina; //= malloc(sizeof(struct Pagina));
 	pagina = paginaQueContieneDireccion(segmento, (void*) dir);
 	t_list *metadatas = list_create();
+	if(pagina == NULL)
+	{
+		return -1;
+	}
 	metadatas = pagina->listaMetadata;
 
 	int direccionSeg = dir - segmento->baseLogica;
@@ -1544,6 +1550,10 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	//list_replace(segmentosProceso, segmento->id, segmento);
 	//dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
 
+	free(stringIdSocketCliente);
+	free(segmento);
+	free(pagina);
+	free(metadatas);
 	return 0;
 }
 
