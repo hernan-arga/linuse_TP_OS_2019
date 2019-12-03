@@ -143,6 +143,8 @@ int buscarFrameLibre() {
 		}
 	}
 
+	free(frame);
+
 	return -1;
 }
 
@@ -1406,56 +1408,77 @@ struct Pagina *paginaQueContieneDireccion(struct Segmento *unSegmento,
 //MUSE CPY
 
 int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
-	struct Segmento *unSegmento = malloc(sizeof(struct Segmento));
-	struct Pagina *unaPagina = malloc(sizeof(struct Pagina));
 
 	char *stringIdSocketCliente = string_itoa(idSocketCliente);
 	t_list *listaSegmentos = dictionary_get(tablasSegmentos,stringIdSocketCliente);
 
-	//Obtencion segmento, pagina, frame, desplazamiento
-	int idSegmento;
-	int frame;
-	int desplazamiento;
+	if(listaSegmentos == NULL){
+		return -1;
+	}
+
+	struct Segmento *unSegmento = segmentoQueContieneDireccion(listaSegmentos, (void*)dst);
+	struct Pagina *unaPagina = paginaQueContieneDireccion(unSegmento, (void*) dst);
+
+	if(unSegmento == NULL){
+		return -1;
+	}
 
 	int direccion = (int)dst;
+	int desplazamiento = direccion % pconfig->tamanio_pag;
 
-	//Obtencion desplazamiento
-	desplazamiento = direccion % tam_pagina;
-
-	//Obtencion idSegmento y segmento
-	idSegmento = idSegmentoQueContieneDireccion(listaSegmentos, (void*) dst);
-	unSegmento = list_get(listaSegmentos, idSegmento);
-
-	//Obtencion pagina y frame
-	unaPagina = paginaQueContieneDireccion(unSegmento, (void*) dst); //Me retorna directamente la pagina
-	frame = unaPagina->numeroFrame;
 	//////////////////////////////////////////////////
 
 	/*Ya se tienen todos los datos necesarios y se puede ir a mm ppal a buscar la data*/
-
-	//PRIMERO se debe chequear que no haya un segmentation fault
-	//para esto, leo heapmetadata de la posicion
 	void *pos;
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
-	pos = retornarPosicionMemoriaFrame(frame) + desplazamiento - 5;
-	pos = (struct HeapMetadata *) metadata; //REVISAR ESTE CASTEO
+	metadata = NULL;
+	t_list *metadatas = unaPagina->listaMetadata;
+	pos = obtenerPosicionMemoriaPagina(unaPagina);
 
-	if (metadata->size < n) {
-		//SEGMENTATION FAULT
-		//Informar a libmuse para que lo avise
-		//muse close?
+	for(int i = 0; i < list_size(unaPagina->listaMetadata); i++){
 
-		return -1;
-
-	} else {
-
-		pos = retornarPosicionMemoriaFrame(frame) + desplazamiento;
-		memcpy(pos, src, n);
-
-		return 0;
+		if((int)list_get(metadatas, i) == desplazamiento - 5){ //Si se encuentra una metadata en ese lugar
+			memcpy(metadata, pos + desplazamiento - 5, sizeof(struct HeapMetadata));
+		}
 
 	}
 
+	if(metadata == NULL){ //No se encontro la metadata
+		return -1;
+	}
+
+	if (metadata->size < n) {
+		return -1;
+
+	}
+
+	int paginaInicial = obtenerIndicePagina(unSegmento->tablaPaginas, unaPagina);
+	int bytesAEscribirRestoPaginas = n - (pconfig->tamanio_pag - desplazamiento);
+	int paginaFinal = paginaInicial + ceil((double)(bytesAEscribirRestoPaginas / pconfig->tamanio_pag));
+	void *buffer = malloc( (paginaFinal - paginaInicial) * pconfig->tamanio_pag );
+	int bytesACopiar = n;
+	struct Pagina *pagina;
+
+	for(int i = paginaInicial; i <= paginaFinal; i++){
+		pagina = list_get(unSegmento->tablaPaginas, i);
+		pos = obtenerPosicionMemoriaPagina(pagina);
+
+		if(i == paginaInicial){
+			memcpy(pos + desplazamiento, src, pconfig->tamanio_pag - desplazamiento);
+			bytesACopiar = bytesACopiar - (pconfig->tamanio_pag - desplazamiento);
+		} else {
+
+			if(bytesACopiar < pconfig->tamanio_pag){
+				memcpy(pos, src + n - bytesACopiar, bytesACopiar);
+			} else{
+				memcpy(pos, src + n - bytesACopiar, pconfig->tamanio_pag);
+				bytesACopiar = bytesACopiar - pconfig->tamanio_pag;
+			}
+		}
+	}
+
+	//Caso segmento mmapeado
+	return 0;
 }
 
 //MUSE FREE
@@ -1485,6 +1508,10 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	struct Pagina *pagina = malloc(sizeof(struct Pagina));
 	pagina = paginaQueContieneDireccion(segmento, (void*) dir);
 	t_list *metadatas = list_create();
+	if(pagina == NULL)
+	{
+		return -1;
+	}
 	metadatas = pagina->listaMetadata;
 
 	int direccionSeg = dir - segmento->baseLogica;
@@ -1523,6 +1550,10 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	list_replace(segmentosProceso, segmento->id, segmento);
 	dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
 
+	free(stringIdSocketCliente);
+	free(segmento);
+	free(pagina);
+	free(metadatas);
 	return 0;
 }
 
