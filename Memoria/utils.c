@@ -274,7 +274,7 @@ void atenderMuseFree(int cliente) {
 
 	int resultado = musefree(cliente, *direccionDeMemoria);
 
-	if (resultado == 1) {
+	if (resultado == 0) {
 		loguearInfo("Memoria liberada exitosamente");
 	} else {
 		loguearInfo("Error liberando memoria");
