@@ -3916,3 +3916,79 @@
 
 [INFO] 23:17:47:165 SacServer/(12956:12956):  + Se hizo un create en SacServer
 
+[INFO] 23:28:39:516 SacServer/(13332:13332):  + Se hizo un create en SacServer
+
+[ERROR] 23:28:54:114 SacServer/(13332:13332): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 23:28:54:116 SacServer/(13332:13332):  + Se hizo un create en SacServer
+
+[INFO] 23:28:54:122 SacServer/(13332:13332):  + Se hizo un create en SacServer
+
+[INFO] 23:28:54:128 SacServer/(13332:13332):  + Se hizo un create en SacServer
+
+[INFO] 23:28:54:134 SacServer/(13332:13332):  + Se hizo un create en SacServer
+
+[INFO] 23:28:54:143 SacServer/(13332:13332):  + Se hizo un create en SacServer
+
+[INFO] 23:28:54:149 SacServer/(13332:13332):  + Se hizo un create en SacServer
+
+[INFO] 23:28:54:155 SacServer/(13332:13332):  + Se hizo un create en SacServer
+
+[INFO] 23:28:54:161 SacServer/(13332:13332):  + Se hizo un create en SacServer
+
+[INFO] 23:28:54:167 SacServer/(13332:13332):  + Se hizo un create en SacServer
+
+[INFO] 23:28:54:184 SacServer/(13332:13332):  + Se hizo un create en SacServer
+
+[INFO] 23:36:19:859 SacServer/(13583:13583):  + Se hizo un create en SacServer
+
+[ERROR] 23:36:27:715 SacServer/(13583:13583): Fuse intenta leer una posicion mayor o igual que el tamanio de archivo
+[INFO] 23:36:27:717 SacServer/(13583:13583):  + Se hizo un create en SacServer
+
+[INFO] 23:36:27:723 SacServer/(13583:13583):  + Se hizo un create en SacServer
+
+[INFO] 23:36:27:730 SacServer/(13583:13583):  + Se hizo un create en SacServer
+
+[INFO] 23:36:27:735 SacServer/(13583:13583):  + Se hizo un create en SacServer
+
+[INFO] 23:36:27:744 SacServer/(13583:13583):  + Se hizo un create en SacServer
+
+[INFO] 23:36:27:751 SacServer/(13583:13583):  + Se hizo un create en SacServer
+
+[INFO] 23:36:27:757 SacServer/(13583:13583):  + Se hizo un create en SacServer
+
+[INFO] 23:36:27:764 SacServer/(13583:13583):  + Se hizo un create en SacServer
+
+[INFO] 23:36:27:771 SacServer/(13583:13583):  + Se hizo un create en SacServer
+
+[INFO] 23:36:27:781 SacServer/(13583:13583):  + Se hizo un create en SacServer
+
+[INFO] 23:36:30:815 SacServer/(13583:13583):  + Se hizo un truncate en SacServer
+
+[INFO] 23:36:30:826 SacServer/(13583:13583):  + Se hizo un truncate en SacServer
+
+[INFO] 23:36:30:831 SacServer/(13583:13583):  + Se hizo un truncate en SacServer
+
+[INFO] 23:36:30:834 SacServer/(13583:13583):  + Se hizo un truncate en SacServer
+
+[INFO] 23:36:30:838 SacServer/(13583:13583):  + Se hizo un truncate en SacServer
+
+[INFO] 23:36:34:858 SacServer/(13583:13583):  + Se hizo un mkdir en SacServer
+
+[INFO] 23:36:35:365 SacServer/(13583:13583):  + Se hizo un mkdir en SacServer
+
+[INFO] 23:36:38:898 SacServer/(13583:13583):  + Se hizo un rename en SacServer
+
+[INFO] 23:36:38:907 SacServer/(13583:13583):  + Se hizo un rename en SacServer
+
+[INFO] 23:36:38:915 SacServer/(13583:13583):  + Se hizo un rename en SacServer
+
+[INFO] 23:36:38:928 SacServer/(13583:13583):  + Se hizo un rename en SacServer
+
+[INFO] 23:36:38:935 SacServer/(13583:13583):  + Se hizo un rename en SacServer
+
+[INFO] 23:36:38:941 SacServer/(13583:13583):  + Se hizo un rename en SacServer
+
+[INFO] 23:36:44:979 SacServer/(13583:13583):  + Se hizo un rename en SacServer
+
+[INFO] 23:37:13:207 SacServer/(13649:13649):  + Se hizo un create en SacServer
+
