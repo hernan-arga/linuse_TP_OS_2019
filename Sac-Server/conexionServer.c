@@ -476,11 +476,10 @@ void tomarPeticionWrite(int cliente){
 
 	int *tamanioBuf = malloc(sizeof(int));
 	read(cliente, tamanioBuf, sizeof(int));
-	char *buf = malloc(*tamanioBuf);
-	read(cliente, buf, *tamanioBuf);
-	char *bufC = string_substring_until(buf, *tamanioBuf); //TODO revisar esto,
+	char *buf = malloc(*size);
+	read(cliente, buf, *size);
 
-	int bytes = o_write(pathCortado, *size, *offset, bufC);
+	int bytes = o_write(pathCortado, *size, *offset, buf);
 
 	//Serializo bytes
 	char* buffer = malloc(2 * sizeof(int));
