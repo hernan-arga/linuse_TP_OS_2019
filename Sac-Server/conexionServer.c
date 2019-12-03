@@ -1,6 +1,7 @@
 #include "conexionServer.h"
 
 
+
 int iniciar_conexion(int ip, int puerto){
 	int opt = 1;
 	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30, activity, i, cliente, valread;
