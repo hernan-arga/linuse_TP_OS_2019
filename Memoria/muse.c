@@ -244,10 +244,8 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 
 		}
 
-
-
 		int ultimaMetadata;
-		struct Pagina *ultimaPagina = malloc(sizeof(struct Pagina));
+		struct Pagina *ultimaPagina;
 		void *pos;
 		int paginasNecesarias = (double)ceil((tamanio + sizeof(struct HeapMetadata)) / tam_pagina);
 		//Si sale del for sin retorno, tengo que buscar algun segmento de heap
@@ -292,7 +290,8 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	struct Segmento *nuevoSegmento = malloc(sizeof(struct Segmento));
 	nuevoSegmento->esComun = true;
 	nuevoSegmento->filePath = NULL;
-	//nuevoSegmento->paginasLiberadas = 0;
+	nuevoSegmento->paginasLiberadas = 0;
+
 	//Identificar segmento
 	if (list_is_empty(listaSegmentosProceso)) { //Si es el primer segmento le pongo id 0, sino el id incremental que le corresponda
 		nuevoSegmento->id = 0;
@@ -318,6 +317,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	paginasNecesarias = (int) (ceil(paginas));
 	nuevoSegmento->tablaPaginas = list_create();
 	int tamanioAlocado = tamanio;
+	nuevoSegmento->tamanio = paginasNecesarias * pconfig->tamanio_pag;
 
 	while (paginasNecesarias > 0) {
 
