@@ -532,3 +532,24 @@
 [INFO] 19:05:17:793 Muse/(8813:8813): llego init
 [INFO] 19:05:18:232 Muse/(8813:8813): llego alloc
 [INFO] 19:05:18:232 Muse/(8813:8813): llego free
+[INFO] 00:25:34:514 Muse/(3431:3431): llego init
+[INFO] 00:25:34:588 Muse/(3431:3431): llego alloc
+[INFO] 00:25:34:635 Muse/(3431:3431): llego free
+[INFO] 00:27:12:37 Muse/(3578:3578): llego init
+[INFO] 00:27:12:60 Muse/(3578:3578): llego alloc
+[INFO] 00:27:12:77 Muse/(3578:3578): llego free
+[INFO] 00:32:45:493 Muse/(3781:3781): llego init
+[INFO] 00:32:45:510 Muse/(3781:3781): llego alloc
+[INFO] 00:32:45:531 Muse/(3781:3781): llego free
+[INFO] 00:32:45:539 Muse/(3781:3781): Error liberando memoria
+[INFO] 00:32:45:541 Muse/(3781:3781): llego close
+[INFO] 00:35:51:944 Muse/(3918:3918): llego init
+[INFO] 00:35:51:997 Muse/(3918:3918): llego alloc
+[INFO] 00:35:52:42 Muse/(3918:3918): llego free
+[INFO] 00:35:52:53 Muse/(3918:3918): Error liberando memoria
+[INFO] 00:35:52:57 Muse/(3918:3918): llego close
+[INFO] 00:37:37:283 Muse/(4011:4011): llego init
+[INFO] 00:37:37:314 Muse/(4011:4011): llego alloc
+[INFO] 00:37:37:339 Muse/(4011:4011): llego free
+[INFO] 00:37:37:345 Muse/(4011:4011): Error liberando memoria
+[INFO] 00:37:37:348 Muse/(4011:4011): llego close
