@@ -127,7 +127,7 @@ int o_read(char* path, int size, int offset, char* buf){
 	//log_info(logger, "Reading: Path: %s - Size: %d - Offset %d", path, size, offset);
 	unsigned int nodo = dameNodoDe(path), bloque_punteros, num_bloque_datos;
 	unsigned int bloqueABuscar; 
-	struct sac_file_t *nodo;
+	struct sac_file_t *node;
 	ptrGBloque *punteroABloqueDD;
 	char *bloqueDeDatos;
 	size_t tamanioQueMeQuedaPorLeer = size;
@@ -138,16 +138,16 @@ int o_read(char* path, int size, int offset, char* buf){
 	}
 
 	// obtengo puntero nodo
-	nodo = inicioTablaDeNodos;
-	nodo = &(nodo[nodo-1]);
+	node = inicioTablaDeNodos;
+	node = &(node[nodo-1]);
 
 	pthread_rwlock_rdlock(&superLockeador);
 
-	if(nodo->tamanio_archivo <= offset){
+	if(node->tamanio_archivo <= offset){
 		respuesta = 0;
 		goto finalizar;
-	} else if (nodo->tamanio_archivo <= (offset+size)){
-		tamanioQueMeQuedaPorLeer = size = ((nodo->tamanio_archivo)-(offset));
+	} else if (node->tamanio_archivo <= (offset+size)){
+		tamanioQueMeQuedaPorLeer = size = ((node->tamanio_archivo)-(offset));
 	}
 		// Recorre todos los punteros en el bloque de la tabla de nodos
 		for (bloque_punteros = 0; bloque_punteros < BLOQUESINDIRECTOS; bloque_punteros++){
@@ -158,7 +158,7 @@ int o_read(char* path, int size, int offset, char* buf){
 				continue;
 			}
 
-			bloqueABuscar = (nodo->bloques_indirectos)[bloque_punteros];
+			bloqueABuscar = (node->bloques_indirectos)[bloque_punteros];
 			bloqueABuscar -= (GFILEBYBLOCK + TAMANIO_BITMAP + TAMANIO_TABLA_DE_NODOS);
 			punteroABloqueDD =(ptrGBloque *) &(inicioBloquesDeDatos[bloqueABuscar]);	
 
