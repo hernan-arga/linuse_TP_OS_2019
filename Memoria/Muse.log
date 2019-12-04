@@ -77,3 +77,57 @@
 [INFO] 17:16:50:623 Muse/(6002:6002): llego free
 [INFO] 17:16:50:623 Muse/(6002:6002): Memoria liberada exitosamente
 [INFO] 17:16:50:623 Muse/(6002:6002): llego close
+[INFO] 19:06:35:147 Muse/(9229:9229): llego init
+[INFO] 19:06:35:159 Muse/(9229:9229): llego alloc
+[INFO] 19:06:35:160 Muse/(9229:9229): llego get
+[INFO] 19:06:35:160 Muse/(9229:9229): Get realizado correctamente
+[INFO] 19:06:35:163 Muse/(9229:9229): llego close
+[INFO] 19:07:47:534 Muse/(9373:9373): llego init
+[INFO] 19:07:49:261 Muse/(9373:9373): llego alloc
+[INFO] 19:07:49:261 Muse/(9373:9373): llego get
+[INFO] 19:07:49:261 Muse/(9373:9373): Get realizado correctamente
+[INFO] 19:10:02:108 Muse/(9474:9474): llego init
+[INFO] 19:10:09:805 Muse/(9474:9474): llego alloc
+[INFO] 19:10:09:806 Muse/(9474:9474): llego get
+[INFO] 19:10:09:806 Muse/(9474:9474): Get realizado correctamente
+[INFO] 19:10:12:797 Muse/(9474:9474): llego close
+[INFO] 19:55:14:646 Muse/(10730:10730): llego init
+[INFO] 19:55:16:756 Muse/(10730:10730): llego alloc
+[INFO] 19:55:16:757 Muse/(10730:10730): llego get
+[INFO] 19:55:16:757 Muse/(10730:10730): Get realizado correctamente
+[INFO] 19:55:18:954 Muse/(10730:10730): llego close
+[INFO] 20:00:29:613 Muse/(10838:10838): llego init
+[INFO] 20:00:30:438 Muse/(10838:10838): llego alloc
+[INFO] 20:00:30:438 Muse/(10838:10838): llego get
+[INFO] 20:00:30:438 Muse/(10838:10838): Get realizado correctamente
+[INFO] 20:00:32:150 Muse/(10838:10838): llego close
+[INFO] 20:01:05:764 Muse/(10919:10919): llego init
+[INFO] 20:01:08:627 Muse/(10919:10919): llego alloc
+[INFO] 20:02:18:235 Muse/(10990:10990): llego init
+[INFO] 20:02:18:236 Muse/(10990:10990): llego alloc
+[INFO] 20:02:18:236 Muse/(10990:10990): llego get
+[INFO] 20:02:18:236 Muse/(10990:10990): Get realizado correctamente
+[INFO] 20:02:18:237 Muse/(10990:10990): llego close
+[INFO] 20:03:12:769 Muse/(11033:11033): llego init
+[INFO] 20:03:15:473 Muse/(11033:11033): llego alloc
+[INFO] 20:03:37:638 Muse/(11033:11033): llego get
+[INFO] 20:03:37:638 Muse/(11033:11033): Get realizado correctamente
+[INFO] 20:04:00:947 Muse/(11033:11033): llego close
+[INFO] 20:09:36:103 Muse/(11225:11225): llego init
+[INFO] 20:09:36:693 Muse/(11225:11225): llego alloc
+[INFO] 20:09:36:693 Muse/(11225:11225): llego get
+[INFO] 20:09:36:693 Muse/(11225:11225): Get realizado correctamente
+[INFO] 20:09:37:332 Muse/(11225:11225): llego close
+[INFO] 20:16:30:67 Muse/(11364:11364): llego init
+[INFO] 20:16:34:531 Muse/(11364:11364): llego alloc
+[INFO] 20:16:51:483 Muse/(11364:11364): llego get
+[INFO] 20:16:51:483 Muse/(11364:11364): Get realizado correctamente
+[INFO] 20:17:28:865 Muse/(11461:11461): llego init
+[INFO] 20:17:30:44 Muse/(11461:11461): llego alloc
+[INFO] 20:18:23:149 Muse/(11461:11461): llego get
+[INFO] 20:18:23:149 Muse/(11461:11461): Get realizado correctamente
+[INFO] 20:18:23:149 Muse/(11461:11461): llego close
+[INFO] 20:22:40:684 Muse/(11709:11709): llego init
+[INFO] 20:22:42:235 Muse/(11709:11709): llego alloc
+[INFO] 20:23:01:777 Muse/(11709:11709): llego get
+[INFO] 20:23:01:777 Muse/(11709:11709): Get realizado correctamente

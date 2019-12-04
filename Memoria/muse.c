@@ -452,7 +452,7 @@ struct HeapMetadata *ultimaMetadataSegmento(struct Segmento *segmento){
 	t_list *paginas = segmento->tablaPaginas;
 	t_list *metadatas = NULL;
 	struct Pagina *pagina;
-	struct HeapMetadata *ultimaMetadata;
+	struct HeapMetadata *ultimaMetadata = malloc(sizeof(struct HeapMetadata));
 	ultimaMetadata->size = -1;
 	struct HeapMetadata *metadataResultado;
 
@@ -588,7 +588,7 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 	nuevaPagina->presencia = 1;
 	nuevaPagina->indiceSwap = -1;
 	nuevaPagina->listaMetadata = list_create();
-	nuevaPagina->listaMetadata = list_create();
+
 	//Ocupo frame y lo reemplazo - modifico - en el bitmap de frames
 	struct Frame *frame = malloc(sizeof(struct Frame));
 	frame = list_get(bitmapFrames, nuevaPagina->numeroFrame);
@@ -1296,7 +1296,6 @@ void *obtenerPosicionMemoriaPagina(struct Pagina *pagina){
 }
 
 /*Trae las paginas de un segmento de mmap a mm ppal en caso de no estar*/
-
 //Si me pide un length mayor a lo que tiene el segmento mmap, relleno con /0 (???)
 void traerPaginasSegmentoMmapAMemoria(int direccion, int tamanio, struct Segmento *segmento){
 
@@ -1443,70 +1442,172 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		return -1;
 	}
 
-	struct Segmento *unSegmento = segmentoQueContieneDireccion(listaSegmentos, (void*)dst);
-	struct Pagina *unaPagina = paginaQueContieneDireccion(unSegmento, (void*) dst);
+	struct Segmento *unSegmento = segmentoQueContieneDireccion(listaSegmentos, dst);
+	//struct Pagina *unaPagina = paginaQueContieneDireccion(unSegmento, dst);
 
 	if(unSegmento == NULL){
 		return -1;
 	}
 
 	int direccion = (int)dst;
-	int desplazamiento = direccion % pconfig->tamanio_pag;
-
-	//////////////////////////////////////////////////
-
-	/*Ya se tienen todos los datos necesarios y se puede ir a mm ppal a buscar la data*/
-	void *pos;
-	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
-	metadata = NULL;
-	t_list *metadatas = unaPagina->listaMetadata;
-	pos = obtenerPosicionMemoriaPagina(unaPagina);
-
-	for(int i = 0; i < list_size(unaPagina->listaMetadata); i++){
-
-		if((int)list_get(metadatas, i) == desplazamiento - 5){ //Si se encuentra una metadata en ese lugar
-			memcpy(metadata, pos + desplazamiento - 5, sizeof(struct HeapMetadata));
-		}
-
-	}
-
-	if(metadata == NULL){ //No se encontro la metadata
-		return -1;
-	}
-
-	if (metadata->size < n) {
-		return -1;
-
-	}
-
-	int paginaInicial = obtenerIndicePagina(unSegmento->tablaPaginas, unaPagina);
-	int bytesAEscribirRestoPaginas = n - (pconfig->tamanio_pag - desplazamiento);
-	int paginaFinal = paginaInicial + ceil((double)(bytesAEscribirRestoPaginas / pconfig->tamanio_pag));
-	void *buffer = malloc( (paginaFinal - paginaInicial) * pconfig->tamanio_pag );
-	int bytesACopiar = n;
+	struct HeapMetadata *metadataDst = malloc(sizeof(struct HeapMetadata));
+	metadataDst->size = -1;
+	struct HeapMetadata *metadataAux = malloc(sizeof(struct HeapMetadata));
+	int offset = direccion - unSegmento->baseLogica;
+	t_list* metadatas = list_create();
 	struct Pagina *pagina;
+	void *pos;
+	int desplazamientoAMetadata;
 
-	for(int i = paginaInicial; i <= paginaFinal; i++){
-		pagina = list_get(unSegmento->tablaPaginas, i);
-		pos = obtenerPosicionMemoriaPagina(pagina);
+	if(unSegmento->esComun == true){ //Recorro los metadatas del segmento buscando la que contenga direccion
 
-		if(i == paginaInicial){
-			memcpy(pos + desplazamiento, src, pconfig->tamanio_pag - desplazamiento);
-			bytesACopiar = bytesACopiar - (pconfig->tamanio_pag - desplazamiento);
-		} else {
+		for(int i = 0; i < list_size(unSegmento->tablaPaginas); i++){
+			pagina = list_get(unSegmento->tablaPaginas, i);
+			metadatas = pagina->listaMetadata;
+			pos = obtenerPosicionMemoriaPagina(pagina);
 
-			if(bytesACopiar < pconfig->tamanio_pag){
-				memcpy(pos, src + n - bytesACopiar, bytesACopiar);
-			} else{
-				memcpy(pos, src + n - bytesACopiar, pconfig->tamanio_pag);
-				bytesACopiar = bytesACopiar - pconfig->tamanio_pag;
+			for(int j = 0; j < list_size(metadatas); j++){
+				memcpy(metadataAux, pos + (int)list_get(metadatas, j), sizeof(struct HeapMetadata));
+				desplazamientoAMetadata = (int)list_get(metadatas, j);
+
+				if(desplazamientoAMetadata + sizeof(struct HeapMetadata) <= offset &&
+						offset < desplazamientoAMetadata + sizeof(struct HeapMetadata) + metadataAux->size
+						&& metadataAux->isFree == true){
+
+					metadataDst = metadataAux;
+					pos = obtenerPosicionMemoriaPagina(pagina) + desplazamientoAMetadata + sizeof(struct HeapMetadata);
+					break;
+
+				}
+
 			}
+
 		}
+
+		//pos - donde tengo que escribir
+
+		if(metadataDst->size == -1){ //No se encontro el heap de destino
+			return -1;
+		}
+
+		if(metadataDst->size < n){
+			return -1;
+		}
+
+		/*int offsetmusealloc = offset - desplazamientoAMetadata - sizeof(struct HeapMetadata);
+
+		if(offsetmusealloc + n > desplazamientoAMetadata) {
+			//va a pisar el heap_lista_siguiente
+			return -1;
+		}*/
+
+		//Empiezo a copiar los datos en las paginas
+		int indicePrimeraPagina = offset / pconfig->tamanio_pag;
+		struct Pagina *pagina = list_get(unSegmento->tablaPaginas, indicePrimeraPagina);
+		int bytesPrimeraPagina = pconfig->tamanio_pag - (offset % pconfig->tamanio_pag);
+		int bytesACopiar = n;
+		struct Frame *framePrimeraPagina = list_get(bitmapFrames, pagina->numeroFrame);
+		framePrimeraPagina->uso = 1;
+		framePrimeraPagina->modificado = 1;
+
+		//Copio bytes primera pagina
+		if(bytesACopiar < bytesPrimeraPagina){
+			memcpy(obtenerPosicionMemoriaPagina(pagina) + (offset % pconfig->tamanio_pag), src, bytesACopiar);
+			bytesACopiar -= bytesACopiar;
+		} else{
+			memcpy(obtenerPosicionMemoriaPagina(pagina) + (offset % pconfig->tamanio_pag), src, bytesPrimeraPagina);
+			bytesACopiar -= bytesPrimeraPagina;
+		}
+
+		int proximaPag = indicePrimeraPagina + 1;
+		struct Pagina *proximaPagina;
+		struct Frame *proximoFrame;
+
+		while(bytesACopiar > 0){
+			proximaPagina = list_get(unSegmento->tablaPaginas, proximaPag);
+			proximoFrame = list_get(bitmapFrames, proximaPagina->numeroFrame);
+
+			if(bytesACopiar >= tam_pagina){
+
+				memcpy(obtenerPosicionMemoriaPagina(proximaPagina),  src + (n - bytesACopiar), pconfig->tamanio_pag);
+				bytesACopiar -= pconfig->tamanio_pag;
+
+			} else {
+
+				memcpy(obtenerPosicionMemoriaPagina(proximaPagina), src + (n - bytesACopiar), bytesACopiar);
+				bytesACopiar -= bytesACopiar;
+
+			}
+
+			proximoFrame->uso = 1;
+			proximoFrame->modificado = 1;
+			proximaPagina++;
+		}
+
+		return 0; //Copio correctamente
+
+	} else { //Es un segmento mmap
+
+		traerPaginasSegmentoMmapAMemoria(offset, n, unSegmento);
+
+		//Empiezo a copiar los datos en las paginas
+		int indicePrimeraPagina = offset / pconfig->tamanio_pag;
+		struct Pagina *pagina = list_get(unSegmento->tablaPaginas,
+				indicePrimeraPagina);
+		int bytesPrimeraPagina = pconfig->tamanio_pag
+				- (offset % pconfig->tamanio_pag);
+		int bytesACopiar = n;
+		struct Frame *framePrimeraPagina = list_get(bitmapFrames,
+				pagina->numeroFrame);
+		framePrimeraPagina->uso = 1;
+		framePrimeraPagina->modificado = 1;
+
+		if(indicePrimeraPagina * pconfig->tamanio_pag + (offset % pconfig->tamanio_pag) + n > unSegmento->tamanio){
+			return -1;
+		}
+
+		//Copio bytes primera pagina
+		if(bytesACopiar < bytesPrimeraPagina){
+			memcpy(obtenerPosicionMemoriaPagina(pagina) + (offset % pconfig->tamanio_pag), src, bytesACopiar);
+			bytesACopiar -= bytesACopiar;
+		} else{
+			memcpy(obtenerPosicionMemoriaPagina(pagina) + (offset % pconfig->tamanio_pag), src, bytesPrimeraPagina);
+			bytesACopiar -= bytesPrimeraPagina;
+		}
+
+		int proximaPag = indicePrimeraPagina + 1;
+		struct Pagina *proximaPagina;
+		struct Frame *proximoFrame;
+
+		while (bytesACopiar > 0) {
+			proximaPagina = list_get(unSegmento->tablaPaginas, proximaPag);
+			proximoFrame = list_get(bitmapFrames, proximaPagina->numeroFrame);
+
+			if (bytesACopiar >= tam_pagina) {
+
+				memcpy(obtenerPosicionMemoriaPagina(proximaPagina),
+						src + (n - bytesACopiar), pconfig->tamanio_pag);
+				bytesACopiar -= pconfig->tamanio_pag;
+
+			} else {
+
+				memcpy(obtenerPosicionMemoriaPagina(proximaPagina),
+						src + (n - bytesACopiar), bytesACopiar);
+				bytesACopiar -= bytesACopiar;
+
+			}
+
+			proximoFrame->uso = 1;
+			proximoFrame->modificado = 1;
+			proximaPagina++;
+		}
+
+		return 0;
 	}
 
-	//Caso segmento mmapeado
-	return 0;
 }
+
+
 
 //MUSE FREE
 

@@ -39,7 +39,11 @@ void recursiva(int num)
 	printf("ptr %u\n", ptr);
 	//printf("%" PRIu32 "\n",ptr);
 
-	muse_free(ptr);
+	void * buffer;
+	//muse_free(ptr);
+	int resultado = muse_get(buffer, ptr, 10);
+
+	printf("%d", resultado);
 
 	//uint32_t ptr2 = muse_alloc(5);
 
