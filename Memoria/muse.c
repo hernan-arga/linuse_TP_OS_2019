@@ -356,6 +356,13 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 
 						list_add(primeraPagina->listaMetadata, (void*)(sizeof(struct HeapMetadata) + tamanio));
 
+						for(int i = 0; i < list_size(primeraPagina->listaMetadata); i++){
+
+							int metadata = (int)list_get(primeraPagina->listaMetadata, i);
+							printf("una metadata es %i \n",metadata);
+
+						}
+
 						//Pone la metadata en el frame correspondiente
 						memcpy(pos, ultimaMetadata, sizeof(struct HeapMetadata));
 				}
@@ -409,7 +416,7 @@ struct Segmento *buscarSegmentoConTamanioDisponible(t_list *segmentos, int taman
 
 				for(int k = 0; k < list_size(metadatas); k++){
 					int posMeta = (int)list_get(metadatas,k);
-					memcpy(metadata, pos + *((int*)list_get(metadatas, k)), sizeof(struct HeapMetadata));
+					memcpy(metadata, pos + posMeta, sizeof(struct HeapMetadata));
 
 					if(metadata->isFree == true && metadata->size >= tamanio){
 						return segmento;
@@ -488,7 +495,8 @@ int indicePaginaQueContieneUltimaMetadata(struct Segmento *segmento){
 	for(int i = 0; i < list_size(paginas); i++){
 		pagina = list_get(paginas, i);
 		metadatas = pagina->listaMetadata;
-		memcpy(ultimaMetadata, obtenerPosicionMemoriaPagina(pagina) + (int)list_get(metadatas, list_size(metadatas) - 1), sizeof(struct HeapMetadata));
+		int posMeta = (int)list_get(metadatas, (list_size(metadatas) - 1));
+		memcpy(ultimaMetadata, obtenerPosicionMemoriaPagina(pagina) + posMeta, sizeof(struct HeapMetadata));
 
 		if(ultimaMetadata->size != -1){
 			metadataResultado = ultimaMetadata;
@@ -548,10 +556,10 @@ struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento, int tam
 	metadata->isFree = true;
 	metadata->size = tamanioMetadata;
 
-	int *ptro = malloc(sizeof(int));
-	*ptro = 0;
+	//int *ptro = malloc(sizeof(int));
+	//*ptro = 0;
 
-	list_add(primeraPagina->listaMetadata, ptro);
+	list_add(primeraPagina->listaMetadata, (void*)(0));
 
 	//Pone la metadata en el frame correspondiente
 	memcpy(pos, metadata, sizeof(struct HeapMetadata)); //todo ACA se reinicia el tam pag
