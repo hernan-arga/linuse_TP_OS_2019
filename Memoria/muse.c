@@ -1576,7 +1576,7 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 
 		void* deDondeLeer;
 		deDondeLeer = obtenerPosicionMemoriaPagina(list_get(unSegmento->tablaPaginas,0)) + sizeof(struct HeapMetadata);
-		printf("El resultado es %i \n", *(int*)deDondeLeer);
+		printf("La frase copiada es %s \n", (char*)deDondeLeer);
 		return 0; //Copio correctamente
 
 	} else { //Es un segmento mmap
