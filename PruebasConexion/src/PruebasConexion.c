@@ -69,6 +69,12 @@ void recursiva(int num)
 
 	void * buffer;
 
+	//muse_free(ptr);
+	int resultado = muse_get(buffer, ptr, 10);
+
+	printf("%d", resultado);
+
+
 
 
 
