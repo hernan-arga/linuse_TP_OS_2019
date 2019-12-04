@@ -107,7 +107,7 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_
 struct Segmento *extenderSegmento(struct Segmento *unSegmento, uint32_t tamanio);
 int retornarMetadataTamanioLibre(struct Segmento *segmento, uint32_t tamanio);
 struct Segmento *buscarSegmentoConTamanioDisponible(t_list *segmentos, int tamanio);
-struct HeapMetadata *ultimaMetadataSegmento(struct Segmento *segmento);
+int indicePaginaQueContieneUltimaMetadata(struct Segmento *segmento);
 
 //Funciones cpy
 int musecpy(uint32_t dst, void* src, int n, int idSocket);

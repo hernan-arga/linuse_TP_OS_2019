@@ -37,7 +37,7 @@ void recursiva(int num)
 	//uint32_t ptr = muse_alloc(10);
 
 	//Prueba cpy
-	uint32_t ptr = muse_alloc(25);
+	uint32_t ptr = muse_alloc(10);
 
 	printf("ptr %u\n", ptr);
 
