@@ -41,7 +41,14 @@ void recursiva(int num)
 	printf("num %d\n", num);
 	printf("ptr %u\n", ptr);
 
-	void * puntero;
+	uint32_t ptr2 = muse_alloc(10);
+
+	//muse_cpy(ptr, &num, 4);
+
+	//printf("num %d\n", num);
+	printf("ptr2 %u\n", ptr2);
+
+	//void * puntero;
 /*
 	puntero = ptr;
 
