@@ -37,7 +37,7 @@ void recursiva(int num)
 	//uint32_t ptr = muse_alloc(10);
 
 	//Prueba cpy
-	uint32_t ptr = muse_alloc(10);
+	uint32_t ptr = muse_alloc(25);
 
 	printf("ptr %u\n", ptr);
 
@@ -54,14 +54,28 @@ void recursiva(int num)
 	nro = &numero;
 	muse_cpy(ptr, nro, sizeof(int)); */
 
+
+	/*
+	int numero = 11;
+	void*nro;
+	nro = &numero;
+	muse_cpy(ptr, nro, sizeof(int));
+	 */
+
 	//int * contenido = (void *)ptr;
 	//printf("%i", *contenido);
 
-	//Prueba get
-	void * buffer;
-	int resultado = muse_get(&buffer, ptr, sizeof(int));
+	//Prueba get con string
+	char* frase = "hola como va";
+	void* fraseee;
+	fraseee = &frase;
+	muse_cpy(ptr, fraseee, strlen(frase) + 1);
 
-	printf("%d", resultado);
+	//Prueba get
+	char* buffer = malloc(strlen(frase) + 1);
+	int resultado = muse_get(&buffer, ptr, strlen(frase) + 1);
+
+	printf("la frase es : %s \n", buffer);
 
 	//muse_cpy(ptr, &num, 4);
 
