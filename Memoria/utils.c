@@ -362,13 +362,13 @@ void atenderMuseCopy(int cliente) {
 
 	int z = *((int *) src);
 
-	printf("%" PRIu32 "\n", *dst);
-	printf("%d \n", z); //ok
-	printf("%d \n", *N);
+	//printf("%" PRIu32 "\n", *dst);
+	//printf("%d \n", z); //ok
+	//printf("%d \n", *N);
 
 	//hacer en muse un copy y mandar -1 error o 0 ok
-
-	int resultado = 0;
+	//int resultado = 0;
+	int resultado = musecpy(*dst, src, *N, cliente);
 
 	if (resultado == 0) {
 		loguearInfo("Cpy realizado exitosamente");

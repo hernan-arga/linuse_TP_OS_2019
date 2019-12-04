@@ -148,31 +148,37 @@ int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
 int muse_cpy(uint32_t dst, void* src, int n) { //Case 6
 	//Serializo peticion (6) y parametros (uint32_t dst, void* src, int n)
 	printf("cpy\n");
-	char *buffer = malloc(6 * sizeof(int) + sizeof(uint32_t) + sizeof(src));
+	//char *buffer = malloc(6 * sizeof(int) + sizeof(uint32_t) + sizeof(src));
+	char *buffer = malloc(6 * sizeof(int) + sizeof(uint32_t) + n);
 
 	int peticion = 6;
 	int tamanioPeticion = sizeof(int);
 	memcpy(buffer, &tamanioPeticion, sizeof(int));
 	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
 
-	int tamanioDst = sizeof(dst);
+	int tamanioDst = sizeof(uint32_t);
 	memcpy(buffer + 2 * sizeof(int), &tamanioDst, sizeof(int));
 	memcpy(buffer + 3 * sizeof(int), &dst, sizeof(uint32_t));
 
-	int tamanioSrc = sizeof(src);
-	memcpy(buffer + 3 * sizeof(int) + sizeof(uint32_t), &tamanioSrc,
-			sizeof(int));
-	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t), src, sizeof(src));
+	//int tamanioSrc = sizeof(src);
+	//memcpy(buffer + 3 * sizeof(int) + sizeof(uint32_t), &tamanioSrc, sizeof(int));
+	//memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t), src, sizeof(src));
+
+	int tamanioSrc = n;
+	memcpy(buffer + 3 * sizeof(int) + sizeof(uint32_t), &tamanioSrc, sizeof(int));
+	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t), src, n);
+
+	//int tamanioN = sizeof(n);
+	//memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t) + sizeof(src), &tamanioN, sizeof(int));
+	//memcpy(buffer + 5 * sizeof(int) + sizeof(uint32_t) + sizeof(src), &n, sizeof(int));
 
 	int tamanioN = sizeof(n);
-	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t) + sizeof(src), &tamanioN,
-			sizeof(int));
-	memcpy(buffer + 5 * sizeof(int) + sizeof(uint32_t) + sizeof(src), &n,
-			sizeof(int));
+	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t) + n, &tamanioN, sizeof(int));
+	memcpy(buffer + 5 * sizeof(int) + sizeof(uint32_t) + n, &n, sizeof(int));
 
 	//Falta conexion y se hace envio a MUSE
-	send(serverMUSE, buffer, 6 * sizeof(int) + sizeof(uint32_t) + sizeof(src),
-			0);
+	//send(serverMUSE, buffer, 6 * sizeof(int) + sizeof(uint32_t) + sizeof(src), 0);
+	send(serverMUSE, buffer, 6 * sizeof(int) + sizeof(uint32_t) + n, 0);
 
 	//ahora leo la respuesta de muse si salio bien o error y la retorno
 

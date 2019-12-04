@@ -542,7 +542,7 @@ struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento, int tam
 	void *pos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame);
 
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
-	metadata->isFree = false;
+	metadata->isFree = true;
 	metadata->size = tamanioMetadata;
 
 	list_add(primeraPagina->listaMetadata, (void*) 0);
@@ -1498,8 +1498,8 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 				memcpy(metadataAux, pos + (int)list_get(metadatas, j), sizeof(struct HeapMetadata));
 				desplazamientoAMetadata = (int)list_get(metadatas, j);
 
-				if(desplazamientoAMetadata + sizeof(struct HeapMetadata) <= offset &&
-						offset < desplazamientoAMetadata + sizeof(struct HeapMetadata) + metadataAux->size
+				if((i * pconfig->tamanio_pag) + desplazamientoAMetadata + sizeof(struct HeapMetadata) <= offset &&
+						offset < (i * pconfig->tamanio_pag) + desplazamientoAMetadata + sizeof(struct HeapMetadata) + metadataAux->size
 						&& metadataAux->isFree == true){
 
 					metadataDst = metadataAux;
@@ -1572,6 +1572,9 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 			proximaPagina++;
 		}
 
+		void* deDondeLeer;
+		deDondeLeer = obtenerPosicionMemoriaPagina(list_get(unSegmento->tablaPaginas,0)) + sizeof(struct HeapMetadata);
+		printf("El resultado es %i /n", *(int*)deDondeLeer);
 		return 0; //Copio correctamente
 
 	} else { //Es un segmento mmap

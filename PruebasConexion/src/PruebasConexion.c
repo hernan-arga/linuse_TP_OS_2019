@@ -34,19 +34,32 @@ void recursiva(int num)
 	/*if(num == 0)
 		return;*/
 
+	//uint32_t ptr = muse_alloc(10);
+
+	//Prueba cpy
 	uint32_t ptr = muse_alloc(10);
 
-	//muse_cpy(ptr, &num, 4);
-
-	printf("num %d\n", num);
 	printf("ptr %u\n", ptr);
 
-	uint32_t ptr2 = muse_alloc(10);
+	int numero = 11;
+	void*nro;
+	nro = &numero;
+	muse_cpy(ptr, nro, sizeof(int));
+
+	int * contenido = (void *)ptr;
+	printf("%i", *contenido);
 
 	//muse_cpy(ptr, &num, 4);
 
 	//printf("num %d\n", num);
-	printf("ptr2 %u\n", ptr2);
+	//printf("ptr %u\n", ptr);
+
+	//uint32_t ptr2 = muse_alloc(10);
+
+	//muse_cpy(ptr, &num, 4);
+
+	//printf("num %d\n", num);
+	//printf("ptr2 %u\n", ptr2);
 
 	//void * puntero;
 /*
