@@ -50,10 +50,10 @@ void recursiva(int num)
 	//printf("%i", *contenido);
 
 	//Prueba get
-	void * buffer;
+	int buffer = 0;
 	int resultado = muse_get(&buffer, ptr, sizeof(int));
 
-	printf("%d", resultado);
+	printf("el numero es %d \n", buffer);
 
 	//muse_cpy(ptr, &num, 4);
 

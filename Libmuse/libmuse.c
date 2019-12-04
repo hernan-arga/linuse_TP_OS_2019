@@ -180,8 +180,12 @@ int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
 	//
 	int resultadoFinal = *resultado;
 
+	int variable = *(int*)respuesta;
+
 	if(resultadoFinal == 0){
 		memcpy(dst, respuesta, n);
+		printf("variable vale %i \n", variable);
+		printf("la respuesta que llego es %i \n", *(int*)respuesta);
 	} else{
 		//No hago nada, llega un -1 error
 	}
