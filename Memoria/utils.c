@@ -311,27 +311,34 @@ void atenderMuseGet(int cliente) {
 	printf("%zu\n", *N);
 
 	//hacer en muse un get y mandar -1 error o 0 ok
-
-	void * datos = museget(dst,*src,*N,cliente);
+	void *respuesta = museget(dst, *src, *N, cliente);
 
 	int resultado;
 
-	if (datos != NULL) {
+	if (respuesta != NULL) {
 		loguearInfo("Get realizado correctamente");
 		resultado = 0;
 
 	} else {
 		loguearInfo("Error realizando get");
 		resultado = -1;
+
 	}
 
-	char* buffer = malloc(2 * sizeof(int));
+	//char* buffer = malloc(2 * sizeof(int));
+	char* buffer = malloc(3 * sizeof(int) + *N);
 
 	int tamanioResult = sizeof(int);
 	memcpy(buffer, &tamanioResult, sizeof(int));
 	memcpy(buffer + sizeof(int), &resultado, sizeof(int));
 
-	send(cliente, buffer, 2 * sizeof(int), 0);
+	//
+	int tamanioRespuesta = sizeof(int);
+	memcpy(buffer + 2 * sizeof(int), &tamanioRespuesta, sizeof(int));
+	memcpy(buffer + 3 * sizeof(int), respuesta, *N);
+
+	//send(cliente, buffer, 2 * sizeof(int), 0);
+	send(cliente, buffer, 3 * sizeof(int) + *N, 0);
 
 	free(tamanioDst);
 	free(dst);

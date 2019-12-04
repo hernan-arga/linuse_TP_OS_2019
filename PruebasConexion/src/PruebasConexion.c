@@ -46,8 +46,14 @@ void recursiva(int num)
 	nro = &numero;
 	muse_cpy(ptr, nro, sizeof(int));
 
-	int * contenido = (void *)ptr;
-	printf("%i", *contenido);
+	//int * contenido = (void *)ptr;
+	//printf("%i", *contenido);
+
+	//Prueba get
+	void * buffer;
+	int resultado = muse_get(&buffer, ptr, sizeof(int));
+
+	printf("%d", resultado);
 
 	//muse_cpy(ptr, &num, 4);
 

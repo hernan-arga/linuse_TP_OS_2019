@@ -1238,7 +1238,7 @@ void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 		return NULL;
 	}
 
-	int idSegmento = idSegmentoQueContieneDireccion(listaSegmentos, (void*)src);;
+	int idSegmento = idSegmentoQueContieneDireccion(listaSegmentos, (void*)src);
 	struct Segmento *segmento = list_get(listaSegmentos, idSegmento);
 
 	if(segmento == NULL){
@@ -1255,7 +1255,7 @@ void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 		int cantidadPaginas = ultimaPagina - primeraPagina + 1;
 		resultado = malloc(n);
 		void *recorridoPaginas = malloc(cantidadPaginas * tam_pagina);
-		recorridoPaginas = obtenerPosicionMemoriaPagina(list_get(segmento->tablaPaginas,primeraPagina)) ;
+		//recorridoPaginas = obtenerPosicionMemoriaPagina(list_get(segmento->tablaPaginas,primeraPagina)) ;
 		int puntero = 0;
 
 		if(segmento->esComun == false){
@@ -1285,6 +1285,7 @@ void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 		free(recorridoPaginas);
 	}
 
+	printf("Lo leido es %i /n", *(int*)resultado);
 	return resultado;
 }
 
