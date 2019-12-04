@@ -239,13 +239,13 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 					memcpy(metadata, pos + (int)list_get(pagina->listaMetadata, j), sizeof(struct HeapMetadata));
 
 					if(metadata->isFree == true && metadata->size >= tamanio + sizeof(struct HeapMetadata)){
-						return pos + (int)list_get(pagina->listaMetadata, j);
+						return pos + (int)list_get(pagina->listaMetadata, j) + sizeof(struct HeapMetadata);
 					}
 				}
 
 			}
 
-		}
+		} //cierra if
 
 		int ultimaMetadata;
 		struct Pagina *ultimaPagina;
@@ -272,7 +272,7 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 				return pos;
 			}
 		}
-	}
+	} //cierra else
 
 	//Si sale de todas las condiciones sin retorno, es que no encontro espacio libre ni
 	//espacio que se pueda extender, por lo que debera crear un segmento nuevo
