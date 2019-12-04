@@ -1228,6 +1228,7 @@ void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 		int cantidadPaginas = ultimaPagina - primeraPagina + 1;
 		resultado = malloc(n);
 		void *recorridoPaginas = malloc(cantidadPaginas * tam_pagina);
+		recorridoPaginas = obtenerPosicionMemoriaPagina(list_get(segmento->tablaPaginas,primeraPagina)) ;
 		int puntero = 0;
 
 		if(segmento->esComun == false){

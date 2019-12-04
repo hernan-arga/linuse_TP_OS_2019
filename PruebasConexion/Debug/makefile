@@ -26,7 +26,7 @@ endif
 all: PruebasConexion
 
 dependents:
-	-cd /home/utnso/tp-2019-2c-Cbados/Libmuse/Debug && $(MAKE) clean all
+	-cd /home/utnso/tp-2019-2c-Cbados/Libmuse/Debug && $(MAKE) all
 
 # Tool invocations
 PruebasConexion: $(OBJS) $(USER_OBJS) /home/utnso/tp-2019-2c-Cbados/Libmuse/Debug/libLibmuse.so

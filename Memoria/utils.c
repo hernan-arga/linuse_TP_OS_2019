@@ -245,7 +245,9 @@ void atenderMuseAlloc(int cliente) {
 	char* buffer = malloc(sizeof(int) + sizeof(uint32_t));
 
 	int tamanioDireccion = sizeof(int);
+
 	uint32_t direccion = musemalloc(*bytesAReservar, cliente); //aca hacemos el malloc en muse y devolves la direccion de memoria
+
 	memcpy(buffer, &tamanioDireccion, sizeof(int));
 	memcpy(buffer + sizeof(int), &direccion, sizeof(uint32_t));
 
@@ -310,12 +312,17 @@ void atenderMuseGet(int cliente) {
 
 	//hacer en muse un get y mandar -1 error o 0 ok
 
-	int resultado = 0;
+	void * datos = museget(dst,*src,*N,cliente);
 
-	if (resultado == 0) {
+	int resultado;
+
+	if (datos != NULL) {
 		loguearInfo("Get realizado correctamente");
+		resultado = 0;
+
 	} else {
 		loguearInfo("Error realizando get");
+		resultado = -1;
 	}
 
 	char* buffer = malloc(2 * sizeof(int));
