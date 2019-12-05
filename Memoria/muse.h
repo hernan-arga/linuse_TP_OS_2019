@@ -36,6 +36,15 @@ struct HeapMetadata {
 
 }__attribute__((packed));
 
+struct HeapLista{
+	int direccionHeap; //Con respecto al segmento (direccionHeap / tam_pag = primera pagina) (direccionHeap % tam_pag = desplazamiento dentro de la primera pagina)
+	bool isFree;
+	int size;
+	bool estaPartido;
+	int bytesPrimeraPagina; //si esta partido, estos son los bytes que hay que leer de la primera pagina (de direccionHeap)
+							//en la segunda pagina, habra que leer sizeof(struct HeapMetadata) - bytesPrimeraPagina
+}__attribute__((packed));
+
 struct Segmento{
 
 	bool esComun;
@@ -45,12 +54,13 @@ struct Segmento{
 	uint32_t tamanio;
 	t_list* tablaPaginas;
 	int paginasLiberadas;
+	t_list *metadatas;
 
 };
 
 struct Pagina{
 
-	t_list *listaMetadata;
+	//t_list *listaMetadata;
 	int presencia;
 	int numeroFrame;
 	int indiceSwap;
@@ -107,7 +117,11 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_
 struct Segmento *extenderSegmento(struct Segmento *unSegmento, uint32_t tamanio);
 int retornarMetadataTamanioLibre(struct Segmento *segmento, uint32_t tamanio);
 struct Segmento *buscarSegmentoConTamanioDisponible(t_list *segmentos, int tamanio);
+
+//Funciones metadatas y heaplista
 int indicePaginaQueContieneUltimaMetadata(struct Segmento *segmento);
+struct HeapMetadata *leerMetadata(struct Segmento *segmento, struct HeapLista *heapLista);
+struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento, int ubicacionHeap, bool isFree, uint32_t size);
 
 //Funciones cpy
 int musecpy(uint32_t dst, void* src, int n, int idSocket);
