@@ -108,7 +108,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente);
 bool poseeTamanioLibreSegmento(struct Segmento *unSegmento, uint32_t tamanio);
 void *asignarEspacioLibre(struct Segmento *unSegmento, uint32_t tamanio);
 bool esExtendible(t_list *segmentosProceso, int unIndice, int paginasNecesarias);
-struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *unSegmento, int tamanio);
+struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *unSegmento, int tamanio, bool *sePartioUnaMetadata);
 struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *unSegmento, int tamanio);
 struct Segmento *asignarNuevaPagina(struct Segmento *unSegmento, int tamanio);
 uint32_t obtenerTamanioSegmento(int idSegmento, int idSocketCliente);
@@ -121,7 +121,7 @@ struct Segmento *buscarSegmentoConTamanioDisponible(t_list *segmentos, int taman
 //Funciones metadatas y heaplista
 int indicePaginaQueContieneUltimaMetadata(struct Segmento *segmento);
 struct HeapMetadata *leerMetadata(struct Segmento *segmento, struct HeapLista *heapLista);
-struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento, int ubicacionHeap, bool isFree, uint32_t size);
+struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento, int ubicacionHeap, bool isFree, uint32_t size, bool *sePartioUnaMetadata);
 
 //Funciones cpy
 int musecpy(uint32_t dst, void* src, int n, int idSocket);
