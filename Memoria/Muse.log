@@ -331,3 +331,18 @@
 [INFO] 21:01:08:115 Muse/(6926:6926): llego init
 [INFO] 21:01:10:268 Muse/(6926:6926): llego alloc
 [INFO] 21:01:10:268 Muse/(6926:6926): llego alloc
+[INFO] 02:35:33:487 Muse/(25241:25241): llego init
+[INFO] 02:35:40:785 Muse/(25241:25241): llego alloc
+[INFO] 02:36:37:27 Muse/(25393:25393): llego init
+[INFO] 02:36:37:27 Muse/(25393:25393): llego alloc
+[INFO] 02:44:46:183 Muse/(25706:25706): llego init
+[INFO] 02:44:46:183 Muse/(25706:25706): llego alloc
+[INFO] 02:49:00:49 Muse/(25984:25984): llego init
+[INFO] 02:49:00:49 Muse/(25984:25984): llego alloc
+[INFO] 02:50:19:989 Muse/(26081:26081): llego init
+[INFO] 02:50:19:989 Muse/(26081:26081): llego alloc
+[INFO] 02:59:11:352 Muse/(26410:26410): llego init
+[INFO] 02:59:11:352 Muse/(26410:26410): llego alloc
+[INFO] 03:04:34:46 Muse/(26410:26410): llego copy
+[INFO] 03:04:34:46 Muse/(26410:26410): Error realizando cpy
+[INFO] 03:04:34:46 Muse/(26410:26410): llego alloc

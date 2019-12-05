@@ -16,129 +16,25 @@
 #include <string.h>
 
 
-void recursiva(int num);
-
-int main(void) {
-	muse_init(getpid(), "127.0.0.1", 3306);
-	recursiva(10);
-	muse_close();
-
-	//printf("%" PRIu32 "\n", muse_map("archivo.txt",1,1)); //falla
-	//printf("%d", muse_sync(1,1)); //ok
-	//printf("%d", muse_unmap(1)); //ok
-	return 0;
-}
-
 void recursiva(int num)
 {
-	/*if(num == 0)
-		return;*/
+	if(num == 0)
+		return;
 
-	//uint32_t ptr = muse_alloc(10);
+	uint32_t ptr = muse_alloc(4);
+	muse_cpy(ptr, &num, 4);
+	printf("%d\n", num);
 
-	//Prueba cpy
-	uint32_t ptr = muse_alloc(10);
-
-	printf("ptr %u\n", ptr);
-
-	uint32_t ptr2 = muse_alloc(9);
-
-	printf("ptr %u\n", ptr2);
-
-	uint32_t ptr3 = muse_alloc(8);
-
-	printf("ptr %u\n", ptr3);
-
-	/*int numero = 11;
-	void*nro;
-	nro = &numero;
-	muse_cpy(ptr, nro, sizeof(int)); */
-
-
-	/*
-	int numero = 11;
-	void*nro;
-	nro = &numero;
-	muse_cpy(ptr, nro, sizeof(int));
-	 */
-
-	//int * contenido = (void *)ptr;
-	//printf("%i", *contenido);
-
-	//Prueba get con string
-	char* frase = "hola como va";
-	void* fraseee;
-	fraseee = &frase;
-	muse_cpy(ptr, fraseee, strlen(frase) + 1);
-
-	//Prueba get
-	char* buffer = malloc(strlen(frase) + 1);
-	int resultado = muse_get(&buffer, ptr, strlen(frase) + 1);
-
-	printf("la frase es : %s \n", buffer);
-
-	//muse_cpy(ptr, &num, 4);
-
-	//printf("num %d\n", num);
-	//printf("ptr %u\n", ptr);
-
-	//uint32_t ptr2 = muse_alloc(10);
-
-	//muse_cpy(ptr, &num, 4);
-
-	//printf("num %d\n", num);
-	//printf("ptr2 %u\n", ptr2);
-
-	//void * puntero;
-/*
-	puntero = ptr;
-
-	int numero = 18;
-
-	memcpy(puntero,numero,sizeof(int));
-*/
-	/*
-	uint32_t ptr2 = muse_alloc(5);
-
-	//muse_cpy(ptr, &num, 4);
-
-
-
-	printf("ptr2 %u\n", ptr2);
-
-	//printf("%" PRIu32 "\n",ptr);
-
-	void * buffer;
-
-	//muse_free(ptr);
-	int resultado = muse_get(buffer, ptr, 10);
-
-	printf("%d", resultado);
-
-
-
-
-
-	int result = muse_get(buffer,ptr,10);
-
-	printf("%d \n ",result);
-
-	printf("%p\n", buffer);
-
-	*/
-
-
-	//muse_free(ptr);
-
-	//uint32_t ptr2 = muse_alloc(5);
-
-	//printf("%" PRIu32 "\n",ptr2);
-
-	/*
 	recursiva(num - 1);
 	num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
 	muse_get(&num, ptr, 4);
 	printf("%d\n", num);
 	muse_free(ptr);
-	*/
+}
+
+int main(void)
+{
+	muse_init(getpid(), "127.0.0.1", 3306);
+	recursiva(10);
+	muse_close();
 }
