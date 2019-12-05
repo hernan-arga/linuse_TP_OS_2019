@@ -318,6 +318,31 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 	//ves si esta partida o no, te fijas desplazamiento y to do eso, y retornas
 	//desplazamientoHeap + 5 como verga sea
 	//Devolver la primera metadata + 5
+
+	struct HeapLista *heapnuevo = list_get(nuevoSegmento->metadatas,0);
+
+	int indicePaginaNueva = heapnuevo->direccionHeap / pconfig->tamanio_pag;
+
+	struct Pagina *paginaNueva = list_get(nuevoSegmento->tablaPaginas,indicePaginaNueva);
+
+	int desplazamientoNuevo = heapnuevo->direccionHeap % pconfig->tamanio_pag;
+
+	if(heapnuevo->estaPartido == false){
+
+		return obtenerPosicionMemoriaPagina(paginaNueva) + sizeof(struct HeapMetadata) + desplazamientoNuevo;
+
+	}
+	else
+	{
+		int indicePaginaSiguiente = ((floor)((double)heapnuevo->direccionHeap / (double)pconfig->tamanio_pag)) + 1;
+		int bytesAMoversePagina = sizeof(struct HeapMetadata) - (pconfig->tamanio_pag - (heapnuevo->direccionHeap % pconfig->tamanio_pag));
+		struct Pagina *pagina = list_get(nuevoSegmento->tablaPaginas, indicePaginaSiguiente);
+
+		return obtenerPosicionMemoriaPagina(pagina) + bytesAMoversePagina;
+	}
+
+
+
 	return NULL;
 
 }
@@ -618,9 +643,12 @@ struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 
 	struct HeapLista *ultimoHeapLista = list_get(segmento->metadatas, list_size(segmento->metadatas) - 1);
 	struct HeapMetadata *ultimaMetadata = malloc(sizeof(struct HeapMetadata));
-	int indicePagina = ultimoHeapLista->direccionHeap / pconfig->tamanio_pag;
+	int indicePagina = floor((double)ultimoHeapLista->direccionHeap / (double)pconfig->tamanio_pag);
 	int desplazamientoPagina = ultimoHeapLista->direccionHeap % pconfig->tamanio_pag;
 	struct Pagina *pag = list_get(segmento->tablaPaginas, indicePagina);
+
+	void *posPagi = obtenerPosicionMemoriaPagina(pag);
+
 	memcpy(ultimaMetadata, obtenerPosicionMemoriaPagina(pag) + desplazamientoPagina, sizeof(struct HeapMetadata));
 
 	int paginasNecesarias;
@@ -680,7 +708,10 @@ struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 		paginasNecesarias = (int) (ceil((double) bytesAAgregar / (double) tam_pagina));
 
 		//Modifico la ultima metadata con el nuevo size que se esta pidiendo
-		memcpy(ultimoHeapLista->direccionHeap, nuevaUltimaMetadata, sizeof(struct HeapMetadata));
+
+		//memcpy(ultimoHeapLista->direccionHeap, nuevaUltimaMetadata, sizeof(struct HeapMetadata)); //revisar esto, para mi con actualizar el size ya alcanza
+
+		ultimoHeapLista->size = 4;
 
 		while (paginasNecesarias > 0) {
 
@@ -701,6 +732,8 @@ struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 
 		}
 	}
+
+
 
 	//free(paginaUltimaMetadata);
 	//free(frame);
