@@ -63,6 +63,7 @@ void arrancarMemoria(config* pconfig) {
 void reservarMemoriaPrincipal(int tamanio) {
 
 	memoriaPrincipal = malloc(tamanio);
+	printf("La direccion de la mm ppal es %i \n", memoriaPrincipal);
 
 }
 
@@ -245,7 +246,6 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 					return (void*)(heap->direccionHeap + sizeof(struct HeapMetadata));
 				}
 			}
-
 		}
 		// TODO nunca se revisa si hay segmentos con paginas liberadas
 
@@ -304,7 +304,7 @@ struct HeapMetadata *leerMetadata(struct Segmento *segmento, struct HeapLista *h
 
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 	int direccionMetadata = heapLista->direccionHeap;
-	int indicePrimeraPagina = direccionMetadata / pconfig->tamanio_pag;
+	int indicePrimeraPagina = (floor)(direccionMetadata / pconfig->tamanio_pag);
 	struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePrimeraPagina);
 	int desplazamientoPrimeraPagina = direccionMetadata % pconfig->tamanio_pag;
 	void *pos = obtenerPosicionMemoriaPagina(pagina);
@@ -388,7 +388,8 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 
 						struct HeapMetadata *ultimaMetadata = malloc(sizeof(struct HeapMetadata));
 						ultimaMetadata->isFree = true;
-						ultimaMetadata->size = pconfig->tamanio_pag - tamanio - (2 * sizeof(struct HeapMetadata)); // esto tiro cualquiera TODO
+						//
+						ultimaMetadata->size = pconfig->tamanio_pag - tamanio - (2 * sizeof(struct HeapMetadata));
 
 						struct HeapLista *ultimoHeapLista = malloc(sizeof(struct HeapLista));
 
@@ -437,10 +438,10 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento, int ubicac
 
 	heap->direccionHeap = ubicacionHeap;
 	heap->isFree = isFree;
-	heap->size = size;
 
-	int indicePrimeraPagina = ubicacionHeap / pconfig->tamanio_pag; // TODO FIXME esto no anda, ubicacionHeap no es un numero, no entiendo que qusiieron hacer
-	struct Pagina *pagina = list_get(segmento->tablaPaginas, 0); // harcodeo el 0
+	int indicePrimeraPagina = (floor)(ubicacionHeap / pconfig->tamanio_pag);
+	//int indicePrimeraPagina = ubicacionHeap / pconfig->tamanio_pag; // TODO FIXME esto no anda, ubicacionHeap no es un numero, no entiendo que qusiieron hacer
+	struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePrimeraPagina);
 	int desplazamientoPrimeraPagina = ubicacionHeap % pconfig->tamanio_pag;
 
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
@@ -451,6 +452,7 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento, int ubicac
 	if(pconfig->tamanio_pag - desplazamientoPrimeraPagina < sizeof(struct HeapMetadata)){ //Si queda partida
 		heap->estaPartido = true;
 		heap->bytesPrimeraPagina = pconfig->tamanio_pag - desplazamientoPrimeraPagina;
+		heap->size = size - (sizeof(struct HeapMetadata) - heap->bytesPrimeraPagina);
 
 		//Agrego el heaplista al segmento
 		list_add(segmento->metadatas, heap);
@@ -469,6 +471,7 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento, int ubicac
 	} else{ //Si no queda partida
 		heap->estaPartido = false;
 		heap->bytesPrimeraPagina = sizeof(struct HeapMetadata);
+		heap->size = size;
 
 		//Agrego el heaplista al segmento
 		list_add(segmento->metadatas, heap);
@@ -550,7 +553,7 @@ struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 			primeraMetadata->size = tamanio;
 
 			//list_add(proximaPagina->listaMetadata, (void*)(0));
-			int ubicacionHeap = (int)(obtenerPosicionMemoriaPagina(proximaPagina)); //+ 0 porque es la primera metadata, esta donde comienza el frame
+			int ubicacionHeap = obtenerIndicePagina(segmento->tablaPaginas, proximaPagina) * pconfig->tamanio_pag;
 			ubicarMetadataYHeapLista(segmento, ubicacionHeap, primeraMetadata->isFree, primeraMetadata->size);
 
 			//Agrego la proxima metadata donde termina tamanio
@@ -558,7 +561,7 @@ struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 			proximaMetadata->isFree = true;
 			proximaMetadata->size = pconfig->tamanio_pag - sizeof(struct HeapMetadata) - tamanio;
 
-			int direccionHeap = (int)(obtenerPosicionMemoriaPagina(proximaPagina) + sizeof(struct HeapMetadata) + tamanio);
+			int direccionHeap = obtenerIndicePagina(segmento->tablaPaginas, proximaPagina) * pconfig->tamanio_pag + sizeof(struct HeapMetadata) + tamanio;
 			ubicarMetadataYHeapLista(segmento, direccionHeap, proximaMetadata->isFree, proximaMetadata->size);
 
 		}
@@ -646,16 +649,16 @@ struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento, int tam
 	primeraPagina->numeroFrame = asignarUnFrame();
 	primeraPagina->presencia = 1;
 	primeraPagina->indiceSwap = -1;
-	void *pos = retornarPosicionMemoriaFrame(primeraPagina->numeroFrame);
+
+	list_add(segmento->tablaPaginas, primeraPagina);
+
+	int pos = obtenerIndicePagina(segmento->tablaPaginas, primeraPagina) * pconfig->tamanio_pag; //como esla primera metadata, no hay desplazamiento (esta en 0 la metadata)
 
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
 	metadata->isFree = true;
 	metadata->size = tamanioMetadata;
 
-	list_add(segmento->tablaPaginas, primeraPagina);
-
-
-	ubicarMetadataYHeapLista(segmento, (int)pos, metadata->isFree, metadata->size);
+	ubicarMetadataYHeapLista(segmento, pos, metadata->isFree, metadata->size);
 
 	segmento->tamanio += pconfig->tamanio_pag;
 
@@ -700,11 +703,13 @@ struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *segmento, int tama
 	ultimaMetadata->size = tamanioUltimaMetadata;
 	//list_add(ultimaPagina->listaMetadata, (void*)(tam_pagina - sizeof(struct HeapMetadata) - tamanioUltimaMetadata));
 
-	int direccionHeap = (int)(obtenerPosicionMemoriaPagina(ultimaPagina) + (pconfig->tamanio_pag - tamanioUltimaMetadata - sizeof(struct HeapMetadata)));
+	int direccionHeap = obtenerIndicePagina(segmento->tablaPaginas, ultimaPagina) * pconfig->tamanio_pag + (pconfig->tamanio_pag - tamanioUltimaMetadata - sizeof(struct HeapMetadata));
+	//int direccionHeap = (int)(obtenerPosicionMemoriaPagina(ultimaPagina) + (pconfig->tamanio_pag - tamanioUltimaMetadata - sizeof(struct HeapMetadata)));
 	ubicarMetadataYHeapLista(segmento, direccionHeap, ultimaMetadata->isFree, ultimaMetadata->size);
 
+	//TODO me parece que esta hecho en ubicar metadata
 	//Pone la metadata en el frame correspondiente
-	memcpy(pos, ultimaMetadata, sizeof(struct HeapMetadata));
+	//memcpy(pos, ultimaMetadata, sizeof(struct HeapMetadata));
 
 	t_list *paginas = segmento->tablaPaginas;
 	list_add(paginas, ultimaPagina);
@@ -1387,7 +1392,7 @@ void *obtenerPosicionMemoriaPagina(struct Pagina *pagina){
 
 	list_replace(bitmapFrames, pagina->numeroFrame, frame);
 
-	return memoriaPrincipal + pagina->numeroFrame * pconfig->tamanio_pag;;
+	return memoriaPrincipal + pagina->numeroFrame * pconfig->tamanio_pag;
 }
 
 /*Trae las paginas de un segmento de mmap a mm ppal en caso de no estar*/
