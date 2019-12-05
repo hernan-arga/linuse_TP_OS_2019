@@ -436,3 +436,6 @@
 [INFO] 16:24:46:484 Muse/(8043:8043): llego alloc
 [INFO] 16:37:23:567 Muse/(8402:8402): llego init
 [INFO] 16:37:29:764 Muse/(8402:8402): llego alloc
+[INFO] 16:46:00:666 Muse/(8749:8749): llego init
+[INFO] 16:46:00:667 Muse/(8749:8749): llego alloc
+[INFO] 16:46:00:667 Muse/(8749:8749): llego alloc

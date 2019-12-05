@@ -242,12 +242,23 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 				metadata = leerMetadata(segmento, heap);
 
 				if (metadata->isFree == true && metadata->size >= tamanio) {
-					// TODO implementar heap partido
-					return (void*)(heap->direccionHeap + sizeof(struct HeapMetadata));
+					if (heap->estaPartido == false) { //Si no esta partida la metadata
+						int indicePagina = (floor)((double)heap->direccionHeap / (double)pconfig->tamanio_pag);
+						int desplazamientoPagina = heap->direccionHeap % pconfig->tamanio_pag;
+						struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePagina);
+
+						return obtenerPosicionMemoriaPagina(pagina) + desplazamientoPagina + sizeof(struct HeapMetadata);
+					} else{ //Si esta partida la heap metadata
+						int indicePagina = ((floor)((double)heap->direccionHeap / (double)pconfig->tamanio_pag)) + 1;
+						int bytesAMoversePagina = sizeof(struct HeapMetadata) - (pconfig->tamanio_pag - (heap->direccionHeap % pconfig->tamanio_pag));
+						struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePagina);
+
+						return obtenerPosicionMemoriaPagina(pagina) + bytesAMoversePagina;
+					}
 				}
+
 			}
 		}
-		// TODO nunca se revisa si hay segmentos con paginas liberadas
 
 		//cierra if
 
@@ -270,20 +281,27 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 				//Si la metadata se parte me muevo a la proxima pagina, pongo en 0(donde arranca el frame)
 				//una metadata y ocupo lo necesario (asignar primera pagina) y creo la proxima metadata
 
-				//XXX
-				//FIXME
-				//TODO
 				//Retorno posicion ultima metadata + 5
-				/*
-				int paginaUltimaMetadata = indicePaginaQueContieneUltimaMetadata(unSegmento);
-				paginaMetadata = list_get(unSegmento->tablaPaginas, paginaUltimaMetadata);
-				int desplazamientoUltimaMetadata = (int)list_get(paginaMetadata->listaMetadata, list_size(paginaMetadata->listaMetadata) - 1);
-				pos = obtenerPosicionMemoriaPagina(paginaMetadata) + desplazamientoUltimaMetadata + sizeof(struct HeapMetadata);
-				*/
+				struct HeapLista *ultimoHeap = malloc(sizeof(struct HeapLista));
+				struct HeapMetadata *metadata;
 
+				if (metadata->isFree == true && metadata->size >= tamanio) {
 
+					if (ultimoHeap->estaPartido == false) { //Si no esta partida la metadata
+						int indicePagina = (floor)((double)ultimoHeap->direccionHeap / (double)pconfig->tamanio_pag);
+						int desplazamientoPagina = ultimoHeap->direccionHeap % pconfig->tamanio_pag;
+						struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePagina);
 
-				return pos;
+						return obtenerPosicionMemoriaPagina(pagina) + desplazamientoPagina + sizeof(struct HeapMetadata);
+
+					} else{ //Si esta partida la heap metadata
+						int indicePagina = ((floor)((double)ultimoHeap->direccionHeap / (double)pconfig->tamanio_pag)) + 1;
+						int bytesAMoversePagina = sizeof(struct HeapMetadata) - (pconfig->tamanio_pag - (ultimoHeap->direccionHeap % pconfig->tamanio_pag));
+						struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePagina);
+
+						return obtenerPosicionMemoriaPagina(pagina) + bytesAMoversePagina;
+					}
+				}
 			}
 		}
 	} //cierra else
@@ -295,7 +313,12 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 	struct Segmento *nuevoSegmento = crearSegmento(tamanio, idSocketCliente);
 
 	free(stringIdSocketCliente);
-	return posicionMemoriaUnSegmento(nuevoSegmento) + sizeof(struct HeapMetadata);
+
+	//TODO vas a nuevo segmento, agarras el primer heap, calculas la metadata y como arriba
+	//ves si esta partida o no, te fijas desplazamiento y to do eso, y retornas
+	//desplazamientoHeap + 5 como verga sea
+	//Devolver la primera metadata + 5
+	return NULL;
 
 }
 
