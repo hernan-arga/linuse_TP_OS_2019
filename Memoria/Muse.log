@@ -1,3 +1,7 @@
+[INFO] 02:28:17:443 Muse/(638:638): llego init
+[INFO] 02:28:17:443 Muse/(638:638): llego alloc
+[INFO] 02:29:29:458 Muse/(638:638): llego alloc
+[INFO] 02:30:51:898 Muse/(638:638): llego alloc
 [INFO] 08:58:43:998 Muse/(4487:4487): llego init
 [INFO] 08:58:48:342 Muse/(4487:4487): llego alloc
 [INFO] 09:04:14:348 Muse/(4800:4800): llego init
@@ -742,3 +746,4 @@
 [INFO] 02:48:36:533 Muse/(3234:3234): llego get
 [INFO] 02:48:36:533 Muse/(3234:3234): Get realizado correctamente
 [INFO] 02:48:36:534 Muse/(3234:3234): llego close
+

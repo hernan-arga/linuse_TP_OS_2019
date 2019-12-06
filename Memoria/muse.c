@@ -483,7 +483,11 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 						void *pos = obtenerPosicionMemoriaPagina(primeraPagina) + tamanio + sizeof(struct HeapMetadata);
 
 						struct HeapMetadata *ultimaMetadata = malloc(sizeof(struct HeapMetadata));
-						ultimaMetadata->isFree = true;
+						if (tamanio < pconfig->tamanio_pag) {
+							ultimaMetadata->isFree = true;
+						} else {
+							ultimaMetadata->isFree = false;
+						}
 						ultimaMetadata->size = pconfig->tamanio_pag - ((pconfig->tamanio_pag + tamanio + 2*sizeof(struct HeapMetadata)) % pconfig->tamanio_pag);
 
 						struct HeapLista *ultimoHeapLista = malloc(sizeof(struct HeapLista));
@@ -576,6 +580,9 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento, int ubicac
 	heap->size = size;
 
 	int indicePrimeraPagina = (floor)(ubicacionHeap / pconfig->tamanio_pag);
+	if (ubicacionHeap != 0 && ubicacionHeap % pconfig->tamanio_pag == 0) {
+		indicePrimeraPagina--;
+	}
 	struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePrimeraPagina);
 	int desplazamientoPrimeraPagina = ubicacionHeap % pconfig->tamanio_pag;
 
@@ -751,7 +758,7 @@ struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento, int tam
 	int pos = obtenerIndicePagina(segmento->tablaPaginas, primeraPagina) * pconfig->tamanio_pag; //como esla primera metadata, no hay desplazamiento (esta en 0 la metadata)
 
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
-	metadata->isFree = true;
+	metadata->isFree = false;
 	metadata->size = tamanioMetadata;
 
 	ubicarMetadataYHeapLista(segmento, pos, metadata->isFree, metadata->size,
