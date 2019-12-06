@@ -1924,7 +1924,8 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	int desplazamientoMetadata;
 	int indicePrimeraPaginaMetadata;
 	int indicePagina;
-	struct Pagina *paginaActual;
+	//struct Pagina *paginaActual;
+	struct Pagina *segundaPagina;
 
 	for(int i = 0; i < list_size(segmento->metadatas); i++){
 		heapLista = list_get(segmento->metadatas, i);
@@ -1951,11 +1952,12 @@ int musefree(int idSocketCliente, uint32_t dir) {
 			if (heapBuscada->estaPartido == false) {
 				memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
 			} else {
+				segundaPagina = list_get(segmento->tablaPaginas, indicePrimeraPaginaMetadata + 1);
 				memcpy(pos, nuevaMetadata, heapBuscada->bytesPrimeraPagina);
 				//Me paro en la siguiente pagina - frame
-				pagina = list_get(segmento->tablaPaginas, indicePrimeraPaginaMetadata + 1);
-				pos = obtenerPosicionMemoriaPagina(pagina);
-				memcpy(pos, nuevaMetadata + (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina), (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina));
+				pos = obtenerPosicionMemoriaPagina(segundaPagina);
+				//memcpy(pos, nuevaMetadata + (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina), (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina));
+				memcpy(pos, nuevaMetadata + heapBuscada->bytesPrimeraPagina, (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina));
 			}
 
 			break;
@@ -1973,8 +1975,13 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	//segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
 
 	//Prueba free
-	printf("La direccion liberada es %i \n", (int)pos);
-	printf("La direccion liberada con int es %i \n", (int*)pos);
+	void *posPagina = obtenerPosicionMemoriaPagina(pagina);
+	void *posMetadata = posPagina + desplazamientoMetadata;
+	void * buffer = malloc(sizeof(struct HeapMetadata));
+	memcpy(buffer, posMetadata, sizeof(struct HeapMetadata));
+
+	struct HeapMetadata *meta = malloc(sizeof(struct HeapMetadata));
+	meta = (struct HeapMetadata *)buffer;
 
 	free(stringIdSocketCliente);
 	free(segmento);
