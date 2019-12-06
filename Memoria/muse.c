@@ -1878,7 +1878,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	}
 
 	//busco el segmento especifico que contiene la direccion
-	struct Segmento *segmento; //= malloc(sizeof(struct Segmento));
+	struct Segmento *segmento;
 	segmento = segmentoQueContieneDireccion(segmentosProceso, dir);
 
 	if(segmento == NULL){ //No existe el segmento buscado
@@ -1892,7 +1892,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	//voy a la pagina de ese segmento donde esta la direccion y recorro metadatas
 	struct Pagina *pagina; //= malloc(sizeof(struct Pagina));
 	pagina = paginaQueContieneDireccion(segmento, (void*) dir);
-	t_list *metadatas; //= list_create();
+	int indicePrimeraPagina = obtenerIndicePagina(segmento->tablaPaginas, pagina);
 
 	if(pagina == NULL) {
 		return -1;
@@ -1902,32 +1902,54 @@ int musefree(int idSocketCliente, uint32_t dir) {
 
 	//retorno la posicion memoria dentro del frame
 	void *pos = obtenerPosicionMemoriaPagina(pagina);
-	int desplazamientoPagina = (int)dir / pconfig->tamanio_pag;
+	//
+	//int desplazamientoPagina = direccionSeg % pconfig->tamanio_pag;
 
-	struct HeapLista *heapBuscada = malloc(sizeof(struct HeapLista));
-	heapBuscada->size = -1;
+	struct HeapMetadata *metadataBuscada = malloc(sizeof(struct HeapMetadata));
+	metadataBuscada->size = -1;
 
 	struct HeapMetadata *nuevaMetadata = malloc(sizeof(struct HeapMetadata));
 	nuevaMetadata->size = -1;
 
+	struct HeapLista *heapLista = malloc(sizeof(struct HeapLista));
+	struct HeapLista *heapBuscada = malloc(sizeof(struct HeapLista)); //malloc innecesario?
+
 	int desplazamientoMetadata;
+	int indicePrimeraPaginaMetadata;
 
 	for(int i = 0; i < list_size(segmento->metadatas); i++){
-		desplazamientoMetadata = (int)list_get(segmento->metadatas, i);
+		heapLista = list_get(segmento->metadatas, i);
+		desplazamientoMetadata = heapLista->direccionHeap % pconfig->tamanio_pag;
 
 		if(desplazamientoMetadata + sizeof(struct HeapMetadata) == direccionSeg){ //Es la metadata que busco liberar
-			pos = pos + desplazamientoMetadata;
 
-			//Me copio la metadata, la modifico (libero) y la reemplazo
+			heapBuscada = heapLista;
+
+		}
+
+			//la modifico (libero) y la reemplazo
 			//Modifico el heap buscado asociado a la metadata
-			memcpy(heapBuscada, pos, sizeof(struct HeapMetadata));
 			heapBuscada->isFree = true;
 
 			nuevaMetadata->isFree = true;
 			nuevaMetadata->size = heapBuscada->size;
 
-			memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
-		}
+			//Me posiciono donde arranca la metadata y la copio modificada
+			indicePrimeraPaginaMetadata = indicePrimeraPagina - 1; //indiceprimerapagina es donde arranca el malloc y no la metadata
+			pagina = list_get(segmento->tablaPaginas, indicePrimeraPaginaMetadata);
+			pos = obtenerPosicionMemoriaPagina(pagina) + desplazamientoMetadata;
+
+			if(heapBuscada->estaPartido == false){
+				memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
+			} else{
+				memcpy(pos, nuevaMetadata, heapBuscada->bytesPrimeraPagina);
+				//Me paro en la siguiente pagina - frame
+				pagina = list_get(segmento->tablaPaginas, indicePrimeraPaginaMetadata + 1);
+				pos = obtenerPosicionMemoriaPagina(pagina);
+				memcpy(pos, nuevaMetadata + (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina), (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina));
+			}
+
+			break;
 	}
 
 	if(heapBuscada->size == -1){ //No se encontro la metadata requerida
