@@ -655,7 +655,7 @@ struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 
 		while (paginasNecesarias > 0) {
 
-			if (bytesAAgregar >= tam_pagina) {
+			if (bytesAAgregar > tam_pagina) {
 
 				segmento = asignarNuevaPagina(segmento, tam_pagina);
 				bytesAAgregar = bytesAAgregar - tam_pagina;
@@ -791,7 +791,7 @@ struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *segmento, int tama
 	ultimaMetadata->size = pconfig->tamanio_pag - tamanioUltimaMetadata;
 	//list_add(ultimaPagina->listaMetadata, (void*)(tam_pagina - sizeof(struct HeapMetadata) - tamanioUltimaMetadata));
 
-	int direccionHeap = ((list_size(segmento->tablaPaginas) - 1) * pconfig->tamanio_pag) + (sizeof(struct HeapMetadata) - tamanioUltimaMetadata);
+	int direccionHeap = ((list_size(segmento->tablaPaginas) - 1) * pconfig->tamanio_pag) + (pconfig->tamanio_pag - sizeof(struct HeapMetadata) + tamanioUltimaMetadata);
 	//int direccionHeap = (int)(obtenerPosicionMemoriaPagina(ultimaPagina) + (pconfig->tamanio_pag - tamanioUltimaMetadata - sizeof(struct HeapMetadata)));
 	ubicarMetadataYHeapLista(segmento, direccionHeap, ultimaMetadata->isFree, ultimaMetadata->size, sePartioUnaMetadata);
 
