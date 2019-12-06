@@ -1706,6 +1706,7 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 	int desplazamientoUltimaPagina;
 	int direccionInicial;
 	int direccionFinal;
+	int bytesAMoverse;
 
 	//Para identificar si no encontro el heap
 	struct HeapLista *heapFinal = malloc(sizeof(struct HeapLista));
@@ -1716,6 +1717,8 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		for(int i = 0; i < list_size(unSegmento->metadatas); i++){
 			heap = list_get(unSegmento->metadatas, i);
 
+
+
 			indicePaginaInicial = (floor)((double)heap->direccionHeap / (double)pconfig->tamanio_pag);
 			paginaInicial = list_get(unSegmento->tablaPaginas, indicePaginaInicial);
 			desplazamientoPagina = (heap->direccionHeap + sizeof(struct HeapMetadata)) % pconfig->tamanio_pag;
@@ -1723,8 +1726,22 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 			paginaFinal = list_get(unSegmento->tablaPaginas, indicePaginaFinal);
 			desplazamientoUltimaPagina = (heap->direccionHeap + sizeof(struct HeapMetadata) + n) % pconfig->tamanio_pag;
 
+			if(heap->estaPartido == true)
+			{
+				//voy a la proxima pagina y me muevo hasta donde termine la metadata
+
+				struct Pagina *proximaPagina = list_get(unSegmento->tablaPaginas, indicePaginaInicial + 1);
+
+				bytesAMoverse = (int)(sizeof(struct HeapMetadata)) - (heap->bytesPrimeraPagina);
+
+				direccionInicial = (int)(obtenerPosicionMemoriaPagina(proximaPagina) + bytesAMoverse);
+
+			}else
+			{
+				direccionInicial = (int)(obtenerPosicionMemoriaPagina(paginaInicial) + desplazamientoPagina);
+			}
+
 			//tengo que ver si se parte la metadata, en ese caso obtengo la prox pag y el frame sig
-			direccionInicial = (int)(obtenerPosicionMemoriaPagina(paginaInicial) + desplazamientoPagina);
 			direccionFinal = (int)(obtenerPosicionMemoriaPagina(paginaFinal) + desplazamientoUltimaPagina);
 
 			if(direccion >= direccionInicial && direccion <= direccionFinal){
@@ -1753,11 +1770,36 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		//SI NO ME TOMA EL BREAK tengo que agregar el indiceprimerapagina y toda esa falopa
 
 		//Empiezo a copiar los datos en las paginas
-		int bytesPrimeraPagina = pconfig->tamanio_pag - ((heapFinal->direccionHeap - unSegmento->baseLogica) % pconfig->tamanio_pag);
+
+		int bytesPrimeraPagina;
+		int bytesAMoverse;
+		struct Pagina *proxPagina;
+		struct Frame *frameInicial;
+
+
+		if(heapFinal->estaPartido == true)
+		{
+			//voy a la proxima pagina y me muevo hasta donde termine la metadata
+
+			proxPagina = list_get(unSegmento->tablaPaginas, indicePaginaInicial + 1);
+
+			bytesAMoverse = sizeof(struct HeapMetadata) - heap->bytesPrimeraPagina;
+
+			bytesPrimeraPagina = pconfig->tamanio_pag - bytesAMoverse;
+
+			frameInicial = list_get(bitmapFrames, proxPagina->numeroFrame);
+
+		}
+		else
+		{
+
+			bytesPrimeraPagina = pconfig->tamanio_pag - ((heapFinal->direccionHeap - unSegmento->baseLogica) % pconfig->tamanio_pag);
+
+			frameInicial = list_get(bitmapFrames, paginaInicial->numeroFrame);
+		}
+
+
 		int bytesACopiar = n;
-		struct Frame *framePaginaInicial = list_get(bitmapFrames, paginaInicial->numeroFrame);
-		framePaginaInicial->uso = 1;
-		framePaginaInicial->modificado = 1;
 
 		//Copio bytes primera pagina
 		if(bytesACopiar < bytesPrimeraPagina){ //Si me entra todo en la primera pagina
@@ -1772,8 +1814,8 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 
 		}
 
-		framePaginaInicial->uso = 1;
-		framePaginaInicial->modificado = 1;
+		frameInicial->uso = 1;
+		frameInicial->modificado = 1;
 
 		int proximaPag = indicePaginaInicial + 1;
 		struct Pagina *proximaPagina;
