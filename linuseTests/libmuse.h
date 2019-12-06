@@ -100,13 +100,15 @@ uint32_t tamanoDireccion;
      */
     int muse_unmap(uint32_t dir);
 
-int muse_init(int id, char* ip, int puerto) { //Case 1
+int muse_init(int32_t id, char* ip, int puerto) { //Case 1
 
 	serverMUSE = socket(AF_INET, SOCK_STREAM, 0);
 	serverAddressMUSE.sin_family = AF_INET;
 	serverAddressMUSE.sin_port = htons(puerto);
 	//serverAddress.sin_addr.s_addr = INADDR_ANY;
-	serverAddress.sin_addr.s_addr = inet_addr(ip);
+	serverAddressMUSE.sin_addr.s_addr = inet_addr(ip);
+
+	printf("ip %s - puerto %i\n", ip, puerto);
 
 	int resultado = connect(serverMUSE, (struct sockaddr *) &serverAddressMUSE,
 			sizeof(serverAddressMUSE));
