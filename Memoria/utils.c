@@ -212,13 +212,7 @@ t_log * crear_log() {
 }
 
 void loguearInfo(char* texto) {
-	char* mensajeALogear = malloc(strlen(texto) + 1);
-	strcpy(mensajeALogear, texto);
-	t_log* g_logger;
-	g_logger = log_create("Muse.log", "Muse", 1, LOG_LEVEL_INFO);
-	log_info(g_logger, mensajeALogear);
-	log_destroy(g_logger);
-	free(mensajeALogear);
+
 }
 
 void atenderMuseClose(int cliente) {
