@@ -106,8 +106,7 @@ void crearBitmapFrames() {
 }
 
 bool frameEstaLibre(int indiceFrame) {
-	struct Frame *frame = malloc(sizeof(struct Frame));
-	frame = list_get(bitmapFrames, indiceFrame);
+	struct Frame *frame = list_get(bitmapFrames, indiceFrame);
 
 	if (frame->estaLibre == true) {
 		return true;
@@ -117,27 +116,28 @@ bool frameEstaLibre(int indiceFrame) {
 }
 
 void ocuparFrame(int unFrame) {
-	struct Frame *frame = malloc(sizeof(struct Frame));
-	frame = list_get(bitmapFrames, unFrame);
+	struct Frame *frame = list_get(bitmapFrames, unFrame);
 
 	frame->uso = 1;
 	frame->estaLibre = false;
 
+	//TODO list replace innecesario?
 	list_replace(bitmapFrames, unFrame, frame); //Lo reemplazo modificado, unFrame es el indice del frame
 }
 
 void liberarFrame(int unFrame) {
-	struct Frame *frame = malloc(sizeof(struct Frame));
-	frame = list_get(bitmapFrames, unFrame);
+	struct Frame *frame = list_get(bitmapFrames, unFrame);
 
-	frame->uso = 0;
+	//TODO no estoy segura de apagar el uso
+	//frame->uso = 0;
 	frame->estaLibre = false;
 
+	//TODO list replace innecesario?
 	list_replace(bitmapFrames, unFrame, frame); //Lo reemplazo modificado
 }
 
 int buscarFrameLibre() {
-	struct Frame *frame = malloc(sizeof(struct Frame));
+	struct Frame *frame;
 
 	for (int i = 0; i < cantidadFrames; i++) {
 		frame = list_get(bitmapFrames, i);
@@ -195,15 +195,21 @@ int museinit(int idSocketCliente) {
 
 //Chequea si hay mm ppal o mm virtual disponible - A DESARROLLAR
 bool hayMemoriaDisponible() {
-	//Para la memoria principal nos va a convenir llevar un "contador" de
-	//bytes libres o algo asi, va a servir despues para las metricas
-
 	struct Frame *frame;
 
-	for(int i = 0; i < list_size(bitmapFrames);i++)
-	{
+	for(int i = 0; i < list_size(bitmapFrames); i++) {
 		frame = list_get(bitmapFrames,i);
 		if(frame->estaLibre == true)
+		{
+			return true;
+		}
+	}
+
+	int indiceSwap;
+	for(int j = 0; j < bitarray_get_max_bit(bitmapSwap); j++) {
+		indiceSwap = bitarray_test_bit(bitmapSwap, j);
+
+		if(indiceSwap == 0)
 		{
 			return true;
 		}
@@ -400,12 +406,12 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 
 	if (list_is_empty(listaSegmentosProceso)) { //Si es el primer segmento, su base logica es 0
 
-		nuevoSegmento->baseLogica = 0 + memoriaPrincipal;
+		nuevoSegmento->baseLogica = 0 + (int)memoriaPrincipal;
 
 	} else { //Obtengo el tamaño del ultimo segmento
 
 		int idUltimoSegmento = list_size(listaSegmentosProceso) - 1; //Id ultimo segmento
-		nuevoSegmento->baseLogica = obtenerTamanioSegmento(idUltimoSegmento, idSocketCliente) + 1 + memoriaPrincipal;
+		nuevoSegmento->baseLogica = obtenerTamanioSegmento(idUltimoSegmento, idSocketCliente) + 1 + (int)memoriaPrincipal;
 
 	}
 
@@ -618,7 +624,6 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento, int ubicac
 		struct HeapMetadata *metadataprueba = malloc(sizeof(struct HeapMetadata));
 		void *pos = obtenerPosicionMemoriaPagina(pagina) + desplazamientoPrimeraPagina;
 		memcpy(metadataprueba,pos, 5);
-		int asd = 5 - 4;
 
 		printf("bla");
 
@@ -890,7 +895,7 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_
 			if (bytesAMoverme < tam_pagina) {
 				pos = pos + bytesAMoverme;
 
-				int menorMetadata = (int)list_get(metadatas, 0); //estando siempre ordenadas
+				int menorMetadata = (int)list_get(segmento->metadatas, 0); //estando siempre ordenadas
 
 				//Agregar metadata a la lista del frame y modificar frame
 				nuevaMetadata->isFree = true;
@@ -904,9 +909,9 @@ struct Segmento *asignarTamanioLibreASegmento(struct Segmento *segmento, uint32_
 
 		int desplazamiento;
 
-		for(int k = 0; k < list_size(metadatas); k++) {
+		for(int k = 0; k < list_size(segmento->metadatas); k++) {
 
-			desplazamiento = (int)list_get(metadatas, k);
+			desplazamiento = (int)list_get(segmento->metadatas, k);
 			pos = pos + desplazamiento; //me posiciono donde esta la metadata a leer
 			memcpy(metadata, pos, sizeof(struct HeapMetadata)); //Leo la metadata
 
@@ -1936,7 +1941,6 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	free(stringIdSocketCliente);
 	free(segmento);
 	free(pagina);
-	free(metadatas);
 	return 0;
 }
 
