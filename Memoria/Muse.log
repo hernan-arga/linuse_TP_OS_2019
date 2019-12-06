@@ -620,3 +620,42 @@
 [INFO] 01:23:03:521 Muse/(7329:7329): llego close
 [INFO] 01:27:42:876 Muse/(7517:7517): llego init
 [INFO] 01:27:42:877 Muse/(7517:7517): llego alloc
+[INFO] 01:29:04:516 Muse/(7678:7678): llego init
+[INFO] 01:29:04:516 Muse/(7678:7678): llego alloc
+[INFO] 01:45:02:806 Muse/(8016:8016): llego init
+[INFO] 01:45:02:815 Muse/(8016:8016): llego alloc
+[INFO] 01:47:47:237 Muse/(8092:8092): llego init
+[INFO] 01:47:50:678 Muse/(8092:8092): llego alloc
+[INFO] 01:52:55:294 Muse/(8242:8242): llego init
+[INFO] 01:52:55:295 Muse/(8242:8242): llego alloc
+[INFO] 01:55:59:700 Muse/(8382:8382): llego init
+[INFO] 01:56:05:135 Muse/(8382:8382): llego alloc
+[INFO] 01:56:06:655 Muse/(8382:8382): llego copy
+[INFO] 01:56:06:655 Muse/(8382:8382): Cpy realizado exitosamente
+[INFO] 01:57:02:50 Muse/(8382:8382): llego get
+[INFO] 01:58:58:364 Muse/(8528:8528): llego init
+[INFO] 01:59:00:452 Muse/(8528:8528): llego alloc
+[INFO] 01:59:01:489 Muse/(8528:8528): llego copy
+[INFO] 01:59:01:489 Muse/(8528:8528): Cpy realizado exitosamente
+[INFO] 01:59:10:6 Muse/(8528:8528): llego get
+[INFO] 02:04:03:25 Muse/(8757:8757): llego init
+[INFO] 02:04:06:974 Muse/(8757:8757): llego alloc
+[INFO] 02:04:06:974 Muse/(8757:8757): llego copy
+[INFO] 02:04:06:974 Muse/(8757:8757): Cpy realizado exitosamente
+[INFO] 02:04:06:974 Muse/(8757:8757): llego get
+[INFO] 02:07:14:326 Muse/(8757:8757): Get realizado correctamente
+[INFO] 02:07:31:247 Muse/(8892:8892): llego init
+[INFO] 02:07:31:247 Muse/(8892:8892): llego alloc
+[INFO] 02:07:31:248 Muse/(8892:8892): llego copy
+[INFO] 02:07:31:248 Muse/(8892:8892): Cpy realizado exitosamente
+[INFO] 02:07:31:248 Muse/(8892:8892): llego get
+[INFO] 02:07:31:248 Muse/(8892:8892): Get realizado correctamente
+[INFO] 02:07:31:248 Muse/(8892:8892): llego close
+[INFO] 02:13:53:669 Muse/(9034:9034): llego init
+[INFO] 02:13:53:719 Muse/(9034:9034): llego alloc
+[INFO] 02:16:20:475 Muse/(9102:9102): llego init
+[INFO] 02:16:24:448 Muse/(9102:9102): llego alloc
+[INFO] 02:18:00:137 Muse/(9211:9211): llego init
+[INFO] 02:18:04:283 Muse/(9211:9211): llego alloc
+[INFO] 02:21:18:677 Muse/(9336:9336): llego init
+[INFO] 02:21:22:5 Muse/(9336:9336): llego alloc

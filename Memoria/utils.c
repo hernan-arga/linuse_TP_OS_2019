@@ -322,7 +322,6 @@ void atenderMuseGet(int cliente) {
 	} else {
 		loguearInfo("Error realizando get");
 		resultado = -1;
-
 	}
 
 	//char* buffer = malloc(2 * sizeof(int));

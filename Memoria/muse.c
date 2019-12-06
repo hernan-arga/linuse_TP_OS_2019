@@ -1448,6 +1448,7 @@ int min(int num1, int num2) {
  */
 
 void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
+
 	char *stringIdSocketCliente = string_itoa(idSocketCliente);
 	t_list *listaSegmentos = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 	void *resultado = NULL;
@@ -1465,9 +1466,9 @@ void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 		return NULL;
 	}
 
-	int direccionSeg = src - segmento->baseLogica;
-	int primeraPagina = direccionSeg / tam_pagina;
-	int ultimaPagina = (int)ceil((double)(direccionSeg + n) / tam_pagina) - 1;
+	int direccionSeg = (int)src - segmento->baseLogica;
+	int primeraPagina = (int)(floor)((double)direccionSeg / (double)pconfig->tamanio_pag);
+	int ultimaPagina = (int)(floor)((double)(direccionSeg + n) / (double)(pconfig->tamanio_pag));
 	int desplazamiento = direccionSeg % tam_pagina;
 
 	if(segmento->tamanio - direccionSeg >= n && primeraPagina * tam_pagina + desplazamiento + n <= segmento->tamanio){
@@ -1493,9 +1494,6 @@ void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 			void *pos = obtenerPosicionMemoriaPagina(pagina);
 
 			frame->uso = 1;
-
-			/*list_replace(bitmapFrames, pagina->numeroFrame, frame);
-			list_replace(segmento->tablaPaginas, primeraPagina + i, pagina);*/
 
 			memcpy(recorridoPaginas + puntero, pos, tam_pagina);
 		}
