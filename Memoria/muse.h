@@ -71,7 +71,7 @@ struct Frame{
 
 	int modificado;
 	int uso;
-
+	bool estaLibre;
 };
 
 

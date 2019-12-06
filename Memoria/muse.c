@@ -97,6 +97,7 @@ void crearBitmapFrames() {
 
 		nuevoFrame->modificado = 0;
 		nuevoFrame->uso = 0;
+		nuevoFrame->estaLibre = true;
 
 		list_add(bitmapFrames, nuevoFrame);
 
@@ -108,7 +109,7 @@ bool frameEstaLibre(int indiceFrame) {
 	struct Frame *frame = malloc(sizeof(struct Frame));
 	frame = list_get(bitmapFrames, indiceFrame);
 
-	if (frame->uso == 0) {
+	if (frame->estaLibre == true) {
 		return true;
 	} else {
 		return false;
@@ -120,6 +121,7 @@ void ocuparFrame(int unFrame) {
 	frame = list_get(bitmapFrames, unFrame);
 
 	frame->uso = 1;
+	frame->estaLibre = false;
 
 	list_replace(bitmapFrames, unFrame, frame); //Lo reemplazo modificado, unFrame es el indice del frame
 }
@@ -129,6 +131,7 @@ void liberarFrame(int unFrame) {
 	frame = list_get(bitmapFrames, unFrame);
 
 	frame->uso = 0;
+	frame->estaLibre = false;
 
 	list_replace(bitmapFrames, unFrame, frame); //Lo reemplazo modificado
 }
@@ -139,7 +142,7 @@ int buscarFrameLibre() {
 	for (int i = 0; i < cantidadFrames; i++) {
 		frame = list_get(bitmapFrames, i);
 
-		if (frame->uso == 0) {
+		if (frame->estaLibre == true) {
 			return i;
 		}
 	}
@@ -195,7 +198,18 @@ bool hayMemoriaDisponible() {
 	//Para la memoria principal nos va a convenir llevar un "contador" de
 	//bytes libres o algo asi, va a servir despues para las metricas
 
-	return true;
+	struct Frame *frame;
+
+	for(int i = 0; i < list_size(bitmapFrames);i++)
+	{
+		frame = list_get(bitmapFrames,i);
+		if(frame->estaLibre == true)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 
@@ -770,6 +784,7 @@ int asignarUnFrame() {
 	frameReemplazo = list_get(bitmapFrames, frame);
 	frameReemplazo->modificado = 0;
 	frameReemplazo->uso = 1;
+	frameReemplazo->estaLibre = false;
 
 	list_replace(bitmapFrames, frame, frameReemplazo);
 
@@ -817,6 +832,7 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 	frame = list_get(bitmapFrames, nuevaPagina->numeroFrame);
 	frame->modificado = 0;
 	frame->uso = 1;
+	frame->estaLibre= false;
 	list_replace(bitmapFrames, nuevaPagina->numeroFrame, frame);
 
 	list_add(segmento->tablaPaginas, nuevaPagina);
