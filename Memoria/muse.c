@@ -1699,56 +1699,46 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 			return -1;
 		}
 
-		/*int offsetmusealloc = offset - desplazamientoAMetadata - sizeof(struct HeapMetadata);
-
-		if(offsetmusealloc + n > desplazamientoAMetadata) {
-			//va a pisar el heap_lista_siguiente
-			return -1;
-		}*/
-
-		//SI NO ME TOMA EL BREAK tengo que agregar el indiceprimerapagina y toda esa falopa
-
 		//Empiezo a copiar los datos en las paginas
-
 		int bytesPrimeraPagina;
-		int bytesAMoverse;
+		//int bytesAMover;
 		struct Pagina *proxPagina;
 		struct Frame *frameInicial;
+		struct Pagina *paginaInicialPosta;
+		int indicePaginaInicialPosta;
 
-
-		if(heapFinal->estaPartido == true)
-		{
+		if(heapFinal->estaPartido == true) {
 			//voy a la proxima pagina y me muevo hasta donde termine la metadata
 
 			proxPagina = list_get(unSegmento->tablaPaginas, indicePaginaInicial + 1);
-
-			bytesAMoverse = sizeof(struct HeapMetadata) - heap->bytesPrimeraPagina;
-
-			bytesPrimeraPagina = pconfig->tamanio_pag - bytesAMoverse;
-
+			paginaInicialPosta = proxPagina;
+			bytesAMoverse = (int)(sizeof(struct HeapMetadata)) - heap->bytesPrimeraPagina;
 			frameInicial = list_get(bitmapFrames, proxPagina->numeroFrame);
+			bytesPrimeraPagina = pconfig->tamanio_pag - bytesAMoverse;
+			indicePaginaInicialPosta = indicePaginaInicial + 1;
 
-		}
-		else
-		{
+		} else {
 
-			bytesPrimeraPagina = pconfig->tamanio_pag - ((heapFinal->direccionHeap - unSegmento->baseLogica) % pconfig->tamanio_pag);
-
+			bytesPrimeraPagina = pconfig->tamanio_pag - ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag);
 			frameInicial = list_get(bitmapFrames, paginaInicial->numeroFrame);
+			paginaInicialPosta = paginaInicial;
+			indicePaginaInicialPosta = indicePaginaInicial;
 		}
 
 
 		int bytesACopiar = n;
+		void *pos;
 
 		//Copio bytes primera pagina
-		if(bytesACopiar < bytesPrimeraPagina){ //Si me entra todo en la primera pagina
+		if(bytesACopiar < bytesPrimeraPagina){ //
 
-			memcpy(obtenerPosicionMemoriaPagina(paginaInicial) + ((heapFinal->direccionHeap - unSegmento->baseLogica) % pconfig->tamanio_pag), src, bytesACopiar);
+			memcpy(obtenerPosicionMemoriaPagina(paginaInicialPosta) + ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag), src, bytesACopiar);
 			bytesACopiar -= bytesACopiar;
 
-		} else{
+		} else {
 
-			memcpy(obtenerPosicionMemoriaPagina(paginaInicial) + ((heapFinal->direccionHeap - unSegmento->baseLogica) % pconfig->tamanio_pag), src, bytesPrimeraPagina);
+			pos = obtenerPosicionMemoriaPagina(paginaInicialPosta) + ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag);
+			memcpy(pos, src, bytesPrimeraPagina);
 			bytesACopiar -= bytesPrimeraPagina;
 
 		}
@@ -1756,12 +1746,12 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		frameInicial->uso = 1;
 		frameInicial->modificado = 1;
 
-		int proximaPag = indicePaginaInicial + 1;
+		int indiceProximaPagina = indicePaginaInicialPosta + 1;
 		struct Pagina *proximaPagina;
 		struct Frame *proximoFrame;
 
 		while(bytesACopiar > 0){
-			proximaPagina = list_get(unSegmento->tablaPaginas, proximaPag);
+			proximaPagina = list_get(unSegmento->tablaPaginas, indiceProximaPagina);
 			proximoFrame = list_get(bitmapFrames, proximaPagina->numeroFrame);
 
 			if(bytesACopiar >= tam_pagina){
@@ -1782,26 +1772,31 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		}
 
 		//Test
+		/*
 		void* deDondeLeer;
 		deDondeLeer = obtenerPosicionMemoriaPagina(list_get(unSegmento->tablaPaginas,0)) + sizeof(struct HeapMetadata);
-		printf("La frase copiada es %s \n", (char*)deDondeLeer);
+		int resultado = (int)deDondeLeer;
+
+		printf("El resultado es EL CASTEADO %i \n", (int)deDondeLeer);
+
+		printf("La frase copiada es %i \n", resultado);*/
 
 		return 0; //Copio correctamente
 
 	} else { //Es un segmento mmap
 
-		traerPaginasSegmentoMmapAMemoria((heapFinal->direccionHeap - unSegmento->baseLogica), n, unSegmento);
+		traerPaginasSegmentoMmapAMemoria((direccion- unSegmento->baseLogica), n, unSegmento);
 
 		//Empiezo a copiar los datos en las paginas
-		int indicePrimeraPagina = (heapFinal->direccionHeap - unSegmento->baseLogica) / pconfig->tamanio_pag;
+		int indicePrimeraPagina = (direccion - unSegmento->baseLogica) / pconfig->tamanio_pag;
 		struct Pagina *pagina = list_get(unSegmento->tablaPaginas, indicePrimeraPagina);
-		int bytesPrimeraPagina = pconfig->tamanio_pag - ((heapFinal->direccionHeap - unSegmento->baseLogica) % pconfig->tamanio_pag);
+		int bytesPrimeraPagina = pconfig->tamanio_pag - ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag);
 		int bytesACopiar = n;
 		struct Frame *framePrimeraPagina = list_get(bitmapFrames, pagina->numeroFrame);
 		framePrimeraPagina->uso = 1;
 		framePrimeraPagina->modificado = 1;
 
-		if(indicePrimeraPagina * pconfig->tamanio_pag + ((heapFinal->direccionHeap - unSegmento->baseLogica) % pconfig->tamanio_pag) + n > unSegmento->tamanio){
+		if(indicePrimeraPagina * pconfig->tamanio_pag + ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag) + n > unSegmento->tamanio){
 			return -1;
 		}
 

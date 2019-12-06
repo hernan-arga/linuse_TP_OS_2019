@@ -16,30 +16,27 @@
 #include <string.h>
 
 
-void recursiva(int num)
+void recursiva()
 {
-	if(num == 0)
-		return;
 
-	uint32_t ptr = muse_alloc(4);
+    /*if(num == 0)
+        return;*/
+	char *frase = "nacho es gay";
 
-	printf("la posicion para escribir es: %i \n", ptr);
+    uint32_t ptr = muse_alloc(15);
+    muse_cpy(ptr, frase, 15);
+    printf("MIRA, LA REALIDAD ES QUE... %s\n", frase);
 
-	int *numero = 18;
-	// muse_cpy(ptr, &numero, sizeof(int));
-
-	//printf("%d\n", num);
-
-	recursiva(num - 1);
-	//num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
-	//muse_get(&num, ptr, 4);
-	//printf("%d\n", num);
-	//muse_free(ptr);
+    //recursiva(num - 1);
+    //num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
+    //muse_get(&num, ptr, 4);
+    //printf("%d\n", num);
+    //muse_free(ptr);
 }
 
 int main(void)
 {
-	muse_init(getpid(), "127.0.0.1", 3306);
-	recursiva(10);
-	muse_close();
+    muse_init(getpid(), "127.0.0.1", 3306);
+    recursiva("nacho es gay");
+    muse_close();
 }
