@@ -1923,16 +1923,17 @@ int musefree(int idSocketCliente, uint32_t dir) {
 
 	int desplazamientoMetadata;
 	int indicePrimeraPaginaMetadata;
+	int indicePagina;
+	struct Pagina *paginaActual;
 
 	for(int i = 0; i < list_size(segmento->metadatas); i++){
 		heapLista = list_get(segmento->metadatas, i);
 		desplazamientoMetadata = heapLista->direccionHeap % pconfig->tamanio_pag;
+		indicePagina = (floor)((double)heapLista->direccionHeap / (double)pconfig->tamanio_pag);
 
-		if(desplazamientoMetadata + sizeof(struct HeapMetadata) == direccionSeg){ //Es la metadata que busco liberar
+		if((indicePagina * pconfig->tamanio_pag) + desplazamientoMetadata + sizeof(struct HeapMetadata) == direccionSeg){ //Es la metadata que busco liberar
 
 			heapBuscada = heapLista;
-
-		}
 
 			//la modifico (libero) y la reemplazo
 			//Modifico el heap buscado asociado a la metadata
@@ -1944,11 +1945,12 @@ int musefree(int idSocketCliente, uint32_t dir) {
 			//Me posiciono donde arranca la metadata y la copio modificada
 			indicePrimeraPaginaMetadata = indicePrimeraPagina - 1; //indiceprimerapagina es donde arranca el malloc y no la metadata
 			pagina = list_get(segmento->tablaPaginas, indicePrimeraPaginaMetadata);
+			int posPagina = (int)(obtenerPosicionMemoriaPagina(pagina));
 			pos = obtenerPosicionMemoriaPagina(pagina) + desplazamientoMetadata;
 
-			if(heapBuscada->estaPartido == false){
+			if (heapBuscada->estaPartido == false) {
 				memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
-			} else{
+			} else {
 				memcpy(pos, nuevaMetadata, heapBuscada->bytesPrimeraPagina);
 				//Me paro en la siguiente pagina - frame
 				pagina = list_get(segmento->tablaPaginas, indicePrimeraPaginaMetadata + 1);
@@ -1957,6 +1959,9 @@ int musefree(int idSocketCliente, uint32_t dir) {
 			}
 
 			break;
+
+		}
+
 	}
 
 	if(heapBuscada->size == -1){ //No se encontro la metadata requerida
@@ -1966,6 +1971,10 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	//una vez que realizo el free unifico headers
 	//segmento = unificarHeaders(segmento->id,idSocketCliente);
 	//segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
+
+	//Prueba free
+	printf("La direccion liberada es %i \n", (int)pos);
+	printf("La direccion liberada con int es %i \n", (int*)pos);
 
 	free(stringIdSocketCliente);
 	free(segmento);
