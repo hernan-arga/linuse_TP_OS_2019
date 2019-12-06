@@ -127,45 +127,13 @@ int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
 	//memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t) + sizeof(src), &tamanioN, sizeof(int));
 	//memcpy(buffer + 5 * sizeof(int) + sizeof(uint32_t) + sizeof(src), &n, sizeof(int));
 
-	int tamanioN = sizeof(n);
+	int tamanioN = sizeof(size_t);
 	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t) + n, &tamanioN, sizeof(int));
 	memcpy(buffer + 5 * sizeof(int) + sizeof(uint32_t) + n, &n, sizeof(size_t));
 
 	//Falta conexion y se hace envio a MUSE
 	//send(serverMUSE, buffer, 6 * sizeof(int) + sizeof(uint32_t) + sizeof(src), 0);
 	send(serverMUSE, buffer, 5 * sizeof(int) + sizeof(uint32_t) + n + sizeof(size_t), 0);
-
-	/*
-	//Serializo peticion (5), void* dst ,uint32_t src y size_t n
-
-	//4 size de tamanio, 1 size de peticion, 1 tamaño dst (n), 1 size de src y 1 size de n
-	char *buffer = malloc(5 * sizeof(int) + sizeof(uint32_t) + n + sizeof(size_t));
-
-	int peticion = 5;
-	int tamanioPeticion = sizeof(int);
-	memcpy(buffer, &tamanioPeticion, sizeof(int));
-	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
-
-	int tamanioDst = n;
-	memcpy(buffer + 3 * sizeof(int) + sizeof(uint32_t), &tamanioDst, sizeof(int));
-	memcpy(buffer + 4 * sizeof(int) + sizeof(uint32_t), dst, n);
-
-	int tamanioSrc = sizeof(uint32_t);
-	memcpy(buffer + 2 * sizeof(int), &tamanioSrc, sizeof(int));
-	memcpy(buffer + 3 * sizeof(int), &src, sizeof(uint32_t));
-
-	int tamanioN = sizeof(size_t);
-	memcpy(buffer + 4 * sizeof(int) + tamanioDst + sizeof(uint32_t), &tamanioN, sizeof(int));
-	memcpy(buffer + 5 * sizeof(int) + tamanioDst + sizeof(uint32_t), &n, sizeof(size_t));
-
-	//Falta conexion y se hace envio a MUSE
-	send(serverMUSE, buffer, 5 * sizeof(int) + tamanioDst + sizeof(uint32_t) + sizeof(size_t), 0);
-
-	 */
-	//ahora leo la respuesta de muse si salio bien o error y la retorno
-
-
-
 
 	int *tamanioResp = malloc(sizeof(int));
 	read(serverMUSE, tamanioResp, sizeof(int));
@@ -179,12 +147,11 @@ int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
 
 	//
 	int resultadoFinal = *resultado;
-
-	int variable = *(int*)respuesta;
+	//int variable = *(int*)respuesta;
 
 	if(resultadoFinal == 0){
 		memcpy(dst, respuesta, n);
-		printf("variable vale %i \n", variable);
+		//printf("variable vale %i \n", variable);
 		printf("la respuesta que llego es %i \n", *(int*)respuesta);
 	} else{
 		//No hago nada, llega un -1 error
