@@ -26,11 +26,11 @@ void recursiva(int num)
 	printf("la posicion para escribir es: %i \n", ptr);
 
 	int *numero = 18;
-	muse_cpy(ptr, &numero, sizeof(int));
+	// muse_cpy(ptr, &numero, sizeof(int));
 
 	//printf("%d\n", num);
 
-	//recursiva(num - 1);
+	recursiva(num - 1);
 	//num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
 	//muse_get(&num, ptr, 4);
 	//printf("%d\n", num);
