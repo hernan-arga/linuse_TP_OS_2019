@@ -1,23 +1,12 @@
-/*
- ============================================================================
- Name        : PruebasConexion.c
- Author      :
- Version     :
- Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
- ============================================================================
- */
-
-#include <libmuse.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <inttypes.h>
+#include "libmuse.h"
 #include <unistd.h>
-#include <string.h>
-
 
 void recursiva(int num)
 {
+	if(num == 0)
+		return;
 
     /*if(num == 0)
         return;*/
@@ -45,6 +34,7 @@ void recursiva(int num)
     printf("numero de mierda2222222222 %d\n", num2);
 
     //muse_free(ptr);
+
 }
 
 int main(void)
