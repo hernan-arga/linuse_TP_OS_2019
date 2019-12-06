@@ -489,11 +489,13 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 						void *pos = obtenerPosicionMemoriaPagina(primeraPagina) + tamanio + sizeof(struct HeapMetadata);
 
 						struct HeapMetadata *ultimaMetadata = malloc(sizeof(struct HeapMetadata));
+						/*
 						if (tamanio < pconfig->tamanio_pag) {
 							ultimaMetadata->isFree = true;
 						} else {
 							ultimaMetadata->isFree = false;
-						}
+						}*/
+						ultimaMetadata->isFree = true;
 						ultimaMetadata->size = pconfig->tamanio_pag - ((pconfig->tamanio_pag + tamanio + 2*sizeof(struct HeapMetadata)) % pconfig->tamanio_pag);
 
 						struct HeapLista *ultimoHeapLista = malloc(sizeof(struct HeapLista));
@@ -625,7 +627,7 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento, int ubicac
 		void *pos = obtenerPosicionMemoriaPagina(pagina) + desplazamientoPrimeraPagina;
 		memcpy(metadataprueba,pos, 5);
 
-		printf("bla");
+		//printf("bla");
 
 
 	} else{ //Si no queda partida
@@ -1797,14 +1799,14 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		}
 
 		//Test
-		/*
+
 		void* deDondeLeer;
-		deDondeLeer = obtenerPosicionMemoriaPagina(list_get(unSegmento->tablaPaginas,0)) + sizeof(struct HeapMetadata);
-		int resultado = (int)deDondeLeer;
+		 deDondeLeer = obtenerPosicionMemoriaPagina(list_get(unSegmento->tablaPaginas,0)) + sizeof(struct HeapMetadata);
+		 printf("La frase copiada es %s \n", (char*)deDondeLeer);
 
-		printf("El resultado es EL CASTEADO %i \n", (int)deDondeLeer);
+		//printf("El resultado es EL CASTEADO %i \n", (int)deDondeLeer);
 
-		printf("La frase copiada es %i \n", resultado);*/
+		//printf("La frase copiada es %i \n", resultado);
 
 		return 0; //Copio correctamente
 
