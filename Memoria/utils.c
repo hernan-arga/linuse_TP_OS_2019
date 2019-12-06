@@ -7,7 +7,8 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-int iniciar_conexion(char *ip, int puerto) {
+int iniciar_conexion(char *ip, int32_t puerto) {
+	printf("ip %s - puerto %i\n", ip, puerto);
 	int opt = 1;
 	int master_socket, addrlen, new_socket, client_socket[30], max_clients = 30,
 			activity, i, sd, valread;
