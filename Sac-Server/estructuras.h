@@ -122,10 +122,10 @@ int obtenerBloqueLibre(void);
 ptrGBloque dameNodoDe(const char*);
 int get_size(void);
 int lastchar(const char*, char);
-int set_position (int *, int *, size_t, off_t);
-int delete_nodes_upto (struct sac_file_t *, int, int);
-int get_new_space (struct sac_file_t *file_data, int size);
-int obtain_free_blocks(void);
+int settearPosicion (int *, int *, size_t, off_t);
+int eliminarNodos (struct sac_file_t *, int, int);
+int darleEspacioNuevo (struct sac_file_t *file_data, int size);
+int obtenerBloquesLibres(void);
 
 t_bitarray* bitArray;
 char *mmapDeBitmap;

@@ -50,7 +50,7 @@ int main(){
 	mlock(inicioTablaDeNodos, TAMANIO_TABLA_DE_NODOS*TAMANIO_BLOQUE);
 	/* El codigo es tan, pero tan egocentrico, que le dice al SO como tratar la memoria */
 	madvise(header_start, ACTUAL_DISC_SIZE_B ,MADV_RANDOM);
-	obtain_free_blocks();
+	obtenerBloquesLibres();
 	//iniciarMmap();
 	//bitArray = bitarray_create(mmapDeBitmap, tamanioEnBytesDelBitarray());
 

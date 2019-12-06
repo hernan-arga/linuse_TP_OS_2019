@@ -270,7 +270,7 @@ int agregarBloqueLibre(struct sac_file_t *file_data, int node_number){
 	ptrGBloque *nodo_punteros;
 
 	// Ubica el ultimo nodo escrito y se posiciona en el mismo.
-	set_position(&node_pointer_number, &position, 0, tam);
+	settearPosicion(&node_pointer_number, &position, 0, tam);
 
 	if((node_pointer_number == BLOQUESINDIRECTOS-1) & (position == PTRGBLOQUE_SIZE-1)){
 		return -ENOSPC;
@@ -332,7 +332,7 @@ int lastchar(const char* str, char chr){
 	return 0;
 }
 
-int set_position (int *pointer_block, int *data_block, size_t size, off_t offset){
+int settearPosicion (int *pointer_block, int *data_block, size_t size, off_t offset){
 	div_t divi;
 	divi = div(offset, (TAMANIO_BLOQUE*PTRGBLOQUE_SIZE));
 	*pointer_block = divi.quot;
@@ -350,7 +350,7 @@ int set_position (int *pointer_block, int *data_block, size_t size, off_t offset
  *	@RET
  *
  */
-int delete_nodes_upto (struct sac_file_t *file_data, int pointer_upto, int data_upto){
+int eliminarNodos (struct sac_file_t *file_data, int pointer_upto, int data_upto){
 	t_bitarray *bitarray;
 	size_t file_size = file_data->tamanio_archivo;
 	int node_to_delete, node_pointer_to_delete, delete_upto;
@@ -358,7 +358,7 @@ int delete_nodes_upto (struct sac_file_t *file_data, int pointer_upto, int data_
 	int data_pos, pointer_pos;
 
 	// Ubica cual es el ultimo nodo del archivo
-	set_position(&pointer_pos, &data_pos, 0, file_size);
+	settearPosicion(&pointer_pos, &data_pos, 0, file_size);
 	if (file_size%(TAMANIO_BLOQUE*PTRGBLOQUE_SIZE) == 0) {
 		pointer_pos--;
 		data_pos = PTRGBLOQUE_SIZE-1;
@@ -429,7 +429,7 @@ int delete_nodes_upto (struct sac_file_t *file_data, int pointer_upto, int data_
  *		0 - Se consiguio el espacio requerido
  *		negativo - Error.
  */
-int get_new_space (struct sac_file_t *file_data, int size){
+int darleEspacioNuevo (struct sac_file_t *file_data, int size){
 	size_t file_size = file_data->tamanio_archivo, space_in_block = file_size % TAMANIO_BLOQUE;
 	int new_node;
 	space_in_block = TAMANIO_BLOQUE - space_in_block; // Calcula cuanto tamanio le queda para ocupar en el bloque
@@ -457,7 +457,7 @@ int get_new_space (struct sac_file_t *file_data, int size){
 	return 0;
 }
 
-int obtain_free_blocks(void){
+int obtenerBloquesLibres(void){
 	t_bitarray *bitarray;
 	int free_nodes=0, i;
 	int bitmap_size_in_bits = BITMAP_SIZE_BITS;

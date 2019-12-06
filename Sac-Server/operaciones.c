@@ -122,7 +122,7 @@ int o_open(char* path){
 }
 
 
-int o_read(char* path, int size, int offset, char* buf){
+int o_read(char* path, int size, int offset, char* buffer){
 
 	//log_info(logger, "Reading: Path: %s - Size: %d - Offset %d", path, size, offset);
 	unsigned int nodo = dameNodoDe(path), bloque_punteros, num_bloque_datos;
@@ -185,17 +185,17 @@ int o_read(char* path, int size, int offset, char* buf){
 					//buf = malloc(4); //todo malloc de 4 para ejemplo de "jaja"
 					//buf = malloc(strlen(data_block) +1);
 
-					memcpy(buf, bloqueDeDatos, tamanioQueMeQuedaPorLeer);
-					buf = &(buf[tamanioQueMeQuedaPorLeer]);
+					memcpy(buffer, bloqueDeDatos, tamanioQueMeQuedaPorLeer);
+					buffer = &(buffer[tamanioQueMeQuedaPorLeer]);
 					tamanioQueMeQuedaPorLeer = 0;
 					break;
 				} else {
 					//buf = malloc(4); //todo malloc de 4 para ejemplo de "jaja"
 					//buf = malloc(strlen(data_block) +1);
 
-					memcpy(buf, bloqueDeDatos, TAMANIO_BLOQUE);
+					memcpy(buffer, bloqueDeDatos, TAMANIO_BLOQUE);
 					tamanioQueMeQuedaPorLeer -= TAMANIO_BLOQUE;
-					buf = &(buf[TAMANIO_BLOQUE]);
+					buffer = &(buffer[TAMANIO_BLOQUE]);
 					if (tamanioQueMeQuedaPorLeer == 0) break;
 				}
 
@@ -223,7 +223,7 @@ int o_read(char* path, int size, int offset, char* buf){
 	}
 	fseek(f, offset, SEEK_SET);
 	if( fread(texto, size, 1, f) == 0){
-		printf("No leyo una verga");
+		printf("No leyo");
 	}
 	fclose(f);
 */
@@ -263,7 +263,6 @@ void o_readDir(char* path, int cliente){
 
 	node = inicioTablaDeNodos;
 
-	// "." y ".." obligatorios.
 	//filler(buf, ".", NULL, 0);
 	//filler(buf, "..", NULL, 0);
 
@@ -389,7 +388,7 @@ void o_getAttr(char* path, int cliente){
 		if (node->estado == 2){
 			stbuf->st_mode = S_IFDIR | 0777;
 			stbuf->st_nlink = 2;
-			size = 4096; // Default
+			size = 4096;
 			stbuf->st_mtime = node->fecha_modificacion;
 			stbuf->st_ctime = node->fecha_creacion;
 			stbuf->st_atime = time(NULL);
@@ -485,21 +484,21 @@ void o_getAttr(char* path, int cliente){
 int o_mkdir(char* path){
 
 	//log_info(logger, "Mkdir: Path: %s", path);
-	int nodo_padre, i, res = 0;
+	int nodoMadre, i, respuesta = 0;
 	struct sac_file_t *node;
 	char *nombre = malloc(strlen(path) + 1), *nom_to_free = nombre;
-	char *dir_padre = malloc(strlen(path) + 1), *dir_to_free = dir_padre;
+	char *direccionMadre = malloc(strlen(path) + 1), *dir_to_free = direccionMadre;
 
 	if (dameNodoDe(path) != -1){
 		return 1;
 	}
 
-	dividirRuta(path, &dir_padre, &nombre);
+	dividirRuta(path, &direccionMadre, &nombre);
 
 	// Ubica el nodo correspondiente. Si es el raiz, lo marca como 0. Si no existe, lo informa.
-	if (strcmp(dir_padre, "/") == 0){
-		nodo_padre = 0;
-	} else if ((nodo_padre = dameNodoDe(dir_padre)) < 0){
+	if (strcmp(direccionMadre, "/") == 0){
+		nodoMadre = 0;
+	} else if ((nodoMadre = dameNodoDe(direccionMadre)) < 0){
 		return 1;
 	}
 
@@ -517,7 +516,7 @@ int o_mkdir(char* path){
 	}
 	// Si no hay un nodo libre, devuelve un error.
 	if (i > TAMANIO_TABLA_DE_NODOS){
-		res = 1;
+		respuesta = 1;
 		goto finalizar;
 	}
 
@@ -525,8 +524,8 @@ int o_mkdir(char* path){
 	node->estado = DIRECTORIO;
 	strcpy((char*) &(node->nombre_archivo[0]), nombre);
 	node->tamanio_archivo = 0;
-	node->bloque_padre = nodo_padre;
-	res = 0;
+	node->bloque_padre = nodoMadre;
+	respuesta = 0;
 
 	finalizar:
 	free(nom_to_free);
@@ -536,7 +535,7 @@ int o_mkdir(char* path){
 	pthread_rwlock_unlock(&superLockeador);
 	//log_lock_trace(logger, "Mkdir: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
 
-	return res;
+	return respuesta;
 
 /*
  * FUNCIONAMIENTO ANTERIOR
@@ -589,9 +588,8 @@ int o_unlink(char* pathC){
 
 	file_data = &(inicioTablaDeNodos[node - 1]);
 
-
 	pthread_rwlock_wrlock(&superLockeador);
-	delete_nodes_upto(file_data, 0, 0);
+	eliminarNodos(file_data, 0, 0);
 	pthread_rwlock_unlock(&superLockeador);
 
 	DISABLE_DELETE_MODE;
@@ -631,7 +629,7 @@ int o_unlink(char* pathC){
 int o_rmdir2(char* path){
 
 	//log_trace(logger, "Rmdir: Path: %s", path);
-	int miNodo = dameNodoDe(path), i, res = 0;
+	int miNodo = dameNodoDe(path), i, respuesta = 0;
 	if (miNodo == -1){
 		return -1;
 	}
@@ -649,7 +647,7 @@ int o_rmdir2(char* path){
 	// Chequea si el directorio esta vacio. En caso que eso suceda, FUSE se encarga de borrar lo que hay dentro.
 	for (i=0; i < 1024 ; i++){
 		if (((&inicioTablaDeNodos[i])->estado != BORRADO) & ((&inicioTablaDeNodos[i])->bloque_padre == miNodo)) {
-			res = -1;
+			respuesta = -1;
 			goto finalizar;
 		}
 	}
@@ -660,7 +658,7 @@ int o_rmdir2(char* path){
 	pthread_rwlock_unlock(&superLockeador);
 	//log_lock_trace(logger, "Rmdir: Devuelve lock escritura. En cola: %d", rwlock.__data.__nr_writers_queued);
 
-	return res;
+	return respuesta;
 
 /*
  * FUNCIONAMIENTO ANTERIOR:
@@ -689,21 +687,21 @@ int o_rmdir2(char* path){
 int o_rmdir(char* path){
 
 	//log_trace(logger, "Rmdir: Path: %s", path);
-	int miNodo = dameNodoDe(path), res = 0;
+	int miNodo = dameNodoDe(path), respuesta = 0;
 	if (miNodo == -1){
 		return -1;
 	}
-	struct sac_file_t *node;
-	node = &(inicioTablaDeNodos[-1]);
-	node = &(node[miNodo]);
+	struct sac_file_t *nodo;
+	nodo = &(inicioTablaDeNodos[-1]);
+	nodo = &(nodo[miNodo]);
 
 	eliminarRecursivamente(miNodo);
 
 	pthread_rwlock_wrlock(&superLockeador);
-	node->estado = BORRADO; // Aca le dice que el estado queda "Borrado"
+	nodo->estado = BORRADO; // Aca le dice que el estado queda "Borrado"
 	pthread_rwlock_unlock(&superLockeador);
 
-	return res;
+	return respuesta;
 }
 
 void eliminarRecursivamente(int miNodo){
@@ -716,7 +714,7 @@ void eliminarRecursivamente(int miNodo){
 				ENABLE_DELETE_MODE;
 				file_data = &(inicioTablaDeNodos[i - 1]);
 				pthread_rwlock_wrlock(&superLockeador);
-				delete_nodes_upto(file_data, 0, 0);
+				eliminarNodos(file_data, 0, 0);
 				DISABLE_DELETE_MODE;
 				nodoo = &(inicioTablaDeNodos[-1]);
 				nodoo = &(nodoo[i+1]);
@@ -789,18 +787,18 @@ int o_write(char* path, int size, int offset, char* buf){
 	}
 	int nodoLibre;
 	struct sac_file_t *node;
-	char *data_block;
-	size_t tam = size, file_size, space_in_block, offset_in_block = offset % TAMANIO_BLOQUE;
+	char *bloqueDeDatos;
+	size_t tamanio = size, tamanioArchivo, espacioEnBloque, offsetEnBloque = offset % TAMANIO_BLOQUE;
 	off_t off = offset;
 	int *n_pointer_block = malloc(sizeof(int)), *n_data_block = malloc(sizeof(int));
-	ptrGBloque *pointer_block;
+	ptrGBloque *punteroABloque;
 	int res = size;
 
 	// Ubica el nodo correspondiente al archivo
 	node = &(inicioTablaDeNodos[nodo-1]);
-	file_size = node->tamanio_archivo;
+	tamanioArchivo = node->tamanio_archivo;
 
-	if ((file_size + size) >= THELARGESTFILE){
+	if ((tamanioArchivo + size) >= THELARGESTFILE){
 		loguearError(" - NO se pudo hacer el WRITE en SacServer\n");
 	}
 
@@ -810,20 +808,20 @@ int o_write(char* path, int size, int offset, char* buf){
 		//	log_lock_trace(logger, "Write: Recibe lock escritura.");
 
 	// Guarda tantas veces como sea necesario, consigue nodos y actualiza el archivo.
-	while (tam != 0){
+	while (tamanio != 0){
 
 		// Actualiza los valores de espacio restante en bloque.
-		space_in_block = TAMANIO_BLOQUE - (file_size % TAMANIO_BLOQUE);
-		if (space_in_block == TAMANIO_BLOQUE){
-			(space_in_block = 0); // Porque significa que el bloque esta lleno.
+		espacioEnBloque = TAMANIO_BLOQUE - (tamanioArchivo % TAMANIO_BLOQUE);
+		if (espacioEnBloque == TAMANIO_BLOQUE){
+			(espacioEnBloque = 0); // Porque significa que el bloque esta lleno.
 		}
-		if (file_size == 0){
-			space_in_block = TAMANIO_BLOQUE; /* Significa que el archivo esta recien creado y ya tiene un bloque de datos asignado */
+		if (tamanioArchivo == 0){
+			espacioEnBloque = TAMANIO_BLOQUE; /* Significa que el archivo esta recien creado y ya tiene un bloque de datos asignado */
 		}
 
 		// Si el offset es mayor que el tamanio del archivo mas el resto del bloque libre, significa que hay que pedir un bloque nuevo
 		// file_size == 0 indica que es un archivo que recien se comienza a escribir, por lo que tiene un tratamiento distinto (ya tiene un bloque de datos asignado).
-		if ((off >= (file_size + space_in_block)) & (file_size != 0)){
+		if ((off >= (tamanioArchivo + espacioEnBloque)) & (tamanioArchivo != 0)){
 
 			// Si no hay espacio en el disco, retorna error.
 			if (bitmap_free_blocks == 0){
@@ -846,48 +844,48 @@ int o_write(char* path, int size, int offset, char* buf){
 
 			// Lo relativiza al data block.
 			nodoLibre -= (HEADER + TAMANIO_TABLA_DE_NODOS + TAMANIO_BITMAP);
-			data_block = (char*) &(inicioBloquesDeDatos[nodoLibre]);
+			bloqueDeDatos = (char*) &(inicioBloquesDeDatos[nodoLibre]);
 
 			// Actualiza el espacio libre en bloque.
-			space_in_block = TAMANIO_BLOQUE;
+			espacioEnBloque = TAMANIO_BLOQUE;
 
 		} else {
 			// Ubica a que nodo le corresponderia guardar el dato
-			set_position(n_pointer_block, n_data_block, file_size, off);
+			settearPosicion(n_pointer_block, n_data_block, tamanioArchivo, off);
 
 			//Ubica el nodo a escribir.
 			*n_pointer_block = node->bloques_indirectos[*n_pointer_block];
 			*n_pointer_block -= (HEADER + TAMANIO_TABLA_DE_NODOS + TAMANIO_BITMAP);
-			pointer_block = (ptrGBloque*) &(inicioBloquesDeDatos[*n_pointer_block]);
-			*n_data_block = pointer_block[*n_data_block];
+			punteroABloque = (ptrGBloque*) &(inicioBloquesDeDatos[*n_pointer_block]);
+			*n_data_block = punteroABloque[*n_data_block];
 			*n_data_block -= (HEADER + TAMANIO_TABLA_DE_NODOS + TAMANIO_BITMAP);
-			data_block = (char*) &(inicioBloquesDeDatos[*n_data_block]);
+			bloqueDeDatos = (char*) &(inicioBloquesDeDatos[*n_data_block]);
 		}
 
 		// Escribe en ese bloque de datos.
-		if (tam >= TAMANIO_BLOQUE){
+		if (tamanio >= TAMANIO_BLOQUE){
 			for(int m = 0; m < TAMANIO_BLOQUE; m++){
-					data_block[m] = buf[m];
+					bloqueDeDatos[m] = buf[m];
 
 			}
-			//memcpy(data_block, buf, BLOCKSIZE);
-			if ((node->tamanio_archivo) <= (off)) file_size = node->tamanio_archivo += TAMANIO_BLOQUE;
+			//memcpy(bloqueDeDatos, buf, BLOCKSIZE);
+			if ((node->tamanio_archivo) <= (off)) tamanioArchivo = node->tamanio_archivo += TAMANIO_BLOQUE;
 			buf += TAMANIO_BLOQUE;
 			off += TAMANIO_BLOQUE;
-			tam -= TAMANIO_BLOQUE;
-			offset_in_block = 0;
-		} else if (tam <= space_in_block){ /*Hay lugar suficiente en ese bloque para escribir el resto del archivo */
-			memcpy(data_block + offset_in_block, buf, tam);
-			if (node->tamanio_archivo <= off) file_size = node->tamanio_archivo += tam;
-			else if (node->tamanio_archivo <= (off + tam)) file_size = node->tamanio_archivo += (off + tam - node->tamanio_archivo);
-			tam = 0;
+			tamanio -= TAMANIO_BLOQUE;
+			offsetEnBloque = 0;
+		} else if (tamanio <= espacioEnBloque){ /*Hay lugar suficiente en ese bloque para escribir el resto del archivo */
+			memcpy(bloqueDeDatos + offsetEnBloque, buf, tamanio);
+			if (node->tamanio_archivo <= off) tamanioArchivo = node->tamanio_archivo += tamanio;
+			else if (node->tamanio_archivo <= (off + tamanio)) tamanioArchivo = node->tamanio_archivo += (off + tamanio - node->tamanio_archivo);
+			tamanio = 0;
 		} else { /* Como no hay lugar suficiente, llena el bloque y vuelve a buscar uno nuevo */
-			memcpy(data_block + offset_in_block, buf, space_in_block);
-			file_size = node->tamanio_archivo += space_in_block;
-			buf += space_in_block;
-			off += space_in_block;
-			tam -= space_in_block;
-			offset_in_block = 0;
+			memcpy(bloqueDeDatos + offsetEnBloque, buf, espacioEnBloque);
+			tamanioArchivo = node->tamanio_archivo += espacioEnBloque;
+			buf += espacioEnBloque;
+			off += espacioEnBloque;
+			tamanio -= espacioEnBloque;
+			offsetEnBloque = 0;
 		}
 	}
 
@@ -918,12 +916,12 @@ int o_write(char* path, int size, int offset, char* buf){
 */
 }
 
-int o_truncate(char* path, int new_size){
+int o_truncate(char* path, int espacioNuevo){
 
-	//	log_info(logger, "Truncate: Path: %s - New size: %d", path, new_size);
-	if (new_size < 0) return -1; /* New File Size negativo */
-	int nodo_padre = dameNodoDe(path);
-	if (nodo_padre == -1) return -1;
+	//	log_info(logger, "Truncate: Path: %s - New size: %d", path, espacioNuevo);
+	if (espacioNuevo < 0) return -1; /* New File Size negativo */
+	int nodoMadre = dameNodoDe(path);
+	if (nodoMadre == -1) return -1;
 	struct sac_file_t *node;
 	int res = 0;
 
@@ -934,24 +932,24 @@ int o_truncate(char* path, int new_size){
 	// Abre conexiones y levanta la tabla de nodos en memoria.
 	node = inicioTablaDeNodos;
 
-	node = &(node[nodo_padre-1]);
+	node = &(node[nodoMadre-1]);
 
 	// Si el nuevo size es mayor, se deben reservar los nodos correspondientes:
-	if (new_size > node->tamanio_archivo){
-		res = get_new_space(node, (new_size - node->tamanio_archivo));
+	if (espacioNuevo > node->tamanio_archivo){
+		res = darleEspacioNuevo(node, (espacioNuevo - node->tamanio_archivo));
 		if (res != 0) goto finalizar;
 
 	} else {	// Si no, se deben borrar los nodos hasta ese punto.
-		int pointer_to_delete;
+		int punteroAEliminar;
 		int data_to_delete;
 
-		set_position(&pointer_to_delete, &data_to_delete, 0, new_size);
+		settearPosicion(&punteroAEliminar, &data_to_delete, 0, espacioNuevo);
 
-		res = delete_nodes_upto(node, pointer_to_delete, data_to_delete);
+		res = eliminarNodos(node, punteroAEliminar, data_to_delete);
 		if(res != 0) goto finalizar;
 	}
 
-	node->tamanio_archivo = new_size; // Aca le dice su nuevo size.
+	node->tamanio_archivo = espacioNuevo; // Aca le dice su nuevo size.
 
 	finalizar:
 	// Cierra, ponele la alarma y se va para su casa. Mejor dicho, retorna 0 :D
@@ -963,16 +961,18 @@ int o_truncate(char* path, int new_size){
 }
 
 
-int o_rename(char* oldpath, char* newpath){
-	if (dameNodoDe(oldpath) == -1) return -1;
-	//log_info(logger, "Rename: Moviendo archivo. From: %s - To: %s", oldpath, newpath);
+int o_rename(char* pathAntiguo, char* nuevoPath){
+	if (dameNodoDe(pathAntiguo) == -1){
+		return -1;
+	}
+	//log_info(logger, "Rename: Moviendo archivo. From: %s - To: %s", pathAntiguo, nuevoPath);
 
-	char* newroute = malloc(strlen(newpath) + 1);
-	char* newname = malloc(GFILENAMELENGTH + 1);
-	char* tofree1 = newroute;
-	char* tofree2 = newname;
-	dividirRuta(newpath, &newroute, &newname);
-	int old_node = dameNodoDe(oldpath), new_parent_node = dameNodoDe(newroute);
+	char* nuevaRuta = malloc(strlen(nuevoPath) + 1);
+	char* nuevoNombre = malloc(GFILENAMELENGTH + 1);
+	char* tofree1 = nuevaRuta;
+	char* tofree2 = nuevoNombre;
+	dividirRuta(nuevoPath, &nuevaRuta, &nuevoNombre);
+	int old_node = dameNodoDe(pathAntiguo), new_parent_node = dameNodoDe(nuevaRuta);
 
 	// Toma un lock de escritura.
 	//		log_lock_trace(logger, "Rename: Pide lock escritura. Escribiendo: %d. En cola: %d.", rwlock.__data.__writer, rwlock.__data.__nr_writers_queued);
@@ -980,7 +980,7 @@ int o_rename(char* oldpath, char* newpath){
 	//		log_lock_trace(logger, "Rename: Recibe lock escritura.");
 
 	// Modifica los valores del file. Como el determinar_nodo devuelve el numero de nodo +1, lo reubica.
-	strcpy((char *) &(inicioTablaDeNodos[old_node - 1].nombre_archivo[0]), newname);
+	strcpy((char *) &(inicioTablaDeNodos[old_node - 1].nombre_archivo[0]), nuevoNombre);
 	inicioTablaDeNodos[old_node -1].bloque_padre = new_parent_node;
 
 	// Devuelve el lock de escritura.
