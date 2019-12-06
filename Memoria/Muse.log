@@ -550,3 +550,73 @@
 [INFO] 23:54:07:800 Muse/(10108:10108): llego init
 [INFO] 23:54:07:800 Muse/(10108:10108): llego alloc
 [INFO] 23:54:09:201 Muse/(10108:10108): llego copy
+[INFO] 00:27:04:198 Muse/(4469:4469): llego init
+[INFO] 00:27:06:760 Muse/(4469:4469): llego alloc
+[INFO] 00:27:06:761 Muse/(4469:4469): llego copy
+[INFO] 00:32:09:706 Muse/(4692:4692): llego init
+[INFO] 00:32:11:754 Muse/(4692:4692): llego alloc
+[INFO] 00:32:11:754 Muse/(4692:4692): llego copy
+[INFO] 00:32:20:210 Muse/(4692:4692): Cpy realizado exitosamente
+[INFO] 00:32:20:211 Muse/(4692:4692): llego close
+[INFO] 00:37:40:298 Muse/(4886:4886): llego init
+[INFO] 00:37:42:753 Muse/(4886:4886): llego alloc
+[INFO] 00:39:46:879 Muse/(5032:5032): llego init
+[INFO] 00:39:48:972 Muse/(5032:5032): llego alloc
+[INFO] 00:39:48:973 Muse/(5032:5032): llego copy
+[INFO] 00:40:00:110 Muse/(5032:5032): Cpy realizado exitosamente
+[INFO] 00:40:00:111 Muse/(5032:5032): llego close
+[INFO] 00:43:59:829 Muse/(5236:5236): llego init
+[INFO] 00:44:02:51 Muse/(5236:5236): llego alloc
+[INFO] 00:44:02:52 Muse/(5236:5236): llego copy
+[INFO] 00:44:19:751 Muse/(5236:5236): Cpy realizado exitosamente
+[INFO] 00:44:19:752 Muse/(5236:5236): llego close
+[INFO] 00:47:25:11 Muse/(5348:5348): llego init
+[INFO] 00:47:27:352 Muse/(5348:5348): llego alloc
+[INFO] 00:47:27:352 Muse/(5348:5348): llego copy
+[INFO] 00:50:02:392 Muse/(5513:5513): llego init
+[INFO] 00:50:05:3 Muse/(5513:5513): llego alloc
+[INFO] 00:50:05:3 Muse/(5513:5513): llego copy
+[INFO] 00:53:31:62 Muse/(5711:5711): llego init
+[INFO] 00:53:33:950 Muse/(5711:5711): llego alloc
+[INFO] 00:53:33:950 Muse/(5711:5711): llego copy
+[INFO] 00:56:11:390 Muse/(5848:5848): llego init
+[INFO] 00:56:11:391 Muse/(5848:5848): llego alloc
+[INFO] 00:56:11:391 Muse/(5848:5848): llego copy
+[INFO] 00:56:11:392 Muse/(5848:5848): Cpy realizado exitosamente
+[INFO] 00:56:11:392 Muse/(5848:5848): llego close
+[INFO] 00:57:17:69 Muse/(5895:5895): llego init
+[INFO] 00:57:19:282 Muse/(5895:5895): llego alloc
+[INFO] 00:57:19:283 Muse/(5895:5895): llego copy
+[INFO] 01:02:21:6 Muse/(6197:6197): llego init
+[INFO] 01:02:21:7 Muse/(6197:6197): llego alloc
+[INFO] 01:02:21:7 Muse/(6197:6197): llego copy
+[INFO] 01:02:21:7 Muse/(6197:6197): Cpy realizado exitosamente
+[INFO] 01:04:50:231 Muse/(6349:6349): llego init
+[INFO] 01:04:50:231 Muse/(6349:6349): llego alloc
+[INFO] 01:04:56:555 Muse/(6349:6349): llego copy
+[INFO] 01:05:02:972 Muse/(6349:6349): Cpy realizado exitosamente
+[INFO] 01:05:02:976 Muse/(6349:6349): llego close
+[INFO] 01:09:58:367 Muse/(6760:6760): llego init
+[INFO] 01:10:02:477 Muse/(6760:6760): llego alloc
+[INFO] 01:10:10:110 Muse/(6760:6760): llego copy
+[INFO] 01:10:26:876 Muse/(6760:6760): Cpy realizado exitosamente
+[INFO] 01:13:25:770 Muse/(6912:6912): llego init
+[INFO] 01:13:33:308 Muse/(6912:6912): llego alloc
+[INFO] 01:13:45:926 Muse/(6912:6912): llego copy
+[INFO] 01:13:57:731 Muse/(6912:6912): Cpy realizado exitosamente
+[INFO] 01:16:53:581 Muse/(7165:7165): llego init
+[INFO] 01:16:53:581 Muse/(7165:7165): llego alloc
+[INFO] 01:16:53:581 Muse/(7165:7165): llego copy
+[INFO] 01:16:53:581 Muse/(7165:7165): Cpy realizado exitosamente
+[INFO] 01:22:10:993 Muse/(7264:7264): llego init
+[INFO] 01:22:10:994 Muse/(7264:7264): llego alloc
+[INFO] 01:22:10:995 Muse/(7264:7264): llego copy
+[INFO] 01:22:10:995 Muse/(7264:7264): Cpy realizado exitosamente
+[INFO] 01:22:10:996 Muse/(7264:7264): llego close
+[INFO] 01:23:03:520 Muse/(7329:7329): llego init
+[INFO] 01:23:03:520 Muse/(7329:7329): llego alloc
+[INFO] 01:23:03:521 Muse/(7329:7329): llego copy
+[INFO] 01:23:03:521 Muse/(7329:7329): Cpy realizado exitosamente
+[INFO] 01:23:03:521 Muse/(7329:7329): llego close
+[INFO] 01:27:42:876 Muse/(7517:7517): llego init
+[INFO] 01:27:42:877 Muse/(7517:7517): llego alloc
