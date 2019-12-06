@@ -1469,7 +1469,7 @@ void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 		free(recorridoPaginas);
 	}
 
-	printf("Lo leido es %i \n", *(int*)resultado);
+	//printf("Lo leido es %i \n", *(int*)resultado);
 
 	return resultado;
 }
@@ -1802,7 +1802,8 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 
 		void* deDondeLeer;
 		 deDondeLeer = obtenerPosicionMemoriaPagina(list_get(unSegmento->tablaPaginas,0)) + sizeof(struct HeapMetadata);
-		 printf("La frase copiada es %s \n", (char*)deDondeLeer);
+		 printf("El numero copiado es %i \n", *((int*)deDondeLeer));
+
 
 		//printf("El resultado es EL CASTEADO %i \n", (int)deDondeLeer);
 
@@ -1860,6 +1861,10 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 			proximoFrame->modificado = 1;
 			proximaPagina++;
 		}
+
+		void* deDondeLeer;
+		deDondeLeer = obtenerPosicionMemoriaPagina(list_get(unSegmento->tablaPaginas,0)) + sizeof(struct HeapMetadata);
+		printf("El resultado es %i \n", (int)deDondeLeer);
 
 		return 0;
 	}
@@ -1959,8 +1964,8 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	}
 
 	//una vez que realizo el free unifico headers
-	segmento = unificarHeaders(segmento->id,idSocketCliente);
-	segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
+	//segmento = unificarHeaders(segmento->id,idSocketCliente);
+	//segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
 
 	free(stringIdSocketCliente);
 	free(segmento);

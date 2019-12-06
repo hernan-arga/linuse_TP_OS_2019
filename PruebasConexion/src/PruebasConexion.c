@@ -9,76 +9,22 @@ void recursiva(int num)
 	if(num == 0)
 		return;
 
-    /*if(num == 0)
-        return;*/
-	char* estrofa = "hola";
+	uint32_t ptr = muse_alloc(4);
+	muse_cpy(ptr, &num, 4);
+	//printf("%d\n", num);
 
-	int longitud = strlen(estrofa)+1;
-
-	char * frase = malloc(longitud);
-
-	uint32_t ptr = muse_alloc(longitud);
-
-	muse_cpy(ptr, estrofa, longitud);
-
-	//recursiva(num - 1);
-
-	muse_get(frase, ptr, longitud);
-
-	puts(frase);
-
-
-	char* estrofa2 = "chauuuu";
-
-	int longitud2 = strlen(estrofa2)+1;
-
-	char * frase2 = malloc(longitud2);
-
-	uint32_t ptr2 = muse_alloc(longitud2);
-
-	muse_cpy(ptr2, estrofa2, longitud2);
-
-	//recursiva(num - 1);
-
-	muse_get(frase2, ptr2, longitud2);
-
-	puts(frase2);
-/*
-
-    uint32_t ptr = muse_alloc(4);
-    printf("direccion de memoria asignada %i\n", ptr);
-
-    //muse_cpy(ptr, &num, 4);
-    //printf("MIRA, LA REALIDAD ES QUE... %i\n", *ptr);
-
-    //recursiva(num - 1);
-    //num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
-
-    muse_get(&num, ptr, 4);
-    printf("numero de mierda %d\n", num);
-    */
-/*
-    int num2 = 18;
-
-
-
-    //muse_cpy(ptr2, &num2, 4);
-    //printf("MIRA, LA REALIDAD ES QUE... %i\n", *ptr);
-
-    //recursiva(num - 1);
-    //num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
-
-    muse_get(&num2, ptr2, 4);
-    printf("numero de mierda2222222222 %d\n", num2);
-*/
-    //muse_free(ptr);
-
+	recursiva(num - 1);
+	num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
+	int buffer = 0;
+	int resultado = muse_get(&buffer, ptr, sizeof(int));
+	printf("el numero es %d \n", buffer);
+	muse_free(ptr);
 }
 
 int main(void)
 {
-    muse_init(getpid(), "127.0.0.1", 3306);
-    recursiva(11);
-    muse_close();
+	muse_init(getpid(), "127.0.0.1", 3306);
+	recursiva(10);
+	muse_close();
 }
 
