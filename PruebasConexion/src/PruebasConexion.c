@@ -11,13 +11,12 @@ void recursiva(int num)
 
 	uint32_t ptr = muse_alloc(4);
 	muse_cpy(ptr, &num, 4);
-	//printf("%d\n", num);
+	printf("%d\n", num);
 
 	recursiva(num - 1);
 	num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
-	int buffer = 0;
-	int resultado = muse_get(&buffer, ptr, sizeof(int));
-	printf("el numero es %d \n", buffer);
+	muse_get(&num, ptr, 4);
+	printf("%d\n", num);
 	muse_free(ptr);
 }
 
@@ -27,4 +26,3 @@ int main(void)
 	recursiva(10);
 	muse_close();
 }
-

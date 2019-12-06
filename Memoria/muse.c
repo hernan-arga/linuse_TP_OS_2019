@@ -1957,6 +1957,9 @@ int musefree(int idSocketCliente, uint32_t dir) {
 				//Me paro en la siguiente pagina - frame
 				pos = obtenerPosicionMemoriaPagina(segundaPagina);
 				//memcpy(pos, nuevaMetadata + (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina), (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina));
+
+				int dire = (int)(nuevaMetadata) + heapBuscada->bytesPrimeraPagina;
+
 				memcpy(pos, nuevaMetadata + heapBuscada->bytesPrimeraPagina, (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina));
 			}
 
@@ -1984,7 +1987,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	meta = (struct HeapMetadata *)buffer;
 
 	free(stringIdSocketCliente);
-	free(segmento);
+	//free(segmento);
 	free(pagina);
 	return 0;
 }
