@@ -1772,7 +1772,7 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		//Empiezo a copiar los datos en las paginas
 
 		int bytesPrimeraPagina;
-		int bytesAMoverse;
+		//int bytesAMover;
 		struct Pagina *proxPagina;
 		struct Frame *frameInicial;
 
@@ -1783,7 +1783,7 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 
 			proxPagina = list_get(unSegmento->tablaPaginas, indicePaginaInicial + 1);
 
-			bytesAMoverse = sizeof(struct HeapMetadata) - heap->bytesPrimeraPagina;
+			//bytesAMoverse = sizeof(struct HeapMetadata) - heap->bytesPrimeraPagina;
 
 			bytesPrimeraPagina = pconfig->tamanio_pag - bytesAMoverse;
 
@@ -1817,7 +1817,7 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		frameInicial->uso = 1;
 		frameInicial->modificado = 1;
 
-		int proximaPag = indicePaginaInicial + 1;
+		int proximaPag = indicePaginaInicial + 2;
 		struct Pagina *proximaPagina;
 		struct Frame *proximoFrame;
 
