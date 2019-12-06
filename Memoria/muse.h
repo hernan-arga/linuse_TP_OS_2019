@@ -79,7 +79,6 @@ struct Frame{
 void reservarMemoriaPrincipal(int tamanio);
 void crearTablaSegmentos();
 void *buscarEspacioLibre(uint32_t tamanio);
-void unificarHeaders(int idSocketCliente, int idSegmento);
 void *buscarPosicionSegmento(int idSocketCliente, int idSegmento);
 int calcularTamanioSegmento(char *idProceso, int idSegmento);
 int espacioPaginas(int idProceso, int idSegmento);
@@ -140,10 +139,11 @@ void *obtenerRellenoPagina(int tamanio);
 //Funciones free
 int musefree(int idSocketCliente, uint32_t dir);
 //struct Segmento *segmentoQueContieneDireccion(t_list* listaSegmentos, void *direccion);
-struct Segmento *unificarHeaders2(int idSegmento, int idSocketCliente);
+struct Segmento *unificarHeaders(int idSegmento, int idSocketCliente);
 struct Segmento *eliminarPaginasLibresSegmento(int idSocketCliente, int idSegmento);
 bool tieneTodasLasMetadatasLibres(struct Pagina *pagina);
 bool ultimaMetadataLibre(struct Pagina *pagina);
+bool hayAlgunaMetadataOcupada(struct Segmento *segmento, int indicePagina);
 
 //Memoria virtual
 int clockModificado();

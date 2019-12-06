@@ -656,3 +656,32 @@
 [INFO] 02:18:04:283 Muse/(9211:9211): llego alloc
 [INFO] 02:21:18:677 Muse/(9336:9336): llego init
 [INFO] 02:21:22:5 Muse/(9336:9336): llego alloc
+[INFO] 02:26:58:839 Muse/(9669:9669): llego init
+[INFO] 02:26:58:864 Muse/(9669:9669): llego alloc
+[INFO] 02:28:13:178 Muse/(9720:9720): llego init
+[INFO] 02:28:16:359 Muse/(9720:9720): llego alloc
+[INFO] 02:29:07:881 Muse/(9816:9816): llego init
+[INFO] 02:29:07:896 Muse/(9816:9816): llego alloc
+[INFO] 02:29:07:896 Muse/(9816:9816): llego copy
+[INFO] 02:29:07:897 Muse/(9816:9816): Cpy realizado exitosamente
+[INFO] 02:29:07:897 Muse/(9816:9816): llego get
+[INFO] 02:29:07:898 Muse/(9816:9816): Get realizado correctamente
+[INFO] 02:30:36:726 Muse/(9916:9916): llego init
+[INFO] 02:30:36:759 Muse/(9916:9916): llego alloc
+[INFO] 02:30:36:760 Muse/(9916:9916): llego copy
+[INFO] 02:30:36:760 Muse/(9916:9916): Cpy realizado exitosamente
+[INFO] 02:30:36:760 Muse/(9916:9916): llego get
+[INFO] 02:30:36:761 Muse/(9916:9916): Get realizado correctamente
+[INFO] 02:30:36:761 Muse/(9916:9916): llego close
+[INFO] 02:38:01:133 Muse/(10172:10172): llego init
+[INFO] 02:38:01:147 Muse/(10172:10172): llego alloc
+[INFO] 02:38:01:147 Muse/(10172:10172): llego copy
+[INFO] 02:38:01:148 Muse/(10172:10172): Cpy realizado exitosamente
+[INFO] 02:38:01:148 Muse/(10172:10172): llego get
+[INFO] 02:38:01:148 Muse/(10172:10172): Get realizado correctamente
+[INFO] 02:38:01:148 Muse/(10172:10172): llego alloc
+[INFO] 02:38:01:148 Muse/(10172:10172): llego copy
+[INFO] 02:38:01:149 Muse/(10172:10172): Cpy realizado exitosamente
+[INFO] 02:38:01:149 Muse/(10172:10172): llego get
+[INFO] 02:38:01:149 Muse/(10172:10172): Get realizado correctamente
+[INFO] 02:38:01:149 Muse/(10172:10172): llego close

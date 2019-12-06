@@ -22,17 +22,28 @@ void recursiva(int num)
     /*if(num == 0)
         return;*/
 	//char *frase = "nacho es gay";
-	char *frase = "No sabes que sufro?";
 
-    uint32_t ptr = muse_alloc(20);
+    uint32_t ptr = muse_alloc(4);
 
-    muse_cpy(ptr, frase, 20);
+    muse_cpy(ptr, &num, 4);
     //printf("MIRA, LA REALIDAD ES QUE... %i\n", *ptr);
 
     //recursiva(num - 1);
     //num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
-    muse_get(frase, ptr, 20);
-    printf("frase de mierda %s\n", frase);
+    muse_get(&num, ptr, 4);
+    printf("numero de mierda %d\n", num);
+
+    int num2 = 18;
+    uint32_t ptr2 = muse_alloc(4);
+
+    muse_cpy(ptr2, &num2, 4);
+    //printf("MIRA, LA REALIDAD ES QUE... %i\n", *ptr);
+
+    //recursiva(num - 1);
+    //num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
+    muse_get(&num2, ptr2, 4);
+    printf("numero de mierda2222222222 %d\n", num2);
+
     //muse_free(ptr);
 }
 

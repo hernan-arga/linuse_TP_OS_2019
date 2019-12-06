@@ -1183,13 +1183,12 @@ void asignarTamanioADireccion(uint32_t tamanio, void* src, int idSocketCliente) 
 
 
 /*Unificar headers con nueva implementacion, me retorna el segmento modificado*/
-struct Segmento *unificarHeaders2(int idSegmento, int idSocketCliente) {
+struct Segmento *unificarHeaders(int idSegmento, int idSocketCliente) {
 	char *stringIdSocketCliente = string_itoa(idSocketCliente);
 	t_list *segmentos = dictionary_get(tablasSegmentos, stringIdSocketCliente);
 
 	//Segmento a unificar
-	struct Segmento *segmento = malloc(sizeof(struct Segmento));
-	segmento = list_get(segmentos, idSegmento);
+	struct Segmento *segmento = list_get(segmentos, idSegmento);
 
 	struct HeapLista *heap;
 	struct HeapLista *siguienteHeap;
@@ -1197,7 +1196,9 @@ struct Segmento *unificarHeaders2(int idSegmento, int idSocketCliente) {
 	struct HeapMetadata *nuevoMetadata = malloc(sizeof(struct HeapMetadata));
 
 	if(list_size(segmento->metadatas) >= 2){
+
 		heap = list_get(segmento->metadatas, 0);
+
 		for(int i = 1; i < list_size(segmento->metadatas) - 1; i++){
 			siguienteHeap = list_get(segmento->metadatas, i);
 
@@ -1211,7 +1212,7 @@ struct Segmento *unificarHeaders2(int idSegmento, int idSocketCliente) {
 				nuevoMetadata->isFree = true;
 				nuevoMetadata->size = heap->size;
 
-				memcpy((void*)(heap->direccionHeap), nuevoMetadata, sizeof(struct HeapMetadata));
+				memcpy((void*)(segmento->baseLogica + heap->direccionHeap), nuevoMetadata, sizeof(struct HeapMetadata));
 			} else {
 
 				heap = siguienteHeap;
@@ -1224,9 +1225,7 @@ struct Segmento *unificarHeaders2(int idSegmento, int idSocketCliente) {
 	return segmento;
 }
 
-/**Funcion para unificar dos headers - se la llama despues de un free. Unifica desde el header 1
- * recorriendo todos los headers DEL SEGMENTO. Le envio como parametro el id del segmento que
- * tiene que recorrer*/
+/*
 void unificarHeaders(int idSocketCliente, int idSegmento) {
 	char *stringIdSocketCliente = string_itoa(idSocketCliente);
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
@@ -1319,7 +1318,7 @@ void unificarHeaders(int idSocketCliente, int idSegmento) {
 	}
 
 	free(stringIdSocketCliente);
-}
+}*/
 
 /*
  Recorre los segmentos anteriores calculando su size con calcularSizeSegmento(unSegmento)
@@ -1845,6 +1844,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 
 	char *stringIdSocketCliente = string_itoa(idSocketCliente);
 	t_list *segmentosProceso = dictionary_get(tablasSegmentos, stringIdSocketCliente);
+
 	if(segmentosProceso == NULL){
 		return -1;
 	}
@@ -1857,7 +1857,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 		return -1;
 	}
 
-	if(segmento->esComun == false){ //Existe el segmento pero es un segmento mmap, no se libera con free
+	if(segmento->esComun == false) { //Existe el segmento pero es un segmento mmap, no se libera con free
 		return -1;
 	}
 
@@ -1865,47 +1865,50 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	struct Pagina *pagina; //= malloc(sizeof(struct Pagina));
 	pagina = paginaQueContieneDireccion(segmento, (void*) dir);
 	t_list *metadatas; //= list_create();
-	if(pagina == NULL)
-	{
+
+	if(pagina == NULL) {
 		return -1;
 	}
-	// metadatas = pagina->listaMetadata; TODO cambiar estrcutura aca
 
 	int direccionSeg = dir - segmento->baseLogica;
 
 	//retorno la posicion memoria dentro del frame
-	void *pos = retornarPosicionMemoriaFrame(pagina->numeroFrame);
+	void *pos = obtenerPosicionMemoriaPagina(pagina);
+	int desplazamientoPagina = (int)dir / pconfig->tamanio_pag;
 
-	struct HeapMetadata *metadataBuscada = malloc(sizeof(struct HeapMetadata));
-	metadataBuscada->size = -1;
+	struct HeapLista *heapBuscada = malloc(sizeof(struct HeapLista));
+	heapBuscada->size = -1;
 
-	for(int i = 0; i < list_size(metadatas); i++){
-		int desplazamientoMetadata = (int)list_get(metadatas, i);
+	struct HeapMetadata *nuevaMetadata = malloc(sizeof(struct HeapMetadata));
+	nuevaMetadata->size = -1;
+
+	int desplazamientoMetadata;
+
+	for(int i = 0; i < list_size(segmento->metadatas); i++){
+		desplazamientoMetadata = (int)list_get(segmento->metadatas, i);
 
 		if(desplazamientoMetadata + sizeof(struct HeapMetadata) == direccionSeg){ //Es la metadata que busco liberar
 			pos = pos + desplazamientoMetadata;
 
 			//Me copio la metadata, la modifico (libero) y la reemplazo
-			memcpy(metadataBuscada, pos, sizeof(struct HeapMetadata));
-			metadataBuscada->isFree = true;
+			//Modifico el heap buscado asociado a la metadata
+			memcpy(heapBuscada, pos, sizeof(struct HeapMetadata));
+			heapBuscada->isFree = true;
 
-			memcpy(pos, metadataBuscada, sizeof(struct HeapMetadata));
+			nuevaMetadata->isFree = true;
+			nuevaMetadata->size = heapBuscada->size;
+
+			memcpy(pos, nuevaMetadata, sizeof(struct HeapMetadata));
 		}
 	}
 
-	if(metadataBuscada->size == -1){ //No se encontro la metadata requerida
+	if(heapBuscada->size == -1){ //No se encontro la metadata requerida
 		return -1;
 	}
 
-	//modificar el tamanio del segmento en el que se hizo free ??????
-
 	//una vez que realizo el free unifico headers
-	segmento = unificarHeaders2(segmento->id,idSocketCliente);
-	//segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
-
-	//Actualizo el diccionario con las modificaciones en segmentos
-	//list_replace(segmentosProceso, segmento->id, segmento);
-	//dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
+	segmento = unificarHeaders(segmento->id,idSocketCliente);
+	segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
 
 	free(stringIdSocketCliente);
 	free(segmento);
@@ -1956,75 +1959,50 @@ struct Segmento *eliminarPaginasLibresSegmento(int idSocketCliente, int idSegmen
 	struct Frame *frame; //= malloc(sizeof(struct Frame));
 	int indiceFrame;
 
-	while(pag >= 0){
+	while(pag >= 0){ //Recorre las paginas de la mas grande a la mas chica
+
 		pagina = list_get(segmento->tablaPaginas, pag);
-		// metadatas = pagina->listaMetadata; TODO cambiar estrcutura aca
 
-		if(tieneTodasLasMetadatasLibres(pagina)){
-			//caso que tenga espacio ocupado por metadata de pagina anterior
-
-			if((int)list_get(metadatas, 0) == 0){
-				indiceFrame = pagina->numeroFrame;
-				frame = list_get(bitmapFrames, pagina->numeroFrame);
-				list_remove(segmento->tablaPaginas, obtenerIndicePagina(segmento->tablaPaginas, pagina));
-				frame->modificado = 0;
-				frame->uso = 0;
-				list_replace(bitmapFrames, indiceFrame, frame);
-				paginasEliminadas++;
-			} else{
-				if(ultimaMetadataLibre(list_get(segmento->tablaPaginas, pag - 1)) == true){
-					indiceFrame = pagina->numeroFrame;
-					frame = list_get(bitmapFrames, pagina->numeroFrame);
-					list_remove(segmento->tablaPaginas, obtenerIndicePagina(segmento->tablaPaginas, pagina));
-					frame->modificado = 0;
-					frame->uso = 0;
-					//list_replace(bitmapFrames, indiceFrame, frame);
-					paginasEliminadas++;
-				}
-			}
+		if(hayAlgunaMetadataOcupada(segmento, pag) == true){
+			//Si hay alguna metadata ocupada, no se elimina y se corta
+			break;
+		} else{
+			paginasEliminadas++; //Incremento lo que tengo que borrar de atras para adelante
+			pag--;
 		}
+
 	}
 
 	segmento->paginasLiberadas += paginasEliminadas;
 	segmento->tamanio -= paginasEliminadas * pconfig->tamanio_pag;
-	//list_replace(segmentosProceso, segmento->id, segmento);
-	//dictionary_put(tablasSegmentos, stringIdSocketCliente, segmentosProceso);
+
+	//Desde atras, tengo que eliminar las paginas
+	int paginaAEliminar = list_size(segmento->tablaPaginas) - 1;
+
+	while(paginaAEliminar > 0) {
+		list_remove(segmento->tablaPaginas, paginaAEliminar);
+
+		paginaAEliminar --;
+	}
 
 	return segmento;
 }
 
-bool tieneTodasLasMetadatasLibres(struct Pagina *pagina){
-	t_list *metadatas = list_create();
-	// metadatas = pagina->listaMetadata;TODO cambiar estrcutura aca
-	void *pos = obtenerPosicionMemoriaPagina(pagina);
-	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
+bool hayAlgunaMetadataOcupada(struct Segmento *segmento, int indicePagina){
 
-	for(int i = 0; i < list_size(metadatas); i++){
-		memcpy(metadata, pos + (int)list_get(metadatas, i), sizeof(struct HeapMetadata));
+	struct HeapLista *heap;
+	int indicePaginaHeap;
 
-		if(metadata->isFree == false){
-			return false;
+	for(int i = 0; i < list_size(segmento->metadatas); i++){
+		heap = list_get(segmento->metadatas, i);
+		indicePaginaHeap = (floor)((double)heap->direccionHeap / (double) pconfig->tamanio_pag);
+
+		if(indicePaginaHeap == indicePagina && heap->isFree == false){
+			return true;
 		}
 	}
 
-	return true;
-}
-
-bool ultimaMetadataLibre(struct Pagina *pagina){
-	t_list *metadatas = list_create();
-	// metadatas = pagina->listaMetadata; TODO cambiar estrcutura aca
-	int ultimaMetadata = (int)list_get(metadatas, list_size(metadatas) - 1);
-	void *pos = obtenerPosicionMemoriaPagina(pagina);
-	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
-
-	memcpy(metadata, pos + ultimaMetadata, sizeof(struct HeapMetadata));
-
-	if(metadata->isFree == true){
-		return true;
-	} else{
-		return false;
-	}
-
+	return false;
 }
 
 
