@@ -46,24 +46,28 @@ void recursiva(int num)
 /*
 
     uint32_t ptr = muse_alloc(4);
+    printf("direccion de memoria asignada %i\n", ptr);
 
-    muse_cpy(ptr, &num, 4);
+    //muse_cpy(ptr, &num, 4);
     //printf("MIRA, LA REALIDAD ES QUE... %i\n", *ptr);
 
     //recursiva(num - 1);
     //num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
+
     muse_get(&num, ptr, 4);
     printf("numero de mierda %d\n", num);
     */
 /*
     int num2 = 18;
-    uint32_t ptr2 = muse_alloc(4);
 
-    muse_cpy(ptr2, &num2, 4);
+
+
+    //muse_cpy(ptr2, &num2, 4);
     //printf("MIRA, LA REALIDAD ES QUE... %i\n", *ptr);
 
     //recursiva(num - 1);
     //num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
+
     muse_get(&num2, ptr2, 4);
     printf("numero de mierda2222222222 %d\n", num2);
 */
