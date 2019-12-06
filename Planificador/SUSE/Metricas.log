@@ -235,3 +235,6 @@
 [INFO] 14:25:20:345 SUSE/(12771:12772): Valor actual del semaforo afinado: 10
 [INFO] 14:25:20:353 SUSE/(12771:12772): Valor actual del semaforo solo_hiper_mega_piola: 1
 [INFO] 14:25:20:354 SUSE/(12771:12772): Grado actual de multiprogramacion: 15
+[INFO] 18:19:39:866 SUSE/(2708:2711): Valor actual del semaforo afinado: 0
+[INFO] 18:19:39:866 SUSE/(2708:2711): Valor actual del semaforo solo_hiper_mega_piola: 1
+[INFO] 18:19:39:866 SUSE/(2708:2711): Grado actual de multiprogramacion: 15
