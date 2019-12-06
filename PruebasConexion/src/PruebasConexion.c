@@ -18,6 +18,7 @@
 
 void recursiva(int num)
 {
+
     /*if(num == 0)
         return;*/
 	//char *frase = "nacho es gay";
