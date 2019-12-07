@@ -216,7 +216,7 @@ void loguearInfo(char* texto) {
 }
 
 void atenderMuseClose(int cliente) {
-	//todo: limpiar todas las estructuras de este cliente
+	museclose(cliente);
 }
 
 void atenderMuseInit(int cliente) {

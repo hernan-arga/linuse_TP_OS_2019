@@ -2589,7 +2589,6 @@ int buscarIndiceSwapLibre() {
 		}
 	}
 
-	//Nunca se me acaba swap?
 	return -1;
 }
 
@@ -2781,3 +2780,17 @@ int muse_unmap(uint32_t dir, int idSocketCliente) {
 
 	return -1;
 }
+
+int muse_close(int idSocketCliente){
+
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *segmentosPrograma = list_get(tablasSegmentos, stringIdSocketCliente);
+
+	if(segmentosPrograma != NULL) {
+		//Encontro la lista de segmentos (encontro al cliente)
+		dictionary_remove(tablasSegmentos, stringIdSocketCliente);
+	}
+	return 0;
+}
+
+
