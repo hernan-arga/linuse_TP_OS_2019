@@ -14,15 +14,16 @@ int main() {
 	pconfig = malloc(sizeof(config));
 	levantarConfigFile(pconfig);
 
-	//log_info(log, "MUSE levantado correctamente\n");
-
 	arrancarMemoria(pconfig);
 
-	printf("%d \n", (int) (memoriaPrincipal));
+	printf("MUSE levantado correctamente \n");
+
+	printf("La mm ppal arranca desde: %d \n", (int) (memoriaPrincipal));
 
 	// Levanta conexion por socket
 	pthread_create(&hiloLevantarConexion, NULL,
 			(void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
+
 
 	pthread_join(hiloLevantarConexion, NULL);
 
@@ -60,7 +61,7 @@ void arrancarMemoria(config* pconfig) {
 void reservarMemoriaPrincipal(int tamanio) {
 
 	memoriaPrincipal = malloc(tamanio);
-	printf("La direccion de la mm ppal es %i \n", memoriaPrincipal);
+	//printf("La direccion de la mm ppal es %i \n", memoriaPrincipal);
 
 }
 
@@ -464,6 +465,48 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	bool *sePartioUnaMetadata = malloc(sizeof(bool));
 	*sePartioUnaMetadata = false;
 
+	// asigno primera pagina
+
+	nuevoSegmento = asignarPrimeraPaginaSegmento(nuevoSegmento,
+							tamanio, sePartioUnaMetadata);
+
+	if(*sePartioUnaMetadata == true) {
+		paginasNecesarias -= 2;
+		tamanioAlocado -= 2*pconfig->tamanio_pag;
+	} else {
+		paginasNecesarias -= 1;
+		tamanioAlocado -= 1*pconfig->tamanio_pag;
+	}
+
+	struct HeapLista *ultimoHeapLista = list_get(nuevoSegmento->metadatas,
+			list_size(nuevoSegmento->metadatas) - 1);
+
+	if (ultimoHeapLista->isFree == true) {
+		tamanioAlocado -= ultimoHeapLista->size;
+	}
+	ultimoHeapLista->size = tamanio;
+	ultimoHeapLista->isFree = false;
+
+	while (paginasNecesarias > 0) {
+
+		if (tamanioAlocado > tam_pagina) {
+
+			nuevoSegmento = asignarNuevaPagina(nuevoSegmento, tam_pagina);
+			tamanioAlocado = tamanioAlocado - tam_pagina;
+
+		} else {
+
+			//asignar ultima pagina ya me crea la ultima metadata necesaria
+			nuevoSegmento = asignarUltimaPaginaSegmento(nuevoSegmento, tamanioAlocado);
+			tamanioAlocado = 0;
+
+		}
+
+		paginasNecesarias--;
+
+	}
+
+// sacar esta basura
 	while (paginasNecesarias > 0) {
 
 		if (paginasNecesarias == (int) (ceil(paginas))
@@ -480,7 +523,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 				if (diferenciaTamanios < 0) { //Si se corta la metadata
 					tamanioAlocado -= pconfig->tamanio_pag;
 
-					if (((int) tamanio) < diferenciaTamanios) { //NO se cortan los datos
+					if (((int) tamanio) < tamanioAlocado) { //NO se cortan los datos
 						tamanioAlocado -= tamanio;
 						//no se parten los datos
 
@@ -535,41 +578,6 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 					}
 				}
 
-				//Se encarga de la metadata y toda la falopa
-				struct Pagina *primeraPagina = list_get(
-						nuevoSegmento->tablaPaginas, 0);
-
-				void *pos = obtenerPosicionMemoriaPagina(primeraPagina)
-						+ tamanio + sizeof(struct HeapMetadata);
-
-				struct HeapMetadata *ultimaMetadata = malloc(
-						sizeof(struct HeapMetadata));
-				/*
-				 if (tamanio < pconfig->tamanio_pag) {
-				 ultimaMetadata->isFree = true;
-				 } else {
-				 ultimaMetadata->isFree = false;
-				 }*/
-				ultimaMetadata->isFree = true;
-				ultimaMetadata->size = pconfig->tamanio_pag
-						- ((pconfig->tamanio_pag + tamanio
-								+ 2 * sizeof(struct HeapMetadata))
-								% pconfig->tamanio_pag);
-
-				struct HeapLista *ultimoHeapLista = malloc(
-						sizeof(struct HeapLista));
-
-				int ubicacionHeap = obtenerIndicePagina(
-						nuevoSegmento->tablaPaginas, primeraPagina)
-						* pconfig->tamanio_pag + sizeof(struct HeapMetadata)
-						+ tamanio;
-				ubicarMetadataYHeapLista(nuevoSegmento, ubicacionHeap,
-						ultimaMetadata->isFree, ultimaMetadata->size,
-						sePartioUnaMetadata);
-
-				if ((*sePartioUnaMetadata) == true) {
-					paginasNecesarias--;
-				}
 
 			}
 
@@ -656,9 +664,6 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento,
 	heap->size = size;
 
 	int indicePrimeraPagina = (floor)(ubicacionHeap / pconfig->tamanio_pag);
-	if (ubicacionHeap != 0 && ubicacionHeap % pconfig->tamanio_pag == 0) {
-		indicePrimeraPagina--;
-	}
 	struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePrimeraPagina);
 
 
@@ -1980,13 +1985,13 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		}
 
 		//Test
-
+/*
 		void* deDondeLeer;
 		deDondeLeer = obtenerPosicionMemoriaPagina(
 				list_get(unSegmento->tablaPaginas, 0))
 				+ sizeof(struct HeapMetadata);
 		printf("El numero copiado es %i \n", *((int*) deDondeLeer));
-
+*/
 		//printf("El resultado es EL CASTEADO %i \n", (int)deDondeLeer);
 
 		//printf("La frase copiada es %i \n", resultado);
@@ -2187,6 +2192,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	//segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
 
 	//Prueba free
+	/*
 	void *posPagina = obtenerPosicionMemoriaPagina(pagina);
 	void *posMetadata = posPagina + desplazamientoMetadata;
 	void * buffer = malloc(sizeof(struct HeapMetadata));
@@ -2194,10 +2200,11 @@ int musefree(int idSocketCliente, uint32_t dir) {
 
 	struct HeapMetadata *meta = malloc(sizeof(struct HeapMetadata));
 	meta = (struct HeapMetadata *) buffer;
-
+*/
 	//free(stringIdSocketCliente);
 	//free(segmento);
 	//free(pagina);
+
 	return 0;
 }
 
@@ -2582,7 +2589,6 @@ int buscarIndiceSwapLibre() {
 		}
 	}
 
-	//Nunca se me acaba swap?
 	return -1;
 }
 
@@ -2774,3 +2780,17 @@ int muse_unmap(uint32_t dir, int idSocketCliente) {
 
 	return -1;
 }
+
+int museclose(int idSocketCliente){
+
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *segmentosPrograma = list_get(tablasSegmentos, stringIdSocketCliente);
+
+	if(segmentosPrograma != NULL) {
+		//Encontro la lista de segmentos (encontro al cliente)
+		dictionary_remove(tablasSegmentos, stringIdSocketCliente);
+	}
+	return 0;
+}
+
+

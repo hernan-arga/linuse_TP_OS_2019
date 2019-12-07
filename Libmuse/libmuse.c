@@ -30,7 +30,8 @@ int muse_init(int id, char* ip, int puerto) { //Case 1
 	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
 	send(serverMUSE, buffer, 2 * sizeof(int), 0);
 	free(buffer);
-	printf("init\n");
+	printf("Conectado exitosamente con MUSE\n");
+	printf("\n");
 	return resultado;
 }
 
@@ -42,11 +43,15 @@ void muse_close() {
 	memcpy(buffer + sizeof(int), &peticion, sizeof(int));
 	send(serverMUSE, buffer, 2 * sizeof(int), 0);
 	free(buffer);
+	printf("\n");
+	printf("Se cierra conexión con MUSE\n");
 } //Case 2
 
 uint32_t muse_alloc(uint32_t tam) { //Case 3
-	printf("alloc\n");
+	//printf("alloc\n");
 	//Serializo peticion (3) y uint32_t tam tamaño a reservar
+
+	printf("Se realiza un malloc de: %d bytes\n",tam);
 
 	//2 size de tamanio, 1 size de peticion, 1 size de tam (parametro)
 	char *buffer = malloc(3 * sizeof(int) + sizeof(uint32_t));
@@ -70,6 +75,8 @@ uint32_t muse_alloc(uint32_t tam) { //Case 3
 	uint32_t direccionMemoriaReservada;
 	read(serverMUSE,&direccionMemoriaReservada,4);
 
+	printf("La direccion de memoria reservada es: %d \n", direccionMemoriaReservada);
+
 
 	free(buffer);
 	free(tamanio);
@@ -80,7 +87,7 @@ uint32_t muse_alloc(uint32_t tam) { //Case 3
 
 void muse_free(uint32_t dir) { //Case 4
 	//free((void*) dir);
-	printf("free\n");
+	printf("Se realiza un free de la direccion: %d \n", dir);
 	//Serializo peticion (4) y uint32_t dir
 
 	//2 size de tamanio, 1 size de peticion, 1 size de dir (parametro)
@@ -102,7 +109,7 @@ void muse_free(uint32_t dir) { //Case 4
 }
 
 int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
-	printf("get\n");
+	printf("Se realiza un get de la direccion: %d  \n", src);
 
 	char *buffer = malloc(5 * sizeof(int) + sizeof(uint32_t) + n + sizeof(size_t));
 
@@ -166,7 +173,7 @@ int muse_get(void* dst, uint32_t src, size_t n) { //Case 5
 
 int muse_cpy(uint32_t dst, void* src, int n) { //Case 6
 	//Serializo peticion (6) y parametros (uint32_t dst, void* src, int n)
-	printf("cpy\n");
+	printf("Se realiza un cpy en la direccion: %d \n", dst);
 	//char *buffer = malloc(6 * sizeof(int) + sizeof(uint32_t) + sizeof(src));
 	char *buffer = malloc(6 * sizeof(int) + sizeof(uint32_t) + n);
 

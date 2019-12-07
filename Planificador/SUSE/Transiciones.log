@@ -1076,3 +1076,187 @@
 [INFO] 18:20:50:755 SUSE/(2715:2716): El hilo 0 del programa 5 paso a Blocked
 [INFO] 18:20:50:756 SUSE/(2715:2716): El hilo 1 del programa 5 paso a Execute
 [INFO] 18:20:56:53 SUSE/(2715:2716): Se desconecto un programa, pid: 5
+[INFO] 00:39:50:867 SUSE/(5028:5029): Se levanto un nuevo programa, pid: 5
+[INFO] 00:39:50:872 SUSE/(5028:5029): El hilo 0 del programa 5 paso a New
+[INFO] 00:39:50:874 SUSE/(5028:5030): El hilo 0 del programa 5 paso a Ready
+[INFO] 00:39:50:875 SUSE/(5028:5030): El hilo 0 del programa 5 paso a Execute
+[INFO] 00:39:50:879 SUSE/(5028:5029): El hilo 1 del programa 5 paso a New
+[INFO] 00:39:50:880 SUSE/(5028:5030): El hilo 1 del programa 5 paso a Ready
+[INFO] 00:39:50:886 SUSE/(5028:5029): El hilo 0 del programa 5 paso a Blocked
+[INFO] 00:39:50:888 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Execute
+[INFO] 00:41:02:134 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Exit
+[INFO] 00:41:02:137 SUSE/(5028:5029): El hilo 0 del programa 5 paso a Ready
+[INFO] 00:41:02:167 SUSE/(5028:5029): El hilo 0 del programa 5 paso a Execute
+[INFO] 00:41:02:197 SUSE/(5028:5029): El hilo 0 del programa 5 paso a Exit
+[INFO] 00:41:02:203 SUSE/(5028:5029): Se desconecto un programa, pid: 5
+[INFO] 00:44:52:868 SUSE/(5028:5029): Se levanto un nuevo programa, pid: 5
+[INFO] 00:44:52:873 SUSE/(5028:5029): El hilo 0 del programa 5 paso a New
+[INFO] 00:44:52:875 SUSE/(5028:5030): El hilo 0 del programa 5 paso a Ready
+[INFO] 00:44:52:876 SUSE/(5028:5030): El hilo 0 del programa 5 paso a Execute
+[INFO] 00:44:52:879 SUSE/(5028:5029): El hilo 1 del programa 5 paso a New
+[INFO] 00:44:52:884 SUSE/(5028:5030): El hilo 1 del programa 5 paso a Ready
+[INFO] 00:44:52:888 SUSE/(5028:5029): El hilo 2 del programa 5 paso a New
+[INFO] 00:44:52:889 SUSE/(5028:5030): El hilo 2 del programa 5 paso a Ready
+[INFO] 00:44:52:895 SUSE/(5028:5029): El hilo 3 del programa 5 paso a New
+[INFO] 00:44:52:896 SUSE/(5028:5030): El hilo 3 del programa 5 paso a Ready
+[INFO] 00:44:52:911 SUSE/(5028:5029): El hilo 4 del programa 5 paso a New
+[INFO] 00:44:52:915 SUSE/(5028:5030): El hilo 4 del programa 5 paso a Ready
+[INFO] 00:44:52:918 SUSE/(5028:5029): El hilo 0 del programa 5 paso a Blocked
+[INFO] 00:44:52:924 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Execute
+[INFO] 00:44:52:967 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Ready
+[INFO] 00:44:52:968 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Execute
+[INFO] 00:44:53:7 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Ready
+[INFO] 00:44:53:8 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Execute
+[INFO] 00:44:53:48 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Ready
+[INFO] 00:44:53:48 SUSE/(5028:5029): El hilo 4 del programa 5 paso a Execute
+[INFO] 00:44:53:127 SUSE/(5028:5029): El hilo 4 del programa 5 paso a Ready
+[INFO] 00:44:53:127 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Execute
+[INFO] 00:44:53:128 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Blocked
+[INFO] 00:44:53:168 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Execute
+[INFO] 00:44:53:169 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Blocked
+[INFO] 00:44:53:208 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Execute
+[INFO] 00:44:53:209 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Blocked
+[INFO] 00:44:53:247 SUSE/(5028:5029): El hilo 4 del programa 5 paso a Execute
+[INFO] 00:44:53:249 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Ready
+[INFO] 00:44:53:287 SUSE/(5028:5029): El hilo 4 del programa 5 paso a Ready
+[INFO] 00:44:53:288 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Execute
+[INFO] 00:44:53:289 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Ready
+[INFO] 00:44:53:327 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Ready
+[INFO] 00:44:53:327 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Execute
+[INFO] 00:44:53:329 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Ready
+[INFO] 00:44:53:367 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Ready
+[INFO] 00:44:53:368 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Execute
+[INFO] 00:44:53:407 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Ready
+[INFO] 00:44:53:407 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Execute
+[INFO] 00:44:53:447 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Ready
+[INFO] 00:44:53:447 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Execute
+[INFO] 00:44:53:487 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Ready
+[INFO] 00:44:53:488 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Execute
+[INFO] 00:44:53:528 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Ready
+[INFO] 00:44:53:528 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Execute
+[INFO] 00:44:53:568 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Ready
+[INFO] 00:44:53:568 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Execute
+[INFO] 00:44:53:569 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Blocked
+[INFO] 00:44:53:608 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Execute
+[INFO] 00:44:53:609 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Blocked
+[INFO] 00:44:53:647 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Execute
+[INFO] 00:44:53:655 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Ready
+[INFO] 00:44:53:687 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Ready
+[INFO] 00:44:53:695 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Execute
+[INFO] 00:44:53:697 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Ready
+[INFO] 00:44:53:736 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Ready
+[INFO] 00:44:53:736 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Execute
+[INFO] 00:44:53:815 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Ready
+[INFO] 00:44:53:816 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Execute
+[INFO] 00:44:53:896 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Ready
+[INFO] 00:44:53:896 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Execute
+[INFO] 00:44:53:936 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Blocked
+[INFO] 00:44:53:975 SUSE/(5028:5029): El hilo 4 del programa 5 paso a Execute
+[INFO] 00:44:53:977 SUSE/(5028:5029): El hilo 4 del programa 5 paso a Blocked
+[INFO] 00:44:54:16 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Execute
+[INFO] 00:44:54:17 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Blocked
+[INFO] 00:44:54:55 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Execute
+[INFO] 00:44:54:57 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Ready
+[INFO] 00:44:54:95 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Ready
+[INFO] 00:44:54:95 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Execute
+[INFO] 00:44:54:97 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Ready
+[INFO] 00:44:54:136 SUSE/(5028:5029): El hilo 3 del programa 5 paso a Blocked
+[INFO] 00:44:54:175 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Execute
+[INFO] 00:44:54:177 SUSE/(5028:5029): El hilo 2 del programa 5 paso a Blocked
+[INFO] 00:44:54:215 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Execute
+[INFO] 00:44:54:256 SUSE/(5028:5029): El hilo 1 del programa 5 paso a Blocked
+[INFO] 01:37:02:371 SUSE/(7422:7431): Se levanto un nuevo programa, pid: 5
+[INFO] 01:38:01:749 SUSE/(7422:7431): Se levanto un nuevo programa, pid: 6
+[INFO] 01:38:01:751 SUSE/(7422:7431): El hilo 0 del programa 5 paso a New
+[INFO] 01:38:01:751 SUSE/(7422:7431): El hilo 1 del programa 5 paso a New
+[INFO] 01:38:01:753 SUSE/(7422:7431): El hilo 0 del programa 6 paso a New
+[INFO] 01:38:01:754 SUSE/(7422:7431): El hilo 2 del programa 5 paso a New
+[INFO] 01:38:01:756 SUSE/(7422:7432): El hilo 0 del programa 5 paso a Ready
+[INFO] 01:38:01:757 SUSE/(7422:7432): El hilo 0 del programa 5 paso a Execute
+[INFO] 01:38:01:757 SUSE/(7422:7432): El hilo 1 del programa 5 paso a Ready
+[INFO] 01:38:01:757 SUSE/(7422:7432): El hilo 0 del programa 6 paso a Ready
+[INFO] 01:38:01:758 SUSE/(7422:7432): El hilo 0 del programa 6 paso a Execute
+[INFO] 01:38:01:758 SUSE/(7422:7431): El hilo 1 del programa 6 paso a New
+[INFO] 01:38:01:760 SUSE/(7422:7431): El hilo 3 del programa 5 paso a New
+[INFO] 01:38:01:767 SUSE/(7422:7432): El hilo 2 del programa 5 paso a Ready
+[INFO] 01:38:01:767 SUSE/(7422:7432): El hilo 1 del programa 6 paso a Ready
+[INFO] 01:38:01:771 SUSE/(7422:7431): El hilo 2 del programa 6 paso a New
+[INFO] 01:38:01:779 SUSE/(7422:7431): El hilo 4 del programa 5 paso a New
+[INFO] 01:38:01:789 SUSE/(7422:7432): El hilo 3 del programa 5 paso a Ready
+[INFO] 01:38:01:790 SUSE/(7422:7432): El hilo 2 del programa 6 paso a Ready
+[INFO] 01:38:01:796 SUSE/(7422:7431): El hilo 0 del programa 6 paso a Blocked
+[INFO] 01:38:01:800 SUSE/(7422:7431): El hilo 0 del programa 5 paso a Blocked
+[INFO] 01:38:01:805 SUSE/(7422:7432): El hilo 4 del programa 5 paso a Ready
+[INFO] 01:38:36:72 SUSE/(7422:7474): El hilo 1 del programa 6 paso a Execute
+[INFO] 01:39:10:615 SUSE/(7422:7494): El hilo 1 del programa 5 paso a Execute
+[INFO] 01:39:15:316 SUSE/(7422:7497): El hilo 1 del programa 6 paso a Ready
+[INFO] 01:39:15:317 SUSE/(7422:7497): El hilo 2 del programa 6 paso a Execute
+[INFO] 01:39:15:324 SUSE/(7422:7431): El hilo 1 del programa 5 paso a Blocked
+[INFO] 01:39:15:325 SUSE/(7422:7431): EL hilo 1 del pid 5 pidio un wait sobre el semaforo afinado
+[INFO] 01:39:21:826 SUSE/(7422:7501): El hilo 2 del programa 6 paso a Ready
+[INFO] 01:39:21:827 SUSE/(7422:7501): El hilo 1 del programa 6 paso a Execute
+[INFO] 01:39:23:542 SUSE/(7422:7504): El hilo 2 del programa 5 paso a Execute
+[INFO] 01:39:32:687 SUSE/(7422:7507): El hilo 1 del programa 6 paso a Ready
+[INFO] 01:39:32:689 SUSE/(7422:7507): El hilo 2 del programa 6 paso a Execute
+[INFO] 01:39:32:695 SUSE/(7422:7431): El hilo 2 del programa 5 paso a Blocked
+[INFO] 01:39:32:696 SUSE/(7422:7431): EL hilo 2 del pid 5 pidio un wait sobre el semaforo afinado
+[INFO] 01:40:05:553 SUSE/(7422:7510): El hilo 2 del programa 6 paso a Ready
+[INFO] 01:40:05:554 SUSE/(7422:7510): El hilo 1 del programa 6 paso a Execute
+[INFO] 01:40:08:128 SUSE/(7422:7513): El hilo 3 del programa 5 paso a Execute
+[INFO] 01:40:18:686 SUSE/(7422:7431): El hilo 3 del programa 5 paso a Blocked
+[INFO] 01:40:18:687 SUSE/(7422:7431): EL hilo 3 del pid 5 pidio un wait sobre el semaforo afinado
+[INFO] 01:40:18:734 SUSE/(7422:7525): El hilo 4 del programa 5 paso a Execute
+[INFO] 01:40:18:742 SUSE/(7422:7431): El hilo 4 del programa 5 paso a Blocked
+[INFO] 01:40:18:744 SUSE/(7422:7431): EL hilo 4 del pid 5 pidio un wait sobre el semaforo afinado
+[INFO] 01:55:20:87 SUSE/(12528:12541): Se levanto un nuevo programa, pid: 5
+[INFO] 01:55:20:92 SUSE/(12528:12541): El hilo 0 del programa 5 paso a New
+[INFO] 01:55:20:97 SUSE/(12528:12542): El hilo 0 del programa 5 paso a Ready
+[INFO] 01:55:20:98 SUSE/(12528:12542): El hilo 0 del programa 5 paso a Execute
+[INFO] 01:55:20:108 SUSE/(12528:12541): El hilo 1 del programa 5 paso a New
+[INFO] 01:55:20:110 SUSE/(12528:12542): El hilo 1 del programa 5 paso a Ready
+[INFO] 01:55:20:121 SUSE/(12528:12541): El hilo 2 del programa 5 paso a New
+[INFO] 01:55:20:123 SUSE/(12528:12542): El hilo 2 del programa 5 paso a Ready
+[INFO] 01:55:20:133 SUSE/(12528:12541): El hilo 3 del programa 5 paso a New
+[INFO] 01:55:20:140 SUSE/(12528:12542): El hilo 3 del programa 5 paso a Ready
+[INFO] 01:55:20:149 SUSE/(12528:12541): El hilo 4 del programa 5 paso a New
+[INFO] 01:55:20:152 SUSE/(12528:12542): El hilo 4 del programa 5 paso a Ready
+[INFO] 01:55:20:156 SUSE/(12528:12541): El hilo 0 del programa 5 paso a Blocked
+[INFO] 01:55:25:627 SUSE/(12528:12552): El hilo 1 del programa 5 paso a Execute
+[INFO] 01:56:40:267 SUSE/(12528:12541): El hilo 1 del programa 5 paso a Blocked
+[INFO] 01:56:40:268 SUSE/(12528:12541): EL hilo 1 del pid 5 pidio un wait sobre el semaforo afinado
+[INFO] 01:56:45:648 SUSE/(12528:12561): El hilo 2 del programa 5 paso a Execute
+[INFO] 02:49:25:640 SUSE/(23391:23399): Se levanto un nuevo programa, pid: 5
+[INFO] 02:49:25:648 SUSE/(23391:23399): El hilo 0 del programa 5 paso a New
+[INFO] 02:49:25:650 SUSE/(23391:23400): El hilo 0 del programa 5 paso a Ready
+[INFO] 02:49:25:650 SUSE/(23391:23400): El hilo 0 del programa 5 paso a Execute
+[INFO] 02:49:25:658 SUSE/(23391:23399): El hilo 1 del programa 5 paso a New
+[INFO] 02:49:25:659 SUSE/(23391:23400): El hilo 1 del programa 5 paso a Ready
+[INFO] 02:49:25:664 SUSE/(23391:23399): El hilo 2 del programa 5 paso a New
+[INFO] 02:49:25:666 SUSE/(23391:23400): El hilo 2 del programa 5 paso a Ready
+[INFO] 02:49:25:668 SUSE/(23391:23399): El hilo 3 del programa 5 paso a New
+[INFO] 02:49:25:670 SUSE/(23391:23400): El hilo 3 del programa 5 paso a Ready
+[INFO] 02:49:25:674 SUSE/(23391:23399): El hilo 4 del programa 5 paso a New
+[INFO] 02:49:25:682 SUSE/(23391:23400): El hilo 4 del programa 5 paso a Ready
+[INFO] 02:49:25:699 SUSE/(23391:23399): El hilo 0 del programa 5 paso a Blocked
+[INFO] 02:49:25:725 SUSE/(23391:23405): El hilo 1 del programa 5 paso a Execute
+[INFO] 02:49:25:731 SUSE/(23391:23399): El hilo 1 del programa 5 paso a Blocked
+[INFO] 02:49:25:733 SUSE/(23391:23399): EL hilo 1 del pid 5 pidio un wait sobre el semaforo afinado
+[INFO] 02:49:25:779 SUSE/(23391:23406): El hilo 2 del programa 5 paso a Execute
+[INFO] 02:49:25:781 SUSE/(23391:23399): El hilo 2 del programa 5 paso a Blocked
+[INFO] 02:49:25:783 SUSE/(23391:23399): EL hilo 2 del pid 5 pidio un wait sobre el semaforo afinado
+[INFO] 02:49:25:827 SUSE/(23391:23407): El hilo 3 del programa 5 paso a Execute
+[INFO] 02:49:25:832 SUSE/(23391:23399): El hilo 3 del programa 5 paso a Blocked
+[INFO] 02:49:25:833 SUSE/(23391:23399): EL hilo 3 del pid 5 pidio un wait sobre el semaforo afinado
+[INFO] 02:49:25:880 SUSE/(23391:23408): El hilo 4 del programa 5 paso a Execute
+[INFO] 02:49:25:885 SUSE/(23391:23399): El hilo 4 del programa 5 paso a Blocked
+[INFO] 02:49:25:886 SUSE/(23391:23399): EL hilo 4 del pid 5 pidio un wait sobre el semaforo afinado
+[INFO] 02:49:46:260 SUSE/(23391:23399): Se levanto un nuevo programa, pid: 6
+[INFO] 02:49:46:264 SUSE/(23391:23399): El hilo 0 del programa 6 paso a New
+[INFO] 02:49:46:266 SUSE/(23391:23400): El hilo 0 del programa 6 paso a Ready
+[INFO] 02:49:46:267 SUSE/(23391:23400): El hilo 0 del programa 6 paso a Execute
+[INFO] 02:49:46:273 SUSE/(23391:23399): El hilo 1 del programa 6 paso a New
+[INFO] 02:49:46:275 SUSE/(23391:23400): El hilo 1 del programa 6 paso a Ready
+[INFO] 02:49:46:277 SUSE/(23391:23399): El hilo 0 del programa 6 paso a Blocked
+[INFO] 02:49:46:296 SUSE/(23391:23417): El hilo 1 del programa 6 paso a Execute
+[INFO] 02:50:06:775 SUSE/(23391:23399): EL hilo 1 del pid 6 pidio un wait sobre el semaforo solo_hiper_mega_piola
+[INFO] 02:50:06:812 SUSE/(23391:23399): El hilo 1 del programa 5 paso a Ready
