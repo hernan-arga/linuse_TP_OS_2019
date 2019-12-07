@@ -326,8 +326,8 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 							+ desplazamientoPagina + sizeof(struct HeapMetadata);
 
 				} else { //Si esta partida la heap metadata
-					int indicePagina = ((floor)(
-							(double) ultimoHeap->direccionHeap
+					int indicePagina = ((floor)( // TODO aca esta el tema. hay que ajustar este indice por pagina y lo hacemos por frame. cuando pega una vuelta entera, vuelve a la primer pagina y se caga todo
+							(double) (ultimoHeap->direccionHeap)
 									/ (double) pconfig->tamanio_pag)) + 1;
 					int bytesAMoversePagina = sizeof(struct HeapMetadata)
 							- (pconfig->tamanio_pag
