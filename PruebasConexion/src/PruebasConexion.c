@@ -39,9 +39,15 @@ void recursiva(int num)
 
 	muse_cpy(ptr, estrofa, longitud);
 	recursiva(num - 1);
+<<<<<<< HEAD
 	muse_get(estrofa, ptr, longitud);
 
 	puts(estrofa);
+=======
+	num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
+	muse_get(&num, ptr, 4);
+	printf("%d\n", num);
+>>>>>>> 1b83fd5a0cefa5501189e4efa0f83ca216bba35a
 
 	muse_free(ptr);
 	free(estrofa);
@@ -51,6 +57,10 @@ void recursiva(int num)
 int main(void)
 {
 	muse_init(getpid(), "127.0.0.1", 3306);
+<<<<<<< HEAD
 	recursiva(15);
+=======
+	recursiva(20);
+>>>>>>> 1b83fd5a0cefa5501189e4efa0f83ca216bba35a
 	muse_close();
 }

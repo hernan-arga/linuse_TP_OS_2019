@@ -659,8 +659,13 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento,
 	if (ubicacionHeap != 0 && ubicacionHeap % pconfig->tamanio_pag == 0) {
 		indicePrimeraPagina--;
 	}
-	struct Pagina *pagina = list_get(segmento->tablaPaginas,
-			indicePrimeraPagina);
+	struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePrimeraPagina);
+
+
+	struct Frame *framePrimeraPagina = list_get(bitmapFrames, pagina->numeroFrame);
+	framePrimeraPagina->modificado = 1;
+	framePrimeraPagina->uso = 1;
+
 	int desplazamientoPrimeraPagina = ubicacionHeap % pconfig->tamanio_pag;
 
 	struct HeapMetadata *metadata = malloc(sizeof(struct HeapMetadata));
@@ -883,6 +888,7 @@ int asignarUnFrame() {
 		if (paginaASwappear != NULL) {
 			indiceSwap = llevarASwapUnaPagina(paginaASwappear);
 			paginaASwappear->indiceSwap = indiceSwap;
+			//SWAP
 			paginaASwappear->numeroFrame = -1;
 			paginaASwappear->presencia = 0;
 		}
@@ -901,7 +907,7 @@ struct Pagina *buscarPaginaAsociadaAFrame(int indiceFrame) {
 	struct Pagina *pagina;
 
 	for (int i = 0; i < dictionary_size(tablasSegmentos); i++) { //Recorro cada proceso
-		segmentos = dictionary_get(tablasSegmentos, string_itoa(i));
+		segmentos = dictionary_get(tablasSegmentos, string_itoa(client_socket[i]));
 
 		for (int j = 0; j < list_size(segmentos); j++) { //Cada lista de segmentos
 			segmento = list_get(segmentos, j);
@@ -960,6 +966,7 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 	nuevaPagina->numeroFrame = asignarUnFrame();
 	nuevaPagina->presencia = 1;
 	nuevaPagina->indiceSwap = -1;
+	//SWAP
 
 	//Ocupo frame y lo reemplazo - modifico - en el bitmap de frames
 	struct Frame *frame = malloc(sizeof(struct Frame));
@@ -1649,7 +1656,7 @@ void *obtenerPosicionMemoriaPagina(struct Pagina *pagina) {
 	}
 
 	struct Frame *frame = list_get(bitmapFrames, pagina->numeroFrame);
-	frame->uso = 1;
+	//frame->uso = 1;
 
 	list_replace(bitmapFrames, pagina->numeroFrame, frame);
 
@@ -2323,6 +2330,7 @@ int clockModificado() {
 	}
 
 	framesRecorridos = 0;
+	struct Frame *frameUso;
 
 	//Paso 2
 	while (framesRecorridos < cantidadFrames) {
@@ -2336,14 +2344,35 @@ int clockModificado() {
 		}
 
 		//Si no se lo elige, se le pone u = 0 (se lo libera)
-		liberarFrame(punteroClock);
+		frameUso = list_get(bitmapFrames, punteroClock);
+		frameUso->uso = 0;
 
 		framesRecorridos++;
 		incrementarPunteroClockModificado();
 
 	}
 
+	framesRecorridos = 0;
+
 	//Paso 3
+	while (framesRecorridos < cantidadFrames) {
+		frame = list_get(bitmapFrames, punteroClock);
+
+		if (frame->uso == 0 && frame->modificado == 0) {
+
+			incrementarPunteroClockModificado();
+			return punteroClock;
+
+		}
+
+		framesRecorridos++;
+		incrementarPunteroClockModificado();
+
+	}
+
+	framesRecorridos = 0;
+
+	//Paso 1 - repite
 	while (framesRecorridos < cantidadFrames) {
 		frame = list_get(bitmapFrames, punteroClock);
 
@@ -2475,7 +2504,8 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento,
 		frameReemplazo = buscarFrameLibre();
 	} else {
 		frameReemplazo = clockModificado();
-		//llevarASwap(frameReemplazo);
+		struct Pagina *pag = buscarPaginaAsociadaAFrame(frameReemplazo);
+		llevarASwapUnaPagina(pag);
 	}
 
 	struct Frame *nuevoFrame; //= malloc(sizeof(struct Frame));
@@ -2519,25 +2549,38 @@ void cargarDatosEnFrame(int indiceFrame, char *datos) {
  *donde la ubico*/
 int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 
-	char *datosASwappear = malloc(sizeof(struct Pagina));
+	//char *datosASwappear = malloc(sizeof(struct Pagina));
 
 	//Obtengo la data a swappear que se encuentra en el frame asignado a la pagina
 	int frameQueContieneData = paginaASwappear->numeroFrame;
-	void *pos = retornarPosicionMemoriaFrame(frameQueContieneData);
+	//void *pos = retornarPosicionMemoriaFrame(frameQueContieneData);
 
 	//Guardo en la variable los datos a swappear
-	memcpy(datosASwappear, pos, tam_pagina);
+	//memcpy(datosASwappear, pos, tam_pagina);
 
+	void *punteroMarco = obtenerPosicionMemoriaPagina(paginaASwappear);
+	//char* puntero_a_marco = memoriaPrincipal + paginaASwappear->numeroFrame * pconfig->tamanio_pag;
+	int bit_swap = buscarIndiceSwapLibre();
+
+	FILE *swap = fopen("swap.txt", "w+");
+	fseek(swap, bit_swap * tam_pagina, SEEK_SET);
+	//char* puntero_a_swap = swap + bit_swap * pconfig->tamanio_pag;
+	//liberar bitmapswap
+	//for(int i=0;i < pconfig->tamanio_pag; i++){
+		//puntero_a_swap[i] = puntero_a_marco[i];
+	fwrite(punteroMarco,sizeof(char),pconfig->tamanio_pag,swap);
+	//}
+/*
 	//Obtengo un lugar libre en swap y escribo los datos ahi
 	int indiceSwap = buscarIndiceSwapLibre();
 
 	swap = fopen("swap.txt", "a+");
 	fseek(swap, indiceSwap * tam_pagina, SEEK_SET);
 	//CHEQUEAR que este escribiendo en el lugar correcto
-	fwrite(datosASwappear, sizeof(char), tam_pagina, swap);
+	fwrite(datosASwappear, sizeof(char), tam_pagina, swap);*/
 
 	//Debo liberar el frame que contenia la pagina que lleve a swap y tambien la pagina
-	paginaASwappear->indiceSwap = indiceSwap;
+	paginaASwappear->indiceSwap = bit_swap;
 	paginaASwappear->numeroFrame = -1;
 	paginaASwappear->presencia = 0;
 
@@ -2547,7 +2590,7 @@ int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 	frameModificado->uso = 0;
 	frameModificado->estaLibre = true;
 
-	return indiceSwap;
+	return bit_swap;
 }
 
 int buscarIndiceSwapLibre() {

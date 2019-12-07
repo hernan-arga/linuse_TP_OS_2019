@@ -1,3 +1,4 @@
+
 #ifndef UTILS_H_
 #define UTILS_H_
 #define EXIT_FAILURE 1
@@ -49,5 +50,7 @@ typedef struct {
 t_log* logger;
 pthread_t hiloLevantarConexion;
 config* pconfig;
+
+int client_socket[30];
 
 #endif /* UTILS_H_ */
