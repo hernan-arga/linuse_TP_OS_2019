@@ -2502,7 +2502,7 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento,
 	//Obtengo indice de swap donde se encuentra
 	int indiceSwap = paginaSwapeada->indiceSwap;
 
-	swap = fopen("swap.txt", "w");
+	//swap = fopen("swap.txt", "w");
 	fseek(swap, indiceSwap * tam_pagina, SEEK_SET);
 	fread(datosEnSwap, sizeof(char), tam_pagina, swap);
 
@@ -2570,10 +2570,10 @@ int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 	memcpy(pagina, punteroMarco, pconfig->tamanio_pag);*/
 	//printf("%s \n", pagina);
 	//string_append(&registrosAEscribir, pagina);
-	FILE *swap = fopen("swap.txt", "w+");
+	//FILE *swap = fopen("swap.txt", "w+");
 	fseek(swap, bit_swap * tam_pagina, SEEK_SET);
 	fwrite(punteroMarco, pconfig->tamanio_pag, 1, swap);
-	fclose(swap);
+	//fclose(swap);
 	//free(registrosAEscribir);
 
 	//Debo liberar el frame que contenia la pagina que lleve a swap y tambien la pagina
