@@ -2,7 +2,7 @@
 
 
 
-void iniciar_conexion(int ip, int puerto){
+void iniciar_conexion(char* ip, int puerto){
 	  int serverSocket, newSocket;
 	  struct sockaddr_in serverAddr;
 	  struct sockaddr_storage serverStorage;
@@ -13,7 +13,8 @@ void iniciar_conexion(int ip, int puerto){
 
 	  serverAddr.sin_family = AF_INET;
 	  serverAddr.sin_port = htons(puerto);
-	  serverAddr.sin_addr.s_addr = INADDR_ANY; //ip
+	 //serverAddr.sin_addr.s_addr = INADDR_ANY; //ip
+	  serverAddr.sin_addr.s_addr = inet_addr(ip);
 
 	  memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
 	  bind(serverSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
@@ -314,7 +315,7 @@ int iniciar_conexion(int ip, int puerto){
 void levantarConfigFile(config* pconfig){
 	t_config* configuracion = leer_config();
 
-	pconfig->ip = config_get_int_value(configuracion, "IP");
+	pconfig->ip = config_get_string_value(configuracion, "IP");
 	pconfig->puerto = config_get_int_value(configuracion, "LISTEN_PORT");
 
 }

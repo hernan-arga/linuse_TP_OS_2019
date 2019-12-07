@@ -544,7 +544,10 @@ static struct fuse_opt fuse_options[] = {
 
 int main(int argc, char *argv[]){
 
-	conectarseASacServer();
+	config* pconfig = malloc(sizeof(config));
+	levantarConfigFile(pconfig);
+
+	conectarseASacServer(pconfig->ip, pconfig->puerto);
 
 	struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
 
@@ -561,10 +564,6 @@ int main(int argc, char *argv[]){
 	}
 
 	return fuse_main(args.argc, args.argv, &hello_oper, NULL);
-
-	// Levanta archivo de configuracion
-	config* pconfig = malloc(2 * sizeof(int));
-	levantarConfigFile(pconfig);
 
 	return 0;
 }

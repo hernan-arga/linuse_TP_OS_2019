@@ -14,15 +14,16 @@ int main() {
 	pconfig = malloc(sizeof(config));
 	levantarConfigFile(pconfig);
 
-	//log_info(log, "MUSE levantado correctamente\n");
-
 	arrancarMemoria(pconfig);
 
-	printf("%d \n", (int) (memoriaPrincipal));
+	printf("MUSE levantado correctamente \n");
+
+	printf("La mm ppal arranca desde: %d \n", (int) (memoriaPrincipal));
 
 	// Levanta conexion por socket
 	pthread_create(&hiloLevantarConexion, NULL,
 			(void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
+
 
 	pthread_join(hiloLevantarConexion, NULL);
 
@@ -49,7 +50,7 @@ void arrancarMemoria(config* pconfig) {
 	//Se hace una unica vez
 	tablasSegmentos = dictionary_create();
 	//Abro archivo swap
-	swap = fopen("swap.txt", "a+"); //Validar modo apertura y limite tamaño tam_swap
+	swap = fopen("swap.txt", "w"); //Validar modo apertura y limite tamaño tam_swap
 
 	char *bitmap = malloc(cantidadPaginasSwap);
 	bitmapSwap = bitarray_create(bitmap, cantidadPaginasSwap); //size - cantidad de bits del bitarray, expresado en bytes
@@ -60,7 +61,7 @@ void arrancarMemoria(config* pconfig) {
 void reservarMemoriaPrincipal(int tamanio) {
 
 	memoriaPrincipal = malloc(tamanio);
-	printf("La direccion de la mm ppal es %i \n", memoriaPrincipal);
+	//printf("La direccion de la mm ppal es %i \n", memoriaPrincipal);
 
 }
 
@@ -464,6 +465,48 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	bool *sePartioUnaMetadata = malloc(sizeof(bool));
 	*sePartioUnaMetadata = false;
 
+	// asigno primera pagina
+
+	nuevoSegmento = asignarPrimeraPaginaSegmento(nuevoSegmento,
+							tamanio, sePartioUnaMetadata);
+
+	if(*sePartioUnaMetadata == true) {
+		paginasNecesarias -= 2;
+		tamanioAlocado -= 2*pconfig->tamanio_pag;
+	} else {
+		paginasNecesarias -= 1;
+		tamanioAlocado -= 1*pconfig->tamanio_pag;
+	}
+
+	struct HeapLista *ultimoHeapLista = list_get(nuevoSegmento->metadatas,
+			list_size(nuevoSegmento->metadatas) - 1);
+
+	if (ultimoHeapLista->isFree == true) {
+		tamanioAlocado -= ultimoHeapLista->size;
+	}
+	ultimoHeapLista->size = tamanio;
+	ultimoHeapLista->isFree = false;
+
+	while (paginasNecesarias > 0) {
+
+		if (tamanioAlocado > tam_pagina) {
+
+			nuevoSegmento = asignarNuevaPagina(nuevoSegmento, tam_pagina);
+			tamanioAlocado = tamanioAlocado - tam_pagina;
+
+		} else {
+
+			//asignar ultima pagina ya me crea la ultima metadata necesaria
+			nuevoSegmento = asignarUltimaPaginaSegmento(nuevoSegmento, tamanioAlocado);
+			tamanioAlocado = 0;
+
+		}
+
+		paginasNecesarias--;
+
+	}
+
+// sacar esta basura
 	while (paginasNecesarias > 0) {
 
 		if (paginasNecesarias == (int) (ceil(paginas))
@@ -480,7 +523,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 				if (diferenciaTamanios < 0) { //Si se corta la metadata
 					tamanioAlocado -= pconfig->tamanio_pag;
 
-					if (((int) tamanio) < diferenciaTamanios) { //NO se cortan los datos
+					if (((int) tamanio) < tamanioAlocado) { //NO se cortan los datos
 						tamanioAlocado -= tamanio;
 						//no se parten los datos
 
@@ -535,41 +578,6 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 					}
 				}
 
-				//Se encarga de la metadata y toda la falopa
-				struct Pagina *primeraPagina = list_get(
-						nuevoSegmento->tablaPaginas, 0);
-
-				void *pos = obtenerPosicionMemoriaPagina(primeraPagina)
-						+ tamanio + sizeof(struct HeapMetadata);
-
-				struct HeapMetadata *ultimaMetadata = malloc(
-						sizeof(struct HeapMetadata));
-				/*
-				 if (tamanio < pconfig->tamanio_pag) {
-				 ultimaMetadata->isFree = true;
-				 } else {
-				 ultimaMetadata->isFree = false;
-				 }*/
-				ultimaMetadata->isFree = true;
-				ultimaMetadata->size = pconfig->tamanio_pag
-						- ((pconfig->tamanio_pag + tamanio
-								+ 2 * sizeof(struct HeapMetadata))
-								% pconfig->tamanio_pag);
-
-				struct HeapLista *ultimoHeapLista = malloc(
-						sizeof(struct HeapLista));
-
-				int ubicacionHeap = obtenerIndicePagina(
-						nuevoSegmento->tablaPaginas, primeraPagina)
-						* pconfig->tamanio_pag + sizeof(struct HeapMetadata)
-						+ tamanio;
-				ubicarMetadataYHeapLista(nuevoSegmento, ubicacionHeap,
-						ultimaMetadata->isFree, ultimaMetadata->size,
-						sePartioUnaMetadata);
-
-				if ((*sePartioUnaMetadata) == true) {
-					paginasNecesarias--;
-				}
 
 			}
 
@@ -656,9 +664,6 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento,
 	heap->size = size;
 
 	int indicePrimeraPagina = (floor)(ubicacionHeap / pconfig->tamanio_pag);
-	if (ubicacionHeap != 0 && ubicacionHeap % pconfig->tamanio_pag == 0) {
-		indicePrimeraPagina--;
-	}
 	struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePrimeraPagina);
 
 
@@ -1980,13 +1985,13 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		}
 
 		//Test
-
+/*
 		void* deDondeLeer;
 		deDondeLeer = obtenerPosicionMemoriaPagina(
 				list_get(unSegmento->tablaPaginas, 0))
 				+ sizeof(struct HeapMetadata);
 		printf("El numero copiado es %i \n", *((int*) deDondeLeer));
-
+*/
 		//printf("El resultado es EL CASTEADO %i \n", (int)deDondeLeer);
 
 		//printf("La frase copiada es %i \n", resultado);
@@ -2187,6 +2192,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	//segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
 
 	//Prueba free
+	/*
 	void *posPagina = obtenerPosicionMemoriaPagina(pagina);
 	void *posMetadata = posPagina + desplazamientoMetadata;
 	void * buffer = malloc(sizeof(struct HeapMetadata));
@@ -2194,10 +2200,11 @@ int musefree(int idSocketCliente, uint32_t dir) {
 
 	struct HeapMetadata *meta = malloc(sizeof(struct HeapMetadata));
 	meta = (struct HeapMetadata *) buffer;
-
+*/
 	//free(stringIdSocketCliente);
 	//free(segmento);
 	//free(pagina);
+
 	return 0;
 }
 
@@ -2549,43 +2556,23 @@ void cargarDatosEnFrame(int indiceFrame, char *datos) {
  *donde la ubico*/
 int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 
-	//char *datosASwappear = malloc(sizeof(struct Pagina));
-
 	//Obtengo la data a swappear que se encuentra en el frame asignado a la pagina
 	int frameQueContieneData = paginaASwappear->numeroFrame;
-	//void *pos = retornarPosicionMemoriaFrame(frameQueContieneData);
-
-	//Guardo en la variable los datos a swappear
-	//memcpy(datosASwappear, pos, tam_pagina);
 
 	void *punteroMarco = obtenerPosicionMemoriaPagina(paginaASwappear);
-	//char* puntero_a_marco = memoriaPrincipal + paginaASwappear->numeroFrame * pconfig->tamanio_pag;
 	int bit_swap = buscarIndiceSwapLibre();
 
-	FILE *swap = fopen("swap.txt", "w+");
+	FILE *swap = fopen("swap.txt", "r+");
 	fseek(swap, bit_swap * tam_pagina, SEEK_SET);
-	//char* puntero_a_swap = swap + bit_swap * pconfig->tamanio_pag;
-	//liberar bitmapswap
-	//for(int i=0;i < pconfig->tamanio_pag; i++){
-		//puntero_a_swap[i] = puntero_a_marco[i];
 	fwrite(punteroMarco,sizeof(char),pconfig->tamanio_pag,swap);
-	//}
-/*
-	//Obtengo un lugar libre en swap y escribo los datos ahi
-	int indiceSwap = buscarIndiceSwapLibre();
-
-	swap = fopen("swap.txt", "a+");
-	fseek(swap, indiceSwap * tam_pagina, SEEK_SET);
-	//CHEQUEAR que este escribiendo en el lugar correcto
-	fwrite(datosASwappear, sizeof(char), tam_pagina, swap);*/
 
 	//Debo liberar el frame que contenia la pagina que lleve a swap y tambien la pagina
 	paginaASwappear->indiceSwap = bit_swap;
+	bitarray_set_bit(bitmapSwap, bit_swap);
 	paginaASwappear->numeroFrame = -1;
 	paginaASwappear->presencia = 0;
 
-	struct Frame *frameModificado; //= malloc(sizeof(struct Frame));
-	frameModificado = list_get(bitmapFrames, frameQueContieneData);
+	struct Frame *frameModificado = list_get(bitmapFrames, frameQueContieneData);
 	frameModificado->modificado = 0;
 	frameModificado->uso = 0;
 	frameModificado->estaLibre = true;
@@ -2602,7 +2589,6 @@ int buscarIndiceSwapLibre() {
 		}
 	}
 
-	//Nunca se me acaba swap?
 	return -1;
 }
 
@@ -2794,3 +2780,17 @@ int muse_unmap(uint32_t dir, int idSocketCliente) {
 
 	return -1;
 }
+
+int museclose(int idSocketCliente){
+
+	char *stringIdSocketCliente = string_itoa(idSocketCliente);
+	t_list *segmentosPrograma = list_get(tablasSegmentos, stringIdSocketCliente);
+
+	if(segmentosPrograma != NULL) {
+		//Encontro la lista de segmentos (encontro al cliente)
+		dictionary_remove(tablasSegmentos, stringIdSocketCliente);
+	}
+	return 0;
+}
+
+
