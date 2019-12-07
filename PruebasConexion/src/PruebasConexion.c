@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "libmuse.h"
@@ -5,7 +6,7 @@
 
 void recursiva(int num)
 {
-if(num == 0)
+	if(num == 0)
 		return;
 
 	uint32_t ptr = muse_alloc(4);
