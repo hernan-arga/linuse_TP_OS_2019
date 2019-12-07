@@ -17,12 +17,13 @@ void recursiva(int num)
 	num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
 	muse_get(&num, ptr, 4);
 	printf("%d\n", num);
+
 	muse_free(ptr);
 }
 
 int main(void)
 {
 	muse_init(getpid(), "127.0.0.1", 3306);
-	recursiva(10);
+	recursiva(20);
 	muse_close();
 }
