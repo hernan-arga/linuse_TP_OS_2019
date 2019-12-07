@@ -5,11 +5,11 @@
 
 
 typedef struct {
-	int ip;
+	char* ip;
 	int puerto;
 } config;
 
-void iniciar_conexion(int, int);
+void iniciar_conexion(char*, int);
 void levantarConfigFile();
 t_config* leer_config(void);
 void loguearInfo(char *);
