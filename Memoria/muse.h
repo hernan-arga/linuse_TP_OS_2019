@@ -120,7 +120,7 @@ struct Segmento *buscarSegmentoConTamanioDisponible(t_list *segmentos, int taman
 //Funciones metadatas y heaplista
 int indicePaginaQueContieneUltimaMetadata(struct Segmento *segmento);
 struct HeapMetadata *leerMetadata(struct Segmento *segmento, struct HeapLista *heapLista);
-struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento, int ubicacionHeap, bool isFree, uint32_t size, bool *sePartioUnaMetadata);
+struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento, int ubicacionHeap, bool isFree, uint32_t size, bool *sePartioUnaMetadata, uint32_t pag);
 
 //Funciones cpy
 int musecpy(uint32_t dst, void* src, int n, int idSocket);

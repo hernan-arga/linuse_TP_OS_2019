@@ -656,14 +656,14 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 /*Recibe el segmento donde se crea la metadata y el heap, la ubicacion del heap relativa al segmento, si esta libre y cuanto*/
 struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento,
 		int ubicacionHeap, bool isFree, uint32_t size,
-		bool *sePartioUnaMetadata) {
+		bool *sePartioUnaMetadata, uint32_t pag) {
 	struct HeapLista *heap = malloc(sizeof(struct HeapLista));
 
 	heap->direccionHeap = ubicacionHeap;
 	heap->isFree = isFree;
 	heap->size = size;
 
-	int indicePrimeraPagina = (floor)(ubicacionHeap / pconfig->tamanio_pag);
+	int indicePrimeraPagina = pag - 1;
 	struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePrimeraPagina);
 
 
@@ -692,7 +692,7 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento,
 		//Pego la metadata en los frames (queda partida)
 		memcpy(pos, metadata, heap->bytesPrimeraPagina);
 		struct Pagina *segundaPagina = malloc(sizeof(struct Pagina));
-		segundaPagina->numeroFrame = asignarUnFrame();
+		segundaPagina->numeroFrame = asignarUnFrame();  //TODO gonza aca en el fallo de pagina vuelve a dar frame 0, deberia dar 1
 		segundaPagina->presencia = 1;
 		segundaPagina->indiceSwap = -1;
 		list_add(segmento->tablaPaginas, segundaPagina);
@@ -854,7 +854,7 @@ struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento,
 	metadata->size = tamanioMetadata;
 
 	ubicarMetadataYHeapLista(segmento, pos, metadata->isFree, metadata->size,
-			sePartioUnaMetadata);
+			sePartioUnaMetadata, 1);
 
 	if ((*sePartioUnaMetadata) == true) {
 		segmento->tamanio += 2 * pconfig->tamanio_pag;
@@ -949,7 +949,7 @@ struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *segmento,
 					+ tamanioUltimaMetadata);
 	//int direccionHeap = (int)(obtenerPosicionMemoriaPagina(ultimaPagina) + (pconfig->tamanio_pag - tamanioUltimaMetadata - sizeof(struct HeapMetadata)));
 	ubicarMetadataYHeapLista(segmento, direccionHeap, ultimaMetadata->isFree,
-			ultimaMetadata->size, sePartioUnaMetadata);
+			ultimaMetadata->size, sePartioUnaMetadata, list_size(segmento->tablaPaginas));
 
 	//TODO me parece que esta hecho en ubicar metadata
 	//Pone la metadata en el frame correspondiente
