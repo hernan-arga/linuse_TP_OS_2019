@@ -3,24 +3,43 @@
 #include "libmuse.h"
 #include <unistd.h>
 
-void recursiva(int num)
-{
+char* pasa_palabra(int cod) {
+    switch(cod)
+    {
+    case 1:
+        return strdup("hola\n");
+
+    default:
+    {
+        if(cod % 2)
+            return strdup("hola\n");
+        else
+            return strdup("hola\n");
+    }
+    }
+}
+
+void recursiva(int num) {
 if(num == 0)
 		return;
 
-	uint32_t ptr = muse_alloc(4);
-	muse_cpy(ptr, &num, 4);
-	printf("%d\n", num);
+	char* estrofa = pasa_palabra(1);
+	int longitud = strlen(estrofa);
+	uint32_t ptr = muse_alloc(longitud);
+
+	muse_cpy(ptr, estrofa, longitud);
 	recursiva(num - 1);
-	num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
-	muse_get(&num, ptr, 4);
-	printf("%d\n", num);
-	muse_free(ptr);
+	//muse_get(estrofa, ptr, longitud);
+
+	puts(estrofa);
+
+	//muse_free(ptr);
+	free(estrofa);
 }
 
 int main(void)
 {
 	muse_init(getpid(), "127.0.0.1", 3306);
-	recursiva(10);
+	recursiva(20);
 	muse_close();
 }
