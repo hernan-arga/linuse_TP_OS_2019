@@ -2563,14 +2563,12 @@ int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 	fwrite(punteroMarco,sizeof(char),pconfig->tamanio_pag,swap);
 	fclose(swap);*/
 
-	*((char*)punteroMarco) = "hola";
-
-	void* registrosAEscribir = malloc(pconfig->tamanio_pag);
+	char* registrosAEscribir = malloc(pconfig->tamanio_pag);
 	char* pagina = malloc(pconfig->tamanio_pag);
 	memcpy(pagina, punteroMarco, pconfig->tamanio_pag);
 	printf("%s \n", pagina);
 	string_append(&registrosAEscribir, pagina);
-	FILE *swap = fopen("swap.txt", "r+");
+	FILE *swap = fopen("swap.txt", "w+");
 	fseek(swap, bit_swap * tam_pagina, SEEK_SET);
 	fwrite(registrosAEscribir, pconfig->tamanio_pag, 1, swap);
 	fclose(swap);
