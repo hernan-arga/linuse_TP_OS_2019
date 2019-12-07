@@ -152,13 +152,14 @@ void inicializarBitmapSwap();
 uint32_t musemap(char *path, size_t length, int flags, int idSocketCliente);
 int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento, int idSocketCliente);
 void cargarDatosEnFrame(int indiceFrame, char *datos);
-int llevarASwapUnaPagina(int indicePagina, int indiceSegmento, int idSocketCliente);
+int llevarASwapUnaPagina(struct Pagina *pagina);
 int buscarIndiceSwapLibre();
 int musesync(uint32_t addr, size_t len, int idSocketCliente);
 int obtenerIndicePagina(t_list *listaPaginas, struct Pagina *pagina);
 void *obtenerDatosActualizados(int frame, int desplazamiento, size_t len, struct Segmento *unSegmento, struct Pagina *unaPagina);
 int muse_unmap(uint32_t dir, int idSocketCliente);
 int asignarUnFrame();
+struct Pagina *buscarPaginaAsociadaAFrame(int indiceFrame);
 
 #endif /* MUSE_H_ */
 
