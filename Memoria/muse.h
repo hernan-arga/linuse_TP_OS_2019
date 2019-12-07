@@ -161,5 +161,7 @@ int muse_unmap(uint32_t dir, int idSocketCliente);
 int asignarUnFrame();
 struct Pagina *buscarPaginaAsociadaAFrame(int indiceFrame);
 
+int museclose(int idSocketCliente);
+
 #endif /* MUSE_H_ */
 

@@ -340,16 +340,10 @@ int settearPosicion (int *pointer_block, int *data_block, size_t size, off_t off
 	return 0;
 }
 
+
 /*
- *	@DESC
- *		Borra los nodos hasta la estructura correspondiente (upto:hasta) especificadas. EXCLUSIVE.
- *
- *	@PARAM
- *
- *
- *	@RET
- *
- */
+ *	Borra los nodos hasta donde se diga.
+*/
 int eliminarNodos (struct sac_file_t *file_data, int pointer_upto, int data_upto){
 	t_bitarray *bitarray;
 	size_t file_size = file_data->tamanio_archivo;
