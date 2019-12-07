@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 int iniciar_conexion(char *ip, int32_t puerto) {
-	printf("ip %s - puerto %i\n", ip, puerto);
+	printf("IP %s - PUERTO %i\n", ip, puerto);
 	int opt = 1;
 	int master_socket, addrlen, new_socket, max_clients = 30,
 			activity, i, sd, valread;
@@ -50,7 +50,6 @@ int iniciar_conexion(char *ip, int32_t puerto) {
 		perror("Bind fallo en el FS");
 		return 1;
 	}
-	printf("Escuchando en el puerto: %d \n", puerto);
 
 	listen(master_socket, 100);
 
@@ -140,39 +139,39 @@ int iniciar_conexion(char *ip, int32_t puerto) {
 
 					switch (*operacion) {
 					case 1: //init
-						loguearInfo("llego init");
+						printf("Llego un init del cliente: %d \n",sd);
 						atenderMuseInit(sd);
 						break;
 					case 2: //close
-						loguearInfo("llego close");
+						printf("Llego un close del cliente: %d \n",sd);
 						atenderMuseClose(sd);
 						break;
 					case 3: //alloc
-						loguearInfo("llego alloc");
+						printf("Llego un alloc del cliente: %d \n",sd);
 						atenderMuseAlloc(sd);
 						break;
 					case 4: //free
-						loguearInfo("llego free");
+						printf("Llego un free del cliente: %d\n",sd);
 						atenderMuseFree(sd);
 						break;
 					case 5: //get
-						loguearInfo("llego get");
+						printf("Llego un get del cliente: %d\n",sd);
 						atenderMuseGet(sd);
 						break;
 					case 6: //copy
-						loguearInfo("llego copy");
+						printf("Llego un cpy del cliente: %d\n",sd);
 						atenderMuseCopy(sd);
 						break;
 					case 7:	//map
-						loguearInfo("llego map");
+						printf("Llego un mmap del cliente: %d\n",sd);
 						atenderMuseMap(sd);
 						break;
 					case 8: //sync
-						loguearInfo("llego sync");
+						printf("Llego un sync del cliente: %d\n",sd);
 						atenderMuseSync(sd);
 						break;
 					case 9: //unmap
-						loguearInfo("llego unmap");
+						printf("Llego un unmap del cliente: %d\n",sd);
 						atenderMuseUnmap(sd);
 						break;
 					default:
@@ -243,7 +242,7 @@ void atenderMuseAlloc(int cliente) {
 
 	uint32_t direccion = musemalloc(*bytesAReservar, cliente); //aca hacemos el malloc en muse y devolves la direccion de memoria
 
-	printf("la direccion malloc es %i \n", direccion);
+	printf("La direccion del malloc es %i \n", direccion);
 
 	memcpy(buffer, &tamanioDireccion, sizeof(int));
 	memcpy(buffer + sizeof(int), &direccion, sizeof(uint32_t));

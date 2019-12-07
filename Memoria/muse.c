@@ -14,15 +14,16 @@ int main() {
 	pconfig = malloc(sizeof(config));
 	levantarConfigFile(pconfig);
 
-	//log_info(log, "MUSE levantado correctamente\n");
-
 	arrancarMemoria(pconfig);
 
-	printf("%d \n", (int) (memoriaPrincipal));
+	printf("MUSE levantado correctamente \n");
+
+	printf("La mm ppal arranca desde: %d \n", (int) (memoriaPrincipal));
 
 	// Levanta conexion por socket
 	pthread_create(&hiloLevantarConexion, NULL,
 			(void*) iniciar_conexion(pconfig->ip, pconfig->puerto), NULL);
+
 
 	pthread_join(hiloLevantarConexion, NULL);
 
@@ -60,7 +61,7 @@ void arrancarMemoria(config* pconfig) {
 void reservarMemoriaPrincipal(int tamanio) {
 
 	memoriaPrincipal = malloc(tamanio);
-	printf("La direccion de la mm ppal es %i \n", memoriaPrincipal);
+	//printf("La direccion de la mm ppal es %i \n", memoriaPrincipal);
 
 }
 
@@ -1979,13 +1980,13 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		}
 
 		//Test
-
+/*
 		void* deDondeLeer;
 		deDondeLeer = obtenerPosicionMemoriaPagina(
 				list_get(unSegmento->tablaPaginas, 0))
 				+ sizeof(struct HeapMetadata);
 		printf("El numero copiado es %i \n", *((int*) deDondeLeer));
-
+*/
 		//printf("El resultado es EL CASTEADO %i \n", (int)deDondeLeer);
 
 		//printf("La frase copiada es %i \n", resultado);
@@ -2186,6 +2187,7 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	//segmento = eliminarPaginasLibresSegmento(idSocketCliente, segmento->id);
 
 	//Prueba free
+	/*
 	void *posPagina = obtenerPosicionMemoriaPagina(pagina);
 	void *posMetadata = posPagina + desplazamientoMetadata;
 	void * buffer = malloc(sizeof(struct HeapMetadata));
@@ -2193,10 +2195,11 @@ int musefree(int idSocketCliente, uint32_t dir) {
 
 	struct HeapMetadata *meta = malloc(sizeof(struct HeapMetadata));
 	meta = (struct HeapMetadata *) buffer;
-
+*/
 	//free(stringIdSocketCliente);
 	//free(segmento);
 	//free(pagina);
+
 	return 0;
 }
 
