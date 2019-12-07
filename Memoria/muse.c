@@ -50,7 +50,7 @@ void arrancarMemoria(config* pconfig) {
 	//Se hace una unica vez
 	tablasSegmentos = dictionary_create();
 	//Abro archivo swap
-	swap = fopen("swap.txt", "w"); //Validar modo apertura y limite tamaño tam_swap
+	swap = fopen("swap.txt", "r+"); //Validar modo apertura y limite tamaño tam_swap
 
 	char *bitmap = malloc(cantidadPaginasSwap);
 	bitmapSwap = bitarray_create(bitmap, cantidadPaginasSwap); //size - cantidad de bits del bitarray, expresado en bytes
@@ -892,10 +892,6 @@ int asignarUnFrame() {
 
 		if (paginaASwappear != NULL) {
 			indiceSwap = llevarASwapUnaPagina(paginaASwappear);
-			paginaASwappear->indiceSwap = indiceSwap;
-			//SWAP
-			paginaASwappear->numeroFrame = -1;
-			paginaASwappear->presencia = 0;
 		}
 
 	}
@@ -2567,13 +2563,16 @@ int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 	fwrite(punteroMarco,sizeof(char),pconfig->tamanio_pag,swap);
 	fclose(swap);*/
 
-	char* registrosAEscribir = string_new();
+	*((char*)punteroMarco) = "hola";
+
+	void* registrosAEscribir = malloc(pconfig->tamanio_pag);
 	char* pagina = malloc(pconfig->tamanio_pag);
 	memcpy(pagina, punteroMarco, pconfig->tamanio_pag);
+	printf("%s \n", pagina);
 	string_append(&registrosAEscribir, pagina);
-	FILE *swap = fopen("swap.txt", "w");
+	FILE *swap = fopen("swap.txt", "r+");
 	fseek(swap, bit_swap * tam_pagina, SEEK_SET);
-	fwrite(registrosAEscribir, sizeof(char), strlen(registrosAEscribir), swap);
+	fwrite(registrosAEscribir, pconfig->tamanio_pag, 1, swap);
 	fclose(swap);
 	free(registrosAEscribir);
 
