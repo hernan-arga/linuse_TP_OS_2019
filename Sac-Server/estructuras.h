@@ -89,7 +89,7 @@ int fuse_disc_size;
 #define HEADER_SIZE_B ((int) HEADER * TAMANIO_BLOQUE)
 #define TAMANIO_BITMAP Header_Data.tamanio_bitmap
 
-#define DISC_PATH "/home/utnso/miFS/sac-tools/disco.bin"
+#define DISC_PATH "/sac-tools/disco.bin"
 #define ARRAY64SIZE _bitarray_64
 size_t _bitarray_64;
 #define ARRAY64LEAK _bitarray_64_leak

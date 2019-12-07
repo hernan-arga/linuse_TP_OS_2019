@@ -18,7 +18,7 @@ int path_size_in_bytes(const char* path){
 
 int main(){
 	// Levanta archivo de configuracion
-	config* pconfig = malloc(2 * sizeof(int));
+	config* pconfig = malloc(sizeof(config));
 	levantarConfigFile(pconfig);
 
 

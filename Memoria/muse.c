@@ -49,7 +49,7 @@ void arrancarMemoria(config* pconfig) {
 	//Se hace una unica vez
 	tablasSegmentos = dictionary_create();
 	//Abro archivo swap
-	swap = fopen("swap.txt", "a+"); //Validar modo apertura y limite tamaño tam_swap
+	swap = fopen("swap.txt", "w"); //Validar modo apertura y limite tamaño tam_swap
 
 	char *bitmap = malloc(cantidadPaginasSwap);
 	bitmapSwap = bitarray_create(bitmap, cantidadPaginasSwap); //size - cantidad de bits del bitarray, expresado en bytes
@@ -2553,43 +2553,23 @@ void cargarDatosEnFrame(int indiceFrame, char *datos) {
  *donde la ubico*/
 int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 
-	//char *datosASwappear = malloc(sizeof(struct Pagina));
-
 	//Obtengo la data a swappear que se encuentra en el frame asignado a la pagina
 	int frameQueContieneData = paginaASwappear->numeroFrame;
-	//void *pos = retornarPosicionMemoriaFrame(frameQueContieneData);
-
-	//Guardo en la variable los datos a swappear
-	//memcpy(datosASwappear, pos, tam_pagina);
 
 	void *punteroMarco = obtenerPosicionMemoriaPagina(paginaASwappear);
-	//char* puntero_a_marco = memoriaPrincipal + paginaASwappear->numeroFrame * pconfig->tamanio_pag;
 	int bit_swap = buscarIndiceSwapLibre();
 
-	FILE *swap = fopen("swap.txt", "w+");
+	FILE *swap = fopen("swap.txt", "r+");
 	fseek(swap, bit_swap * tam_pagina, SEEK_SET);
-	//char* puntero_a_swap = swap + bit_swap * pconfig->tamanio_pag;
-	//liberar bitmapswap
-	//for(int i=0;i < pconfig->tamanio_pag; i++){
-		//puntero_a_swap[i] = puntero_a_marco[i];
 	fwrite(punteroMarco,sizeof(char),pconfig->tamanio_pag,swap);
-	//}
-/*
-	//Obtengo un lugar libre en swap y escribo los datos ahi
-	int indiceSwap = buscarIndiceSwapLibre();
-
-	swap = fopen("swap.txt", "a+");
-	fseek(swap, indiceSwap * tam_pagina, SEEK_SET);
-	//CHEQUEAR que este escribiendo en el lugar correcto
-	fwrite(datosASwappear, sizeof(char), tam_pagina, swap);*/
 
 	//Debo liberar el frame que contenia la pagina que lleve a swap y tambien la pagina
 	paginaASwappear->indiceSwap = bit_swap;
+	bitarray_set_bit(bitmapSwap, bit_swap);
 	paginaASwappear->numeroFrame = -1;
 	paginaASwappear->presencia = 0;
 
-	struct Frame *frameModificado; //= malloc(sizeof(struct Frame));
-	frameModificado = list_get(bitmapFrames, frameQueContieneData);
+	struct Frame *frameModificado = list_get(bitmapFrames, frameQueContieneData);
 	frameModificado->modificado = 0;
 	frameModificado->uso = 0;
 	frameModificado->estaLibre = true;
