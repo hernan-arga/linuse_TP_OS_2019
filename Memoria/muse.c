@@ -695,6 +695,12 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento,
 		segundaPagina->numeroFrame = asignarUnFrame();  //TODO gonza aca en el fallo de pagina vuelve a dar frame 0, deberia dar 1
 		segundaPagina->presencia = 1;
 		segundaPagina->indiceSwap = -1;
+		struct Frame *frame;// = malloc(sizeof(struct Frame));
+		frame = list_get(bitmapFrames, segundaPagina->numeroFrame);
+		frame->modificado = 1;
+		frame->uso = 1;
+		frame->estaLibre = false;
+		list_replace(bitmapFrames, segundaPagina->numeroFrame, frame);
 		list_add(segmento->tablaPaginas, segundaPagina);
 
 		segmento->tamanio += pconfig->tamanio_pag;
@@ -843,6 +849,12 @@ struct Segmento *asignarPrimeraPaginaSegmento(struct Segmento *segmento,
 	primeraPagina->numeroFrame = asignarUnFrame();
 	primeraPagina->presencia = 1;
 	primeraPagina->indiceSwap = -1;
+	struct Frame *frame;// = malloc(sizeof(struct Frame));
+	frame = list_get(bitmapFrames, primeraPagina->numeroFrame);
+	frame->modificado = 1;
+	frame->uso = 1;
+	frame->estaLibre = false;
+	list_replace(bitmapFrames, primeraPagina->numeroFrame, frame);
 
 	list_add(segmento->tablaPaginas, primeraPagina);
 

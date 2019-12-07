@@ -1,8 +1,8 @@
 32 pagina 1 HEAP  => heap en 0
-36 pagina 2 PXXX => devuelve 37
+36 pagina 2 PXXX => devuelve 37 + 5
 40 pagina 3 XXXX
 44 pagina 4 HEAP => heap en 12
-48 pagina 5 PXXX => devuelve 49
+48 pagina 5 PXXX => devuelve 49 +17
 52 pagina 6 XXXX
 56 pagina 7 XXXX
 60 pagina 8 XXXX
@@ -11,10 +11,10 @@
 72 pagina 11 XXXX
 76 pagina 12 XXXX
 80 pagina 13 XHEA => heap en 49
-84 pagina 14 PPXX => devuelve 86
+84 pagina 14 PPXX => devuelve 86  +54
 88 pagina 15 XXXX
 92 pagina 16 XHEA => heap en 61
-96 pagina 17 PPXX => 98
+96 pagina 17 PPXX => 98                       +66
 100 pagina 18  XXXX
 104 pagina 19  XXXX
 108 pagina 20  XXXX
@@ -23,17 +23,21 @@
 120 pagina 23  XXXX
 124 pagina 24  XXXX
 128 pagina 25  XXHE => heap en 98
-132 pagina 26  APPX => 135
+132 pagina 26  APPX => 135                      +103
 136 pagina 27  XXXX
 140 pagina 28  XXHE => heap en 110
-144 pagina 29  APPX => 147
+144 pagina 29  APPX => 147                    + 115
 148 pagina 30  XXXX
 152 pagina 31  XXXX
 156 pagina 32  XXXX 	
 160 pagina 33 XXXX
 164 pagina 34  XXXX
 168 pagina 35  XXXX
-172 pagina 36  XXXX 
 
-32 pagina 37  XXXH 
-36 pagina 38 EAPP
+32 pagina 36  XXXX 
+36 pagina 37  XXXH => heap en 7
+40 pagina 38 EAPP
+44 pagina 39 XXXX => devuelve 44          +12
+48 pagina 40 XXXH => heap en 19 
+52 pagina 41 EAPP 
+56 pagina 42 XXXX  => devuelve 56          +24
