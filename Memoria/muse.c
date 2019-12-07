@@ -464,6 +464,48 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	bool *sePartioUnaMetadata = malloc(sizeof(bool));
 	*sePartioUnaMetadata = false;
 
+	// asigno primera pagina
+
+	nuevoSegmento = asignarPrimeraPaginaSegmento(nuevoSegmento,
+							tamanio, sePartioUnaMetadata);
+
+	if(*sePartioUnaMetadata == true) {
+		paginasNecesarias -= 2;
+		tamanioAlocado -= 2*pconfig->tamanio_pag;
+	} else {
+		paginasNecesarias -= 1;
+		tamanioAlocado -= 1*pconfig->tamanio_pag;
+	}
+
+	struct HeapLista *ultimoHeapLista = list_get(nuevoSegmento->metadatas,
+			list_size(nuevoSegmento->metadatas) - 1);
+
+	if (ultimoHeapLista->isFree == true) {
+		tamanioAlocado -= ultimoHeapLista->size;
+	}
+	ultimoHeapLista->size = tamanio;
+	ultimoHeapLista->isFree = false;
+
+	while (paginasNecesarias > 0) {
+
+		if (tamanioAlocado > tam_pagina) {
+
+			nuevoSegmento = asignarNuevaPagina(nuevoSegmento, tam_pagina);
+			tamanioAlocado = tamanioAlocado - tam_pagina;
+
+		} else {
+
+			//asignar ultima pagina ya me crea la ultima metadata necesaria
+			nuevoSegmento = asignarUltimaPaginaSegmento(nuevoSegmento, tamanioAlocado);
+			tamanioAlocado = 0;
+
+		}
+
+		paginasNecesarias--;
+
+	}
+
+// sacar esta basura
 	while (paginasNecesarias > 0) {
 
 		if (paginasNecesarias == (int) (ceil(paginas))
@@ -480,7 +522,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 				if (diferenciaTamanios < 0) { //Si se corta la metadata
 					tamanioAlocado -= pconfig->tamanio_pag;
 
-					if (((int) tamanio) < diferenciaTamanios) { //NO se cortan los datos
+					if (((int) tamanio) < tamanioAlocado) { //NO se cortan los datos
 						tamanioAlocado -= tamanio;
 						//no se parten los datos
 
@@ -535,41 +577,6 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 					}
 				}
 
-				//Se encarga de la metadata y toda la falopa
-				struct Pagina *primeraPagina = list_get(
-						nuevoSegmento->tablaPaginas, 0);
-
-				void *pos = obtenerPosicionMemoriaPagina(primeraPagina)
-						+ tamanio + sizeof(struct HeapMetadata);
-
-				struct HeapMetadata *ultimaMetadata = malloc(
-						sizeof(struct HeapMetadata));
-				/*
-				 if (tamanio < pconfig->tamanio_pag) {
-				 ultimaMetadata->isFree = true;
-				 } else {
-				 ultimaMetadata->isFree = false;
-				 }*/
-				ultimaMetadata->isFree = true;
-				ultimaMetadata->size = pconfig->tamanio_pag
-						- ((pconfig->tamanio_pag + tamanio
-								+ 2 * sizeof(struct HeapMetadata))
-								% pconfig->tamanio_pag);
-
-				struct HeapLista *ultimoHeapLista = malloc(
-						sizeof(struct HeapLista));
-
-				int ubicacionHeap = obtenerIndicePagina(
-						nuevoSegmento->tablaPaginas, primeraPagina)
-						* pconfig->tamanio_pag + sizeof(struct HeapMetadata)
-						+ tamanio;
-				ubicarMetadataYHeapLista(nuevoSegmento, ubicacionHeap,
-						ultimaMetadata->isFree, ultimaMetadata->size,
-						sePartioUnaMetadata);
-
-				if ((*sePartioUnaMetadata) == true) {
-					paginasNecesarias--;
-				}
 
 			}
 
@@ -656,9 +663,6 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento,
 	heap->size = size;
 
 	int indicePrimeraPagina = (floor)(ubicacionHeap / pconfig->tamanio_pag);
-	if (ubicacionHeap != 0 && ubicacionHeap % pconfig->tamanio_pag == 0) {
-		indicePrimeraPagina--;
-	}
 	struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePrimeraPagina);
 
 
