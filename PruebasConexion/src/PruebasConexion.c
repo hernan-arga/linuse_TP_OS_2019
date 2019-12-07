@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 #include "libmuse.h"
+#include <unistd.h>
 
 void recursiva(int num)
 {
-	if(num == 0)
+if(num == 0)
 		return;
 
 	uint32_t ptr = muse_alloc(4);
@@ -16,7 +15,6 @@ void recursiva(int num)
 	num = 0; // Se pisa para probar que muse_get cargue el valor adecuado
 	muse_get(&num, ptr, 4);
 	printf("%d\n", num);
-
 	muse_free(ptr);
 }
 

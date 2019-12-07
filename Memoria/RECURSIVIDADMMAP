@@ -1,0 +1,14 @@
+32 pagina 1 HEAP  => heap en 0
+36 pagina 2 PXXX => devuelve 37
+40 pagina 3 XXXX
+44 pagina 4 HEAP => heap en 12
+48 pagina 5 PXXX => devuelve 49
+52 pagina 6 XXXX
+56 pagina 7 XXXX
+60 pagina 8 XXXX
+64 pagina 9 XXXX
+68 pagina 10 XXXX
+72 pagina 11 XXXX
+76 pagina 12 XXXX
+80 pagina 13 XHEA => heap en 49
+84 pagina 14 PPXX => devuelve 86

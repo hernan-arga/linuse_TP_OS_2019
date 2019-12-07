@@ -50,7 +50,7 @@ void arrancarMemoria(config* pconfig) {
 	//Se hace una unica vez
 	tablasSegmentos = dictionary_create();
 	//Abro archivo swap
-	swap = fopen("swap.txt", "a+"); //Validar modo apertura y limite tamaño tam_swap
+	swap = fopen("swap.txt", "w"); //Validar modo apertura y limite tamaño tam_swap
 
 	char *bitmap = malloc(cantidadPaginasSwap);
 	bitmapSwap = bitarray_create(bitmap, cantidadPaginasSwap); //size - cantidad de bits del bitarray, expresado en bytes
@@ -256,9 +256,9 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 			for (int j = 0; j < list_size(segmento->metadatas); j++) { //Recorro las metadatas del segmento
 				heap = list_get(segmento->metadatas, j);
 
-				metadata = leerMetadata(segmento, heap);
+				// metadata = leerMetadata(segmento, heap);
 
-				if (metadata->isFree == true && metadata->size >= tamanio) {
+				if (heap->isFree == true && heap->size >= tamanio) {
 					if (heap->estaPartido == false) { //Si no esta partida la metadata
 						int indicePagina = (floor)(
 								(double) heap->direccionHeap
@@ -465,6 +465,48 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 	bool *sePartioUnaMetadata = malloc(sizeof(bool));
 	*sePartioUnaMetadata = false;
 
+	// asigno primera pagina
+
+	nuevoSegmento = asignarPrimeraPaginaSegmento(nuevoSegmento,
+							tamanio, sePartioUnaMetadata);
+
+	if(*sePartioUnaMetadata == true) {
+		paginasNecesarias -= 2;
+		tamanioAlocado -= 2*pconfig->tamanio_pag;
+	} else {
+		paginasNecesarias -= 1;
+		tamanioAlocado -= 1*pconfig->tamanio_pag;
+	}
+
+	struct HeapLista *ultimoHeapLista = list_get(nuevoSegmento->metadatas,
+			list_size(nuevoSegmento->metadatas) - 1);
+
+	if (ultimoHeapLista->isFree == true) {
+		tamanioAlocado -= ultimoHeapLista->size;
+	}
+	ultimoHeapLista->size = tamanio;
+	ultimoHeapLista->isFree = false;
+
+	while (paginasNecesarias > 0) {
+
+		if (tamanioAlocado > tam_pagina) {
+
+			nuevoSegmento = asignarNuevaPagina(nuevoSegmento, tam_pagina);
+			tamanioAlocado = tamanioAlocado - tam_pagina;
+
+		} else {
+
+			//asignar ultima pagina ya me crea la ultima metadata necesaria
+			nuevoSegmento = asignarUltimaPaginaSegmento(nuevoSegmento, tamanioAlocado);
+			tamanioAlocado = 0;
+
+		}
+
+		paginasNecesarias--;
+
+	}
+
+// sacar esta basura
 	while (paginasNecesarias > 0) {
 
 		if (paginasNecesarias == (int) (ceil(paginas))
@@ -481,7 +523,7 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 				if (diferenciaTamanios < 0) { //Si se corta la metadata
 					tamanioAlocado -= pconfig->tamanio_pag;
 
-					if (((int) tamanio) < diferenciaTamanios) { //NO se cortan los datos
+					if (((int) tamanio) < tamanioAlocado) { //NO se cortan los datos
 						tamanioAlocado -= tamanio;
 						//no se parten los datos
 
@@ -536,41 +578,6 @@ struct Segmento *crearSegmento(uint32_t tamanio, int idSocketCliente) {
 					}
 				}
 
-				//Se encarga de la metadata y toda la falopa
-				struct Pagina *primeraPagina = list_get(
-						nuevoSegmento->tablaPaginas, 0);
-
-				void *pos = obtenerPosicionMemoriaPagina(primeraPagina)
-						+ tamanio + sizeof(struct HeapMetadata);
-
-				struct HeapMetadata *ultimaMetadata = malloc(
-						sizeof(struct HeapMetadata));
-				/*
-				 if (tamanio < pconfig->tamanio_pag) {
-				 ultimaMetadata->isFree = true;
-				 } else {
-				 ultimaMetadata->isFree = false;
-				 }*/
-				ultimaMetadata->isFree = true;
-				ultimaMetadata->size = pconfig->tamanio_pag
-						- ((pconfig->tamanio_pag + tamanio
-								+ 2 * sizeof(struct HeapMetadata))
-								% pconfig->tamanio_pag);
-
-				struct HeapLista *ultimoHeapLista = malloc(
-						sizeof(struct HeapLista));
-
-				int ubicacionHeap = obtenerIndicePagina(
-						nuevoSegmento->tablaPaginas, primeraPagina)
-						* pconfig->tamanio_pag + sizeof(struct HeapMetadata)
-						+ tamanio;
-				ubicarMetadataYHeapLista(nuevoSegmento, ubicacionHeap,
-						ultimaMetadata->isFree, ultimaMetadata->size,
-						sePartioUnaMetadata);
-
-				if ((*sePartioUnaMetadata) == true) {
-					paginasNecesarias--;
-				}
 
 			}
 
@@ -657,9 +664,6 @@ struct HeapLista *ubicarMetadataYHeapLista(struct Segmento *segmento,
 	heap->size = size;
 
 	int indicePrimeraPagina = (floor)(ubicacionHeap / pconfig->tamanio_pag);
-	if (ubicacionHeap != 0 && ubicacionHeap % pconfig->tamanio_pag == 0) {
-		indicePrimeraPagina--;
-	}
 	struct Pagina *pagina = list_get(segmento->tablaPaginas, indicePrimeraPagina);
 
 
@@ -760,6 +764,7 @@ struct Segmento *extenderSegmento(struct Segmento *segmento, uint32_t tamanio) {
 		bytesAAgregar -= ultimoHeapLista->size;
 	}
 	ultimoHeapLista->size = tamanio;
+	ultimoHeapLista->isFree = false;
 	paginasNecesarias = (int) (ceil(
 			(double) bytesAAgregar / (double) tam_pagina));
 
@@ -2551,43 +2556,23 @@ void cargarDatosEnFrame(int indiceFrame, char *datos) {
  *donde la ubico*/
 int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 
-	//char *datosASwappear = malloc(sizeof(struct Pagina));
-
 	//Obtengo la data a swappear que se encuentra en el frame asignado a la pagina
 	int frameQueContieneData = paginaASwappear->numeroFrame;
-	//void *pos = retornarPosicionMemoriaFrame(frameQueContieneData);
-
-	//Guardo en la variable los datos a swappear
-	//memcpy(datosASwappear, pos, tam_pagina);
 
 	void *punteroMarco = obtenerPosicionMemoriaPagina(paginaASwappear);
-	//char* puntero_a_marco = memoriaPrincipal + paginaASwappear->numeroFrame * pconfig->tamanio_pag;
 	int bit_swap = buscarIndiceSwapLibre();
 
-	FILE *swap = fopen("swap.txt", "w+");
+	FILE *swap = fopen("swap.txt", "r+");
 	fseek(swap, bit_swap * tam_pagina, SEEK_SET);
-	//char* puntero_a_swap = swap + bit_swap * pconfig->tamanio_pag;
-	//liberar bitmapswap
-	//for(int i=0;i < pconfig->tamanio_pag; i++){
-		//puntero_a_swap[i] = puntero_a_marco[i];
 	fwrite(punteroMarco,sizeof(char),pconfig->tamanio_pag,swap);
-	//}
-/*
-	//Obtengo un lugar libre en swap y escribo los datos ahi
-	int indiceSwap = buscarIndiceSwapLibre();
-
-	swap = fopen("swap.txt", "a+");
-	fseek(swap, indiceSwap * tam_pagina, SEEK_SET);
-	//CHEQUEAR que este escribiendo en el lugar correcto
-	fwrite(datosASwappear, sizeof(char), tam_pagina, swap);*/
 
 	//Debo liberar el frame que contenia la pagina que lleve a swap y tambien la pagina
 	paginaASwappear->indiceSwap = bit_swap;
+	bitarray_set_bit(bitmapSwap, bit_swap);
 	paginaASwappear->numeroFrame = -1;
 	paginaASwappear->presencia = 0;
 
-	struct Frame *frameModificado; //= malloc(sizeof(struct Frame));
-	frameModificado = list_get(bitmapFrames, frameQueContieneData);
+	struct Frame *frameModificado = list_get(bitmapFrames, frameQueContieneData);
 	frameModificado->modificado = 0;
 	frameModificado->uso = 0;
 	frameModificado->estaLibre = true;
