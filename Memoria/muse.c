@@ -879,7 +879,7 @@ int asignarUnFrame() {
 
 	}
 
-	struct Frame *frameReemplazo = malloc(sizeof(struct Frame));
+	struct Frame *frameReemplazo; //= malloc(sizeof(struct Frame));
 	frameReemplazo = list_get(bitmapFrames, frame);
 	frameReemplazo->modificado = 1; //
 	frameReemplazo->uso = 1;
@@ -970,7 +970,7 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 	//SWAP
 
 	//Ocupo frame y lo reemplazo - modifico - en el bitmap de frames
-	struct Frame *frame = malloc(sizeof(struct Frame));
+	struct Frame *frame;// = malloc(sizeof(struct Frame));
 	frame = list_get(bitmapFrames, nuevaPagina->numeroFrame);
 	frame->modificado = 1;
 	frame->uso = 1;
@@ -1613,6 +1613,10 @@ void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 				} else {
 					int indiceFrame = asignarUnFrame();
 					frame = list_get(bitmapFrames, indiceFrame);
+					//fijarse si la pagina asociada al frame hay que guardarla.. y despues que traiga la data desde disco a mm ppal
+
+					//XXX
+					traerAMemoriaPrincipal(primeraPagina + i, segmento->id, idSocketCliente);
 				}
 				pagina->presencia = 1;
 				void *pos = memoriaPrincipal + pagina->numeroFrame * pconfig->tamanio_pag;
@@ -1956,12 +1960,22 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 		while (bytesACopiar > 0) {
 			proximaPagina = list_get(unSegmento->tablaPaginas,
 					indiceProximaPagina);
-			proximoFrame = list_get(bitmapFrames, proximaPagina->numeroFrame);
+			if(proximaPagina->presencia==1){
+				proximoFrame = list_get(bitmapFrames, proximaPagina->numeroFrame);
+			}
+			 else {
+				proximaPagina->numeroFrame = asignarUnFrame();
+				proximoFrame = list_get(bitmapFrames, proximaPagina->numeroFrame);
+				//fijarse si la pagina asociada al frame hay que guardarla.. y despues que traiga la data desde disco a mm ppal
 
+				//XXX
+				traerAMemoriaPrincipal(obtenerIndicePagina(unSegmento->tablaPaginas, proximaPagina), unSegmento->id,
+						idSocketCliente);
+			}
 			if (bytesACopiar >= tam_pagina) {
 
 				//memcpy(obtenerPosicionMemoriaPagina(proximaPagina), src + (n - bytesACopiar), pconfig->tamanio_pag);
-				memcpy(memoriaPrincipal + proximaPagina->numeroFrame * pconfig->tamanio_pag, src + (n - bytesACopiar), pconfig->tamanio_pag);
+				memcpy(memoriaPrincipal + proximaPagina->numeroFrame * pconfig->tamanio_pag, src + (n - bytesACopiar), pconfig->tamanio_pag);	//FIXME ERROR
 				bytesACopiar -= pconfig->tamanio_pag;
 
 			} else {
@@ -2302,7 +2316,7 @@ bool hayAlgunaMetadataOcupada(struct Segmento *segmento, int indicePagina) {
  * */
 
 int clockModificado() {
-	struct Frame *frame = malloc(sizeof(struct Frame));
+	struct Frame *frame ;//= malloc(sizeof(struct Frame));
 	int framesRecorridos = 0;
 
 	//Paso 1
@@ -2468,7 +2482,7 @@ uint32_t musemap(char *path, size_t length, int flags, int idSocketCliente) {
 int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento,
 		int idSocketCliente) {
 	//Obtengo pagina swapeada
-	struct Pagina *paginaSwapeada = malloc(sizeof(struct Pagina));
+	struct Pagina *paginaSwapeada; //= malloc(sizeof(struct Pagina));
 	struct Segmento *segmentoQueContienePagina = malloc(
 			sizeof(struct Segmento));
 
