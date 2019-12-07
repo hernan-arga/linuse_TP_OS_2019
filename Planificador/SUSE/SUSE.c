@@ -54,6 +54,8 @@ typedef struct {
 } hilo;
 
 typedef struct {
+	bool estaBloqueado;
+	pthread_mutex_t mutexProgama;
 	int pid;
 	hilo *exec;
 	t_dictionary *blocked;
@@ -81,6 +83,7 @@ void atenderSignal(int sd);
 void atenderWait(int sd);
 void atenderJoin(int sd);
 void atenderClose(int sd);
+void atenderScheduleNext(int sd);
 void ponerEnBlockedPorHilo(int pid, hilo* hiloAPonerEnBlocked, int tidAEsperar);
 void pasarAExit(hilo *unHilo);
 void realizarClose(int pid, int tid);
@@ -169,6 +172,7 @@ sem_t hayQueActualizarUnExec;
 sem_t semaforoConfiguracion;
 sem_t sem_metricas;
 sem_t transicionesLog;
+sem_t semScheduleNext;
 t_queue *new;
 
 char* pathConfiguracion;
@@ -280,6 +284,7 @@ void iniciarSUSE(){
 	sem_init(&sem_new, 0, 1);
 	sem_init(&sem_metricas, 0, 1);
 	sem_init(&transicionesLog, 0, 1);
+	sem_init(&semScheduleNext, 0, 1);
 	logger = log_create("Metricas.log", "SUSE", 0, LOG_LEVEL_INFO);
 }
 
@@ -766,6 +771,22 @@ int calcularSiguienteHilo(int pid){
 
 	//Si no hay ninguno en exec paso el siguiente
 	candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, unPid)), 0) );
+
+	//Si no hay ninguno listo me bloqueo hasta que haya alguno
+	if(candidatoAEjecutar == NULL){
+		sem_post(&sem_diccionario_ready);
+		sem_post(&sem_programas);
+		//printf("\nxd\n");
+		programa* unPrograma = (programa*)dictionary_get(diccionarioDeProgramas, unPid);
+		unPrograma->estaBloqueado = true;
+		pthread_mutex_lock( &(unPrograma->mutexProgama) );
+
+		sem_wait(&sem_diccionario_ready);
+		sem_wait(&sem_programas);
+		candidatoAEjecutar = ((hilo*)list_remove((t_list*)(dictionary_get(diccionarioDeListasDeReady, unPid)), 0) );
+		//printf("\n SALIO :O \n");
+	}
+
 	((programa*)dictionary_get(diccionarioDeProgramas, unPid))->exec = candidatoAEjecutar;
 	inicioRafaga = getMicrotime();
 	//postSemaforoMultiprogramacion();
@@ -848,6 +869,19 @@ void sem_suse_signal (int pid, int tid, char* semID){
 			sem_post(&blockedPorSemaforo);
 		}
 	}
+	char *unPid = string_itoa(pid);
+	char *unTid = string_itoa(tid);
+	char *mensaje = string_new();
+	string_append(&mensaje, "EL hilo ");
+	string_append(&mensaje, unTid);
+	string_append(&mensaje, " del pid ");
+	string_append(&mensaje, unPid);
+	string_append(&mensaje, " pidio un signal sobre el semaforo ");
+	string_append(&mensaje, semID);
+	loguearInfo(mensaje);
+	free(unPid);
+	free(unTid);
+	free(mensaje);
 	sem_post(&SEMAFOROS);
 }
 
@@ -891,6 +925,20 @@ void sem_suse_wait(int pid, int tid, char* semID){
 		}
 
 	}
+
+	char *unPid = string_itoa(pid);
+	char *unTid = string_itoa(tid);
+	char *mensaje = string_new();
+	string_append(&mensaje, "EL hilo ");
+	string_append(&mensaje, unTid);
+	string_append(&mensaje, " del pid ");
+	string_append(&mensaje, unPid);
+	string_append(&mensaje, " pidio un wait sobre el semaforo ");
+	string_append(&mensaje, semID);
+	loguearInfo(mensaje);
+	free(unPid);
+	free(unTid);
+	free(mensaje);
 	sem_post(&SEMAFOROS);
 }
 
@@ -898,9 +946,24 @@ void sem_suse_wait(int pid, int tid, char* semID){
 void sacar1HiloDeLaColaDeBloqueadosPorSemaforo(int pid, char *semID){
 	//Si esta vacia no hace nada
 	if( !queue_is_empty((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID)) ){
-		pasarAReady( queue_pop((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID)) );
+		hilo *unHilo = queue_pop((t_queue*)dictionary_get(diccionarioDeBlockedPorSemaforo, semID));
+		pasarAReady(unHilo);
 
-		char* unPid = string_itoa(pid);
+
+		/*
+		 * Si el hilo que paso a ready es de 1 programa que estaba bloqueado
+		 * (pues se bloqueo al no tener uno en exec) -> desbloqueo el programa
+		 */
+		char *pidHiloDesbloqueado = string_itoa(unHilo->pid);
+		programa *unPrograma = ((programa*) dictionary_get(
+				diccionarioDeProgramas, pidHiloDesbloqueado));
+		if (unPrograma->estaBloqueado) {
+			pthread_mutex_unlock(&(unPrograma->mutexProgama));
+			unPrograma->estaBloqueado = false;
+		}
+		free(pidHiloDesbloqueado);
+
+		char *unPid = string_itoa(pid);
 		sem_wait(&sem_programas);
 		((programa*)dictionary_get(diccionarioDeProgramas, unPid))->cantidadDeHilosEnBlocked--;
 		sem_post(&sem_programas);
@@ -1173,6 +1236,7 @@ void limpiarEstructuras(int pid){
 		if(unPrograma->exec!=NULL){
 			free(unPrograma->exec);
 		}
+		pthread_mutex_destroy(&(unPrograma->mutexProgama));
 		free(unPrograma);
 	}
 
@@ -1200,13 +1264,29 @@ void crearPrograma(int pid){
 	unPrograma->cantidadDeHilosEnReady = 0;
 	unPrograma->cantidadDeHilosEnBlocked = 0;
 	unPrograma->tiempoDeEjecucionDeTodosLosHilos = 0;
+	unPrograma->estaBloqueado = false;
+	pthread_mutex_init(&(unPrograma->mutexProgama), NULL);
+
+
 	unPrograma->exec = NULL;
 
 	char *unPid = string_itoa(pid);
 	sem_wait(&sem_programas);
 	dictionary_put(diccionarioDeProgramas, unPid, unPrograma);
 	sem_post(&sem_programas);
+
+	//Si llega a estar en null en algun momento se vuelve hacer lock y se bloquea
+	pthread_mutex_lock(&(unPrograma->mutexProgama));
 	free(unPid);
+}
+
+void atenderScheduleNext(int sd){
+	int tid = siguienteAEjecutar(sd);
+	char* buffer = malloc(sizeof(int));
+	memcpy(buffer, &tid, sizeof(int));
+	send(sd, buffer, sizeof(int), 0);
+	//sincronizarJoinYSchedule(sd);
+	free(buffer);
 }
 
 int32_t iniciarConexion() {
@@ -1367,13 +1447,12 @@ int32_t iniciarConexion() {
 							crearHilo(sd);
 							break;
 						case 2: //suse_schedule_next
-							;
-							int tid = siguienteAEjecutar(sd);
-							char* buffer = malloc(sizeof(int));
-							memcpy(buffer, &tid, sizeof(int));
-							send(sd, buffer, sizeof(int), 0);
-							//sincronizarJoinYSchedule(sd);
-							free(buffer);
+							;//atenderScheduleNext(sd);
+							pthread_t hiloScheduleNext;
+							sem_wait(&semScheduleNext);
+							pthread_create(&hiloScheduleNext, NULL, (void*)atenderScheduleNext, (void*)sd);
+							pthread_detach(hiloScheduleNext);
+							sem_post(&semScheduleNext);
 							break;
 						case 3: //suse_wait
 							atenderWait(sd);

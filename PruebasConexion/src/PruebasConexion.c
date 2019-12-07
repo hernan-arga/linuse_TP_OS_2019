@@ -19,8 +19,9 @@ char* pasa_palabra(int cod) {
     }
 }
 
-void recursiva(int num) {
-if(num == 0)
+void recursiva(int num)
+{
+	if(num == 0)
 		return;
 
 	char* estrofa = pasa_palabra(1);
