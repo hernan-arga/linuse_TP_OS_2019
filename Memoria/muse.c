@@ -881,7 +881,7 @@ int asignarUnFrame() {
 
 	struct Frame *frameReemplazo = malloc(sizeof(struct Frame));
 	frameReemplazo = list_get(bitmapFrames, frame);
-	frameReemplazo->modificado = 0;
+	frameReemplazo->modificado = 1; //
 	frameReemplazo->uso = 1;
 	frameReemplazo->estaLibre = false;
 
@@ -2379,7 +2379,7 @@ int clockModificado() {
 	while (framesRecorridos < cantidadFrames) {
 		frame = list_get(bitmapFrames, punteroClock);
 
-		if (frame->uso == 0 && frame->modificado == 0) {
+		if (frame->uso == 0 && frame->modificado == 1) {
 
 			incrementarPunteroClockModificado();
 			return punteroClock;
