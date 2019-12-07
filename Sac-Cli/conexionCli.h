@@ -27,14 +27,15 @@
 int32_t sacServer;
 
 typedef struct {
-	int ip;
+	char* ip;
 	int puerto;
 } config;
 
-void conectarseASacServer();
-void levantarConfigFile();
-t_config* leer_config(void);
+void conectarseASacServer(char* ,int);
 t_log * crear_log();
+void levantarConfigFile(config* pconfig);
+t_config* leer_config();
+
 
 
 t_log* logger;
