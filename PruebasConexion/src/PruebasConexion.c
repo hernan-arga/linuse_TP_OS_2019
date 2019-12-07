@@ -37,13 +37,11 @@ void recursiva(int num)
     int longitud = strlen(estrofa)+1;
     uint32_t ptr = muse_alloc(longitud);
 
-    printf("Se hace alloc del %d \n", num);
     muse_cpy(ptr, estrofa, longitud);
-
-    printf("Se hace cpy del %d \n", num);
+    muse_get(estrofa, ptr, longitud);
+    puts(estrofa);
     recursiva(num - 1);
     muse_get(estrofa, ptr, longitud);
-    printf("Se hace get del %d \n", num);
     puts(estrofa);
 
     muse_free(ptr);
