@@ -1887,7 +1887,7 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 			//direccionFinal = (int) (obtenerPosicionMemoriaPagina(paginaFinal) + desplazamientoUltimaPagina);
 			direccionFinal = memoriaPrincipal + paginaFinal->numeroFrame * pconfig->tamanio_pag + desplazamientoUltimaPagina;
 
-			if (heap->size == n && direccion >= direccionInicial && direccion <= direccionFinal) {
+			if (heap->size == n && direccion >= direccionInicial && (direccion <= direccionFinal || paginaFinal->numeroFrame < paginaInicial->numeroFrame )) {
 				heapFinal = heap;
 				break;
 			}
