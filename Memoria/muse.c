@@ -50,7 +50,7 @@ void arrancarMemoria(config* pconfig) {
 	//Se hace una unica vez
 	tablasSegmentos = dictionary_create();
 	//Abro archivo swap
-	swap = fopen("swap.txt", "w"); //Validar modo apertura y limite tamaño tam_swap
+	swap = fopen("swap.txt", "r+"); //Validar modo apertura y limite tamaño tam_swap
 
 	char *bitmap = malloc(cantidadPaginasSwap);
 	bitmapSwap = bitarray_create(bitmap, cantidadPaginasSwap); //size - cantidad de bits del bitarray, expresado en bytes
@@ -892,10 +892,6 @@ int asignarUnFrame() {
 
 		if (paginaASwappear != NULL) {
 			indiceSwap = llevarASwapUnaPagina(paginaASwappear);
-			paginaASwappear->indiceSwap = indiceSwap;
-			//SWAP
-			paginaASwappear->numeroFrame = -1;
-			paginaASwappear->presencia = 0;
 		}
 
 	}
@@ -1686,7 +1682,7 @@ void traerPaginasSegmentoMmapAMemoria(int direccion, int tamanio,
 		void *datos = malloc(bytesALeer);
 
 		//Abro el archivo asociado al segmento mmap
-		FILE *archivoMmap = fopen(segmento->filePath, "rb");
+		FILE *archivoMmap = fopen(segmento->filePath, "w");
 		//Leo los bytes necesarios
 		fread(datos, tam_pagina, cantidadPaginas, archivoMmap);
 		//Cierro el archivo
@@ -1885,7 +1881,7 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 			direccionFinal = (int) (obtenerPosicionMemoriaPagina(paginaFinal)
 					+ desplazamientoUltimaPagina);
 
-			if (direccion >= direccionInicial && direccion <= direccionFinal) {
+			if (heap->size == n && direccion >= direccionInicial && direccion <= direccionFinal) {
 				heapFinal = heap;
 				break;
 			}
@@ -1981,7 +1977,7 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 
 			proximoFrame->uso = 1;
 			proximoFrame->modificado = 1;
-			proximaPagina++;
+			indiceProximaPagina++;
 		}
 
 		//Test
@@ -2453,7 +2449,7 @@ uint32_t musemap(char *path, size_t length, int flags, int idSocketCliente) {
 	segmentoMappeado->tablaPaginas = list_create();
 
 	//No se esta utilizando actualmente, pero necesito guardarlo para sync? - ver
-	FILE *archivoMap = fopen(path, "r");
+	FILE *archivoMap = fopen(path, "w");
 
 	int paginasNecesarias = ceil(length / tam_pagina);
 
@@ -2499,7 +2495,7 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento,
 	//Obtengo indice de swap donde se encuentra
 	int indiceSwap = paginaSwapeada->indiceSwap;
 
-	swap = fopen("swap.txt", "a+");
+	swap = fopen("swap.txt", "w");
 	fseek(swap, indiceSwap * tam_pagina, SEEK_SET);
 	fread(datosEnSwap, sizeof(char), tam_pagina, swap);
 
@@ -2561,10 +2557,24 @@ int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 
 	void *punteroMarco = obtenerPosicionMemoriaPagina(paginaASwappear);
 	int bit_swap = buscarIndiceSwapLibre();
-
-	FILE *swap = fopen("swap.txt", "r+");
+/*
+	FILE *swap = fopen("swap.txt", "w");
 	fseek(swap, bit_swap * tam_pagina, SEEK_SET);
 	fwrite(punteroMarco,sizeof(char),pconfig->tamanio_pag,swap);
+	fclose(swap);*/
+
+	*((char*)punteroMarco) = "hola";
+
+	void* registrosAEscribir = malloc(pconfig->tamanio_pag);
+	char* pagina = malloc(pconfig->tamanio_pag);
+	memcpy(pagina, punteroMarco, pconfig->tamanio_pag);
+	printf("%s \n", pagina);
+	string_append(&registrosAEscribir, pagina);
+	FILE *swap = fopen("swap.txt", "r+");
+	fseek(swap, bit_swap * tam_pagina, SEEK_SET);
+	fwrite(registrosAEscribir, pconfig->tamanio_pag, 1, swap);
+	fclose(swap);
+	free(registrosAEscribir);
 
 	//Debo liberar el frame que contenia la pagina que lleve a swap y tambien la pagina
 	paginaASwappear->indiceSwap = bit_swap;
@@ -2645,7 +2655,7 @@ int musesync(uint32_t addr, size_t len, int idSocketCliente) {
 		//Si len es menor debo llenar con /0/0/0/0/0
 
 		//Abro el archivo y lo actualizo (CONSULTAR posicion comienzo modificacion)
-		FILE *archivoMap = fopen(path, "a+");
+		FILE *archivoMap = fopen(path, "w");
 		//posicion a escribir en el archivo: indice primera pagina + desplazamiento
 		fseek(archivoMap, indicePrimeraPagina * tam_pagina + desplazamiento,
 		SEEK_SET);
