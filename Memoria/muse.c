@@ -972,7 +972,7 @@ struct Segmento *asignarNuevaPagina(struct Segmento *segmento, int tamanio) {
 	//Ocupo frame y lo reemplazo - modifico - en el bitmap de frames
 	struct Frame *frame = malloc(sizeof(struct Frame));
 	frame = list_get(bitmapFrames, nuevaPagina->numeroFrame);
-	frame->modificado = 0;
+	frame->modificado = 1;
 	frame->uso = 1;
 	frame->estaLibre = false;
 	list_replace(bitmapFrames, nuevaPagina->numeroFrame, frame);
