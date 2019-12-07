@@ -1802,7 +1802,7 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 
 		void* deDondeLeer;
 		 deDondeLeer = obtenerPosicionMemoriaPagina(list_get(unSegmento->tablaPaginas,0)) + sizeof(struct HeapMetadata);
-		 printf("El numero copiado es %i \n", *((int*)deDondeLeer));
+		 //printf("El numero copiado es %i \n", *((int*)deDondeLeer));
 
 
 		//printf("El resultado es EL CASTEADO %i \n", (int)deDondeLeer);
@@ -1955,7 +1955,9 @@ int musefree(int idSocketCliente, uint32_t dir) {
 				//Me paro en la siguiente pagina - frame
 				pagina = list_get(segmento->tablaPaginas, indicePrimeraPaginaMetadata + 1);
 				pos = obtenerPosicionMemoriaPagina(pagina);
-				memcpy(pos, nuevaMetadata + (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina), (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina));
+				memcpy(pos, nuevaMetadata + heapBuscada->bytesPrimeraPagina, sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina);
+
+				//memcpy(pos, nuevaMetadata + (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina), (sizeof(struct HeapMetadata) - heapBuscada->bytesPrimeraPagina));
 			}
 
 			break;
