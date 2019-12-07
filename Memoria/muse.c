@@ -942,8 +942,8 @@ struct Segmento *asignarUltimaPaginaSegmento(struct Segmento *segmento,
 	}
 	ultimaMetadata->size = pconfig->tamanio_pag - tamanioUltimaMetadata;
 	//list_add(ultimaPagina->listaMetadata, (void*)(tam_pagina - sizeof(struct HeapMetadata) - tamanioUltimaMetadata));
-
-	int direccionHeap = ((list_size(segmento->tablaPaginas) - 1)
+	struct Pagina *pag = (list_get(segmento->tablaPaginas, list_size(segmento->tablaPaginas)- 1)); // chequear que la pagina este presente?
+	int direccionHeap = (pag->numeroFrame
 			* pconfig->tamanio_pag)
 			+ (pconfig->tamanio_pag - sizeof(struct HeapMetadata)
 					+ tamanioUltimaMetadata);
