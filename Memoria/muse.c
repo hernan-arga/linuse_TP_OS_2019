@@ -1640,9 +1640,9 @@ void *obtenerPosicionMemoriaPagina(struct Pagina *pagina) {
 
 		if (pagina->indiceSwap != -1) {
 
-			void* paginaReemplazo = malloc(tam_pagina);
-			memcpy(paginaReemplazo, swap + pagina->indiceSwap * tam_pagina,
-					tam_pagina);
+			void* paginaReemplazo = malloc(pconfig->tamanio_pag);
+			memcpy(paginaReemplazo, swap + pagina->indiceSwap * pconfig->tamanio_pag,
+					pconfig->tamanio_pag);
 
 			bitarray_clean_bit(bitmapSwap, pagina->indiceSwap); //libero el indice en swap
 			pagina->indiceSwap = -1;
@@ -1653,7 +1653,7 @@ void *obtenerPosicionMemoriaPagina(struct Pagina *pagina) {
 
 			//Paso la pagina a memoria
 			memcpy(retornarPosicionMemoriaFrame(frame), paginaReemplazo,
-					tam_pagina);
+					pconfig->tamanio_pag);
 
 		} /*else{
 
@@ -2122,8 +2122,8 @@ int musefree(int idSocketCliente, uint32_t dir) {
 	struct HeapMetadata *nuevaMetadata = malloc(sizeof(struct HeapMetadata));
 	nuevaMetadata->size = -1;
 
-	struct HeapLista *heapLista = malloc(sizeof(struct HeapLista));
-	struct HeapLista *heapBuscada = malloc(sizeof(struct HeapLista)); //malloc innecesario?
+	struct HeapLista *heapLista;// = malloc(sizeof(struct HeapLista));
+	struct HeapLista *heapBuscada;// = malloc(sizeof(struct HeapLista)); //malloc innecesario?
 
 	int desplazamientoMetadata;
 	int indicePrimeraPaginaMetadata;
@@ -2510,16 +2510,10 @@ int traerAMemoriaPrincipal(int indicePagina, int indiceSegmento,
 	//ser necesario
 	int frameReemplazo;
 
-	if (hayFramesLibres() == true) {
-		frameReemplazo = buscarFrameLibre();
-	} else {
-		frameReemplazo = clockModificado();
-		struct Pagina *pag = buscarPaginaAsociadaAFrame(frameReemplazo);
-		llevarASwapUnaPagina(pag);
-	}
+	frameReemplazo=asignarUnFrame();
 
 	struct Frame *nuevoFrame; //= malloc(sizeof(struct Frame));
-
+	nuevoFrame = list_get(bitmapFrames, frameReemplazo);
 	paginaSwapeada->indiceSwap = -1; //ya no esta en swap
 	paginaSwapeada->numeroFrame = frameReemplazo;
 	paginaSwapeada->presencia = 1;
@@ -2562,7 +2556,8 @@ int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 	//Obtengo la data a swappear que se encuentra en el frame asignado a la pagina
 	int frameQueContieneData = paginaASwappear->numeroFrame;
 
-	void *punteroMarco = obtenerPosicionMemoriaPagina(paginaASwappear);
+	void *punteroMarco = malloc(sizeof(pconfig->tamanio_pag));
+	memcpy(punteroMarco, paginaASwappear, pconfig->tamanio_pag);
 	int bit_swap = buscarIndiceSwapLibre();
 /*
 	FILE *swap = fopen("swap.txt", "w");
@@ -2570,16 +2565,16 @@ int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 	fwrite(punteroMarco,sizeof(char),pconfig->tamanio_pag,swap);
 	fclose(swap);*/
 
-	char* registrosAEscribir = malloc(pconfig->tamanio_pag);
+	/*char* registrosAEscribir = malloc(pconfig->tamanio_pag);
 	char* pagina = malloc(pconfig->tamanio_pag);
-	memcpy(pagina, punteroMarco, pconfig->tamanio_pag);
+	memcpy(pagina, punteroMarco, pconfig->tamanio_pag);*/
 	//printf("%s \n", pagina);
-	string_append(&registrosAEscribir, pagina);
+	//string_append(&registrosAEscribir, pagina);
 	FILE *swap = fopen("swap.txt", "w+");
 	fseek(swap, bit_swap * tam_pagina, SEEK_SET);
-	fwrite(registrosAEscribir, pconfig->tamanio_pag, 1, swap);
+	fwrite(punteroMarco, pconfig->tamanio_pag, 1, swap);
 	fclose(swap);
-	free(registrosAEscribir);
+	//free(registrosAEscribir);
 
 	//Debo liberar el frame que contenia la pagina que lleve a swap y tambien la pagina
 	paginaASwappear->indiceSwap = bit_swap;
