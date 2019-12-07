@@ -5,27 +5,28 @@
 
 char* pasa_palabra(int cod)
 {
-    switch(cod)
-    {
-    case 1:
-        return strdup("No sabes que sufro?\n");
-    case 2:
-        return strdup("No escuchas mi plato girar?\n");
-    case 3:
-        return strdup("Cuanto tiempo hasta hallarte?\n");
-    case 4:
-    case 5:
-        return strdup("Uh, haces mi motor andar\n");
-    case 6:
-        return strdup("Y mis cilindros rotar\n");
-    default:
-    {
-        if(cod % 2)
-            return strdup("Oh si\n");
-        else
-            return strdup("un Archivo de swap supermasivo\n");
-    }
-    }
+	switch(cod)
+		{
+		case 1:
+			return strdup("No sabes que sufro?\n");
+		case 2:
+			return strdup("No escuchas mi plato girar?\n");
+		case 3:
+			return strdup("Cuanto tiempo hasta hallarte?\n");
+		case 4:
+		case 5:
+			return strdup("Uh, haces mi motor andar\n");
+		case 6:
+			return strdup("Y mis cilindros rotar\n");
+		default:
+		{
+			if(cod % 2)
+				return strdup("Oh si\n");
+			else
+				return strdup("un Archivo de swap supermasivo\n");
+		}
+		}
+
 }
 
 void recursiva(int num)
@@ -51,5 +52,6 @@ int main(void)
 {
     muse_init(getpid(), "127.0.0.1", 3306);
     recursiva(15);
+    //recursiva(3);
     muse_close();
 }

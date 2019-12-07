@@ -145,7 +145,7 @@ int buscarFrameLibre() {
 		}
 	}
 
-	free(frame);
+	//free(frame);
 
 	return -1;
 }
@@ -309,9 +309,9 @@ void *musemalloc(uint32_t tamanio, int idSocketCliente) {
 				//una metadata y ocupo lo necesario (asignar primera pagina) y creo la proxima metadata
 
 				//Retorno posicion ultima metadata + 5
-				struct HeapLista *ultimoHeap = malloc(sizeof(struct HeapLista));
-				ultimoHeap = list_get(unSegmento->metadatas,
-						list_size(unSegmento->metadatas) - 2);
+				struct HeapLista *ultimoHeap; //= malloc(sizeof(struct HeapLista));
+				ultimoHeap = list_get(unSegmento->metadatas, list_size(unSegmento->metadatas) - 2);
+				//ultimoHeap = list_get(unSegmento->metadatas, list_size(unSegmento->metadatas) - 1);
 
 				if (ultimoHeap->estaPartido == false) { //Si no esta partida la metadata
 					int indicePagina = (floor)(
@@ -1606,20 +1606,22 @@ void *museget(void* dst, uint32_t src, size_t n, int idSocketCliente) {
 		}
 
 		for (int i = 0; i < cantidadPaginas; i++, puntero += tam_pagina) {
-			struct Pagina *pagina = list_get(segmento->tablaPaginas,
-					primeraPagina + i);
-			struct Frame *frame = list_get(bitmapFrames, pagina->numeroFrame);
-			pagina->presencia = 1;
-
-			void *pos = obtenerPosicionMemoriaPagina(pagina);
-
-			frame->uso = 1;
-
-			memcpy(recorridoPaginas + puntero, pos, tam_pagina);
+				struct Pagina *pagina = list_get(segmento->tablaPaginas, primeraPagina + i);
+				struct Frame * frame;
+				if (pagina->presencia == 1) {
+				frame = list_get(bitmapFrames, pagina->numeroFrame);
+				} else {
+					int indiceFrame = asignarUnFrame();
+					frame = list_get(bitmapFrames, indiceFrame);
+				}
+				pagina->presencia = 1;
+				void *pos = memoriaPrincipal + pagina->numeroFrame * pconfig->tamanio_pag;
+				frame->uso = 1;
+				memcpy(recorridoPaginas + puntero, pos, tam_pagina);
 		}
 
 		memcpy(resultado, recorridoPaginas + desplazamiento, n);
-		free(recorridoPaginas);
+		//free(recorridoPaginas);
 	}
 
 	//printf("Lo leido es %i \n", *(int*)resultado);
@@ -1869,17 +1871,17 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 				bytesAMoverse = (int) (sizeof(struct HeapMetadata))
 						- (heap->bytesPrimeraPagina);
 
-				direccionInicial = (int) (obtenerPosicionMemoriaPagina(
-						proximaPagina) + bytesAMoverse);
+				//direccionInicial = (int) (obtenerPosicionMemoriaPagina(proximaPagina) + bytesAMoverse);
+				direccionInicial = memoriaPrincipal + proximaPagina->numeroFrame * pconfig->tamanio_pag + bytesAMoverse;
 
 			} else {
-				direccionInicial = (int) (obtenerPosicionMemoriaPagina(
-						paginaInicial) + desplazamientoPagina);
+				//direccionInicial = (int) (obtenerPosicionMemoriaPagina(paginaInicial) + desplazamientoPagina);
+				direccionInicial = memoriaPrincipal + paginaInicial->numeroFrame * pconfig->tamanio_pag + desplazamientoPagina;
 			}
 
 			//tengo que ver si se parte la metadata, en ese caso obtengo la prox pag y el frame sig
-			direccionFinal = (int) (obtenerPosicionMemoriaPagina(paginaFinal)
-					+ desplazamientoUltimaPagina);
+			//direccionFinal = (int) (obtenerPosicionMemoriaPagina(paginaFinal) + desplazamientoUltimaPagina);
+			direccionFinal = memoriaPrincipal + paginaFinal->numeroFrame * pconfig->tamanio_pag + desplazamientoUltimaPagina;
 
 			if (heap->size == n && direccion >= direccionInicial && direccion <= direccionFinal) {
 				heapFinal = heap;
@@ -1932,18 +1934,13 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 
 		//Copio bytes primera pagina
 		if (bytesACopiar < bytesPrimeraPagina) { //
-
-			memcpy(
-					obtenerPosicionMemoriaPagina(paginaInicialPosta)
-							+ ((direccion - unSegmento->baseLogica)
-									% pconfig->tamanio_pag), src, bytesACopiar);
+			memcpy(memoriaPrincipal + paginaInicialPosta->numeroFrame * pconfig->tamanio_pag + ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag), src, bytesACopiar);
+			//memcpy(obtenerPosicionMemoriaPagina(paginaInicialPosta) + ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag), src, bytesACopiar);
 			bytesACopiar -= bytesACopiar;
 
 		} else {
-
-			pos = obtenerPosicionMemoriaPagina(paginaInicialPosta)
-					+ ((direccion - unSegmento->baseLogica)
-							% pconfig->tamanio_pag);
+			pos = memoriaPrincipal + paginaInicialPosta->numeroFrame * pconfig->tamanio_pag + ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag);
+			//pos = obtenerPosicionMemoriaPagina(paginaInicialPosta) + ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag);
 			memcpy(pos, src, bytesPrimeraPagina);
 			bytesACopiar -= bytesPrimeraPagina;
 
@@ -1963,14 +1960,13 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 
 			if (bytesACopiar >= tam_pagina) {
 
-				memcpy(obtenerPosicionMemoriaPagina(proximaPagina),
-						src + (n - bytesACopiar), pconfig->tamanio_pag);
+				//memcpy(obtenerPosicionMemoriaPagina(proximaPagina), src + (n - bytesACopiar), pconfig->tamanio_pag);
+				memcpy(memoriaPrincipal + proximaPagina->numeroFrame * pconfig->tamanio_pag, src + (n - bytesACopiar), pconfig->tamanio_pag);
 				bytesACopiar -= pconfig->tamanio_pag;
 
 			} else {
-
-				memcpy(obtenerPosicionMemoriaPagina(proximaPagina),
-						src + (n - bytesACopiar), bytesACopiar);
+				memcpy(memoriaPrincipal + proximaPagina->numeroFrame * pconfig->tamanio_pag, src + (n - bytesACopiar), bytesACopiar);
+				//memcpy(obtenerPosicionMemoriaPagina(proximaPagina), src + (n - bytesACopiar), bytesACopiar);
 				bytesACopiar -= bytesACopiar;
 
 			}
@@ -2020,17 +2016,12 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 
 		//Copio bytes primera pagina
 		if (bytesACopiar < bytesPrimeraPagina) {
-			memcpy(
-					obtenerPosicionMemoriaPagina(pagina)
-							+ ((direccion - unSegmento->baseLogica)
-									% pconfig->tamanio_pag), src, bytesACopiar);
+			memcpy( memoriaPrincipal + pagina->numeroFrame * pconfig->tamanio_pag + ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag), src, bytesACopiar);
+			//memcpy( obtenerPosicionMemoriaPagina(pagina) + ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag), src, bytesACopiar);
 			bytesACopiar -= bytesACopiar;
 		} else {
-			memcpy(
-					obtenerPosicionMemoriaPagina(pagina)
-							+ ((direccion - unSegmento->baseLogica)
-									% pconfig->tamanio_pag), src,
-					bytesPrimeraPagina);
+			memcpy( memoriaPrincipal + pagina->numeroFrame * pconfig->tamanio_pag + ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag), src, bytesPrimeraPagina);
+			//memcpy( obtenerPosicionMemoriaPagina(pagina) + ((direccion - unSegmento->baseLogica) % pconfig->tamanio_pag), src, bytesPrimeraPagina);
 			bytesACopiar -= bytesPrimeraPagina;
 		}
 
@@ -2043,15 +2034,13 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 			proximoFrame = list_get(bitmapFrames, proximaPagina->numeroFrame);
 
 			if (bytesACopiar >= tam_pagina) {
-
-				memcpy(obtenerPosicionMemoriaPagina(proximaPagina),
-						src + (n - bytesACopiar), pconfig->tamanio_pag);
+				memcpy(memoriaPrincipal + proximaPagina->numeroFrame * pconfig->tamanio_pag, src + (n - bytesACopiar), pconfig->tamanio_pag);
+				//memcpy(obtenerPosicionMemoriaPagina(proximaPagina), src + (n - bytesACopiar), pconfig->tamanio_pag);
 				bytesACopiar -= pconfig->tamanio_pag;
 
 			} else {
-
-				memcpy(obtenerPosicionMemoriaPagina(proximaPagina),
-						src + (n - bytesACopiar), bytesACopiar);
+				memcpy(memoriaPrincipal + proximaPagina->numeroFrame * pconfig->tamanio_pag, src + (n - bytesACopiar), bytesACopiar);
+				//memcpy(obtenerPosicionMemoriaPagina(proximaPagina), src + (n - bytesACopiar), bytesACopiar);
 				bytesACopiar -= bytesACopiar;
 
 			}
@@ -2061,11 +2050,11 @@ int musecpy(uint32_t dst, void* src, int n, int idSocketCliente) {
 			proximaPagina++;
 		}
 
-		void* deDondeLeer;
+		/*void* deDondeLeer;
 		deDondeLeer = obtenerPosicionMemoriaPagina(
 				list_get(unSegmento->tablaPaginas, 0))
 				+ sizeof(struct HeapMetadata);
-		printf("El resultado es %i \n", (int) deDondeLeer);
+		printf("El resultado es %i \n", (int) deDondeLeer);*/
 
 		return 0;
 	}
@@ -2322,8 +2311,9 @@ int clockModificado() {
 
 		if (frame->uso == 0 && frame->modificado == 0) {
 
+			int resultado = punteroClock;
 			incrementarPunteroClockModificado();
-			return punteroClock;
+			return resultado;
 
 		}
 
@@ -2341,14 +2331,15 @@ int clockModificado() {
 
 		if (frame->uso == 0 && frame->modificado == 1) {
 
+			int resultado = punteroClock;
 			incrementarPunteroClockModificado();
-			return punteroClock;
+			return resultado;
 
 		}
 
 		//Si no se lo elige, se le pone u = 0 (se lo libera)
-		frameUso = list_get(bitmapFrames, punteroClock);
-		frameUso->uso = 0;
+		//frameUso = list_get(bitmapFrames, punteroClock);
+		frame->uso = 0;
 
 		framesRecorridos++;
 		incrementarPunteroClockModificado();
@@ -2363,8 +2354,9 @@ int clockModificado() {
 
 		if (frame->uso == 0 && frame->modificado == 0) {
 
+			int resultado = punteroClock;
 			incrementarPunteroClockModificado();
-			return punteroClock;
+			return resultado;
 
 		}
 
@@ -2381,8 +2373,9 @@ int clockModificado() {
 
 		if (frame->uso == 0 && frame->modificado == 1) {
 
+			int resultado = punteroClock;
 			incrementarPunteroClockModificado();
-			return punteroClock;
+			return resultado;
 
 		}
 
@@ -2566,7 +2559,7 @@ int llevarASwapUnaPagina(struct Pagina *paginaASwappear) {
 	char* registrosAEscribir = malloc(pconfig->tamanio_pag);
 	char* pagina = malloc(pconfig->tamanio_pag);
 	memcpy(pagina, punteroMarco, pconfig->tamanio_pag);
-	printf("%s \n", pagina);
+	//printf("%s \n", pagina);
 	string_append(&registrosAEscribir, pagina);
 	FILE *swap = fopen("swap.txt", "w+");
 	fseek(swap, bit_swap * tam_pagina, SEEK_SET);
