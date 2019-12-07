@@ -2781,7 +2781,7 @@ int muse_unmap(uint32_t dir, int idSocketCliente) {
 	return -1;
 }
 
-int muse_close(int idSocketCliente){
+int museclose(int idSocketCliente){
 
 	char *stringIdSocketCliente = string_itoa(idSocketCliente);
 	t_list *segmentosPrograma = list_get(tablasSegmentos, stringIdSocketCliente);
